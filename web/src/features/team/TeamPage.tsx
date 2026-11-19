@@ -1,53 +1,32 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query"
-import { ArrowUpRightIcon, MailIcon, UsersIcon } from "lucide-react"
-import { useLayoutEffect, useRef, useState } from "react"
+import { ArrowUpRightIcon, UserPlusIcon } from "lucide-react"
+import { useRef, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router"
 
 import { byPresence, useMemberStatus } from "@/app/TeamMenu"
-import {
-  colorFor,
-  Dot,
-  ErrorLine,
-  FlatEmpty,
-  FlatTag,
-  InfoSection,
-  KV,
-  ListRow,
-  PageHeading,
-  PageTop as PageTopLine,
-  SectionPage,
-  topButton,
-  topInk,
-  TopSep,
-} from "@/components/common"
+import { colorFor, Dot, ErrorLine, InfoColumn, InfoSection, KV, PageLayout, PageTop } from "@/components/common"
+import { FormCard, FormGrid } from "@/components/common/FormCard"
+import { KeyHints, ListBox, ListBoxEmpty, ListBoxSkeleton, PageTitle } from "@/components/common/ListBox"
+import { SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { formatDate, initials, ROLES, useEnumText } from "@/components/common/text"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+import { Field, FieldContent, FieldDescription, FieldLabel, FieldTitle } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { ConversationRows } from "@/features/contact/ContactDetails"
 import { rememberChip } from "@/features/inbox/ChatList"
-import { KpiTile } from "@/features/analytics/Overview"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { useListCursor } from "@/features/inbox/listCursor"
-import { FrameTabs, look, Overline, PageTop } from "@/features/inbox/PageFrame"
-import { LoadProblem, Tiles } from "@/features/reports/parts"
 import { useConversations, useCounts, useStats } from "@/features/inbox/queries"
-import { Chip, Field } from "@/features/settings/ui"
+import { LoadProblem } from "@/features/reports/parts"
 import { MemberAddresses } from "@/features/team/MemberAddresses"
 import { RemoveMemberDialog } from "@/features/team/RemoveMemberDialog"
-import { SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { useHotkeys } from "@/hooks/use-hotkeys"
-import { useIsPhone } from "@/hooks/use-media-query"
 import { useNow } from "@/hooks/use-now"
 import { locales } from "@/i18n"
 import { api, ApiError, unwrap, type Invite, type Locale, type Member, type Role } from "@/lib/api"
@@ -55,7 +34,6 @@ import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { useAllInboxes, useInboxes, useMembers } from "@/lib/workspace"
-import { PageBackLink } from "@/components/common/PageLayout"
 
 type Presence = "here" | "away" | "offline"
 
@@ -70,7 +48,7 @@ function PresenceFace({ m, className }: { m: Member; className?: string }) {
     <span
       aria-hidden
       className={cn(
-        "relative grid size-9 shrink-0 place-items-center rounded-full text-[12px] font-semibold text-white",
+        "relative grid size-8 shrink-0 place-items-center rounded-full text-[11px] font-semibold text-white",
         className
       )}
       style={{ backgroundColor: colorFor(m.id) }}
@@ -78,7 +56,7 @@ function PresenceFace({ m, className }: { m: Member; className?: string }) {
       {initials(name)}
       <span
         className={cn(
-          "absolute -end-px -bottom-px size-[11px] rounded-full border-2 border-card",
+          "absolute -end-px -bottom-px size-[10px] rounded-full border-2 border-card",
           presence === "here" && "bg-success",
           presence === "away" && "bg-warning",
           presence === "offline" && "bg-faint/60"
@@ -98,7 +76,23 @@ function useRoleHint() {
         : t`Agents see the inboxes they were given and answer in them.`
 }
 
-function RoleChips({
+function RoleBadge({ role }: { role: Role }) {
+  const text = useEnumText()
+  return (
+    <Badge
+      variant="secondary"
+      className={cn(
+        "rounded-md font-medium",
+        role === "owner" && "bg-success/10 text-success",
+        role === "admin" && "bg-warning/10 text-warning"
+      )}
+    >
+      {text.role[role]}
+    </Badge>
+  )
+}
+
+function RoleChoice({
   value,
   onChange,
   disabled,
@@ -112,127 +106,134 @@ function RoleChips({
   const text = useEnumText()
   const hint = useRoleHint()
   return (
-    <div role="group" aria-label={label} className="flex flex-col gap-1.5">
-      {ROLES.map((r) => {
-        const on = r === value
-        return (
-          <button
-            key={r}
-            type="button"
-            aria-pressed={on}
-            disabled={disabled(r)}
-            onClick={() => !on && onChange(r)}
-            className={cn(
-              "flex items-start gap-2.5 rounded-[10px] border bg-card px-3 py-2.5 text-start outline-none transition-colors hover:border-faint focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:border-border",
-              on && "border-brand/40 bg-brand-wash hover:border-brand/40"
-            )}
-            data-testid={`role-${r}`}
-          >
-            <span
-              aria-hidden
-              className={cn(
-                "mt-0.5 grid size-4 shrink-0 place-items-center rounded-full border border-input bg-card",
-                on && "border-brand"
-              )}
-            >
-              {on && <span className="size-2 rounded-full bg-brand" />}
-            </span>
-            <span className="flex min-w-0 flex-col leading-[1.35]">
-              <span className="text-body font-semibold">{text.role[r]}</span>
-              <span className="text-caption text-faint">{hint(r)}</span>
-            </span>
-          </button>
-        )
-      })}
-    </div>
+    <RadioGroup
+      value={value}
+      onValueChange={(v) => v !== value && onChange(v as Role)}
+      aria-label={label}
+      className="gap-2"
+    >
+      {ROLES.map((r) => (
+        <FieldLabel key={r} htmlFor={`role-${r}`} className="w-full">
+          <Field orientation="horizontal" data-disabled={disabled(r) || undefined}>
+            <RadioGroupItem value={r} id={`role-${r}`} disabled={disabled(r)} data-testid={`role-${r}`} />
+            <FieldContent>
+              <FieldTitle>{text.role[r]}</FieldTitle>
+              <FieldDescription className="text-caption">{hint(r)}</FieldDescription>
+            </FieldContent>
+          </Field>
+        </FieldLabel>
+      ))}
+    </RadioGroup>
   )
 }
 
-function InviteDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+function InviteForm({ email, setEmail }: { email: string; setEmail: (v: string) => void }) {
   const { t, i18n } = useLingui()
   const qc = useQueryClient()
+  const text = useEnumText()
+  const hint = useRoleHint()
   const { membership, workspaceId: ws } = useSession()
-  const [email, setEmail] = useState("")
   const [role, setRole] = useState<Role>("agent")
   const [locale, setLocale] = useState<Locale>(i18n.locale === "tr" ? "tr" : "en")
+  const [sent, setSent] = useState("")
   const create = useMutation({
     mutationFn: () => unwrap(api.POST("/v1/invites", { body: { email: email.trim(), role, locale } })),
     onSuccess: () => {
+      setSent(email.trim())
       setEmail("")
       setRole("agent")
       void qc.invalidateQueries({ queryKey: keys.invites(ws) })
-      onOpenChange(false)
     },
   })
   const isOwner = membership.role === "owner"
+  const clear = () => {
+    setEmail("")
+    setRole("agent")
+    create.reset()
+  }
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent data-testid="invite-dialog">
-        <form
-          className="grid gap-5"
-          onSubmit={(e) => {
-            e.preventDefault()
-            create.mutate()
-          }}
-        >
-          <DialogHeader>
-            <DialogTitle>
-              <Trans>Invite a teammate</Trans>
-            </DialogTitle>
-            <DialogDescription>
-              <Trans>
-                An invite is accepted when the person signs in with a code sent to that address. It expires after 7
-                days.
-              </Trans>
-            </DialogDescription>
-          </DialogHeader>
-          <Field label={<Trans>E-mail address</Trans>} htmlFor="invite-email">
-            <Input
-              id="invite-email"
-              type="email"
-              required
-              autoFocus
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder={t`teammate@company.com`}
-            />
-          </Field>
-          <Field label={<Trans>Role</Trans>}>
-            <RoleChips value={role} onChange={setRole} disabled={(r) => r === "owner" && !isOwner} label={t`Role`} />
-          </Field>
-          <Field label={<Trans>Language of the invite</Trans>}>
-            <Select value={locale} onValueChange={(v) => setLocale(v as Locale)} items={locales}>
-              <SelectTrigger aria-label={t`Invite language`}>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(locales).map(([k, v]) => (
-                  <SelectItem key={k} value={k}>
-                    {v}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </Field>
-          <ErrorLine error={create.error} />
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              <Trans>Cancel</Trans>
-            </Button>
-            <Button type="submit" disabled={create.isPending || !email.trim()} data-testid="invite-send">
-              <Trans>Send invite</Trans>
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <FormCard
+      title={<Trans>Invite a teammate</Trans>}
+      submit={<Trans>Send invite</Trans>}
+      cancel={<Trans>Clear</Trans>}
+      onCancel={clear}
+      onSubmit={() => create.mutate()}
+      ready={!!email.trim()}
+      busy={create.isPending}
+      error={create.error}
+      testId="invite-form"
+    >
+      <FormGrid>
+        <Field>
+          <FieldLabel htmlFor="invite-email">
+            <Trans>E-mail address</Trans>
+          </FieldLabel>
+          <Input
+            id="invite-email"
+            type="email"
+            required
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value)
+              setSent("")
+            }}
+            placeholder={t`teammate@company.com`}
+            className="h-9"
+          />
+          <FieldDescription className="text-caption" aria-live="polite">
+            {sent ? (
+              <span className="text-success" data-testid="invite-sent">
+                <Trans>Invite sent to {sent}.</Trans>
+              </span>
+            ) : (
+              <Trans>We send a sign-in link that is valid for 7 days.</Trans>
+            )}
+          </FieldDescription>
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="invite-role">
+            <Trans>Role</Trans>
+          </FieldLabel>
+          <NativeSelect
+            id="invite-role"
+            value={role}
+            onChange={(e) => setRole(e.target.value as Role)}
+            className="w-full"
+            data-testid="invite-role"
+          >
+            {ROLES.map((r) => (
+              <NativeSelectOption key={r} value={r} disabled={r === "owner" && !isOwner}>
+                {text.role[r]}
+              </NativeSelectOption>
+            ))}
+          </NativeSelect>
+          <FieldDescription className="text-caption">{hint(role)}</FieldDescription>
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="invite-locale">
+            <Trans>Language of the invite</Trans>
+          </FieldLabel>
+          <NativeSelect
+            id="invite-locale"
+            value={locale}
+            onChange={(e) => setLocale(e.target.value as Locale)}
+            className="w-full"
+          >
+            {Object.entries(locales).map(([k, v]) => (
+              <NativeSelectOption key={k} value={k}>
+                {v}
+              </NativeSelectOption>
+            ))}
+          </NativeSelect>
+        </Field>
+      </FormGrid>
+    </FormCard>
   )
 }
 
 function InviteRow({ invite }: { invite: Invite }) {
   const { t, i18n } = useLingui()
   const qc = useQueryClient()
-  const text = useEnumText()
   const { workspaceId: ws } = useSession()
   const now = useNow(60_000)
   const [asking, setAsking] = useState(false)
@@ -246,138 +247,83 @@ function InviteRow({ invite }: { invite: Invite }) {
     mutationFn: () => unwrap(api.DELETE("/v1/invites/{inviteId}", { params: { path: { inviteId: invite.id } } })),
     onSuccess: refresh,
   })
-  const sent = formatDate(invite.created_at, i18n.locale)
-  const expires = formatDate(invite.expires_at, i18n.locale)
-  const role = text.role[invite.role]
-  const language = locales[invite.locale]
   const expired = new Date(invite.expires_at).getTime() < now
+  const error = resend.error ?? withdraw.error
   return (
-    <li
-      className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b px-4 py-3 last:border-b-0 in-data-flat:border-line-soft in-data-flat:px-1 in-data-flat:last:border-b"
-      data-testid="invite-row"
-    >
-      <span aria-hidden className="grid size-9 shrink-0 place-items-center rounded-full bg-muted text-muted-foreground">
-        <MailIcon className="size-4" />
-      </span>
-      <span className="flex min-w-0 flex-1 basis-56 flex-col leading-[1.35]">
-        <span className="flex min-w-0 items-center gap-1.5">
-          <bdi className="truncate text-[13.5px] font-semibold">{invite.email}</bdi>
-          {expired && (
-            <span className="inline-flex h-5 shrink-0 items-center rounded-md bg-warning/10 px-[7px] text-[11px] font-semibold text-warning">
-              <Trans>Expired</Trans>
+    <TableRow className="border-line-soft hover:bg-subtle" data-testid="invite-row">
+      <TableCell className="min-w-0 overflow-hidden px-4 py-2.5">
+        <span className="flex min-w-0 flex-col leading-5">
+          <bdi className="truncate font-medium text-foreground">{invite.email}</bdi>
+          <span className="truncate text-small text-muted-foreground">
+            {locales[invite.locale]}
+            <span className="@3xl/list:hidden">
+              {" · "}
+              <Trans>sent {formatDate(invite.created_at, i18n.locale)}</Trans>
             </span>
-          )}
-        </span>
-        <span className="text-caption text-faint">
-          <Trans>
-            {role} · {language} · sent {sent} · expires {expires}
-          </Trans>
-        </span>
-      </span>
-      {asking ? (
-        <span className="flex flex-wrap items-center gap-2">
-          <span className="text-small">
-            <Trans>Withdraw this invite?</Trans>
           </span>
-          <Button
-            variant="destructive"
-            className={look.btnSm}
-            onClick={() => withdraw.mutate()}
-            disabled={withdraw.isPending}
-            aria-label={t`Withdraw the invite for ${invite.email}`}
-          >
-            <Trans>Withdraw</Trans>
-          </Button>
-          <Button variant="outline" className={look.btnSm} onClick={() => setAsking(false)}>
-            <Trans>Cancel</Trans>
-          </Button>
+          {error && <ErrorLine error={error} className="text-small whitespace-normal" />}
         </span>
-      ) : (
-        <span className="flex gap-1.5">
-          <Button
-            variant="outline"
-            className={cn(look.btnSm, "bg-card")}
-            onClick={() => resend.mutate()}
-            disabled={resend.isPending || resend.isSuccess}
-            aria-label={t`Send the invite for ${invite.email} again`}
-          >
-            {resend.isSuccess ? <Trans>Sent</Trans> : <Trans>Resend</Trans>}
-          </Button>
-          <Button
-            variant="outline"
-            className={cn(look.btnSm, "bg-card")}
-            onClick={() => setAsking(true)}
-            aria-label={t`Withdraw the invite for ${invite.email}`}
-          >
-            <Trans>Withdraw</Trans>
-          </Button>
-        </span>
-      )}
-      <ErrorLine error={resend.error ?? withdraw.error} className="basis-full" />
-    </li>
-  )
-}
-
-function InvitesTab({ invites, onInvite }: { invites: ReturnType<typeof useInvites>; onInvite: () => void }) {
-  return (
-    <div className="min-h-0 flex-1 overflow-y-auto">
-      <div className="flex w-full flex-col gap-3 px-4 pt-3 pb-16">
-        {invites.isPending ? (
-          <div className="overflow-hidden rounded-[14px] border bg-card" aria-busy="true" data-testid="invites-loading">
-            {[0, 1, 2].map((i) => (
-              <div key={i} className="flex h-[62px] items-center gap-3 border-b px-4 last:border-b-0">
-                <Skeleton className="size-9 shrink-0 rounded-full" />
-                <div className="flex flex-1 flex-col gap-1.5">
-                  <Skeleton className="h-3 w-48 max-w-full" />
-                  <Skeleton className="h-2.5 w-64 max-w-full" />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : invites.error && !invites.data ? (
-          <LoadProblem error={invites.error} onRetry={() => void invites.refetch()} testId="invites-error" />
+      </TableCell>
+      <TableCell className="px-3 py-2.5 @max-md/list:hidden">
+        <RoleBadge role={invite.role} />
+      </TableCell>
+      <TableCell className="px-3 py-2.5 text-small text-muted-foreground @max-3xl/list:hidden">
+        {formatDate(invite.created_at, i18n.locale)}
+      </TableCell>
+      <TableCell className="px-3 py-2.5 @max-xl/list:hidden">
+        {expired ? (
+          <Badge variant="destructive" className="rounded-md">
+            <Trans>Expired</Trans>
+          </Badge>
         ) : (
-          <>
-            <ErrorLine error={invites.error} />
-            {invites.data?.length === 0 ? (
-              <div
-                className="mx-auto flex max-w-sm flex-col items-center gap-3 px-2 py-14 text-center"
-                data-testid="invites"
-              >
-                <span className="grid size-12 place-items-center rounded-xl bg-brand-wash text-brand">
-                  <MailIcon className="size-5" aria-hidden />
-                </span>
-                <p className="text-body font-semibold">
-                  <Trans>No pending invites.</Trans>
-                </p>
-                <Button className={look.btnInkSm} onClick={onInvite}>
-                  <Trans>Invite a teammate</Trans>
-                </Button>
-              </div>
-            ) : (
-              <ul
-                className="overflow-hidden rounded-[14px] border bg-card in-data-flat:rounded-none in-data-flat:border-x-0 in-data-flat:border-b-0 in-data-flat:border-line-soft in-data-flat:bg-transparent"
-                data-testid="invites"
-              >
-                {(invites.data ?? []).map((inv) => (
-                  <InviteRow key={inv.id} invite={inv} />
-                ))}
-              </ul>
-            )}
-            <p className="max-w-2xl px-1 text-caption text-faint">
-              <Trans>
-                An invite is accepted when the person signs in with a code sent to that address. It expires after 7
-                days.
-              </Trans>
-            </p>
-          </>
+          <Badge variant="secondary" className="rounded-md" title={formatDate(invite.expires_at, i18n.locale)}>
+            <Trans>Pending</Trans>
+          </Badge>
         )}
-      </div>
-    </div>
+      </TableCell>
+      <TableCell className="px-3 py-2 pe-4 text-end">
+        {asking ? (
+          <span className="inline-flex items-center justify-end gap-1.5 @max-md/list:flex-col @max-md/list:items-stretch">
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => withdraw.mutate()}
+              disabled={withdraw.isPending}
+              aria-label={t`Withdraw the invite for ${invite.email}`}
+            >
+              <Trans>Withdraw</Trans>
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => setAsking(false)}>
+              <Trans>Cancel</Trans>
+            </Button>
+          </span>
+        ) : (
+          <span className="inline-flex items-center justify-end gap-1.5 @max-md/list:flex-col @max-md/list:items-stretch">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => resend.mutate()}
+              disabled={resend.isPending || resend.isSuccess}
+              aria-label={t`Send the invite for ${invite.email} again`}
+            >
+              {resend.isSuccess ? <Trans>Sent</Trans> : <Trans>Resend</Trans>}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setAsking(true)}
+              aria-label={t`Withdraw the invite for ${invite.email}`}
+            >
+              <Trans>Withdraw</Trans>
+            </Button>
+          </span>
+        )}
+      </TableCell>
+    </TableRow>
   )
 }
 
-function useInvites(enabled: boolean) {
+export function useInvites(enabled: boolean) {
   const { workspaceId: ws } = useSession()
   return useQuery({
     queryKey: keys.invites(ws),
@@ -386,53 +332,40 @@ function useInvites(enabled: boolean) {
   })
 }
 
-type Detail = {
-  member: Member
-  load: number
-  products: { id: string; name: string; color?: string }[]
-}
+type Product = { id: string; name: string; color?: string }
 
 function DetailSection({
   title,
   count,
   children,
-  last,
 }: {
   title: React.ReactNode
   count?: number
   children: React.ReactNode
-  last?: boolean
 }) {
   return (
-    <section
-      className={cn(
-        "flex flex-col gap-2.5 px-5 py-4 in-data-flat:mt-6 in-data-flat:border-t-0 in-data-flat:border-b-0 in-data-flat:px-0 in-data-flat:py-0",
-        !last && "border-b"
-      )}
-    >
-      <Overline className="flex items-center gap-2 in-data-flat:text-caption in-data-flat:font-medium in-data-flat:tracking-normal in-data-flat:text-muted2 in-data-flat:normal-case">
+    <section className="mt-7 flex flex-col gap-2.5">
+      <h2 className="m-0 flex items-center gap-2 text-[15px] font-semibold">
         {title}
         {count !== undefined && (
-          <span className="rounded-full bg-muted px-1.5 text-[11px] leading-4 font-medium tracking-normal text-muted-foreground tabular-nums">
+          <Badge variant="secondary" className="rounded-full px-1.5 tabular-nums">
             {count}
-          </span>
+          </Badge>
         )}
-      </Overline>
+      </h2>
       {children}
     </section>
   )
 }
 
-function MemberDetail({ member: m, load, products, flat }: Detail & { flat?: boolean }) {
-  const { t, i18n } = useLingui()
+function MemberDetail({ member: m, products }: { member: Member; products: Product[] }) {
+  const { t } = useLingui()
   const text = useEnumText()
   const hint = useRoleHint()
   const qc = useQueryClient()
   const navigate = useNavigate()
   const status = useMemberStatus()
   const { membership, canManage, workspaceId: ws } = useSession()
-  const [inboxId] = useInboxFilter()
-  const stats = useStats(inboxId).data
   const open = useConversations({ assignee: m.id, status: ["open"], purpose: "support" })
   const [asking, setAsking] = useState(false)
   const [handling, setHandling] = useState(false)
@@ -441,8 +374,6 @@ function MemberDetail({ member: m, load, products, flat }: Detail & { flat?: boo
   const you = m.id === membership.member_id
   const name = m.name || m.email
   const s = status(m)
-  const today = stats?.members.find((x) => x.member_id === m.id)
-  const fmt = new Intl.NumberFormat(i18n.locale)
   const items = open.data?.pages.flatMap((p) => p.items) ?? []
   const refresh = () => qc.invalidateQueries({ queryKey: keys.members(ws) })
   const setRole = useMutation({
@@ -476,78 +407,40 @@ function MemberDetail({ member: m, load, products, flat }: Detail & { flat?: boo
       ? t`An owner cannot be removed. Change their role first.`
       : t`Their conversations stay; they lose access at once.`
   const removable = canManage && !you && m.role !== "owner"
-  const viewing = s.conversationId && !you && (
-    <Button
-      variant="outline"
-      className={cn(look.btn, "justify-between bg-card", flat && "self-start")}
-      render={<Link to={`/conversations/${s.conversationId}`} />}
-      data-testid="member-viewing"
-    >
-      <Trans>Open what they see</Trans>
-      <ArrowUpRightIcon />
-    </Button>
-  )
   return (
-    <div className="flex min-w-0 flex-col" data-flat={flat ? "" : undefined} data-testid="member-page">
-      {flat ? (
-        <div className="mt-3 flex flex-col gap-3">
-          <div className="flex items-start gap-3.5">
-            <PresenceFace m={m} className="size-12 text-[16px]" />
-            <div className="flex min-w-0 flex-1 flex-col">
-              <h1 className="m-0 text-page leading-[34px] break-words" data-testid="member-name">
-                {you ? t`${name} (you)` : name}
-              </h1>
-              <p className="m-0 mt-0.5 text-reading text-muted-foreground">
-                {m.title && <span data-testid="member-title">{m.title} · </span>}
-                <bdi>{m.email}</bdi>
-              </p>
-              <span className={cn("text-small text-muted-foreground", s.conversationId && "text-ok")}>
-                {text.role[m.role]} · {s.text}
-              </span>
-            </div>
+    <div className="flex min-w-0 flex-col" data-testid="member-page">
+      <div className="mt-3 flex flex-col gap-3">
+        <div className="flex items-start gap-3.5">
+          <PresenceFace m={m} className="size-12 text-[16px]" />
+          <div className="flex min-w-0 flex-1 flex-col">
+            <h1 className="m-0 text-[22px] leading-7 font-semibold break-words" data-testid="member-name">
+              {you ? t`${name} (you)` : name}
+            </h1>
+            <p className="m-0 mt-0.5 text-body text-muted-foreground">
+              {m.title && <span data-testid="member-title">{m.title} · </span>}
+              <bdi>{m.email}</bdi>
+            </p>
+            <span className={cn("text-small text-muted-foreground", s.conversationId && "text-ok")}>
+              {text.role[m.role]} · {s.text}
+            </span>
           </div>
-          {viewing}
         </div>
-      ) : (
-        <div className="flex flex-col gap-4 border-b px-5 pt-5 pb-4">
-          <div className="flex items-start gap-3.5">
-            <PresenceFace m={m} className="size-14 text-[18px]" />
-            <div className="flex min-w-0 flex-1 flex-col gap-0.5 leading-[1.35]">
-              <h2 className="text-[18px] leading-6 font-semibold break-words" data-testid="member-name">
-                {you ? t`${name} (you)` : name}
-              </h2>
-              {m.title && (
-                <span className="text-small text-muted-foreground" data-testid="member-title">
-                  {m.title}
-                </span>
-              )}
-              <bdi className="text-small break-words text-faint">{m.email}</bdi>
-              <span className={cn("text-caption text-faint", s.conversationId && "text-success")}>
-                {text.role[m.role]} · {s.text}
-              </span>
-            </div>
-          </div>
-          {viewing}
-          <div
-            className="grid grid-cols-3 divide-x rounded-xl border bg-card rtl:divide-x-reverse"
-            data-testid="member-tiles"
+        {s.conversationId && !you && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="self-start"
+            render={<Link to={`/conversations/${s.conversationId}`} />}
+            data-testid="member-viewing"
           >
-            {[
-              { v: fmt.format(load), l: <Trans>open, assigned</Trans> },
-              { v: today ? fmt.format(today.replies) : "–", l: <Trans>replies today</Trans> },
-              { v: today ? fmt.format(today.closed) : "–", l: <Trans>closed today</Trans> },
-            ].map((x, i) => (
-              <div key={i} className="flex min-w-0 flex-col gap-0.5 px-3 py-2.5">
-                <b className="text-[18px] leading-6 font-semibold tabular-nums">{x.v}</b>
-                <span className="text-caption text-faint">{x.l}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+            <Trans>Open what they see</Trans>
+            <ArrowUpRightIcon />
+          </Button>
+        )}
+      </div>
       <DetailSection title={<Trans>Role</Trans>}>
         {canManage ? (
-          <RoleChips
+          <RoleChoice
             value={m.role}
             onChange={(r) => setRole.mutate(r)}
             disabled={(r) => rolesLocked || setRole.isPending || (r === "owner" && !isOwner)}
@@ -555,11 +448,11 @@ function MemberDetail({ member: m, load, products, flat }: Detail & { flat?: boo
           />
         ) : (
           <div className="flex flex-col gap-1">
-            <Chip className="w-fit">{text.role[m.role]}</Chip>
-            <span className="text-caption text-faint">{hint(m.role)}</span>
+            <RoleBadge role={m.role} />
+            <span className="text-caption text-muted-foreground">{hint(m.role)}</span>
           </div>
         )}
-        {canManage && roleNote && <span className="text-caption text-faint">{roleNote}</span>}
+        {canManage && roleNote && <span className="text-caption text-muted-foreground">{roleNote}</span>}
         <ErrorLine error={setRole.error} />
       </DetailSection>
       {products.length > 0 && (
@@ -586,7 +479,8 @@ function MemberDetail({ member: m, load, products, flat }: Detail & { flat?: boo
         {open.hasNextPage && (
           <Button
             variant="outline"
-            className={cn(look.btnSm, "self-center bg-card")}
+            size="sm"
+            className="self-center"
             onClick={() => void open.fetchNextPage()}
             disabled={open.isFetchingNextPage}
           >
@@ -594,47 +488,50 @@ function MemberDetail({ member: m, load, products, flat }: Detail & { flat?: boo
           </Button>
         )}
       </DetailSection>
-      {canManage && <MemberAddresses memberId={m.id} name={name} />}
       {canManage && (
-        <section className="px-5 py-4 in-data-flat:mt-8 in-data-flat:px-0">
-          <div className="flex flex-wrap items-center gap-3 rounded-xl border border-destructive/30 bg-card px-4 py-3.5 in-data-flat:rounded-none in-data-flat:border-x-0 in-data-flat:border-b-0 in-data-flat:bg-transparent in-data-flat:px-0">
-            <span className="flex min-w-48 flex-1 flex-col leading-[1.35]">
-              <span className="text-[13.5px] font-semibold">
-                <Trans>Remove from the workspace</Trans>
-              </span>
-              <span className="text-caption text-faint">{removeNote}</span>
+        <div data-flat="">
+          <MemberAddresses memberId={m.id} name={name} />
+        </div>
+      )}
+      {canManage && (
+        <section className="mt-8 flex flex-wrap items-center gap-3 rounded-xl border border-destructive/30 bg-card px-4 py-3.5">
+          <span className="flex min-w-48 flex-1 flex-col leading-[1.35]">
+            <span className="text-body font-semibold">
+              <Trans>Remove from the workspace</Trans>
             </span>
-            {asking ? (
-              <span className="flex flex-wrap items-center gap-2">
-                <span className="text-small">
-                  <Trans>Remove {name}?</Trans>
-                </span>
-                <Button
-                  variant="destructive"
-                  className={look.btnSm}
-                  onClick={() => remove.mutate()}
-                  disabled={remove.isPending}
-                  aria-label={t`Remove ${name}`}
-                >
-                  <Trans>Remove</Trans>
-                </Button>
-                <Button variant="outline" className={look.btnSm} onClick={() => setAsking(false)}>
-                  <Trans>Cancel</Trans>
-                </Button>
+            <span className="text-caption text-muted-foreground">{removeNote}</span>
+          </span>
+          {asking ? (
+            <span className="flex flex-wrap items-center gap-2">
+              <span className="text-small">
+                <Trans>Remove {name}?</Trans>
               </span>
-            ) : (
               <Button
-                variant="outline"
-                className={cn(look.btnSm, "bg-card text-destructive")}
-                disabled={!removable}
-                onClick={() => (owned.length > 0 ? setHandling(true) : setAsking(true))}
+                variant="destructive"
+                size="sm"
+                onClick={() => remove.mutate()}
+                disabled={remove.isPending}
                 aria-label={t`Remove ${name}`}
               >
                 <Trans>Remove</Trans>
               </Button>
-            )}
-            <ErrorLine error={remove.error} className="basis-full" />
-          </div>
+              <Button variant="outline" size="sm" onClick={() => setAsking(false)}>
+                <Trans>Cancel</Trans>
+              </Button>
+            </span>
+          ) : (
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-destructive"
+              disabled={!removable}
+              onClick={() => (owned.length > 0 ? setHandling(true) : setAsking(true))}
+              aria-label={t`Remove ${name}`}
+            >
+              <Trans>Remove</Trans>
+            </Button>
+          )}
+          <ErrorLine error={remove.error} className="basis-full" />
         </section>
       )}
       {handling && owned.length > 0 && (
@@ -654,128 +551,14 @@ function MemberDetail({ member: m, load, products, flat }: Detail & { flat?: boo
   )
 }
 
-function useNarrow(ref: React.RefObject<HTMLElement | null>, limit: number) {
-  const [narrow, setNarrow] = useState(false)
-  useLayoutEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const measure = () => setNarrow(el.clientWidth < limit)
-    measure()
-    const watch = new ResizeObserver(measure)
-    watch.observe(el)
-    return () => watch.disconnect()
-  }, [ref, limit])
-  return narrow
-}
-
-const GRID =
-  "grid grid-cols-[minmax(0,1fr)_72px] items-center gap-3 px-3 @min-[640px]:grid-cols-[minmax(200px,2fr)_minmax(110px,1.3fr)_120px_80px] @min-[900px]:grid-cols-[minmax(0,1fr)_110px] @min-[1240px]:grid-cols-[minmax(230px,2.2fr)_minmax(130px,1.3fr)_150px_96px]"
-const wideCol = "hidden @min-[640px]:flex @min-[900px]:hidden @min-[1240px]:flex"
-
-function MemberRow({
-  m,
-  load,
-  peak,
-  replies,
-  current,
-  products,
-}: {
-  m: Member
-  load: number
-  peak: number
-  replies: number | undefined
-  current: boolean
-  products: { id: string; name: string; color?: string }[]
-}) {
-  const { t, i18n } = useLingui()
-  const status = useMemberStatus()
-  const { membership } = useSession()
-  const text = useEnumText()
-  const fmt = new Intl.NumberFormat(i18n.locale)
-  const name = m.name || m.email
-  const s = status(m)
-  return (
-    <li data-testid="team-member">
-      <Link
-        to={`/team/${m.id}`}
-        aria-current={current ? "page" : undefined}
-        className={cn(
-          GRID,
-          "relative min-h-[60px] border-b border-b-muted py-2 outline-none transition-colors hover:bg-muted/60 focus-visible:bg-muted/60",
-          current &&
-            "rounded-[10px] border-b-transparent bg-card shadow-[0_0_0_1px_var(--border)] before:absolute before:inset-y-3 before:start-1 before:w-[3px] before:rounded-[3px] before:bg-brand hover:bg-card"
-        )}
-      >
-        <span className="flex min-w-0 items-center gap-3">
-          <PresenceFace m={m} />
-          <span className="flex min-w-0 flex-col leading-[1.35]">
-            <span className="flex min-w-0 items-center gap-1.5">
-              <span className="truncate text-[13.5px] font-semibold">
-                {m.id === membership.member_id ? t`${name} (you)` : name}
-              </span>
-              <Chip>{text.role[m.role]}</Chip>
-            </span>
-            <span className={cn("truncate text-caption text-faint", s.conversationId && "text-success")}>{s.text}</span>
-          </span>
-        </span>
-        <span className={cn(wideCol, "min-w-0 flex-wrap gap-x-2.5 gap-y-1 overflow-hidden")}>
-          {products.slice(0, 3).map((p) => (
-            <span key={p.id} className="inline-flex min-w-0 items-center gap-[5px] text-caption text-muted-foreground">
-              <Dot color={p.color} className="size-2 rounded-[3px]" />
-              <span className="truncate">{p.name}</span>
-            </span>
-          ))}
-        </span>
-        <span
-          className={cn("flex items-center gap-2 text-body tabular-nums", !load && "text-faint")}
-          data-testid="team-load"
-        >
-          <span className="min-w-6">{fmt.format(load)}</span>
-          <span
-            className="hidden h-1.5 max-w-20 flex-1 overflow-hidden rounded-full bg-muted @min-[640px]:block"
-            aria-hidden
-          >
-            <i
-              className="block h-full rounded-full bg-brand"
-              style={{ width: `${peak ? Math.round((load / peak) * 100) : 0}%` }}
-            />
-          </span>
-        </span>
-        <span className={cn(wideCol, "text-small text-muted-foreground tabular-nums")}>
-          {replies === undefined ? "–" : fmt.format(replies)}
-        </span>
-      </Link>
-    </li>
-  )
-}
-
-function ListSkeleton() {
-  return (
-    <div className="flex flex-col" aria-busy="true" data-testid="team-loading">
-      {[62, 48, 70, 54, 66].map((w, i) => (
-        <div key={i} className="flex h-[60px] items-center gap-3 border-b border-b-muted px-3">
-          <Skeleton className="size-9 shrink-0 rounded-full" />
-          <div className="flex flex-1 flex-col gap-1.5">
-            <Skeleton className="h-3" style={{ width: `${w}%`, maxWidth: 240 }} />
-            <Skeleton className="h-2.5 w-35" />
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-function useTeam(tab: "members" | "invites") {
+function useTeam() {
   const { i18n } = useLingui()
-  const { memberId } = useParams()
-  const { canManage, workspaceId: ws } = useSession()
+  const { workspaceId: ws } = useSession()
   const members = useMembers()
   const counts = useCounts().data
   const [inboxId] = useInboxFilter()
   const stats = useStats(inboxId).data
   const inboxes = useInboxes().data ?? []
-  const [inviting, setInviting] = useState(false)
-  const invites = useInvites(canManage)
   const queue = useConversations(
     { status: ["open"], assignee: "unassigned", purpose: "support", inbox_id: inboxId || undefined },
     !!inboxId
@@ -791,13 +574,9 @@ function useTeam(tab: "members" | "invites") {
     })),
   })
   const load = new Map((counts?.assignees ?? []).map((a) => [a.id, a.count]))
-  const where = (m: Member) =>
+  const where = (m: Member): Product[] =>
     (m.role === "agent" ? inboxes.filter((_, i) => granted[i]?.data?.some((g) => g.id === m.id)) : inboxes).map(
-      (i) => ({
-        id: i.id,
-        name: i.name,
-        color: i.branding.color,
-      })
+      (i) => ({ id: i.id, name: i.name, color: i.branding.color })
     )
   const scopedIndex = inboxes.findIndex((i) => i.id === inboxId)
   const inScope = (m: Member) =>
@@ -805,7 +584,6 @@ function useTeam(tab: "members" | "invites") {
   const order = [...(members.data ?? [])]
     .filter(inScope)
     .sort((a, b) => byPresence(a, b) || (load.get(b.id) ?? 0) - (load.get(a.id) ?? 0))
-  const peak = Math.max(0, ...order.map((m) => load.get(m.id) ?? 0))
   const fmt = new Intl.NumberFormat(i18n.locale)
   const available = fmt.format(order.filter((m) => m.online && m.availability === "auto").length)
   const total = fmt.format(order.length)
@@ -816,391 +594,260 @@ function useTeam(tab: "members" | "invites") {
     : counts?.unassigned
   const openTotal = inboxId ? (counts?.inboxes.find((i) => i.id === inboxId)?.count ?? 0) : counts?.all
   const assigned = unassigned !== undefined && openTotal !== undefined ? Math.max(0, openTotal - unassigned) : undefined
-  const num = (n: number | undefined) => (n === undefined ? "–" : fmt.format(n))
-  const tabKey = canManage ? tab : "members"
-  return {
-    memberId,
-    members,
-    stats,
-    inviting,
-    setInviting,
-    invites,
-    load,
-    where,
-    order,
-    peak,
-    available,
-    total,
-    unassigned,
-    assigned,
-    num,
-    tabKey,
-  }
+  return { members, stats, load, where, order, available, total, unassigned, assigned }
 }
 
-export function TeamPage({ tab = "members" }: { tab?: "members" | "invites" }) {
-  const phone = useIsPhone()
-  return phone ? <StackedTeam tab={tab} /> : <FlatTeam tab={tab} />
-}
+const head = "h-9 px-3 text-start text-caption font-medium text-muted-foreground"
 
-function StackedTeam({ tab }: { tab: "members" | "invites" }) {
-  const { t } = useLingui()
-  const frame = useRef<HTMLElement>(null)
-  const single = useNarrow(frame, 900)
-  const { canManage } = useSession()
-  const {
-    memberId,
-    members,
-    stats,
-    inviting,
-    setInviting,
-    invites,
-    load,
-    where,
-    order,
-    peak,
-    available,
-    total,
-    unassigned,
-    assigned,
-    num,
-    tabKey,
-  } = useTeam(tab)
-  const current = memberId ? order.find((m) => m.id === memberId) : single ? undefined : order[0]
-  const missing = !!memberId && members.data !== undefined && !current
-
-  const tiles = (
-    <Tiles className="px-6 pt-4 phone:px-4" testId="team-summary">
-      <KpiTile
-        label={
-          <span className="block first-letter:uppercase">
-            <Trans>available now</Trans>
-          </span>
-        }
-        value={
-          members.data ? (
-            <Trans>
-              {available} of {total}
-            </Trans>
-          ) : (
-            "–"
-          )
-        }
-        wrapLabel
-      />
-      <KpiTile
-        label={
-          <span className="block first-letter:uppercase">
-            <Trans>open, unassigned</Trans>
-          </span>
-        }
-        value={num(unassigned)}
-        hint={
-          <Link
-            to="/conversations"
-            onClick={() => rememberChip("unassigned")}
-            className="text-brand underline-offset-2 outline-none hover:underline focus-visible:underline"
-            data-testid="team-queue"
-          >
-            <Trans>Open the unassigned queue</Trans>
-          </Link>
-        }
-        wrapLabel
-      />
-      <KpiTile
-        label={
-          <span className="block first-letter:uppercase">
-            <Trans>open, assigned</Trans>
-          </span>
-        }
-        value={num(assigned)}
-        wrapLabel
-      />
-    </Tiles>
-  )
-
-  const table = (
-    <div className="min-h-0 flex-1 overflow-auto px-4 pt-3 pb-6" data-testid="team-panel">
-      <div
-        className={cn(
-          GRID,
-          "sticky top-0 z-[2] hidden h-[34px] border-b bg-surface text-[11px] font-semibold tracking-[0.05em] text-faint uppercase @min-[640px]:grid"
-        )}
-        aria-hidden
-      >
-        <span>
-          <Trans>Person</Trans>
-        </span>
-        <span className={wideCol}>
-          <Trans>Products</Trans>
-        </span>
-        <span>
-          <Trans>open, assigned</Trans>
-        </span>
-        <span className={wideCol}>
-          <Trans>replies today</Trans>
-        </span>
-      </div>
-      {members.isPending ? (
-        <ListSkeleton />
-      ) : members.error && !members.data ? (
-        <LoadProblem error={members.error} onRetry={() => void members.refetch()} testId="team-error" />
-      ) : order.length === 0 ? (
-        <div className="mx-auto flex max-w-sm flex-col items-center gap-3 px-2 py-14 text-center">
-          <span className="grid size-12 place-items-center rounded-xl bg-brand-wash text-brand">
-            <UsersIcon className="size-5" aria-hidden />
-          </span>
-          <p className="text-body text-faint">
-            <Trans>Nobody on the team works on this product yet.</Trans>
-          </p>
-        </div>
-      ) : (
-        <>
-          <ErrorLine error={members.error} className="py-2" />
-          <ul className="flex flex-col" data-testid="team-members">
-            {order.map((m) => (
-              <MemberRow
-                key={m.id}
-                m={m}
-                load={load.get(m.id) ?? 0}
-                peak={peak}
-                replies={stats?.members.find((x) => x.member_id === m.id)?.replies}
-                current={m.id === current?.id}
-                products={where(m)}
-              />
-            ))}
-          </ul>
-        </>
-      )}
-      <p className="mx-3 mt-3.5 text-caption text-faint">
-        <Trans>
-          Owners and admins see every inbox; agents see the inboxes they were given. Only owners and admins can invite,
-          change roles or remove members.
-        </Trans>
-      </p>
-    </div>
-  )
-
-  const detail = current ? (
-    <MemberDetail key={current.id} member={current} load={load.get(current.id) ?? 0} products={where(current)} />
-  ) : missing ? (
-    <p className="p-5 text-body text-muted-foreground">
-      <Trans>This member is not in the workspace any more.</Trans>
-    </p>
-  ) : members.isPending ? (
-    <Skeleton className="m-5 h-40 rounded-xl" />
-  ) : null
-
-  return (
-    <main
-      ref={frame}
-      className="@container flex h-svh min-h-0 min-w-0 flex-1 flex-col bg-surface max-md:h-[calc(100svh-49px)] phone:h-auto"
-      data-testid="team-home"
-    >
-      <PageTop
-        title={<Trans>Team</Trans>}
-        sub={<Trans>Who answers, where, and who is online</Trans>}
-        actions={
-          canManage && (
-            <Button className={look.btnInk} onClick={() => setInviting(true)} data-testid="team-invite-open">
-              <Trans>Invite</Trans>
-            </Button>
-          )
-        }
-        tabs={
-          canManage && (
-            <FrameTabs
-              label={t`Team`}
-              value={tabKey}
-              items={[
-                { key: "members", to: "/team", label: <Trans>Members</Trans>, testId: "team-tab-members" },
-                {
-                  key: "invites",
-                  to: "/team/invites",
-                  label: <Trans>Invites</Trans>,
-                  count: invites.data?.length,
-                  testId: "team-tab-invites",
-                },
-              ]}
-            />
-          )
-        }
-      />
-      {tabKey === "invites" ? (
-        <InvitesTab invites={invites} onInvite={() => setInviting(true)} />
-      ) : single ? (
-        memberId ? (
-          <div className="flex min-h-0 flex-1 flex-col">
-            <PageBackLink
-              to="/team"
-              label={t`Team`}
-              className="inline-flex w-fit items-center gap-1.5 px-4 pt-3 text-body text-faint hover:text-foreground"
-            />
-            <div className="min-h-0 flex-1 overflow-y-auto">{detail}</div>
-          </div>
-        ) : (
-          <div className="flex min-h-0 flex-1 flex-col">
-            {tiles}
-            {table}
-          </div>
-        )
-      ) : (
-        <div className="flex min-h-0 flex-1">
-          <section className="flex min-h-0 min-w-0 flex-1 flex-col" aria-label={t`Team`}>
-            {tiles}
-            {table}
-          </section>
-          <aside
-            className="flex min-h-0 w-[440px] shrink-0 flex-col overflow-y-auto border-s bg-card @max-[1240px]:w-[380px]"
-            aria-label={t`Member`}
-          >
-            {detail}
-          </aside>
-        </div>
-      )}
-      {canManage && <InviteDialog open={inviting} onOpenChange={setInviting} />}
-    </main>
-  )
-}
-
-const FLAT_GRID =
-  "grid grid-cols-[minmax(0,1fr)_88px] items-center gap-x-3.5 @min-[620px]/team:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_88px_88px]"
-const flatWide = "hidden @min-[620px]/team:flex"
-
-function FlatMemberRow({
+function MemberRow({
   m,
   load,
-  peak,
   replies,
   cursor,
   products,
+  onOpen,
 }: {
   m: Member
   load: number
-  peak: number
   replies: number | undefined
   cursor: boolean
-  products: { id: string; name: string; color?: string }[]
+  products: Product[]
+  onOpen: () => void
 }) {
   const { t, i18n } = useLingui()
   const status = useMemberStatus()
   const { membership } = useSession()
-  const text = useEnumText()
   const fmt = new Intl.NumberFormat(i18n.locale)
   const name = m.name || m.email
   const s = status(m)
+  const presence = presenceOf(m)
   return (
-    <li data-testid="team-member" data-row-id={m.id}>
-      <ListRow
-        to={`/team/${m.id}`}
-        className={cn(FLAT_GRID, cursor && "bg-subtle shadow-[inset_2px_0_0_var(--brand)]")}
-      >
-        <span className="flex min-w-0 items-center gap-3">
-          <PresenceFace m={m} className="size-8 text-[11px]" />
+    <TableRow
+      onClick={onOpen}
+      className={cn(
+        "cursor-pointer border-line-soft hover:bg-subtle",
+        cursor && "bg-subtle [&>td:first-child]:shadow-[inset_2px_0_0_var(--brand)]"
+      )}
+      data-testid="team-member"
+      data-row-id={m.id}
+    >
+      <TableCell className="min-w-0 overflow-hidden px-4 py-2.5">
+        <Link
+          to={`/team/${m.id}`}
+          onClick={(e) => e.stopPropagation()}
+          className="flex min-w-0 items-center gap-3 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <PresenceFace m={m} />
           <span className="flex min-w-0 flex-col leading-5">
-            <span className="flex min-w-0 items-center gap-1.5">
-              <span className="truncate font-medium text-foreground">
-                {m.id === membership.member_id ? t`${name} (you)` : name}
-              </span>
-              <FlatTag>{text.role[m.role]}</FlatTag>
+            <span className="truncate font-medium text-foreground">
+              {m.id === membership.member_id ? t`${name} (you)` : name}
             </span>
-            <span className={cn("truncate text-small text-muted-foreground", s.conversationId && "text-ok")}>
-              {s.text}
-            </span>
+            <bdi className="truncate text-small text-muted-foreground">{m.email}</bdi>
           </span>
+        </Link>
+      </TableCell>
+      <TableCell className="px-3 py-2.5 @max-md/list:hidden">
+        <RoleBadge role={m.role} />
+      </TableCell>
+      <TableCell className="px-3 py-2.5 @max-xl/list:hidden">
+        <span
+          className={cn(
+            "flex min-w-0 items-center gap-1.5 text-small",
+            s.conversationId ? "text-ok" : "text-muted-foreground"
+          )}
+        >
+          <span
+            aria-hidden
+            className={cn(
+              "size-[7px] shrink-0 rounded-full",
+              presence === "here" ? "bg-success" : presence === "away" ? "bg-warning" : "bg-faint/60"
+            )}
+          />
+          <span className="truncate">{s.text}</span>
         </span>
-        <span className={cn(flatWide, "min-w-0 flex-wrap gap-x-2.5 gap-y-1 overflow-hidden")}>
+      </TableCell>
+      <TableCell className="px-3 py-2.5 @max-3xl/list:hidden">
+        <span className="flex min-w-0 items-center gap-2.5 overflow-hidden">
           {products.slice(0, 3).map((p) => (
             <span key={p.id} className="inline-flex min-w-0 items-center gap-[5px] text-small text-muted-foreground">
               <Dot color={p.color} className="size-[7px] rounded-full" />
               <span className="truncate">{p.name}</span>
             </span>
           ))}
+          {products.length > 3 && <span className="text-small text-faint">+{products.length - 3}</span>}
         </span>
-        <span
-          className={cn("flex items-center justify-end gap-2 font-mono text-xs tabular-nums", !load && "text-muted2")}
-          data-testid="team-load"
-        >
-          <span
-            className="hidden h-1 max-w-10 flex-1 overflow-hidden rounded-full bg-line-soft @min-[620px]/team:block"
-            aria-hidden
-          >
-            <i
-              className="block h-full rounded-full bg-brand"
-              style={{ width: `${peak ? Math.round((load / peak) * 100) : 0}%` }}
-            />
-          </span>
-          {fmt.format(load)}
-        </span>
-        <span className={cn(flatWide, "justify-end font-mono text-xs text-muted-foreground tabular-nums")}>
-          {replies === undefined ? "–" : fmt.format(replies)}
-        </span>
-      </ListRow>
-    </li>
+      </TableCell>
+      <TableCell
+        className={cn("px-3 py-2.5 text-end tabular-nums", !load && "text-muted-foreground")}
+        data-testid="team-load"
+      >
+        {fmt.format(load)}
+      </TableCell>
+      <TableCell className="px-3 py-2.5 pe-4 text-end text-muted-foreground tabular-nums @max-md/list:hidden">
+        {replies === undefined ? "–" : fmt.format(replies)}
+      </TableCell>
+    </TableRow>
   )
 }
 
-function TeamTrail({ view, name }: { view: string; name?: string }) {
-  const { t } = useLingui()
-  const [inboxId] = useInboxFilter()
-  const product = useInboxes().data?.find((i) => i.id === inboxId)?.name
+function MembersList({ team }: { team: ReturnType<typeof useTeam> }) {
+  const navigate = useNavigate()
+  const { members, stats, load, where, order } = team
+  const listRef = useRef<HTMLDivElement>(null)
+  const { cursorId } = useListCursor(order, null, (id) => navigate(`/team/${id}`), true, listRef, true, true)
+  return (
+    <div ref={listRef}>
+      <ListBox testId="team-panel">
+        {members.isPending ? (
+          <ListBoxSkeleton rows={3} />
+        ) : members.error && !members.data ? (
+          <LoadProblem error={members.error} onRetry={() => void members.refetch()} testId="team-error" />
+        ) : order.length === 0 ? (
+          <ListBoxEmpty>
+            <Trans>Nobody on the team works on this product yet.</Trans>
+          </ListBoxEmpty>
+        ) : (
+          <Table className="table-fixed text-body" data-testid="team-members">
+            <TableHeader>
+              <TableRow className="border-line-soft hover:bg-transparent">
+                <TableHead className={cn(head, "ps-4")}>
+                  <Trans>Member</Trans>
+                </TableHead>
+                <TableHead className={cn(head, "w-24 @max-md/list:hidden")}>
+                  <Trans>Role</Trans>
+                </TableHead>
+                <TableHead className={cn(head, "w-[22%] @max-xl/list:hidden")}>
+                  <Trans>Status</Trans>
+                </TableHead>
+                <TableHead className={cn(head, "w-[22%] @max-3xl/list:hidden")}>
+                  <Trans>Products</Trans>
+                </TableHead>
+                <TableHead
+                  className={cn(
+                    head,
+                    "w-32 text-end leading-tight whitespace-normal first-letter:uppercase @max-md/list:w-24"
+                  )}
+                >
+                  <Trans>open, assigned</Trans>
+                </TableHead>
+                <TableHead
+                  className={cn(
+                    head,
+                    "w-32 pe-4 text-end leading-tight whitespace-normal first-letter:uppercase @max-md/list:hidden"
+                  )}
+                >
+                  <Trans>replies today</Trans>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {order.map((m) => (
+                <MemberRow
+                  key={m.id}
+                  m={m}
+                  load={load.get(m.id) ?? 0}
+                  replies={stats?.members.find((x) => x.member_id === m.id)?.replies}
+                  cursor={m.id === cursorId}
+                  products={where(m)}
+                  onOpen={() => navigate(`/team/${m.id}`)}
+                />
+              ))}
+            </TableBody>
+          </Table>
+        )}
+      </ListBox>
+      <ErrorLine error={members.data ? members.error : null} className="py-2" />
+      <p className="m-0 mt-3 max-w-[720px] text-caption text-muted-foreground">
+        <Trans>
+          Owners and admins see every inbox; agents see the inboxes they were given. Only owners and admins can invite,
+          change roles or remove members.
+        </Trans>
+      </p>
+      <KeyHints
+        items={[
+          [[SHORTCUTS.next, SHORTCUTS.previous], <Trans key="move">move</Trans>],
+          [
+            ["↵"],
+            <Trans key="open" context="keyboard hint">
+              open
+            </Trans>,
+          ],
+        ]}
+      />
+    </div>
+  )
+}
+
+function InvitesList() {
+  const { canManage } = useSession()
+  const invites = useInvites(canManage)
   return (
     <>
-      <span className="font-medium text-foreground">{t`Team`}</span>
-      <TopSep />
-      <span className="truncate">{view}</span>
-      <TopSep />
-      <span className="truncate normal-case">{name ?? product ?? t`All products`}</span>
+      <ListBox testId="invites">
+        {invites.isPending ? (
+          <ListBoxSkeleton rows={2} />
+        ) : invites.error && !invites.data ? (
+          <LoadProblem error={invites.error} onRetry={() => void invites.refetch()} testId="invites-error" />
+        ) : invites.data?.length === 0 ? (
+          <ListBoxEmpty>
+            <Trans>No pending invites.</Trans>
+          </ListBoxEmpty>
+        ) : (
+          <Table className="table-fixed text-body">
+            <TableHeader>
+              <TableRow className="border-line-soft hover:bg-transparent">
+                <TableHead className={cn(head, "ps-4")}>
+                  <Trans>E-mail</Trans>
+                </TableHead>
+                <TableHead className={cn(head, "w-24 @max-md/list:hidden")}>
+                  <Trans>Role</Trans>
+                </TableHead>
+                <TableHead className={cn(head, "w-28 @max-3xl/list:hidden")}>
+                  <Trans>Sent</Trans>
+                </TableHead>
+                <TableHead className={cn(head, "w-24 @max-xl/list:hidden")}>
+                  <Trans>Status</Trans>
+                </TableHead>
+                <TableHead className={cn(head, "w-60 pe-4 @max-md/list:w-40")}>
+                  <span className="sr-only">
+                    <Trans>Actions</Trans>
+                  </span>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {(invites.data ?? []).map((inv) => (
+                <InviteRow key={inv.id} invite={inv} />
+              ))}
+            </TableBody>
+          </Table>
+        )}
+      </ListBox>
+      <ErrorLine error={invites.data ? invites.error : null} className="py-2" />
+      <p className="m-0 mt-3 max-w-[720px] text-caption text-muted-foreground">
+        <Trans>
+          An invite is accepted when the person signs in with a code sent to that address. It expires after 7 days.
+        </Trans>
+      </p>
     </>
   )
 }
 
-function FlatTeam({ tab }: { tab: "members" | "invites" }) {
+function MemberAside({ m, load }: { m: Member; load: number }) {
   const { t, i18n } = useLingui()
-  const navigate = useNavigate()
   const text = useEnumText()
   const status = useMemberStatus()
-  const { canManage, membership } = useSession()
-  const team = useTeam(tab)
-  const { memberId, members, stats, inviting, setInviting, invites, load, where, order, peak } = team
-  const { available, total, unassigned, assigned, num, tabKey } = team
-  const listRef = useRef<HTMLUListElement>(null)
-  const current = memberId ? order.find((m) => m.id === memberId) : undefined
-  const missing = !!memberId && members.data !== undefined && !current
-  const detail = !!memberId
-  const { cursorId } = useListCursor(
-    order,
-    null,
-    (id) => navigate(`/team/${id}`),
-    !detail && tabKey === "members" && !inviting,
-    listRef,
-    true,
-    true
-  )
-  const step = (d: 1 | -1) => {
-    const at = order.findIndex((m) => m.id === memberId)
-    const next = order[at + d]
-    if (at >= 0 && next) navigate(`/team/${next.id}`)
-  }
-  useHotkeys(
-    { Escape: () => navigate("/team"), [SHORTCUTS.next]: () => step(1), [SHORTCUTS.previous]: () => step(-1) },
-    detail
-  )
+  const [inboxId] = useInboxFilter()
+  const today = useStats(inboxId).data?.members.find((x) => x.member_id === m.id)
   const fmt = new Intl.NumberFormat(i18n.locale)
-  const presence = (p: Presence) => order.filter((m) => presenceOf(m) === p).length
-  const names = { members: t`Members`, invites: t`Invites` }
-  const today = current ? stats?.members.find((x) => x.member_id === current.id) : undefined
-  const aside = current ? (
+  return (
     <>
-      <InfoSection title={current.name || current.email} testId="member-info">
-        <KV label={t`Role`} value={text.role[current.role]} />
-        <KV label={t`Status`} value={status(current).text} tone={presenceOf(current) === "here" ? "ok" : undefined} />
+      <InfoSection title={m.name || m.email} testId="member-info">
+        <KV label={t`Role`} value={text.role[m.role]} />
+        <KV label={t`Status`} value={status(m).text} tone={presenceOf(m) === "here" ? "ok" : undefined} />
       </InfoSection>
       <InfoSection title={t`Today`} testId="member-tiles">
-        <KV
-          label={<span className="first-letter:uppercase">{t`open, assigned`}</span>}
-          value={fmt.format(load.get(current.id) ?? 0)}
-        />
+        <KV label={<span className="first-letter:uppercase">{t`open, assigned`}</span>} value={fmt.format(load)} />
         <KV
           label={<span className="first-letter:uppercase">{t`replies today`}</span>}
           value={today ? fmt.format(today.replies) : "–"}
@@ -1211,187 +858,115 @@ function FlatTeam({ tab }: { tab: "members" | "invites" }) {
         />
       </InfoSection>
     </>
-  ) : (
-    <>
-      <InfoSection title={t`Right now`} testId="team-summary">
-        <KV
-          label={<span className="first-letter:uppercase">{t`available now`}</span>}
-          value={members.data ? t`${available} of ${total}` : "–"}
-          tone="ok"
-        />
-        <KV label={t`Away`} value={fmt.format(presence("away"))} />
-        <KV label={t`Offline`} value={fmt.format(presence("offline"))} />
-      </InfoSection>
-      <InfoSection title={t`Conversations`}>
-        <KV
-          label={<span className="first-letter:uppercase">{t`open, unassigned`}</span>}
-          value={num(unassigned)}
-          tone={unassigned ? "brand" : undefined}
-        />
-        <KV label={<span className="first-letter:uppercase">{t`open, assigned`}</span>} value={num(assigned)} />
-        <Link
-          to="/conversations"
-          onClick={() => rememberChip("unassigned")}
-          className="mt-1 inline-block rounded-sm text-small text-fg2 underline-offset-4 outline-none hover:text-foreground hover:underline focus-visible:ring-2 focus-visible:ring-ring"
-          data-testid="team-queue"
-        >
-          <Trans>Open the unassigned queue</Trans>
-        </Link>
-      </InfoSection>
-      <InfoSection title={t`Role`}>
-        <p className="m-0 text-small leading-5 text-muted-foreground">
-          <Trans>
-            Owners and admins see every inbox; agents see the inboxes they were given. Only owners and admins can
-            invite, change roles or remove members.
-          </Trans>
-        </p>
-      </InfoSection>
-    </>
   )
-  return (
-    <SectionPage title={t`Team`} aside={aside} testId="team-home">
-      <PageTopLine
-        back={detail ? { label: names.members, to: "/team" } : undefined}
-        actions={
-          canManage && (
-            <Button className={topInk} onClick={() => setInviting(true)} data-testid="team-invite-open">
-              <Trans>Invite</Trans>
-            </Button>
+}
+
+export function TeamPage({ tab = "members" }: { tab?: "members" | "invites" }) {
+  const { t, i18n } = useLingui()
+  const navigate = useNavigate()
+  const { memberId } = useParams()
+  const { canManage, membership } = useSession()
+  const team = useTeam()
+  const [email, setEmail] = useState("")
+  const { members, load, where, order, available, total, unassigned } = team
+  const current = memberId ? order.find((m) => m.id === memberId) : undefined
+  const missing = !!memberId && members.data !== undefined && !current
+  const view = canManage ? tab : "members"
+  const step = (d: 1 | -1) => {
+    const at = order.findIndex((m) => m.id === memberId)
+    const next = order[at + d]
+    if (at >= 0 && next) navigate(`/team/${next.id}`)
+  }
+  useHotkeys(
+    { Escape: () => navigate("/team"), [SHORTCUTS.next]: () => step(1), [SHORTCUTS.previous]: () => step(-1) },
+    !!memberId
+  )
+
+  if (memberId) {
+    return (
+      <PageLayout
+        testId="team-home"
+        label={t`Team`}
+        aside={
+          current && (
+            <InfoColumn label={t`Details`}>
+              <MemberAside m={current} load={load.get(current.id) ?? 0} />
+            </InfoColumn>
           )
         }
       >
-        <TeamTrail view={names[tabKey]} name={current ? current.name || current.email : undefined} />
-      </PageTopLine>
-      <div className="@container/team flex max-w-[980px] min-w-0 flex-col" data-flat="">
-        {tabKey === "invites" ? (
-          <>
-            <div className="mt-3">
-              <PageHeading
-                title={names.invites}
-                lede={
-                  <Trans>
-                    An invite is accepted when the person signs in with a code sent to that address. It expires after 7
-                    days.
-                  </Trans>
-                }
-              />
-            </div>
-            <div className="mt-6">
-              {invites.isPending ? (
-                <Skeleton className="h-10 w-full" />
-              ) : invites.error && !invites.data ? (
-                <LoadProblem error={invites.error} onRetry={() => void invites.refetch()} testId="invites-error" />
-              ) : invites.data?.length === 0 ? (
-                <FlatEmpty testId="invites">
-                  <p className="m-0 font-semibold text-foreground">
-                    <Trans>No pending invites.</Trans>
-                  </p>
-                  <Button variant="outline" className={topButton} onClick={() => setInviting(true)}>
-                    <Trans>Invite a teammate</Trans>
-                  </Button>
-                </FlatEmpty>
-              ) : (
-                <>
-                  <ErrorLine error={invites.error} />
-                  <ul className="m-0 flex list-none flex-col border-t border-line-soft p-0" data-testid="invites">
-                    {(invites.data ?? []).map((inv) => (
-                      <InviteRow key={inv.id} invite={inv} />
-                    ))}
-                  </ul>
-                </>
-              )}
-            </div>
-          </>
-        ) : detail ? (
-          current ? (
-            <div className="max-w-[720px]">
-              <MemberDetail
-                key={current.id}
-                member={current}
-                load={load.get(current.id) ?? 0}
-                products={where(current)}
-                flat
-              />
-            </div>
+        <PageTop back={{ label: t`Members`, to: "/team" }} />
+        <div className="max-w-[720px]">
+          {current ? (
+            <MemberDetail key={current.id} member={current} products={where(current)} />
           ) : missing ? (
             <p className="mt-6 text-body text-muted-foreground">
               <Trans>This member is not in the workspace any more.</Trans>
             </p>
           ) : (
             <Skeleton className="mt-6 h-40 w-full" />
-          )
+          )}
+        </div>
+      </PageLayout>
+    )
+  }
+
+  const fmt = new Intl.NumberFormat(i18n.locale)
+  const queue = unassigned !== undefined && (
+    <>
+      {" · "}
+      <Link
+        to="/conversations"
+        onClick={() => rememberChip("unassigned")}
+        className="underline-offset-4 hover:text-foreground hover:underline"
+        data-testid="team-queue"
+      >
+        <Trans>{fmt.format(unassigned)} open, unassigned</Trans>
+      </Link>
+    </>
+  )
+
+  return (
+    <PageLayout testId="team-home" label={t`Team`}>
+      <section className="@container/list min-w-0" aria-label={view === "invites" ? t`Invites` : t`Members`}>
+        {view === "invites" ? (
+          <>
+            <PageTitle title={t`Invites`} sub={t`People asked to join who have not signed in yet`} testId="team-head" />
+            <InviteForm email={email} setEmail={setEmail} />
+            <InvitesList />
+          </>
         ) : (
           <>
-            <div className="mt-3">
-              <PageHeading
-                title={names.members}
-                lede={
-                  <span data-testid="team-lede">
-                    {members.data ? (
-                      <Trans>
-                        {available} of {total} available now
-                      </Trans>
-                    ) : (
-                      <Trans>Who answers, where, and who is online</Trans>
-                    )}
-                    {" · "}
-                    {membership.workspace.name}
-                  </span>
-                }
-              />
-            </div>
-            <div className="mt-7" data-testid="team-panel">
-              <div
-                className={cn(
-                  FLAT_GRID,
-                  "hidden px-1 pb-2 text-caption font-medium text-muted2 @min-[620px]/team:grid"
-                )}
-                aria-hidden
-              >
-                <span>
-                  <Trans>Person</Trans>
+            <PageTitle
+              title={t`Members`}
+              sub={
+                <span data-testid="team-lede">
+                  {members.data ? (
+                    <Trans>
+                      {available} of {total} available now
+                    </Trans>
+                  ) : (
+                    <Trans>Who answers, where, and who is online</Trans>
+                  )}
+                  {" · "}
+                  {membership.workspace.name}
+                  {queue}
                 </span>
-                <span>
-                  <Trans>Products</Trans>
-                </span>
-                <span className="text-end first-letter:uppercase">
-                  <Trans>open, assigned</Trans>
-                </span>
-                <span className="text-end first-letter:uppercase">
-                  <Trans>replies today</Trans>
-                </span>
-              </div>
-              {members.isPending ? (
-                <ListSkeleton />
-              ) : members.error && !members.data ? (
-                <LoadProblem error={members.error} onRetry={() => void members.refetch()} testId="team-error" />
-              ) : order.length === 0 ? (
-                <FlatEmpty>
-                  <Trans>Nobody on the team works on this product yet.</Trans>
-                </FlatEmpty>
-              ) : (
-                <>
-                  <ErrorLine error={members.error} className="py-2" />
-                  <ul ref={listRef} className="m-0 flex list-none flex-col p-0" data-testid="team-members">
-                    {order.map((m) => (
-                      <FlatMemberRow
-                        key={m.id}
-                        m={m}
-                        load={load.get(m.id) ?? 0}
-                        peak={peak}
-                        replies={stats?.members.find((x) => x.member_id === m.id)?.replies}
-                        cursor={m.id === cursorId}
-                        products={where(m)}
-                      />
-                    ))}
-                  </ul>
-                </>
-              )}
-            </div>
+              }
+              actions={
+                canManage && (
+                  <Button render={<Link to="/team/invites" />} data-testid="team-invite-open">
+                    <UserPlusIcon />
+                    <Trans>Invite a teammate</Trans>
+                  </Button>
+                )
+              }
+              testId="team-head"
+            />
+            <MembersList team={team} />
           </>
         )}
-      </div>
-      {canManage && <InviteDialog open={inviting} onOpenChange={setInviting} />}
-    </SectionPage>
+      </section>
+    </PageLayout>
   )
 }

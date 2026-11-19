@@ -53,6 +53,11 @@ msgstr "(無主題)"
 msgid "{0, plural, one {{name} · # waiting} other {{name} · # waiting}}"
 msgstr "{0, plural, one {{name} · # 個等待中} other {{name} · # 個等待中}}"
 
+#. placeholder {0}: items.length
+#: src/features/contact/ContactsPage.tsx
+msgid "{0, plural, one {{shown} person} other {{shown} people}}"
+msgstr "{0, plural, other {{shown} 人}}"
+
 #. placeholder {0}: msg.attachments
 #: src/features/migrations/ReviewStep.tsx
 msgid "{0, plural, one {# attachment} other {# attachments}}"
@@ -97,6 +102,16 @@ msgstr "{0, plural, one {# hour after someone confirms {list}} other {# hours af
 msgid "{0, plural, one {# hour after someone starts to match {match}} other {# hours after someone starts to match {match}}}"
 msgstr "{0, plural, one {# hour after someone starts to match {match}} other {# hours after someone starts to match {match}}}"
 
+#. placeholder {0}: team.inbox_ids.length
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "{0, plural, one {# inbox} other {# inboxes}}"
+msgstr "{0, plural, other {# 個收件匣}}"
+
+#. placeholder {0}: team.member_ids.length
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "{0, plural, one {# member} other {# members}}"
+msgstr "{0, plural, other {# 位成員}}"
+
 #. placeholder {0}: items.length
 #: src/features/inbox/SidePanels.tsx
 msgid "{0, plural, one {# mention} other {# mentions}}"
@@ -106,11 +121,6 @@ msgstr "{0, plural, other {# 則提及}}"
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "{0, plural, one {# of them gets it because their language has no version} other {# of them get it because their language has no version}}"
 msgstr "{0, plural, other {其中 # 人因其語言沒有對應版本而收到此版本}}"
-
-#. placeholder {0}: c.activity.open_conversations
-#: src/features/contact/ContactsColumn.tsx
-msgid "{0, plural, one {# open} other {# open}}"
-msgstr "{0, plural, other {# 個未關閉}}"
 
 #. placeholder {0}: p.unanswered_threads
 #: src/features/home/HomeWork.tsx
@@ -146,11 +156,6 @@ msgstr "{0, plural, other {收件人}}"
 #: src/features/settings/slack/SlackPage.tsx
 msgid "{0} (private)"
 msgstr "{0} (private)"
-
-#. placeholder {0}: fmt.format(s.members.length)
-#: src/features/reports/ReportPages.tsx
-msgid "{0} active today"
-msgstr "今日活躍 {0}"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
@@ -199,11 +204,10 @@ msgstr "已將 {0} 項移到垃圾箱"
 msgid "{0} of {1}"
 msgstr "{0} / {1}"
 
-#. placeholder {0}: fmt.format(s.replies)
-#. placeholder {1}: fmt.format(s.closed)
-#: src/features/reports/ReportPages.tsx
-msgid "{0} replies · {1} closed"
-msgstr "{0} 條回覆 · {1} 個已關閉"
+#. placeholder {0}: fmt.format(unassigned)
+#: src/features/team/TeamPage.tsx
+msgid "{0} open, unassigned"
+msgstr "未指派的進行中 {0} 個"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
@@ -330,10 +334,6 @@ msgstr "{author}代表{ownerName}"
 #: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
 msgstr "{author},傳送者 {by}"
-
-#: src/features/team/TeamPage.tsx
-msgid "{available} of {total}"
-msgstr "{available} / {total}"
 
 #: src/features/team/TeamPage.tsx
 msgid "{available} of {total} available now"
@@ -921,10 +921,6 @@ msgstr "{open} 個未結"
 msgid "{out, plural, one {# row is left out} other {# rows are left out}}"
 msgstr "{out, plural, other {排除 # 行}}"
 
-#: src/features/reports/ReportPages.tsx
-msgid "{pct} satisfied"
-msgstr "滿意 {pct}"
-
 #: src/features/docs/PagesTab.tsx
 msgid "{pending} posts waiting for approval"
 msgstr "{pending} 篇帖子等待稽覈"
@@ -1083,10 +1079,6 @@ msgstr "{replies} 條回覆"
 #: src/features/contact/ContactVisits.tsx
 msgid "{rest, plural, one {and # more page} other {and # more pages}}"
 msgstr "{rest, plural, other {另有 # 個頁面}}"
-
-#: src/features/team/TeamPage.tsx
-msgid "{role} · {language} · sent {sent} · expires {expires}"
-msgstr "{role} · {language} · 寄出於 {sent} · 到期於 {expires}"
 
 #: src/features/broadcasts/Import.tsx
 msgid "{rows} rows, read as {encoding}, separated by {delimiter}."
@@ -1890,8 +1882,8 @@ msgid "A subscription changed"
 msgstr "訂閱發生變化時"
 
 #: src/features/settings/teams/TeamsPage.tsx
-msgid "A team gives its members the inboxes it covers. A conversation can go to a team as well as to a member."
-msgstr "團隊會把它負責的收件匣授予成員。對話既可以指派給成員，也可以指派給團隊。"
+msgid "A team gives its members the inboxes it covers"
+msgstr "團隊把其負責的收件匣交給成員"
 
 #: src/components/common/text.ts
 msgid "A team holds at most 500 members and 100 inboxes."
@@ -2041,6 +2033,8 @@ msgid "ACS URL"
 msgstr "ACS URL"
 
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Actions"
 msgstr "動作"
 
@@ -2492,7 +2486,6 @@ msgstr "Alertmanager"
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactDetails.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -2576,7 +2569,7 @@ msgstr "其中的所有對話、訊息和附件將一併刪除。此操作無法
 msgid "All parts arrived. Reading the file…"
 msgstr "所有部分都已到達。正在讀取檔案…"
 
-#: src/app/places.tsx
+#: src/features/contact/ContactsPage.tsx
 msgid "All people"
 msgstr "所有人"
 
@@ -2586,7 +2579,6 @@ msgstr "所有產品"
 
 #: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
@@ -2596,7 +2588,6 @@ msgstr "所有產品"
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/status/StatusFrame.tsx
-#: src/features/team/TeamPage.tsx
 msgid "All products"
 msgstr "所有產品"
 
@@ -3135,10 +3126,15 @@ msgstr "任何標籤"
 msgid "Any of the labels you pick."
 msgstr "所選標籤中的任意一個。"
 
+#: src/features/contact/ContactsPage.tsx
+msgid "Any plan"
+msgstr "任何方案"
+
 #: src/features/inbox/SourceFilter.tsx
 msgid "Any state"
 msgstr "任何狀態"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Any status"
 msgstr "任何狀態"
@@ -3642,6 +3638,7 @@ msgstr "自動"
 
 #: src/components/common/AssignmentFields.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Automatic assignment"
 msgstr "自動指派"
 
@@ -3659,10 +3656,6 @@ msgstr "自動化"
 msgid "Available"
 msgstr "可用"
 
-#: src/features/team/TeamPage.tsx
-msgid "available now"
-msgstr "現已可用"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Available until {until}"
 msgstr "可用至 {until}"
@@ -3671,7 +3664,6 @@ msgstr "可用至 {until}"
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/home/HomePage.tsx
-#: src/features/team/TeamPage.tsx
 msgid "Away"
 msgstr "離開"
 
@@ -3809,7 +3801,7 @@ msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignore
 msgstr "1 到 500，在整個工作區內計算。手動指派不受限制。留空表示不設上限。"
 
 #: src/features/settings/labels/LabelDialog.tsx
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 msgid "Billing"
 msgstr "帳單"
 
@@ -4055,10 +4047,6 @@ msgstr "依群組"
 msgid "By language"
 msgstr "依語言"
 
-#: src/features/reports/ReportPages.tsx
-msgid "By member"
-msgstr "按成員"
-
 #: src/features/conversation/messages/Thread.tsx
 msgid "by rule {rule}"
 msgstr "由規則 {rule}"
@@ -4078,6 +4066,7 @@ msgstr "活動名稱"
 
 #: src/app/Palette.tsx
 #: src/components/common/ConfirmDialog.tsx
+#: src/components/common/FormCard.tsx
 #: src/components/common/Linked.tsx
 #: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
@@ -4094,7 +4083,6 @@ msgstr "活動名稱"
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/contact/DeleteContactDialog.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
@@ -4112,6 +4100,7 @@ msgstr "活動名稱"
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/NewsletterStep.tsx
 #: src/features/status/AddSubscriberDialog.tsx
@@ -4621,6 +4610,7 @@ msgstr "claude.ai 和 Claude Desktop"
 
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Clear"
 msgstr "清除"
 
@@ -4638,7 +4628,6 @@ msgstr "清除回答"
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
@@ -4709,6 +4698,7 @@ msgstr "時鐘將於 {date} 調整；寄送時段仍為當地時間 {start}–{e
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/migrations/Wizard.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
 msgstr "關閉"
@@ -4872,6 +4862,10 @@ msgstr "逗號"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Common choices"
 msgstr "常用選擇"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Company"
+msgstr "公司"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Comparison of condition {n}"
@@ -5216,9 +5210,6 @@ msgstr "自 {since} 起的聯絡人"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/contact/ContactPage.tsx
-#: src/features/contact/ContactsColumn.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Contacts"
@@ -5319,6 +5310,7 @@ msgstr "對話"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/contact/MergePreview.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/docs/PagesTab.tsx
@@ -5329,7 +5321,6 @@ msgstr "對話"
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/webhooks/events.tsx
-#: src/features/team/TeamPage.tsx
 msgid "Conversations"
 msgstr "對話"
 
@@ -5512,10 +5503,6 @@ msgstr "counted so far"
 msgid "Counting…"
 msgstr "正在計算…"
 
-#: src/features/contact/ContactsPage.tsx
-msgid "Country"
-msgstr "國家/地區"
-
 #: src/features/broadcasts/Trigger.tsx
 msgid "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
 msgstr "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
@@ -5635,7 +5622,7 @@ msgstr "建立狀態頁（{newKey}）"
 msgid "Create status page for {product}"
 msgstr "為 {product} 建立狀態頁"
 
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 msgid "Create team"
 msgstr "建立團隊"
 
@@ -5759,6 +5746,10 @@ msgstr "自訂欄位"
 #: src/features/settings/SettingsFrame.tsx
 msgid "Custom fields"
 msgstr "自訂欄位"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Customers"
+msgstr "客戶"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Customers cannot see this yet. Tell them with an incident."
@@ -5938,6 +5929,10 @@ msgstr "刪除 ({removeKey})"
 #: src/features/status/SettingsTab.tsx
 msgid "Delete {0}?"
 msgstr "刪除 {0}?"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Delete {name}"
+msgstr "刪除 {name}"
 
 #: src/features/contact/DeleteContactDialog.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
@@ -6292,7 +6287,7 @@ msgid "Deny"
 msgstr "拒絕"
 
 #: src/features/issues/IssueDialog.tsx
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
@@ -6349,6 +6344,7 @@ msgstr "瀏覽器設定中已遮蔽此站點的桌面通知,因此只會播放�
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Details"
 msgstr "詳情"
 
@@ -6787,6 +6783,7 @@ msgstr "重複項目"
 #: src/features/settings/notifications/EventsSection.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/setup/ChannelStep.tsx
+#: src/features/team/TeamPage.tsx
 msgid "E-mail"
 msgstr "電子郵件"
 
@@ -6910,8 +6907,8 @@ msgid "Each person is checked once, when their mail is due: someone who left, bo
 msgstr "Each person is checked once, when their mail is due: someone who left, bounced or no longer matches gets nothing."
 
 #: src/features/reports/ReportPages.tsx
-msgid "Each person’s replies, closes and ratings."
-msgstr "每個人的回覆、關閉數和評分。"
+msgid "Each person’s replies, closes and ratings"
+msgstr "每個人的回覆、關閉和評分"
 
 #: src/features/settings/ProductsPage.tsx
 msgid "Each product has its own name, branding, hours, team and channels"
@@ -6958,6 +6955,10 @@ msgstr "編輯 ({editKey})"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Edit {keyName}"
 msgstr "編輯 {keyName}"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Edit {name}"
+msgstr "編輯 {name}"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 msgid "Edit API key"
@@ -7016,7 +7017,7 @@ msgstr "編輯政策"
 msgid "Edit rule"
 msgstr "編輯規則"
 
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 msgid "Edit team"
 msgstr "編輯團隊"
 
@@ -7374,7 +7375,6 @@ msgstr "此檔案中的每個人都同意從 {inboxName} 接收 {listName},並�
 msgid "Everyone on the lists. Conditions keep only contacts whose attributes match, all of them."
 msgstr "列表中的所有人。設定條件後,只保留屬性符合全部條件的聯絡人。"
 
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Everyone who has written to your products"
 msgstr "所有聯絡過你的產品的人"
@@ -7617,6 +7617,7 @@ msgid "Feedback, {feedback} open"
 msgstr "意見回饋，{feedback} 則未解決"
 
 #: src/components/common/AssignmentFields.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Fewest open conversations"
 msgstr "未結對話最少"
 
@@ -7678,8 +7679,16 @@ msgid "Filter by label"
 msgstr "依標籤篩選"
 
 #: src/features/contact/ContactsPage.tsx
+msgid "Filter by plan"
+msgstr "依方案篩選"
+
+#: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "依產品篩選"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Filter by state"
+msgstr "依狀態篩選"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Filter by team"
@@ -8389,7 +8398,6 @@ msgstr "有附件"
 msgid "Has an attachment"
 msgstr "有附件"
 
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Has an open conversation"
 msgstr "有未關閉的對話"
@@ -9055,7 +9063,8 @@ msgctxt "mail folder"
 msgid "Inbox"
 msgstr "收件匣"
 
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Inbox access"
 msgstr "收件匣存取權限"
 
@@ -9079,7 +9088,6 @@ msgstr "{name} 的收件匣"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
-#: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
 msgstr "收件匣"
 
@@ -9169,16 +9177,12 @@ msgid "Investigating"
 msgstr "調查中"
 
 #: src/features/team/TeamPage.tsx
-msgid "Invite"
-msgstr "邀請"
-
-#: src/features/team/TeamPage.tsx
 msgid "Invite a teammate"
 msgstr "邀請隊友"
 
 #: src/features/team/TeamPage.tsx
-msgid "Invite language"
-msgstr "邀請語言"
+msgid "Invite sent to {sent}."
+msgstr "已向 {sent} 寄出邀請。"
 
 #: src/features/setup/WaitStep.tsx
 msgid "Invite your team"
@@ -9564,10 +9568,6 @@ msgstr "關鍵字"
 #: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "類型"
-
-#: src/features/contact/ContactsColumn.tsx
-msgid "Known"
-msgstr "已知"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Known only from the receiving server’s results of the test mail."
@@ -10133,7 +10133,6 @@ msgstr "載入圖片"
 #: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactNotes.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -10679,9 +10678,10 @@ msgstr "成員"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/features/inbox/AssistantsPage.tsx
+#: src/features/reports/ReportPages.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
@@ -10757,6 +10757,10 @@ msgstr "與另一位聯絡人合併"
 #: src/features/contact/ContactsPage.tsx
 msgid "Merge…"
 msgstr "合併…"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Merging keeps the left one and moves addresses, ids and conversations into it. Nothing is merged until you have seen what changes."
+msgstr "合併會保留左邊的聯絡人，並把地址、ID 和對話移到它名下。在你看到會變更什麼之前不會合併任何內容。"
 
 #: src/features/mail/Compose.tsx
 #: src/features/setup/previews.tsx
@@ -11019,12 +11023,18 @@ msgstr "每位成員的未結對話上限"
 msgid "Most ratings, open feedback, open discussions and waiting posts first"
 msgstr "評分最多、待處理反饋、未關閉討論和等待稽覈的帖子最多的在前"
 
+#: src/features/contact/ContactsPage.tsx
+msgid "Most recently seen first"
+msgstr "最近出現的在前"
+
 #: src/features/docs/DocsPage.tsx
 msgid "Most votes"
 msgstr "票數最多"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/team/TeamPage.tsx
 msgid "move"
 msgstr "移動"
 
@@ -11284,7 +11294,7 @@ msgstr "我的檢視"
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
@@ -11326,10 +11336,6 @@ msgstr "新收件匣的名稱"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Name, colour and the first thing the chat says"
 msgstr "名稱、顏色，以及聊天說的第一句話"
-
-#: src/features/contact/ContactsColumn.tsx
-msgid "Name, e-mail or id"
-msgstr "名稱、電子郵件或 ID"
 
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
@@ -11648,7 +11654,7 @@ msgstr "新增狀態頁"
 msgid "New subscribers added"
 msgstr "新增的訂閱者"
 
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "New team"
 msgstr "新團隊"
@@ -11911,12 +11917,10 @@ msgstr "無需確認"
 msgid "No connected apps"
 msgstr "沒有已連線的應用程式"
 
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "No contact matches “{query}”."
 msgstr "沒有聯絡人匹配「{query}」。"
 
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "No contacts in this view."
 msgstr "此檢視中沒有聯絡人。"
@@ -11925,7 +11929,6 @@ msgstr "此檢視中沒有聯絡人。"
 msgid "No contacts look alike right now."
 msgstr "目前沒有相似的聯絡人。"
 
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "No contacts yet. They appear when someone writes in."
 msgstr "還沒有聯絡人。有人來信時會出現在這裡。"
@@ -12242,10 +12245,6 @@ msgstr "此期間沒有評價"
 #: src/features/docs/PagesTab.tsx
 msgid "No ratings in this window."
 msgstr "此時間段內沒有評分。"
-
-#: src/features/reports/ReportPages.tsx
-msgid "No ratings today"
-msgstr "今天沒有評分"
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -12958,6 +12957,7 @@ msgstr "關閉"
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/sla/SlaPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/webhooks/parts.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Off"
@@ -12998,7 +12998,6 @@ msgstr "會在訂閱表單和偏好設定頁面中提供。私有列表由團隊
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
-#: src/features/team/TeamPage.tsx
 msgid "Offline"
 msgstr "離線"
 
@@ -13336,8 +13335,10 @@ msgstr "僅團隊可見。"
 msgid "open"
 msgstr "未結"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/team/TeamPage.tsx
 msgctxt "keyboard hint"
 msgid "open"
 msgstr "開啟"
@@ -13346,8 +13347,6 @@ msgstr "開啟"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactDetails.tsx
-#: src/features/contact/ContactsColumn.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -13647,10 +13646,6 @@ msgstr "開啟網站、目標或漏斗"
 msgid "Open the triggered e-mail"
 msgstr "Open the triggered e-mail"
 
-#: src/features/team/TeamPage.tsx
-msgid "Open the unassigned queue"
-msgstr "開啟未分配佇列"
-
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Open the workspace settings"
 msgstr "開啟工作區設定"
@@ -13679,10 +13674,6 @@ msgstr "開啟 Zoho Accounts"
 #: src/features/team/TeamPage.tsx
 msgid "open, assigned"
 msgstr "未關閉,已指派"
-
-#: src/features/team/TeamPage.tsx
-msgid "open, unassigned"
-msgstr "未關閉,未指派"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "Opened"
@@ -13850,7 +13841,6 @@ msgstr "隨時間變化"
 
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/reports/ReportPages.tsx
 #: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
@@ -14105,6 +14095,7 @@ msgstr "載荷"
 
 #: src/components/common/text.ts
 #: src/features/settings/OwnDomainCard.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Pending"
 msgstr "待處理"
 
@@ -14118,6 +14109,10 @@ msgstr "待處理的投遞也會隨之丟棄。"
 #: src/features/contact/ContactsPage.tsx
 msgid "People"
 msgstr "People"
+
+#: src/features/team/TeamPage.tsx
+msgid "People asked to join who have not signed in yet"
+msgstr "已受邀但尚未登入的人"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "People join it on a subscribe form or are added with their consent. Broadcasts go to lists."
@@ -14139,10 +14134,6 @@ msgstr "使用者會傳送錯誤、想法或讚美，並附上截圖和裝置資
 #: src/features/settings/sso/SsoPage.tsx
 msgid "People sign in with a code or a passkey again, and single sign-on stops being required. Your domains stay."
 msgstr "People sign in with a code or a passkey again, and single sign-on stops being required. Your domains stay."
-
-#: src/features/contact/ContactsPage.tsx
-msgid "People so far: {shownCount}"
-msgstr "目前人數：{shownCount}"
 
 #: src/features/setup/SetupHub.tsx
 msgid "People subscribe on your site; broadcasts go to the list."
@@ -14173,6 +14164,10 @@ msgstr "People who signed in and whose mail is not due yet, the one due first on
 msgid "People who wrote to {product}"
 msgstr "寫信給 {product} 的人"
 
+#: src/features/contact/ContactsPage.tsx
+msgid "People with an e-mail address or an id from your app"
+msgstr "有電子郵件地址或你應用程式中 ID 的人"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "People with this domain stop signing in through your provider. Removing the last verified domain turns off required single sign-on."
 msgstr "People with this domain stop signing in through your provider. Removing the last verified domain turns off required single sign-on."
@@ -14181,10 +14176,6 @@ msgstr "People with this domain stop signing in through your provider. Removing 
 #: src/features/setup/SetupHub.tsx
 msgid "People write from inside your app, signed in as themselves."
 msgstr "人們在你的應用程式內以自己的身份登入後發言。"
-
-#: src/features/contact/ContactsPage.tsx
-msgid "People: {shownCount}"
-msgstr "人數：{shownCount}"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "Per day"
@@ -14221,7 +14212,6 @@ msgid "Permission to send"
 msgstr "傳送許可權"
 
 #: src/features/contact/ContactsPage.tsx
-#: src/features/team/TeamPage.tsx
 msgid "Person"
 msgstr "人員"
 
@@ -14276,10 +14266,6 @@ msgstr "請選擇顏色。"
 #: src/features/status/SettingsTab.tsx
 msgid "Pick a colour"
 msgstr "選擇顏色"
-
-#: src/features/contact/ContactsColumn.tsx
-msgid "Pick a contact"
-msgstr "選擇聯絡人"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Pick a CSV file, or drop it here"
@@ -14540,6 +14526,10 @@ msgstr "純文字，可包含連結和換行，最多 5,000 個字元。"
 msgid "Plain text, shown above the forwarded mail."
 msgstr "純文字，顯示在轉寄郵件上方。"
 
+#: src/features/contact/ContactsPage.tsx
+msgid "Plan"
+msgstr "方案"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentDialog.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -14723,7 +14713,6 @@ msgid "pro, team"
 msgstr "pro、team"
 
 #: src/components/common/WorkspaceSelector.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -15738,10 +15727,6 @@ msgstr "助手、機器人或同事撰寫的回覆會顯示在這裡，直到有
 msgid "Replies and answers in the discussions you follow"
 msgstr "你關注的討論中的回覆和回答"
 
-#: src/features/reports/ReportPages.tsx
-msgid "Replies and closes"
-msgstr "回覆和關閉"
-
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Replies and ratings"
 msgstr "回覆和評價"
@@ -16213,10 +16198,6 @@ msgstr "撤銷了 API 金鑰 {name}"
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "訂閱後,人們會立即收到一封帶退訂連結的簡短確認郵件。"
 
-#: src/features/team/TeamPage.tsx
-msgid "Right now"
-msgstr "目前"
-
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -16292,6 +16273,7 @@ msgid "Rotated the webhook secret of an issue tracker connection"
 msgstr "更新了問題追蹤器連線的 Webhook 密鑰"
 
 #: src/components/common/AssignmentFields.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Round robin"
 msgstr "輪流"
 
@@ -16397,7 +16379,7 @@ msgstr "星期六"
 #: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/parts.tsx
 #: src/features/status/ComponentDialogs.tsx
@@ -16622,8 +16604,8 @@ msgid "Score {score} out of 5"
 msgstr "評分 {score} / 5"
 
 #: src/features/reports/ReportPages.tsx
-msgid "Scores and comments after a conversation closed."
-msgstr "對話關閉後的評分和評論。"
+msgid "Scores and comments after a conversation closed"
+msgstr "對話關閉後的評分和意見"
 
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/Feedback.tsx
@@ -16646,6 +16628,7 @@ msgstr "附有螢幕截圖"
 msgid "SDK"
 msgstr "SDK"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "search"
 msgstr "搜尋"
@@ -16661,12 +16644,7 @@ msgstr "搜尋"
 msgid "Search by name, e-mail or external id"
 msgstr "按姓名、電子郵件或外部 ID 搜尋"
 
-#: src/features/contact/ContactsColumn.tsx
-msgid "Search by name, e-mail or the id your app gives them, then open one to see their conversations, details and notes."
-msgstr "按姓名、電子郵件或你的應用程式給他們的 ID 搜尋,然後開啟其中一位檢視其對話、詳情和備註。"
-
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Search contacts"
@@ -16813,6 +16791,7 @@ msgstr "{seen}看到"
 msgid "Seen by the monitor"
 msgstr "被監控看到"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "select"
@@ -17304,6 +17283,11 @@ msgctxt "mail folder"
 msgid "Sent"
 msgstr "寄件備份"
 
+#. placeholder {0}: formatDate(invite.created_at, i18n.locale)
+#: src/features/team/TeamPage.tsx
+msgid "sent {0}"
+msgstr "{0} 寄出"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "已從此地址傳送 {count} 條訊息"
@@ -17564,7 +17548,6 @@ msgstr "快捷鍵"
 #: src/components/common/PageLayout.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -18928,10 +18911,10 @@ msgstr "TCP 檢查"
 #: src/features/docs/discussions/parts.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
-#: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
 msgstr "團隊"
@@ -19001,6 +18984,7 @@ msgstr "teammate@company.com"
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Teams"
 msgstr "團隊"
@@ -20260,8 +20244,8 @@ msgid "These choices are kept on this device only."
 msgstr "這些選擇只儲存在此裝置上。"
 
 #: src/features/contact/ContactsPage.tsx
-msgid "These look like the same person. Merging keeps the left one and moves addresses, ids and conversations into it. Nothing is merged until you have seen what changes."
-msgstr "這看起來是同一個人。合併會保留左側的聯絡人，並將地址、ID 和對話移到它之下。在你看到變更內容之前，不會合併任何內容。"
+msgid "These look like the same person"
+msgstr "這些看起來是同一個人"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "These merge fields have no fallback and would be empty for some recipients:"
@@ -21376,7 +21360,6 @@ msgstr "已解鎖"
 #: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -21929,7 +21912,6 @@ msgid "Visible to"
 msgstr "可見對象"
 
 #: src/components/common/Source.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/docs/PagesTab.tsx
@@ -21946,7 +21928,7 @@ msgstr "訪客 · {where}"
 msgid "visitors"
 msgstr "訪客"
 
-#: src/features/contact/ContactsColumn.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 msgid "Visitors"
 msgstr "訪客"
@@ -21974,6 +21956,10 @@ msgstr "訪客在頁面上訂閱後,事件或維護有更新時就會收到郵�
 #: src/features/home/PropertyCard.tsx
 msgid "visitors today"
 msgstr "今日訪客"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Visitors without a confirmed e-mail address or id"
+msgstr "沒有已確認電子郵件地址或 ID 的訪客"
 
 #: src/features/setup/ChannelStep.tsx
 #: src/features/setup/SetupHub.tsx
@@ -22147,6 +22133,10 @@ msgstr "我們會透過郵件傳送一次性驗證碼。無需記住密碼。"
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "We mailed a 6-digit code to this address. It is valid for 10 minutes."
 msgstr "我們已向此地址傳送 6 位數驗證碼，10 分鐘內有效。"
+
+#: src/features/team/TeamPage.tsx
+msgid "We send a sign-in link that is valid for 7 days."
+msgstr "我們會寄送 7 天內有效的登入連結。"
 
 #: src/features/auth/SignInForm.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
@@ -22662,10 +22652,6 @@ msgstr "撤回"
 #: src/features/team/TeamPage.tsx
 msgid "Withdraw the invite for {0}"
 msgstr "撤回對 {0} 的邀請"
-
-#: src/features/team/TeamPage.tsx
-msgid "Withdraw this invite?"
-msgstr "撤回此邀請？"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Within {m} minutes"

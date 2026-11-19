@@ -53,6 +53,11 @@ msgstr "(ବିଷୟ ନାହିଁ)"
 msgid "{0, plural, one {{name} · # waiting} other {{name} · # waiting}}"
 msgstr "{0, plural, one {{name} · # ଅପେକ୍ଷାରେ} other {{name} · # ଅପେକ୍ଷାରେ}}"
 
+#. placeholder {0}: items.length
+#: src/features/contact/ContactsPage.tsx
+msgid "{0, plural, one {{shown} person} other {{shown} people}}"
+msgstr "{0, plural, other {{shown} ଜଣ}}"
+
 #. placeholder {0}: msg.attachments
 #: src/features/migrations/ReviewStep.tsx
 msgid "{0, plural, one {# attachment} other {# attachments}}"
@@ -97,6 +102,16 @@ msgstr "{0, plural, one {# hour after someone confirms {list}} other {# hours af
 msgid "{0, plural, one {# hour after someone starts to match {match}} other {# hours after someone starts to match {match}}}"
 msgstr "{0, plural, one {# hour after someone starts to match {match}} other {# hours after someone starts to match {match}}}"
 
+#. placeholder {0}: team.inbox_ids.length
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "{0, plural, one {# inbox} other {# inboxes}}"
+msgstr "{0, plural, other {# ଇନବକ୍ସ}}"
+
+#. placeholder {0}: team.member_ids.length
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "{0, plural, one {# member} other {# members}}"
+msgstr "{0, plural, other {# ସଦସ୍ୟ}}"
+
 #. placeholder {0}: items.length
 #: src/features/inbox/SidePanels.tsx
 msgid "{0, plural, one {# mention} other {# mentions}}"
@@ -106,11 +121,6 @@ msgstr "{0, plural, one {# ଉଲ୍ଲେଖ} other {# ଉଲ୍ଲେଖ}}"
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "{0, plural, one {# of them gets it because their language has no version} other {# of them get it because their language has no version}}"
 msgstr "{0, plural, one {ଏମାନଙ୍କ ମଧ୍ୟରୁ # ଜଣ ଏହା ପାଆନ୍ତି କାରଣ ସେମାନଙ୍କ ଭାଷାର କୌଣସି ସଂସ୍କରଣ ନାହିଁ} other {ଏମାନଙ୍କ ମଧ୍ୟରୁ # ଜଣ ଏହା ପାଆନ୍ତି କାରଣ ସେମାନଙ୍କ ଭାଷାର କୌଣସି ସଂସ୍କରଣ ନାହିଁ}}"
-
-#. placeholder {0}: c.activity.open_conversations
-#: src/features/contact/ContactsColumn.tsx
-msgid "{0, plural, one {# open} other {# open}}"
-msgstr "{0, plural, one {# ଖୋଲା} other {# ଖୋଲା}}"
 
 #. placeholder {0}: p.unanswered_threads
 #: src/features/home/HomeWork.tsx
@@ -146,11 +156,6 @@ msgstr "{0, plural, one {ପ୍ରାପକ} other {ପ୍ରାପକ}}"
 #: src/features/settings/slack/SlackPage.tsx
 msgid "{0} (private)"
 msgstr "{0} (private)"
-
-#. placeholder {0}: fmt.format(s.members.length)
-#: src/features/reports/ReportPages.tsx
-msgid "{0} active today"
-msgstr "ଆଜି {0} ସକ୍ରିୟ"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
@@ -199,11 +204,10 @@ msgstr "{0} ଟ୍ରାସ୍‌କୁ ନିଆଗଲା"
 msgid "{0} of {1}"
 msgstr "{1} ମଧ୍ୟରୁ {0}"
 
-#. placeholder {0}: fmt.format(s.replies)
-#. placeholder {1}: fmt.format(s.closed)
-#: src/features/reports/ReportPages.tsx
-msgid "{0} replies · {1} closed"
-msgstr "{0} ଉତ୍ତର · {1} ବନ୍ଦ"
+#. placeholder {0}: fmt.format(unassigned)
+#: src/features/team/TeamPage.tsx
+msgid "{0} open, unassigned"
+msgstr "{0} ଖୋଲା, କାହାକୁ ଦିଆଯାଇନାହିଁ"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
@@ -330,10 +334,6 @@ msgstr "{ownerName}ଙ୍କ ତରଫରୁ {author}"
 #: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
 msgstr "{author}, {by} ପଠାଇଥିବା"
-
-#: src/features/team/TeamPage.tsx
-msgid "{available} of {total}"
-msgstr "{total} ମଧ୍ୟରୁ {available}"
 
 #: src/features/team/TeamPage.tsx
 msgid "{available} of {total} available now"
@@ -921,10 +921,6 @@ msgstr "{open} ଖୋଲା"
 msgid "{out, plural, one {# row is left out} other {# rows are left out}}"
 msgstr "{out, plural, one {# ଧାଡ଼ି ବାଦ୍} other {# ଧାଡ଼ି ବାଦ୍}}"
 
-#: src/features/reports/ReportPages.tsx
-msgid "{pct} satisfied"
-msgstr "{pct} ସନ୍ତୁଷ୍ଟ"
-
 #: src/features/docs/PagesTab.tsx
 msgid "{pending} posts waiting for approval"
 msgstr "{pending} ପୋଷ୍ଟ ଅନୁମୋଦନ ଅପେକ୍ଷାରେ"
@@ -1083,10 +1079,6 @@ msgstr "{replies} ଉତ୍ତର"
 #: src/features/contact/ContactVisits.tsx
 msgid "{rest, plural, one {and # more page} other {and # more pages}}"
 msgstr "{rest, plural, one {ଏବଂ ଆହୁରି # ପୃଷ୍ଠା} other {ଏବଂ ଆହୁରି # ପୃଷ୍ଠା}}"
-
-#: src/features/team/TeamPage.tsx
-msgid "{role} · {language} · sent {sent} · expires {expires}"
-msgstr "{role} · {language} · ପଠାଯାଇଛି {sent} · ମିଆଦ ଶେଷ {expires}"
 
 #: src/features/broadcasts/Import.tsx
 msgid "{rows} rows, read as {encoding}, separated by {delimiter}."
@@ -1890,8 +1882,8 @@ msgid "A subscription changed"
 msgstr "ଏକ ସବ୍ସ୍କ୍ରିପସନ୍ ବଦଳିଲା"
 
 #: src/features/settings/teams/TeamsPage.tsx
-msgid "A team gives its members the inboxes it covers. A conversation can go to a team as well as to a member."
-msgstr "ଦଳ ତାହାର ସଦସ୍ୟମାନଙ୍କୁ ସେ ସମ୍ଭାଳୁଥିବା ଇନବକ୍ସ ଦିଏ। ବାର୍ତ୍ତାଳାପକୁ ସଦସ୍ୟ ସହିତ ଦଳକୁ ମଧ୍ୟ ଦିଆଯାଇପାରେ।"
+msgid "A team gives its members the inboxes it covers"
+msgstr "ଦଳ ଏହାର ସଦସ୍ୟଙ୍କୁ ଏହା ଦେଖୁଥିବା ଇନବକ୍ସ ଦିଏ"
 
 #: src/components/common/text.ts
 msgid "A team holds at most 500 members and 100 inboxes."
@@ -2041,6 +2033,8 @@ msgid "ACS URL"
 msgstr "ACS URL"
 
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Actions"
 msgstr "କାର୍ଯ୍ୟ"
 
@@ -2492,7 +2486,6 @@ msgstr "Alertmanager"
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactDetails.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -2576,7 +2569,7 @@ msgstr "ଏହାର ସମସ୍ତ ବାର୍ତ୍ତାଳାପ, ବା�
 msgid "All parts arrived. Reading the file…"
 msgstr "ସମସ୍ତ ଅଂଶ ଆସିଗଲା। ଫାଇଲ୍ ପଢ଼ୁଛି…"
 
-#: src/app/places.tsx
+#: src/features/contact/ContactsPage.tsx
 msgid "All people"
 msgstr "ସମସ୍ତ ଲୋକ"
 
@@ -2586,7 +2579,6 @@ msgstr "ସମସ୍ତ ଉତ୍ପାଦ"
 
 #: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
@@ -2596,7 +2588,6 @@ msgstr "ସମସ୍ତ ଉତ୍ପାଦ"
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/status/StatusFrame.tsx
-#: src/features/team/TeamPage.tsx
 msgid "All products"
 msgstr "ସମସ୍ତ ଉତ୍ପାଦ"
 
@@ -3135,10 +3126,15 @@ msgstr "ଯେକୌଣସି ଲେବଲ୍"
 msgid "Any of the labels you pick."
 msgstr "ଆପଣ ବାଛିଥିବା ଲେବଲ୍ ମଧ୍ୟରୁ ଯେକୌଣସି।"
 
+#: src/features/contact/ContactsPage.tsx
+msgid "Any plan"
+msgstr "ଯେକୌଣସି ପ୍ଲାନ୍"
+
 #: src/features/inbox/SourceFilter.tsx
 msgid "Any state"
 msgstr "ଯେକୌଣସି ଅବସ୍ଥା"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Any status"
 msgstr "ଯେକୌଣସି ସ୍ଥିତି"
@@ -3642,6 +3638,7 @@ msgstr "ସ୍ୱୟଂଚାଳିତ"
 
 #: src/components/common/AssignmentFields.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Automatic assignment"
 msgstr "ସ୍ୱୟଂଚାଳିତ ନିଯୁକ୍ତି"
 
@@ -3659,10 +3656,6 @@ msgstr "ଅଟୋମେସନ୍"
 msgid "Available"
 msgstr "ଉପଲବ୍ଧ"
 
-#: src/features/team/TeamPage.tsx
-msgid "available now"
-msgstr "ବର୍ତ୍ତମାନ ଉପଲବ୍ଧ"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Available until {until}"
 msgstr "{until} ପର୍ଯ୍ୟନ୍ତ ଉପଲବ୍ଧ"
@@ -3671,7 +3664,6 @@ msgstr "{until} ପର୍ଯ୍ୟନ୍ତ ଉପଲବ୍ଧ"
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/home/HomePage.tsx
-#: src/features/team/TeamPage.tsx
 msgid "Away"
 msgstr "ଦୂରରେ"
 
@@ -3809,7 +3801,7 @@ msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignore
 msgstr "1 ରୁ 500 ମଧ୍ୟରେ, ସମ୍ପୂର୍ଣ୍ଣ କାର୍ଯ୍ୟକ୍ଷେତ୍ରରେ ଗଣାଯାଏ। ହାତରେ ନିଯୁକ୍ତି ଏହାକୁ ଅଣଦେଖା କରେ। ସୀମା ଦରକାର ନ ଥିଲେ ଖାଲି ଛାଡନ୍ତୁ।"
 
 #: src/features/settings/labels/LabelDialog.tsx
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 msgid "Billing"
 msgstr "ବିଲିଂ"
 
@@ -4055,10 +4047,6 @@ msgstr "ଗୋଷ୍ଠୀ ଅନୁସାରେ"
 msgid "By language"
 msgstr "ଭାଷା ଅନୁସାରେ"
 
-#: src/features/reports/ReportPages.tsx
-msgid "By member"
-msgstr "ସଦସ୍ୟ ଅନୁସାରେ"
-
 #: src/features/conversation/messages/Thread.tsx
 msgid "by rule {rule}"
 msgstr "ନିୟମ {rule} ଦ୍ୱାରା"
@@ -4078,6 +4066,7 @@ msgstr "କ୍ୟାମ୍ପେନ୍ ନାମ"
 
 #: src/app/Palette.tsx
 #: src/components/common/ConfirmDialog.tsx
+#: src/components/common/FormCard.tsx
 #: src/components/common/Linked.tsx
 #: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
@@ -4094,7 +4083,6 @@ msgstr "କ୍ୟାମ୍ପେନ୍ ନାମ"
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/contact/DeleteContactDialog.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
@@ -4112,6 +4100,7 @@ msgstr "କ୍ୟାମ୍ପେନ୍ ନାମ"
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/NewsletterStep.tsx
 #: src/features/status/AddSubscriberDialog.tsx
@@ -4621,6 +4610,7 @@ msgstr "claude.ai ଓ Claude Desktop"
 
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Clear"
 msgstr "ସଫା କରନ୍ତୁ"
 
@@ -4638,7 +4628,6 @@ msgstr "ଉତ୍ତର ସଫା କରନ୍ତୁ"
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
@@ -4709,6 +4698,7 @@ msgstr "{date} ରେ ଘଣ୍ଟା ବଦଳେ; ସମୟ ସ୍ଥାନୀ
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/migrations/Wizard.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
 msgstr "ବନ୍ଦ କରନ୍ତୁ"
@@ -4872,6 +4862,10 @@ msgstr "କମା"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Common choices"
 msgstr "ସାଧାରଣ ପସନ୍ଦ"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Company"
+msgstr "କମ୍ପାନୀ"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Comparison of condition {n}"
@@ -5216,9 +5210,6 @@ msgstr "{since} ଠାରୁ ଯୋଗାଯୋଗ"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/contact/ContactPage.tsx
-#: src/features/contact/ContactsColumn.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Contacts"
@@ -5319,6 +5310,7 @@ msgstr "କଥାବାର୍ତ୍ତା"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/contact/MergePreview.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/docs/PagesTab.tsx
@@ -5329,7 +5321,6 @@ msgstr "କଥାବାର୍ତ୍ତା"
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/webhooks/events.tsx
-#: src/features/team/TeamPage.tsx
 msgid "Conversations"
 msgstr "କଥାବାର୍ତ୍ତା"
 
@@ -5512,10 +5503,6 @@ msgstr "counted so far"
 msgid "Counting…"
 msgstr "ଗଣନା ଚାଲିଛି…"
 
-#: src/features/contact/ContactsPage.tsx
-msgid "Country"
-msgstr "ଦେଶ"
-
 #: src/features/broadcasts/Trigger.tsx
 msgid "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
 msgstr "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
@@ -5635,7 +5622,7 @@ msgstr "ସ୍ଥିତି ପୃଷ୍ଠା ତିଆରି କରନ୍ତୁ
 msgid "Create status page for {product}"
 msgstr "{product} ପାଇଁ ସ୍ଥିତି ପୃଷ୍ଠା ତିଆରି କରନ୍ତୁ"
 
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 msgid "Create team"
 msgstr "ଦଳ ତିଆରି କରନ୍ତୁ"
 
@@ -5759,6 +5746,10 @@ msgstr "କଷ୍ଟମ୍ ଫିଲ୍ଡ"
 #: src/features/settings/SettingsFrame.tsx
 msgid "Custom fields"
 msgstr "କଷ୍ଟମ୍ ଫିଲ୍ଡ"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Customers"
+msgstr "ଗ୍ରାହକ"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Customers cannot see this yet. Tell them with an incident."
@@ -5938,6 +5929,10 @@ msgstr "ଡିଲିଟ୍ କରନ୍ତୁ ({removeKey})"
 #: src/features/status/SettingsTab.tsx
 msgid "Delete {0}?"
 msgstr "{0} ଡିଲିଟ୍ କରିବେ?"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Delete {name}"
+msgstr "{name} ଡିଲିଟ୍ କରନ୍ତୁ"
 
 #: src/features/contact/DeleteContactDialog.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
@@ -6292,7 +6287,7 @@ msgid "Deny"
 msgstr "ପ୍ରତ୍ୟାଖ୍ୟାନ"
 
 #: src/features/issues/IssueDialog.tsx
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
@@ -6349,6 +6344,7 @@ msgstr "ବ୍ରାଉଜର ସେଟିଂସରେ ଏହି ସାଇଟ୍
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Details"
 msgstr "ବିବରଣୀ"
 
@@ -6787,6 +6783,7 @@ msgstr "ଡୁପ୍ଲିକେଟ୍"
 #: src/features/settings/notifications/EventsSection.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/setup/ChannelStep.tsx
+#: src/features/team/TeamPage.tsx
 msgid "E-mail"
 msgstr "ଇମେଲ୍"
 
@@ -6910,8 +6907,8 @@ msgid "Each person is checked once, when their mail is due: someone who left, bo
 msgstr "Each person is checked once, when their mail is due: someone who left, bounced or no longer matches gets nothing."
 
 #: src/features/reports/ReportPages.tsx
-msgid "Each person’s replies, closes and ratings."
-msgstr "ପ୍ରତ୍ୟେକଙ୍କ ଉତ୍ତର, ବନ୍ଦ କରିଥିବା ଓ ରେଟିଂ।"
+msgid "Each person’s replies, closes and ratings"
+msgstr "ପ୍ରତ୍ୟେକଙ୍କ ଉତ୍ତର, ବନ୍ଦ ଓ ରେଟିଂ"
 
 #: src/features/settings/ProductsPage.tsx
 msgid "Each product has its own name, branding, hours, team and channels"
@@ -6958,6 +6955,10 @@ msgstr "ସମ୍ପାଦନ କରନ୍ତୁ ({editKey})"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Edit {keyName}"
 msgstr "{keyName} ସମ୍ପାଦନ କରନ୍ତୁ"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Edit {name}"
+msgstr "{name} ସମ୍ପାଦନ କରନ୍ତୁ"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 msgid "Edit API key"
@@ -7016,7 +7017,7 @@ msgstr "ନୀତି ସମ୍ପାଦନା କରନ୍ତୁ"
 msgid "Edit rule"
 msgstr "ନିୟମ ସମ୍ପାଦନ କରନ୍ତୁ"
 
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 msgid "Edit team"
 msgstr "ଦଳ ସମ୍ପାଦନ କରନ୍ତୁ"
 
@@ -7374,7 +7375,6 @@ msgstr "ଏହି ଫାଇଲ୍ର ସମସ୍ତେ {inboxName} ରୁ {list
 msgid "Everyone on the lists. Conditions keep only contacts whose attributes match, all of them."
 msgstr "ତାଲିକାର ସମସ୍ତେ। ସର୍ତ୍ତ କେବଳ ସେହି ଯୋଗାଯୋଗ ରଖେ ଯାହାର ସମସ୍ତ ଆଟ୍ରିବ୍ୟୁଟ୍ ମେଳ ଖାଏ।"
 
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Everyone who has written to your products"
 msgstr "ଯିଏ ଆପଣଙ୍କ ପ୍ରଡକ୍ଟକୁ ଲେଖିଛନ୍ତି ସମସ୍ତେ"
@@ -7617,6 +7617,7 @@ msgid "Feedback, {feedback} open"
 msgstr "Feedback, {feedback} open"
 
 #: src/components/common/AssignmentFields.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Fewest open conversations"
 msgstr "ସବୁଠାରୁ କମ୍ ଖୋଲା ବାର୍ତ୍ତାଳାପ"
 
@@ -7678,8 +7679,16 @@ msgid "Filter by label"
 msgstr "ଲେବଲ୍ ଅନୁସାରେ ଫିଲ୍ଟର୍ କରନ୍ତୁ"
 
 #: src/features/contact/ContactsPage.tsx
+msgid "Filter by plan"
+msgstr "ପ୍ଲାନ୍ ଅନୁସାରେ ଫିଲ୍ଟର୍ କରନ୍ତୁ"
+
+#: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "ଉତ୍ପାଦ ଅନୁସାରେ ଫିଲ୍ଟର୍ କରନ୍ତୁ"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Filter by state"
+msgstr "ସ୍ଥିତି ଅନୁସାରେ ଫିଲ୍ଟର୍ କରନ୍ତୁ"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Filter by team"
@@ -8389,7 +8398,6 @@ msgstr "ସଂଲଗ୍ନ ଅଛି"
 msgid "Has an attachment"
 msgstr "ଆଟାଚମେଣ୍ଟ ଅଛି"
 
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Has an open conversation"
 msgstr "ଏକ ଖୋଲା କଥାବାର୍ତ୍ତା ଅଛି"
@@ -9055,7 +9063,8 @@ msgctxt "mail folder"
 msgid "Inbox"
 msgstr "ଇନବକ୍ସ"
 
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Inbox access"
 msgstr "ଇନବକ୍ସ ଆକ୍ସେସ୍"
 
@@ -9079,7 +9088,6 @@ msgstr "{name} ପାଇଁ ଇନବକ୍ସ"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
-#: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
 msgstr "ଇନବକ୍ସ"
 
@@ -9169,16 +9177,12 @@ msgid "Investigating"
 msgstr "ତଦନ୍ତ ଚାଲିଛି"
 
 #: src/features/team/TeamPage.tsx
-msgid "Invite"
-msgstr "ଆମନ୍ତ୍ରଣ"
-
-#: src/features/team/TeamPage.tsx
 msgid "Invite a teammate"
 msgstr "ଜଣେ ସହକର୍ମୀଙ୍କୁ ନିମନ୍ତ୍ରଣ କରନ୍ତୁ"
 
 #: src/features/team/TeamPage.tsx
-msgid "Invite language"
-msgstr "ଆମନ୍ତ୍ରଣ ଭାଷା"
+msgid "Invite sent to {sent}."
+msgstr "{sent} କୁ ନିମନ୍ତ୍ରଣ ପଠାଗଲା।"
 
 #: src/features/setup/WaitStep.tsx
 msgid "Invite your team"
@@ -9564,10 +9568,6 @@ msgstr "କୀୱାର୍ଡ"
 #: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "ପ୍ରକାର"
-
-#: src/features/contact/ContactsColumn.tsx
-msgid "Known"
-msgstr "ଜଣାଶୁଣା"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Known only from the receiving server’s results of the test mail."
@@ -10133,7 +10133,6 @@ msgstr "ଇମେଜ୍ ଲୋଡ୍ କରନ୍ତୁ"
 #: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactNotes.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -10679,9 +10678,10 @@ msgstr "ସଦସ୍ୟ"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/features/inbox/AssistantsPage.tsx
+#: src/features/reports/ReportPages.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
@@ -10757,6 +10757,10 @@ msgstr "ଅନ୍ୟ ଯୋଗାଯୋଗ ସହ ମର୍ଜ୍ କରନ୍�
 #: src/features/contact/ContactsPage.tsx
 msgid "Merge…"
 msgstr "ମର୍ଜ୍ କରନ୍ତୁ…"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Merging keeps the left one and moves addresses, ids and conversations into it. Nothing is merged until you have seen what changes."
+msgstr "ମିଶାଇଲେ ବାମପଟଟି ରହେ ଏବଂ ଠିକଣା, ID ଓ ବାର୍ତ୍ତାଳାପ ତାହାକୁ ଯାଏ। କ’ଣ ବଦଳିବ ନ ଦେଖିବା ପର୍ଯ୍ୟନ୍ତ କିଛି ମିଶେ ନାହିଁ।"
 
 #: src/features/mail/Compose.tsx
 #: src/features/setup/previews.tsx
@@ -11019,12 +11023,18 @@ msgstr "ପ୍ରତି ସଦସ୍ୟ ସର୍ବାଧିକ ଖୋଲା �
 msgid "Most ratings, open feedback, open discussions and waiting posts first"
 msgstr "ସର୍ବାଧିକ ରେଟିଂ, ଖୋଲା ମତାମତ, ଖୋଲା ଆଲୋଚନା ଓ ଅପେକ୍ଷାରେ ଥିବା ପୋଷ୍ଟ ପ୍ରଥମେ"
 
+#: src/features/contact/ContactsPage.tsx
+msgid "Most recently seen first"
+msgstr "ନିକଟରେ ଦେଖାଯାଇଥିବା ଆଗରେ"
+
 #: src/features/docs/DocsPage.tsx
 msgid "Most votes"
 msgstr "ସର୍ବାଧିକ ଭୋଟ୍"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/team/TeamPage.tsx
 msgid "move"
 msgstr "ଘୁଞ୍ଚନ୍ତୁ"
 
@@ -11284,7 +11294,7 @@ msgstr "ମୋର ଭ୍ୟୁ"
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
@@ -11326,10 +11336,6 @@ msgstr "ନୂଆ ଇନବକ୍ସର ନାମ"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Name, colour and the first thing the chat says"
 msgstr "ନାମ, ରଙ୍ଗ ଓ ଚାଟ୍ ପ୍ରଥମେ ଯାହା କହେ"
-
-#: src/features/contact/ContactsColumn.tsx
-msgid "Name, e-mail or id"
-msgstr "ନାମ, ଇମେଲ୍ କିମ୍ବା ID"
 
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
@@ -11648,7 +11654,7 @@ msgstr "ନୂଆ ସ୍ଥିତି ପୃଷ୍ଠା"
 msgid "New subscribers added"
 msgstr "ନୂଆ ସବ୍ସ୍କ୍ରାଇବର୍ ଯୋଡ଼ାଗଲେ"
 
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "New team"
 msgstr "ନୂଆ ଦଳ"
@@ -11911,12 +11917,10 @@ msgstr "ନିଶ୍ଚିତକରଣ ନାହିଁ"
 msgid "No connected apps"
 msgstr "କୌଣସି ସଂଯୁକ୍ତ ଆପ୍ ନାହିଁ"
 
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "No contact matches “{query}”."
 msgstr "କୌଣସି ଯୋଗାଯୋଗ “{query}” ସହ ମେଳ ଖାଉନାହିଁ।"
 
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "No contacts in this view."
 msgstr "ଏହି ଦୃଶ୍ୟରେ ଯୋଗାଯୋଗ ନାହିଁ।"
@@ -11925,7 +11929,6 @@ msgstr "ଏହି ଦୃଶ୍ୟରେ ଯୋଗାଯୋଗ ନାହିଁ।
 msgid "No contacts look alike right now."
 msgstr "ବର୍ତ୍ତମାନ କୌଣସି ସମାନ ଯୋଗାଯୋଗ ନାହିଁ।"
 
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "No contacts yet. They appear when someone writes in."
 msgstr "ଏପର୍ଯ୍ୟନ୍ତ ଯୋଗାଯୋଗ ନାହିଁ। କେହି ଲେଖିଲେ ସେମାନେ ଦେଖାଯାଆନ୍ତି।"
@@ -12242,10 +12245,6 @@ msgstr "ଏହି ଅବଧିରେ କୌଣସି ରେଟିଂ ନାହ�
 #: src/features/docs/PagesTab.tsx
 msgid "No ratings in this window."
 msgstr "ଏହି ସମୟସୀମାରେ ରେଟିଂ ନାହିଁ।"
-
-#: src/features/reports/ReportPages.tsx
-msgid "No ratings today"
-msgstr "ଆଜି ରେଟିଂ ନାହିଁ"
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -12958,6 +12957,7 @@ msgstr "ବନ୍ଦ"
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/sla/SlaPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/webhooks/parts.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Off"
@@ -12998,7 +12998,6 @@ msgstr "ସବ୍ସ୍କ୍ରାଇବ୍ ଫର୍ମ ଓ ପସନ୍ଦ �
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
-#: src/features/team/TeamPage.tsx
 msgid "Offline"
 msgstr "ଅଫଲାଇନ୍"
 
@@ -13336,8 +13335,10 @@ msgstr "କେବଳ ଆପଣଙ୍କ ଦଳ ଏହା ଦେଖେ।"
 msgid "open"
 msgstr "ଖୋଲା"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/team/TeamPage.tsx
 msgctxt "keyboard hint"
 msgid "open"
 msgstr "ଖୋଲନ୍ତୁ"
@@ -13346,8 +13347,6 @@ msgstr "ଖୋଲନ୍ତୁ"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactDetails.tsx
-#: src/features/contact/ContactsColumn.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -13647,10 +13646,6 @@ msgstr "ସାଇଟ, ଲକ୍ଷ୍ୟ ବା ଫନେଲ ଖୋଲନ୍ତ�
 msgid "Open the triggered e-mail"
 msgstr "Open the triggered e-mail"
 
-#: src/features/team/TeamPage.tsx
-msgid "Open the unassigned queue"
-msgstr "ଆସାଇନ୍ ହୋଇନଥିବା ଧାଡ଼ି ଖୋଲନ୍ତୁ"
-
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Open the workspace settings"
 msgstr "ୱାର୍କସ୍ପେସ୍ ସେଟିଂସ୍ ଖୋଲନ୍ତୁ"
@@ -13679,10 +13674,6 @@ msgstr "Zoho Accounts ଖୋଲନ୍ତୁ"
 #: src/features/team/TeamPage.tsx
 msgid "open, assigned"
 msgstr "ଖୋଲା, ଦିଆଯାଇଥିବା"
-
-#: src/features/team/TeamPage.tsx
-msgid "open, unassigned"
-msgstr "ଖୋଲା, ଦିଆଯାଇନଥିବା"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "Opened"
@@ -13850,7 +13841,6 @@ msgstr "ସମୟ ସହ"
 
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/reports/ReportPages.tsx
 #: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
@@ -14105,6 +14095,7 @@ msgstr "ପେଲୋଡ୍"
 
 #: src/components/common/text.ts
 #: src/features/settings/OwnDomainCard.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Pending"
 msgstr "ବାକି"
 
@@ -14118,6 +14109,10 @@ msgstr "ବାକି ଡେଲିଭରି ଏହା ସହ ବାତିଲ ହ�
 #: src/features/contact/ContactsPage.tsx
 msgid "People"
 msgstr "People"
+
+#: src/features/team/TeamPage.tsx
+msgid "People asked to join who have not signed in yet"
+msgstr "ଯୋଗ ଦେବାକୁ କୁହାଯାଇଥିବା କିନ୍ତୁ ଏପର୍ଯ୍ୟନ୍ତ ସାଇନ୍ ଇନ୍ କରିନଥିବା ଲୋକ"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "People join it on a subscribe form or are added with their consent. Broadcasts go to lists."
@@ -14139,10 +14134,6 @@ msgstr "ଲୋକେ ସ୍କ୍ରିନସଟ ଓ ଡିଭାଇସ ବି�
 #: src/features/settings/sso/SsoPage.tsx
 msgid "People sign in with a code or a passkey again, and single sign-on stops being required. Your domains stay."
 msgstr "People sign in with a code or a passkey again, and single sign-on stops being required. Your domains stay."
-
-#: src/features/contact/ContactsPage.tsx
-msgid "People so far: {shownCount}"
-msgstr "ଏପର୍ଯ୍ୟନ୍ତ ଲୋକ: {shownCount}"
 
 #: src/features/setup/SetupHub.tsx
 msgid "People subscribe on your site; broadcasts go to the list."
@@ -14173,6 +14164,10 @@ msgstr "People who signed in and whose mail is not due yet, the one due first on
 msgid "People who wrote to {product}"
 msgstr "{product} କୁ ଲେଖିଥିବା ଲୋକ"
 
+#: src/features/contact/ContactsPage.tsx
+msgid "People with an e-mail address or an id from your app"
+msgstr "ଇମେଲ୍ ଠିକଣା କିମ୍ବା ଆପଣଙ୍କ ଆପ୍‌ର ID ଥିବା ଲୋକ"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "People with this domain stop signing in through your provider. Removing the last verified domain turns off required single sign-on."
 msgstr "People with this domain stop signing in through your provider. Removing the last verified domain turns off required single sign-on."
@@ -14181,10 +14176,6 @@ msgstr "People with this domain stop signing in through your provider. Removing 
 #: src/features/setup/SetupHub.tsx
 msgid "People write from inside your app, signed in as themselves."
 msgstr "ଲୋକେ ଆପଣଙ୍କ ଆପ୍ ଭିତରୁ, ନିଜ ପରିଚୟରେ ସାଇନ୍ ଇନ୍ ହୋଇ ଲେଖନ୍ତି।"
-
-#: src/features/contact/ContactsPage.tsx
-msgid "People: {shownCount}"
-msgstr "ଲୋକ: {shownCount}"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "Per day"
@@ -14221,7 +14212,6 @@ msgid "Permission to send"
 msgstr "ପଠାଇବା ଅନୁମତି"
 
 #: src/features/contact/ContactsPage.tsx
-#: src/features/team/TeamPage.tsx
 msgid "Person"
 msgstr "ବ୍ୟକ୍ତି"
 
@@ -14276,10 +14266,6 @@ msgstr "ଏକ ରଙ୍ଗ ବାଛନ୍ତୁ।"
 #: src/features/status/SettingsTab.tsx
 msgid "Pick a colour"
 msgstr "ରଙ୍ଗ ବାଛନ୍ତୁ"
-
-#: src/features/contact/ContactsColumn.tsx
-msgid "Pick a contact"
-msgstr "ଏକ ଯୋଗାଯୋଗ ବାଛନ୍ତୁ"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Pick a CSV file, or drop it here"
@@ -14540,6 +14526,10 @@ msgstr "ଲିଙ୍କ୍ ଓ ଲାଇନ୍ ବ୍ରେକ୍ ସହିତ �
 msgid "Plain text, shown above the forwarded mail."
 msgstr "ସାଧାରଣ ଲେଖା, ଫରୱାର୍ଡ ହୋଇଥିବା ମେଲ୍ ଉପରେ ଦେଖାଯାଏ।"
 
+#: src/features/contact/ContactsPage.tsx
+msgid "Plan"
+msgstr "ପ୍ଲାନ୍"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentDialog.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -14723,7 +14713,6 @@ msgid "pro, team"
 msgstr "pro, team"
 
 #: src/components/common/WorkspaceSelector.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -15738,10 +15727,6 @@ msgstr "ସହାୟକ, ବଟ୍ କିମ୍ବା ସହକର୍ମୀଙ�
 msgid "Replies and answers in the discussions you follow"
 msgstr "ଆପଣ ଅନୁସରଣ କରୁଥିବା ଆଲୋଚନାରେ ଉତ୍ତର ଓ ସମାଧାନ"
 
-#: src/features/reports/ReportPages.tsx
-msgid "Replies and closes"
-msgstr "ଉତ୍ତର ଓ ବନ୍ଦ"
-
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Replies and ratings"
 msgstr "ଉତ୍ତର ଓ ରେଟିଂ"
@@ -16213,10 +16198,6 @@ msgstr "API କୀ {name} ବାତିଲ୍ କଲେ"
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "ସବ୍ସ୍କ୍ରାଇବ୍ କଲା ପରେ ତୁରନ୍ତ, ଲୋକେ ଏହାକୁ ନିଶ୍ଚିତ କରୁଥିବା ଏକ ଛୋଟ ମେଲ୍ ପାଆନ୍ତି, ଅନସବ୍ସ୍କ୍ରାଇବ୍ ଲିଙ୍କ୍ ସହ।"
 
-#: src/features/team/TeamPage.tsx
-msgid "Right now"
-msgstr "ଏହି ମୁହୂର୍ତ୍ତରେ"
-
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -16292,6 +16273,7 @@ msgid "Rotated the webhook secret of an issue tracker connection"
 msgstr "ଇସ୍ୟୁ ଟ୍ରାକର୍ ସଂଯୋଗର ୱେବ୍‌ହୁକ୍ ସିକ୍ରେଟ୍ ନୂଆ କଲେ"
 
 #: src/components/common/AssignmentFields.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Round robin"
 msgstr "ପାଳିକ୍ରମେ"
 
@@ -16397,7 +16379,7 @@ msgstr "ଶନିବାର"
 #: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/parts.tsx
 #: src/features/status/ComponentDialogs.tsx
@@ -16622,8 +16604,8 @@ msgid "Score {score} out of 5"
 msgstr "5 ରୁ {score} ସ୍କୋର"
 
 #: src/features/reports/ReportPages.tsx
-msgid "Scores and comments after a conversation closed."
-msgstr "ବାର୍ତ୍ତାଳାପ ବନ୍ଦ ହେବା ପରର ସ୍କୋର ଓ ମନ୍ତବ୍ୟ।"
+msgid "Scores and comments after a conversation closed"
+msgstr "ବାର୍ତ୍ତାଳାପ ବନ୍ଦ ହେବା ପରେ ରେଟିଂ ଓ ମନ୍ତବ୍ୟ"
 
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/Feedback.tsx
@@ -16646,6 +16628,7 @@ msgstr "Screenshots attached"
 msgid "SDK"
 msgstr "SDK"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "search"
 msgstr "ଖୋଜନ୍ତୁ"
@@ -16661,12 +16644,7 @@ msgstr "ସନ୍ଧାନ କରନ୍ତୁ"
 msgid "Search by name, e-mail or external id"
 msgstr "ନାମ, ଇମେଲ୍ କିମ୍ବା ବାହ୍ୟ ID ଦ୍ୱାରା ସନ୍ଧାନ କରନ୍ତୁ"
 
-#: src/features/contact/ContactsColumn.tsx
-msgid "Search by name, e-mail or the id your app gives them, then open one to see their conversations, details and notes."
-msgstr "ନାମ, ଇମେଲ୍ କିମ୍ବା ଆପଣଙ୍କ ଆପ୍ ସେମାନଙ୍କୁ ଦେଉଥିବା ID ଦ୍ୱାରା ସନ୍ଧାନ କରନ୍ତୁ, ତା'ପରେ ସେମାନଙ୍କ କଥାବାର୍ତ୍ତା, ବିବରଣୀ ଓ ନୋଟ୍ ଦେଖିବାକୁ ଗୋଟିଏ ଖୋଲନ୍ତୁ।"
-
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Search contacts"
@@ -16813,6 +16791,7 @@ msgstr "{seen} ଦେଖାଗଲା"
 msgid "Seen by the monitor"
 msgstr "ମନିଟର୍ ଦେଖିଲା"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "select"
@@ -17304,6 +17283,11 @@ msgctxt "mail folder"
 msgid "Sent"
 msgstr "ପଠାଯାଇଥିବା"
 
+#. placeholder {0}: formatDate(invite.created_at, i18n.locale)
+#: src/features/team/TeamPage.tsx
+msgid "sent {0}"
+msgstr "ପଠାଗଲା {0}"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "ଏହି ଠିକଣାରୁ {count} ସଂଦେଶ ପଠାଗଲା"
@@ -17564,7 +17548,6 @@ msgstr "ସର୍ଟକଟ୍"
 #: src/components/common/PageLayout.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -18928,10 +18911,10 @@ msgstr "TCP ଯାଞ୍ଚ"
 #: src/features/docs/discussions/parts.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
-#: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
 msgstr "ଦଳ"
@@ -19001,6 +18984,7 @@ msgstr "teammate@company.com"
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Teams"
 msgstr "ଦଳ"
@@ -20260,8 +20244,8 @@ msgid "These choices are kept on this device only."
 msgstr "ଏହି ପସନ୍ଦ କେବଳ ଏହି ଡିଭାଇସ୍ରେ ରଖାଯାଏ।"
 
 #: src/features/contact/ContactsPage.tsx
-msgid "These look like the same person. Merging keeps the left one and moves addresses, ids and conversations into it. Nothing is merged until you have seen what changes."
-msgstr "ଏମାନେ ଏକା ବ୍ୟକ୍ତି ପରି ଦେଖାଯାଉଛନ୍ତି। ମିଶାଇଲେ ବାମ ପାଖର ଯୋଗାଯୋଗ ରହେ ଏବଂ ଠିକଣା, ID ଓ ଆଲୋଚନା ତାହାକୁ ଯାଏ। ଆପଣ ପରିବର୍ତ୍ତନ ନଦେଖିବା ପର୍ଯ୍ୟନ୍ତ କିଛି ମିଶେ ନାହିଁ।"
+msgid "These look like the same person"
+msgstr "ଏମାନେ ଏକା ଲୋକ ପରି ଦେଖାଯାଉଛନ୍ତି"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "These merge fields have no fallback and would be empty for some recipients:"
@@ -21376,7 +21360,6 @@ msgstr "ଅନଲକ୍ ହେଲା"
 #: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -21929,7 +21912,6 @@ msgid "Visible to"
 msgstr "କାହାକୁ ଦେଖାଯିବ"
 
 #: src/components/common/Source.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/docs/PagesTab.tsx
@@ -21946,7 +21928,7 @@ msgstr "ପରିଦର୍ଶକ · {where}"
 msgid "visitors"
 msgstr "ପରିଦର୍ଶକ"
 
-#: src/features/contact/ContactsColumn.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 msgid "Visitors"
 msgstr "ପରିଦର୍ଶକ"
@@ -21974,6 +21956,10 @@ msgstr "ଭିଜିଟରମାନେ ପେଜ୍‌ରେ ସବ୍ସ୍କ�
 #: src/features/home/PropertyCard.tsx
 msgid "visitors today"
 msgstr "ଆଜି ପରିଦର୍ଶକ"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Visitors without a confirmed e-mail address or id"
+msgstr "ନିଶ୍ଚିତ ଇମେଲ୍ ଠିକଣା କିମ୍ବା ID ନଥିବା ପରିଦର୍ଶକ"
 
 #: src/features/setup/ChannelStep.tsx
 #: src/features/setup/SetupHub.tsx
@@ -22147,6 +22133,10 @@ msgstr "ଆମେ ଆପଣଙ୍କୁ ଏକ ଥରର କୋଡ୍ ଇମେ�
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "We mailed a 6-digit code to this address. It is valid for 10 minutes."
 msgstr "ଆମେ ଏହି ଠିକଣାକୁ 6 ଅଙ୍କର କୋଡ୍ ପଠାଇଛୁ। ଏହା 10 ମିନିଟ୍ ବୈଧ।"
+
+#: src/features/team/TeamPage.tsx
+msgid "We send a sign-in link that is valid for 7 days."
+msgstr "ଆମେ 7 ଦିନ ବୈଧ ସାଇନ୍-ଇନ୍ ଲିଙ୍କ ପଠାଉ।"
 
 #: src/features/auth/SignInForm.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
@@ -22662,10 +22652,6 @@ msgstr "ପ୍ରତ୍ୟାହାର କରନ୍ତୁ"
 #: src/features/team/TeamPage.tsx
 msgid "Withdraw the invite for {0}"
 msgstr "{0} ପାଇଁ ଆମନ୍ତ୍ରଣ ପ୍ରତ୍ୟାହାର କରନ୍ତୁ"
-
-#: src/features/team/TeamPage.tsx
-msgid "Withdraw this invite?"
-msgstr "ଏହି ନିମନ୍ତ୍ରଣ ଫେରାଇନେବେ?"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Within {m} minutes"

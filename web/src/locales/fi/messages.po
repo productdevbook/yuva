@@ -53,6 +53,11 @@ msgstr "(ei aihetta)"
 msgid "{0, plural, one {{name} · # waiting} other {{name} · # waiting}}"
 msgstr "{0, plural, one {{name} · # odottaa} other {{name} · # odottaa}}"
 
+#. placeholder {0}: items.length
+#: src/features/contact/ContactsPage.tsx
+msgid "{0, plural, one {{shown} person} other {{shown} people}}"
+msgstr "{0, plural, one {{shown} henkilö} other {{shown} henkilöä}}"
+
 #. placeholder {0}: msg.attachments
 #: src/features/migrations/ReviewStep.tsx
 msgid "{0, plural, one {# attachment} other {# attachments}}"
@@ -97,6 +102,16 @@ msgstr "{0, plural, one {# hour after someone confirms {list}} other {# hours af
 msgid "{0, plural, one {# hour after someone starts to match {match}} other {# hours after someone starts to match {match}}}"
 msgstr "{0, plural, one {# hour after someone starts to match {match}} other {# hours after someone starts to match {match}}}"
 
+#. placeholder {0}: team.inbox_ids.length
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "{0, plural, one {# inbox} other {# inboxes}}"
+msgstr "{0, plural, one {# saapuneet-kansio} other {# saapuneet-kansiota}}"
+
+#. placeholder {0}: team.member_ids.length
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "{0, plural, one {# member} other {# members}}"
+msgstr "{0, plural, one {# jäsen} other {# jäsentä}}"
+
 #. placeholder {0}: items.length
 #: src/features/inbox/SidePanels.tsx
 msgid "{0, plural, one {# mention} other {# mentions}}"
@@ -106,11 +121,6 @@ msgstr "{0, plural, one {# maininta} other {# mainintaa}}"
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "{0, plural, one {# of them gets it because their language has no version} other {# of them get it because their language has no version}}"
 msgstr "{0, plural, one {# heistä saa sen, koska hänen kielellään ei ole versiota} other {# heistä saa sen, koska heidän kielellään ei ole versiota}}"
-
-#. placeholder {0}: c.activity.open_conversations
-#: src/features/contact/ContactsColumn.tsx
-msgid "{0, plural, one {# open} other {# open}}"
-msgstr "{0, plural, one {# avoin} other {# avointa}}"
 
 #. placeholder {0}: p.unanswered_threads
 #: src/features/home/HomeWork.tsx
@@ -146,11 +156,6 @@ msgstr "{0, plural, one {vastaanottaja} other {vastaanottajaa}}"
 #: src/features/settings/slack/SlackPage.tsx
 msgid "{0} (private)"
 msgstr "{0} (private)"
-
-#. placeholder {0}: fmt.format(s.members.length)
-#: src/features/reports/ReportPages.tsx
-msgid "{0} active today"
-msgstr "{0} aktiivista tänään"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
@@ -199,11 +204,10 @@ msgstr "{0} siirretty roskakoriin"
 msgid "{0} of {1}"
 msgstr "{0} / {1}"
 
-#. placeholder {0}: fmt.format(s.replies)
-#. placeholder {1}: fmt.format(s.closed)
-#: src/features/reports/ReportPages.tsx
-msgid "{0} replies · {1} closed"
-msgstr "{0} vastausta · {1} suljettu"
+#. placeholder {0}: fmt.format(unassigned)
+#: src/features/team/TeamPage.tsx
+msgid "{0} open, unassigned"
+msgstr "{0} avointa, määrittämättä"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
@@ -330,10 +334,6 @@ msgstr "{author} henkilön {ownerName} puolesta"
 #: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
 msgstr "{author}, lähettäjä {by}"
-
-#: src/features/team/TeamPage.tsx
-msgid "{available} of {total}"
-msgstr "{available} / {total}"
 
 #: src/features/team/TeamPage.tsx
 msgid "{available} of {total} available now"
@@ -921,10 +921,6 @@ msgstr "{open} avoinna"
 msgid "{out, plural, one {# row is left out} other {# rows are left out}}"
 msgstr "{out, plural, one {# rivi jätetään pois} other {# riviä jätetään pois}}"
 
-#: src/features/reports/ReportPages.tsx
-msgid "{pct} satisfied"
-msgstr "{pct} tyytyväistä"
-
 #: src/features/docs/PagesTab.tsx
 msgid "{pending} posts waiting for approval"
 msgstr "{pending} viestiä odottaa hyväksyntää"
@@ -1083,10 +1079,6 @@ msgstr "{replies} vastausta"
 #: src/features/contact/ContactVisits.tsx
 msgid "{rest, plural, one {and # more page} other {and # more pages}}"
 msgstr "{rest, plural, one {ja # sivu lisää} other {ja # sivua lisää}}"
-
-#: src/features/team/TeamPage.tsx
-msgid "{role} · {language} · sent {sent} · expires {expires}"
-msgstr "{role} · {language} · lähetetty {sent} · vanhenee {expires}"
 
 #: src/features/broadcasts/Import.tsx
 msgid "{rows} rows, read as {encoding}, separated by {delimiter}."
@@ -1890,8 +1882,8 @@ msgid "A subscription changed"
 msgstr "Tilaus muuttui"
 
 #: src/features/settings/teams/TeamsPage.tsx
-msgid "A team gives its members the inboxes it covers. A conversation can go to a team as well as to a member."
-msgstr "Tiimi antaa jäsenilleen kattamansa postilaatikot. Keskustelu voidaan osoittaa tiimille jäsenen lisäksi."
+msgid "A team gives its members the inboxes it covers"
+msgstr "Tiimi antaa jäsenilleen kattamansa saapuneet-kansiot"
 
 #: src/components/common/text.ts
 msgid "A team holds at most 500 members and 100 inboxes."
@@ -2041,6 +2033,8 @@ msgid "ACS URL"
 msgstr "ACS URL"
 
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Actions"
 msgstr "Toiminnot"
 
@@ -2492,7 +2486,6 @@ msgstr "Alertmanager"
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactDetails.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -2576,7 +2569,7 @@ msgstr "Kaikki sen keskustelut, viestit ja liitteet poistetaan sen mukana. Tät�
 msgid "All parts arrived. Reading the file…"
 msgstr "Kaikki osat saapuivat. Luetaan tiedostoa …"
 
-#: src/app/places.tsx
+#: src/features/contact/ContactsPage.tsx
 msgid "All people"
 msgstr "Kaikki ihmiset"
 
@@ -2586,7 +2579,6 @@ msgstr "kaikki tuotteet"
 
 #: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
@@ -2596,7 +2588,6 @@ msgstr "kaikki tuotteet"
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/status/StatusFrame.tsx
-#: src/features/team/TeamPage.tsx
 msgid "All products"
 msgstr "Kaikki tuotteet"
 
@@ -3135,10 +3126,15 @@ msgstr "Mikä tahansa tunniste"
 msgid "Any of the labels you pick."
 msgstr "Mikä tahansa valitsemistasi tunnisteista."
 
+#: src/features/contact/ContactsPage.tsx
+msgid "Any plan"
+msgstr "Mikä tahansa paketti"
+
 #: src/features/inbox/SourceFilter.tsx
 msgid "Any state"
 msgstr "Mikä tahansa tila"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Any status"
 msgstr "Mikä tahansa tila"
@@ -3642,6 +3638,7 @@ msgstr "automaattinen"
 
 #: src/components/common/AssignmentFields.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Automatic assignment"
 msgstr "Automaattinen määritys"
 
@@ -3659,10 +3656,6 @@ msgstr "Automaatio"
 msgid "Available"
 msgstr "Paikalla"
 
-#: src/features/team/TeamPage.tsx
-msgid "available now"
-msgstr "paikalla nyt"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Available until {until}"
 msgstr "Paikalla {until} asti"
@@ -3671,7 +3664,6 @@ msgstr "Paikalla {until} asti"
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/home/HomePage.tsx
-#: src/features/team/TeamPage.tsx
 msgid "Away"
 msgstr "Poissa"
 
@@ -3809,7 +3801,7 @@ msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignore
 msgstr "1–500, lasketaan koko työtilassa. Käsin määritys ohittaa tämän. Jätä tyhjäksi, jos rajaa ei ole."
 
 #: src/features/settings/labels/LabelDialog.tsx
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 msgid "Billing"
 msgstr "Laskutus"
 
@@ -4055,10 +4047,6 @@ msgstr "Ryhmittäin"
 msgid "By language"
 msgstr "Kielen mukaan"
 
-#: src/features/reports/ReportPages.tsx
-msgid "By member"
-msgstr "Jäsenen mukaan"
-
 #: src/features/conversation/messages/Thread.tsx
 msgid "by rule {rule}"
 msgstr "säännön {rule} toimesta"
@@ -4078,6 +4066,7 @@ msgstr "Kampanjan nimi"
 
 #: src/app/Palette.tsx
 #: src/components/common/ConfirmDialog.tsx
+#: src/components/common/FormCard.tsx
 #: src/components/common/Linked.tsx
 #: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
@@ -4094,7 +4083,6 @@ msgstr "Kampanjan nimi"
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/contact/DeleteContactDialog.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
@@ -4112,6 +4100,7 @@ msgstr "Kampanjan nimi"
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/NewsletterStep.tsx
 #: src/features/status/AddSubscriberDialog.tsx
@@ -4621,6 +4610,7 @@ msgstr "claude.ai ja Claude Desktop"
 
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Clear"
 msgstr "Tyhjennä"
 
@@ -4638,7 +4628,6 @@ msgstr "Tyhjennä vastaus"
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
@@ -4709,6 +4698,7 @@ msgstr "Kellot siirtyvät {date}; ajat pysyvät {start}–{end} paikallista aika
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/migrations/Wizard.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
 msgstr "Sulje"
@@ -4872,6 +4862,10 @@ msgstr "pilkut"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Common choices"
 msgstr "Yleiset valinnat"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Company"
+msgstr "Yritys"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Comparison of condition {n}"
@@ -5216,9 +5210,6 @@ msgstr "Kontakti {since} lähtien"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/contact/ContactPage.tsx
-#: src/features/contact/ContactsColumn.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Contacts"
@@ -5319,6 +5310,7 @@ msgstr "keskustelua"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/contact/MergePreview.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/docs/PagesTab.tsx
@@ -5329,7 +5321,6 @@ msgstr "keskustelua"
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/webhooks/events.tsx
-#: src/features/team/TeamPage.tsx
 msgid "Conversations"
 msgstr "Keskustelut"
 
@@ -5512,10 +5503,6 @@ msgstr "counted so far"
 msgid "Counting…"
 msgstr "Lasketaan…"
 
-#: src/features/contact/ContactsPage.tsx
-msgid "Country"
-msgstr "Maa"
-
 #: src/features/broadcasts/Trigger.tsx
 msgid "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
 msgstr "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
@@ -5635,7 +5622,7 @@ msgstr "Luo tilasivu ({newKey})"
 msgid "Create status page for {product}"
 msgstr "Luo tilasivu tuotteelle {product}"
 
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 msgid "Create team"
 msgstr "Luo tiimi"
 
@@ -5759,6 +5746,10 @@ msgstr "Mukautettu kenttä"
 #: src/features/settings/SettingsFrame.tsx
 msgid "Custom fields"
 msgstr "Mukautetut kentät"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Customers"
+msgstr "Asiakkaat"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Customers cannot see this yet. Tell them with an incident."
@@ -5938,6 +5929,10 @@ msgstr "Poista ({removeKey})"
 #: src/features/status/SettingsTab.tsx
 msgid "Delete {0}?"
 msgstr "Poistetaanko {0}?"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Delete {name}"
+msgstr "Poista {name}"
 
 #: src/features/contact/DeleteContactDialog.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
@@ -6292,7 +6287,7 @@ msgid "Deny"
 msgstr "Kiellä"
 
 #: src/features/issues/IssueDialog.tsx
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
@@ -6349,6 +6344,7 @@ msgstr "Työpöytäilmoitukset on estetty tälle sivustolle selaimen asetuksissa
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Details"
 msgstr "Tiedot"
 
@@ -6787,6 +6783,7 @@ msgstr "Kaksoiskappaleet"
 #: src/features/settings/notifications/EventsSection.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/setup/ChannelStep.tsx
+#: src/features/team/TeamPage.tsx
 msgid "E-mail"
 msgstr "Sähköposti"
 
@@ -6910,8 +6907,8 @@ msgid "Each person is checked once, when their mail is due: someone who left, bo
 msgstr "Each person is checked once, when their mail is due: someone who left, bounced or no longer matches gets nothing."
 
 #: src/features/reports/ReportPages.tsx
-msgid "Each person’s replies, closes and ratings."
-msgstr "Jokaisen henkilön vastaukset, suljetut ja arviot."
+msgid "Each person’s replies, closes and ratings"
+msgstr "Kunkin henkilön vastaukset, sulkemiset ja arviot"
 
 #: src/features/settings/ProductsPage.tsx
 msgid "Each product has its own name, branding, hours, team and channels"
@@ -6958,6 +6955,10 @@ msgstr "Muokkaa ({editKey})"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Edit {keyName}"
 msgstr "Muokkaa avainta {keyName}"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Edit {name}"
+msgstr "Muokkaa: {name}"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 msgid "Edit API key"
@@ -7016,7 +7017,7 @@ msgstr "Muokkaa käytäntöä"
 msgid "Edit rule"
 msgstr "Muokkaa sääntöä"
 
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 msgid "Edit team"
 msgstr "Muokkaa tiimiä"
 
@@ -7374,7 +7375,6 @@ msgstr "Kaikki tämän tiedoston henkilöt suostuivat saamaan listan {listName} 
 msgid "Everyone on the lists. Conditions keep only contacts whose attributes match, all of them."
 msgstr "Kaikki listoilla olevat. Ehdot säilyttävät vain kontaktit, joiden attribuutit täsmäävät, kaikki niistä."
 
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Everyone who has written to your products"
 msgstr "Kaikki, jotka ovat kirjoittaneet tuotteillesi"
@@ -7617,6 +7617,7 @@ msgid "Feedback, {feedback} open"
 msgstr "Palaute, {feedback} avointa"
 
 #: src/components/common/AssignmentFields.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Fewest open conversations"
 msgstr "Vähiten avoimia keskusteluja"
 
@@ -7678,8 +7679,16 @@ msgid "Filter by label"
 msgstr "Suodata tunnisteen mukaan"
 
 #: src/features/contact/ContactsPage.tsx
+msgid "Filter by plan"
+msgstr "Suodata paketin mukaan"
+
+#: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "Suodata tuotteen mukaan"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Filter by state"
+msgstr "Suodata tilan mukaan"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Filter by team"
@@ -8389,7 +8398,6 @@ msgstr "sisältää liitteen"
 msgid "Has an attachment"
 msgstr "Sisältää liitteen"
 
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Has an open conversation"
 msgstr "On avoin keskustelu"
@@ -9055,7 +9063,8 @@ msgctxt "mail folder"
 msgid "Inbox"
 msgstr "Saapuneet"
 
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Inbox access"
 msgstr "Postilaatikoiden käyttöoikeus"
 
@@ -9079,7 +9088,6 @@ msgstr "Postilaatikko: {name}"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
-#: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
 msgstr "Postilaatikot"
 
@@ -9169,16 +9177,12 @@ msgid "Investigating"
 msgstr "Tutkitaan"
 
 #: src/features/team/TeamPage.tsx
-msgid "Invite"
-msgstr "Kutsu"
-
-#: src/features/team/TeamPage.tsx
 msgid "Invite a teammate"
 msgstr "Kutsu tiimikaveri"
 
 #: src/features/team/TeamPage.tsx
-msgid "Invite language"
-msgstr "Kutsun kieli"
+msgid "Invite sent to {sent}."
+msgstr "Kutsu lähetetty osoitteeseen {sent}."
 
 #: src/features/setup/WaitStep.tsx
 msgid "Invite your team"
@@ -9564,10 +9568,6 @@ msgstr "Avainsana"
 #: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "Tyyppi"
-
-#: src/features/contact/ContactsColumn.tsx
-msgid "Known"
-msgstr "Tunnettu"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Known only from the receiving server’s results of the test mail."
@@ -10133,7 +10133,6 @@ msgstr "Lataa kuvat"
 #: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactNotes.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -10679,9 +10678,10 @@ msgstr "Jäsen"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/features/inbox/AssistantsPage.tsx
+#: src/features/reports/ReportPages.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
@@ -10757,6 +10757,10 @@ msgstr "Yhdistä toiseen kontaktiin"
 #: src/features/contact/ContactsPage.tsx
 msgid "Merge…"
 msgstr "Yhdistä…"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Merging keeps the left one and moves addresses, ids and conversations into it. Nothing is merged until you have seen what changes."
+msgstr "Yhdistäminen säilyttää vasemmanpuoleisen ja siirtää siihen osoitteet, tunnisteet ja keskustelut. Mitään ei yhdistetä ennen kuin olet nähnyt muutokset."
 
 #: src/features/mail/Compose.tsx
 #: src/features/setup/previews.tsx
@@ -11019,12 +11023,18 @@ msgstr "Avoimia keskusteluja enintään jäsentä kohti"
 msgid "Most ratings, open feedback, open discussions and waiting posts first"
 msgstr "Eniten arvioita, avointa palautetta, avoimia keskusteluja ja odottavia viestejä ensin"
 
+#: src/features/contact/ContactsPage.tsx
+msgid "Most recently seen first"
+msgstr "Viimeksi nähdyt ensin"
+
 #: src/features/docs/DocsPage.tsx
 msgid "Most votes"
 msgstr "Eniten ääniä"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/team/TeamPage.tsx
 msgid "move"
 msgstr "liiku"
 
@@ -11284,7 +11294,7 @@ msgstr "Omat näkymäni"
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
@@ -11326,10 +11336,6 @@ msgstr "Uuden postilaatikon nimi"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Name, colour and the first thing the chat says"
 msgstr "Nimi, väri ja ensimmäinen asia, jonka chat sanoo"
-
-#: src/features/contact/ContactsColumn.tsx
-msgid "Name, e-mail or id"
-msgstr "Nimi, sähköposti tai tunnus"
 
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
@@ -11648,7 +11654,7 @@ msgstr "Uusi tilasivu"
 msgid "New subscribers added"
 msgstr "Uudet tilaajat lisätty"
 
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "New team"
 msgstr "Uusi tiimi"
@@ -11911,12 +11917,10 @@ msgstr "Ei vahvistusta"
 msgid "No connected apps"
 msgstr "Ei yhdistettyjä sovelluksia"
 
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "No contact matches “{query}”."
 msgstr "Mikään kontakti ei vastaa hakua ”{query}”."
 
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "No contacts in this view."
 msgstr "Ei kontakteja tässä näkymässä."
@@ -11925,7 +11929,6 @@ msgstr "Ei kontakteja tässä näkymässä."
 msgid "No contacts look alike right now."
 msgstr "Tällä hetkellä mikään kontakti ei muistuta toista."
 
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "No contacts yet. They appear when someone writes in."
 msgstr "Ei vielä kontakteja. Ne ilmestyvät, kun joku kirjoittaa."
@@ -12242,10 +12245,6 @@ msgstr "Ei arvioita tällä jaksolla"
 #: src/features/docs/PagesTab.tsx
 msgid "No ratings in this window."
 msgstr "Ei arvioita tällä aikavälillä."
-
-#: src/features/reports/ReportPages.tsx
-msgid "No ratings today"
-msgstr "Ei arvioita tänään"
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -12958,6 +12957,7 @@ msgstr "pois"
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/sla/SlaPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/webhooks/parts.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Off"
@@ -12998,7 +12998,6 @@ msgstr "Tarjotaan tilauslomakkeilla ja asetussivulla. Yksityiset listat täyttä
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
-#: src/features/team/TeamPage.tsx
 msgid "Offline"
 msgstr "Offline"
 
@@ -13336,8 +13335,10 @@ msgstr "Vain tiimisi näkee sen."
 msgid "open"
 msgstr "avoin"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/team/TeamPage.tsx
 msgctxt "keyboard hint"
 msgid "open"
 msgstr "avaa"
@@ -13346,8 +13347,6 @@ msgstr "avaa"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactDetails.tsx
-#: src/features/contact/ContactsColumn.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -13647,10 +13646,6 @@ msgstr "Avaa sivusto, tavoite tai suppilo"
 msgid "Open the triggered e-mail"
 msgstr "Open the triggered e-mail"
 
-#: src/features/team/TeamPage.tsx
-msgid "Open the unassigned queue"
-msgstr "Avaa osoittamattomien jono"
-
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Open the workspace settings"
 msgstr "Avaa työtilan asetukset"
@@ -13679,10 +13674,6 @@ msgstr "Avaa Zoho Accounts"
 #: src/features/team/TeamPage.tsx
 msgid "open, assigned"
 msgstr "avoin, osoitettu"
-
-#: src/features/team/TeamPage.tsx
-msgid "open, unassigned"
-msgstr "avoin, osoittamaton"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "Opened"
@@ -13850,7 +13841,6 @@ msgstr "Ajan mittaan"
 
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/reports/ReportPages.tsx
 #: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
@@ -14105,6 +14095,7 @@ msgstr "Sisältö"
 
 #: src/components/common/text.ts
 #: src/features/settings/OwnDomainCard.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Pending"
 msgstr "Odottaa"
 
@@ -14118,6 +14109,10 @@ msgstr "Odottavat toimitukset hylätään sen mukana."
 #: src/features/contact/ContactsPage.tsx
 msgid "People"
 msgstr "People"
+
+#: src/features/team/TeamPage.tsx
+msgid "People asked to join who have not signed in yet"
+msgstr "Kutsutut, jotka eivät ole vielä kirjautuneet"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "People join it on a subscribe form or are added with their consent. Broadcasts go to lists."
@@ -14139,10 +14134,6 @@ msgstr "Ihmiset lähettävät virheen, idean tai kiitoksen kuvakaappauksen ja la
 #: src/features/settings/sso/SsoPage.tsx
 msgid "People sign in with a code or a passkey again, and single sign-on stops being required. Your domains stay."
 msgstr "People sign in with a code or a passkey again, and single sign-on stops being required. Your domains stay."
-
-#: src/features/contact/ContactsPage.tsx
-msgid "People so far: {shownCount}"
-msgstr "Henkilöitä toistaiseksi: {shownCount}"
 
 #: src/features/setup/SetupHub.tsx
 msgid "People subscribe on your site; broadcasts go to the list."
@@ -14173,6 +14164,10 @@ msgstr "People who signed in and whose mail is not due yet, the one due first on
 msgid "People who wrote to {product}"
 msgstr "Henkilöt, jotka kirjoittivat tuotteelle {product}"
 
+#: src/features/contact/ContactsPage.tsx
+msgid "People with an e-mail address or an id from your app"
+msgstr "Henkilöt, joilla on sähköpostiosoite tai sovelluksesi tunniste"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "People with this domain stop signing in through your provider. Removing the last verified domain turns off required single sign-on."
 msgstr "People with this domain stop signing in through your provider. Removing the last verified domain turns off required single sign-on."
@@ -14181,10 +14176,6 @@ msgstr "People with this domain stop signing in through your provider. Removing 
 #: src/features/setup/SetupHub.tsx
 msgid "People write from inside your app, signed in as themselves."
 msgstr "Ihmiset kirjoittavat sovelluksesi sisältä, kirjautuneina omalla nimellään."
-
-#: src/features/contact/ContactsPage.tsx
-msgid "People: {shownCount}"
-msgstr "Henkilöitä: {shownCount}"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "Per day"
@@ -14221,7 +14212,6 @@ msgid "Permission to send"
 msgstr "Lähetyslupa"
 
 #: src/features/contact/ContactsPage.tsx
-#: src/features/team/TeamPage.tsx
 msgid "Person"
 msgstr "Henkilö"
 
@@ -14276,10 +14266,6 @@ msgstr "Valitse väri."
 #: src/features/status/SettingsTab.tsx
 msgid "Pick a colour"
 msgstr "Valitse väri"
-
-#: src/features/contact/ContactsColumn.tsx
-msgid "Pick a contact"
-msgstr "Valitse kontakti"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Pick a CSV file, or drop it here"
@@ -14540,6 +14526,10 @@ msgstr "Pelkkää tekstiä linkeillä ja rivinvaihdoilla, enintään 5 000 merkk
 msgid "Plain text, shown above the forwarded mail."
 msgstr "Pelkkää tekstiä, näkyy välitetyn viestin yläpuolella."
 
+#: src/features/contact/ContactsPage.tsx
+msgid "Plan"
+msgstr "Paketti"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentDialog.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -14723,7 +14713,6 @@ msgid "pro, team"
 msgstr "pro, tiimi"
 
 #: src/components/common/WorkspaceSelector.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -15738,10 +15727,6 @@ msgstr "Avustajan, botin tai tiimikaverin kirjoittamat vastaukset näkyvät tä�
 msgid "Replies and answers in the discussions you follow"
 msgstr "Vastaukset ja ratkaisut seuraamissasi keskusteluissa"
 
-#: src/features/reports/ReportPages.tsx
-msgid "Replies and closes"
-msgstr "Vastaukset ja sulkemiset"
-
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Replies and ratings"
 msgstr "Vastaukset ja arviot"
@@ -16213,10 +16198,6 @@ msgstr "Mitätöi API-avaimen {name}"
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "Heti tilauksen jälkeen ihmiset saavat lyhyen viestin, joka vahvistaa sen ja jossa on poistumislinkki."
 
-#: src/features/team/TeamPage.tsx
-msgid "Right now"
-msgstr "Juuri nyt"
-
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -16292,6 +16273,7 @@ msgid "Rotated the webhook secret of an issue tracker connection"
 msgstr "Uusi ongelmienseurantayhteyden webhook-salaisuuden"
 
 #: src/components/common/AssignmentFields.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Round robin"
 msgstr "Vuorotellen"
 
@@ -16397,7 +16379,7 @@ msgstr "Lauantai"
 #: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/parts.tsx
 #: src/features/status/ComponentDialogs.tsx
@@ -16622,8 +16604,8 @@ msgid "Score {score} out of 5"
 msgstr "Pisteet {score} / 5"
 
 #: src/features/reports/ReportPages.tsx
-msgid "Scores and comments after a conversation closed."
-msgstr "Arviot ja kommentit keskustelun sulkemisen jälkeen."
+msgid "Scores and comments after a conversation closed"
+msgstr "Arviot ja kommentit keskustelun sulkemisen jälkeen"
 
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/Feedback.tsx
@@ -16646,6 +16628,7 @@ msgstr "Kuvakaappauksia liitetty"
 msgid "SDK"
 msgstr "SDK"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "search"
 msgstr "hae"
@@ -16661,12 +16644,7 @@ msgstr "Haku"
 msgid "Search by name, e-mail or external id"
 msgstr "Hae nimellä, sähköpostilla tai ulkoisella tunnuksella"
 
-#: src/features/contact/ContactsColumn.tsx
-msgid "Search by name, e-mail or the id your app gives them, then open one to see their conversations, details and notes."
-msgstr "Hae nimellä, sähköpostilla tai sovelluksesi antamalla tunnuksella ja avaa sitten yksi nähdäksesi sen keskustelut, tiedot ja muistiinpanot."
-
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Search contacts"
@@ -16813,6 +16791,7 @@ msgstr "Nähty {seen}"
 msgid "Seen by the monitor"
 msgstr "Valvonnan näkemä"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "select"
@@ -17304,6 +17283,11 @@ msgctxt "mail folder"
 msgid "Sent"
 msgstr "Lähetetyt"
 
+#. placeholder {0}: formatDate(invite.created_at, i18n.locale)
+#: src/features/team/TeamPage.tsx
+msgid "sent {0}"
+msgstr "lähetetty {0}"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "Lähetti {count} viestiä tästä osoitteesta"
@@ -17564,7 +17548,6 @@ msgstr "Pikanäppäin"
 #: src/components/common/PageLayout.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -18928,10 +18911,10 @@ msgstr "TCP-tarkistus"
 #: src/features/docs/discussions/parts.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
-#: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
 msgstr "Tiimi"
@@ -19001,6 +18984,7 @@ msgstr "tiimilainen@yritys.fi"
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Teams"
 msgstr "Tiimit"
@@ -20260,8 +20244,8 @@ msgid "These choices are kept on this device only."
 msgstr "Nämä valinnat säilytetään vain tällä laitteella."
 
 #: src/features/contact/ContactsPage.tsx
-msgid "These look like the same person. Merging keeps the left one and moves addresses, ids and conversations into it. Nothing is merged until you have seen what changes."
-msgstr "Nämä näyttävät samalta henkilöltä. Yhdistäminen säilyttää vasemmanpuoleisen ja siirtää osoitteet, tunnukset ja keskustelut siihen. Mitään ei yhdistetä, ennen kuin olet nähnyt, mikä muuttuu."
+msgid "These look like the same person"
+msgstr "Nämä näyttävät samalta henkilöltä"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "These merge fields have no fallback and would be empty for some recipients:"
@@ -21376,7 +21360,6 @@ msgstr "Lukitus avattu"
 #: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -21929,7 +21912,6 @@ msgid "Visible to"
 msgstr "Näkyy"
 
 #: src/components/common/Source.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/docs/PagesTab.tsx
@@ -21946,7 +21928,7 @@ msgstr "Kävijä · {where}"
 msgid "visitors"
 msgstr "kävijää"
 
-#: src/features/contact/ContactsColumn.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 msgid "Visitors"
 msgstr "Kävijät"
@@ -21974,6 +21956,10 @@ msgstr "Kävijät tilaavat sivulla ja saavat viestin, kun häiriö tai huolto mu
 #: src/features/home/PropertyCard.tsx
 msgid "visitors today"
 msgstr "kävijää tänään"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Visitors without a confirmed e-mail address or id"
+msgstr "Vierailijat ilman vahvistettua sähköpostiosoitetta tai tunnistetta"
 
 #: src/features/setup/ChannelStep.tsx
 #: src/features/setup/SetupHub.tsx
@@ -22147,6 +22133,10 @@ msgstr "Lähetämme sinulle kertakäyttökoodin sähköpostitse. Ei salasanaa mu
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "We mailed a 6-digit code to this address. It is valid for 10 minutes."
 msgstr "Lähetimme tähän osoitteeseen 6-numeroisen koodin. Se on voimassa 10 minuuttia."
+
+#: src/features/team/TeamPage.tsx
+msgid "We send a sign-in link that is valid for 7 days."
+msgstr "Lähetämme kirjautumislinkin, joka on voimassa 7 päivää."
 
 #: src/features/auth/SignInForm.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
@@ -22662,10 +22652,6 @@ msgstr "Peru"
 #: src/features/team/TeamPage.tsx
 msgid "Withdraw the invite for {0}"
 msgstr "Peru kutsu henkilölle {0}"
-
-#: src/features/team/TeamPage.tsx
-msgid "Withdraw this invite?"
-msgstr "Perutaanko tämä kutsu?"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Within {m} minutes"

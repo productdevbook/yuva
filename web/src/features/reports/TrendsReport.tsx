@@ -14,7 +14,6 @@ import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
 import { Legend } from "@/features/analytics/Overview"
 import { Panel } from "@/features/analytics/parts"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
-import { look } from "@/features/inbox/PageFrame"
 import { addDays, dayKey, daysBetween, downloadReport, useReport, type ReportQuery } from "@/features/reports/data"
 import { ActionsPortal, headClass, ReportSkeleton, SlaBar, ToolbarPortal } from "@/features/reports/parts"
 import type { ChannelKind, ConversationOrigin, ReportGranularity, ReportGroupBy, ReportValues } from "@/lib/api"
@@ -73,12 +72,12 @@ function slaCounts(v: ReportValues | undefined) {
   return { met: a.met + b.met + c.met, breached: a.breached + b.breached + c.breached }
 }
 
-function slaShare(v: ReportValues | undefined) {
+export function slaShare(v: ReportValues | undefined) {
   const { met, breached } = slaCounts(v)
   return met + breached ? met / (met + breached) : undefined
 }
 
-function ratingShare(v: ReportValues | undefined) {
+export function ratingShare(v: ReportValues | undefined) {
   if (!v?.ratings) return undefined
   const total = v.ratings.good + v.ratings.bad
   return total ? v.ratings.good / total : undefined
@@ -92,7 +91,17 @@ function hasActivity(v: ReportValues | undefined) {
 
 type Kind = "count" | "time" | "share"
 
-function Delta({ cur, prev, kind, better }: { cur?: number; prev?: number; kind: Kind; better?: "up" | "down" }) {
+export function Delta({
+  cur,
+  prev,
+  kind,
+  better,
+}: {
+  cur?: number
+  prev?: number
+  kind: Kind
+  better?: "up" | "down"
+}) {
   const { t, i18n } = useLingui()
   if (cur === undefined || prev === undefined || (kind !== "share" && prev === 0)) {
     return <span>{t`No earlier figure`}</span>
@@ -395,13 +404,7 @@ function Controls({
         </div>
       </ToolbarPortal>
       <ActionsPortal>
-        <Button
-          variant="outline"
-          className={cn(look.btn, "bg-card")}
-          disabled={invalid || exporting}
-          onClick={onExport}
-          data-testid="trends-export"
-        >
+        <Button variant="outline" disabled={invalid || exporting} onClick={onExport} data-testid="trends-export">
           <DownloadIcon className="size-4" />
           <Trans>Export CSV</Trans>
         </Button>

@@ -4,48 +4,40 @@ import { ArrowLeftRightIcon, ChevronDownIcon, PlusIcon, SearchIcon, XIcon } from
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { Link, useNavigate, useSearchParams } from "react-router"
 
+import { ContactAvatar, Dot, ErrorLine, InfoColumn, Kbd, PageLayout, PageTop, toast } from "@/components/common"
+import { FormCard, FormGrid } from "@/components/common/FormCard"
 import {
-  ContactAvatar,
-  Dot,
-  ErrorLine,
-  FlatEmpty,
-  InfoColumn,
-  InfoSection,
-  KV,
-  NavGroup,
-  NavList,
-  PageHeading,
-  PageLayout,
-  PageTop,
-  toast,
-  TopSep,
-  UnreadBadge,
-} from "@/components/common"
+  filterButton,
+  filterButtonOn,
+  FilterRow,
+  KeyHints,
+  ListBox,
+  ListBoxEmpty,
+  ListBoxSkeleton,
+  PageTitle,
+  RowCheckbox,
+} from "@/components/common/ListBox"
+import { SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { useErrorText } from "@/components/common/text"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Skeleton } from "@/components/ui/skeleton"
-import { RowCheck, SelectToggle } from "@/components/common/Selection"
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { ContactBulkBar } from "@/features/contact/ContactBulk"
 import { ContactDetail, ContactInfo } from "@/features/contact/ContactDetail"
 import { MergeContactDialog } from "@/features/contact/MergeContactDialog"
-import { useContactDirectory, useCreateContact } from "@/features/contact/queries"
+import { useContactDirectory, useCreateContact, type DirectoryFilter } from "@/features/contact/queries"
 import { contactName } from "@/features/contact/Section"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { Ago } from "@/features/inbox/PageFrame"
@@ -57,21 +49,35 @@ import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { useInboxes } from "@/lib/workspace"
 
-type Tab = "all" | "recent" | "duplicates"
+export const PEOPLE_VIEWS = ["all", "customers", "visitors", "recent", "duplicates"] as const
+export type PeopleView = (typeof PEOPLE_VIEWS)[number]
 
-const chipBase =
-  "inline-flex h-[34px] shrink-0 items-center gap-1.5 rounded-[9px] border px-2.5 text-small whitespace-nowrap outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring"
-const chipOff =
-  "border-dashed border-input bg-transparent text-muted-foreground hover:border-faint hover:text-foreground"
-const chipOn = "border-input bg-card font-medium text-foreground data-popup-open:bg-muted"
-const toggleOff = "border-input bg-card text-muted-foreground hover:border-faint hover:text-foreground"
-const toggleOn = "border-foreground bg-foreground text-background"
-const actionInk = "h-8 rounded-[9px] bg-foreground px-3.5 font-semibold text-background hover:bg-foreground/90"
-const actionOutline = "h-8 rounded-[9px] border-input bg-card px-3 font-normal"
+export function viewOf(params: URLSearchParams): PeopleView {
+  const v = params.get("tab")
+  return PEOPLE_VIEWS.find((x) => x === v) ?? "all"
+}
+
+export function usePeopleViewNames(): Record<PeopleView, string> {
+  const { t } = useLingui()
+  return {
+    all: t`All people`,
+    customers: t`Customers`,
+    visitors: t`Visitors`,
+    recent: t`Recently active`,
+    duplicates: t`Duplicates`,
+  }
+}
+
+const FILTERS = ["q", "inbox", "plan", "country", "open", "blocked", "undeliverable"]
+
+function attr(c: Contact, key: string) {
+  const v = c.attributes?.[key]
+  return typeof v === "string" && v.trim() ? v.trim() : undefined
+}
 
 export function countryOf(c: Contact, locale: string) {
-  const attr = c.attributes?.country
-  if (typeof attr === "string" && attr) return attr
+  const own = attr(c, "country")
+  if (own) return own
   const region = c.locale?.split(/[-_]/)[1]
   if (!region) return undefined
   try {
@@ -119,44 +125,52 @@ function useDuplicates(items: Contact[], dismissed: string[]) {
   }, [items, dismissed, inboxes])
 }
 
-function FilterChip({
+function usePeopleScope() {
+  const [params] = useSearchParams()
+  const [global] = useInboxFilter()
+  const inboxes = useInboxes().data
+  const picked = params.get("inbox") ?? ""
+  const chosen = inboxes?.some((i) => i.id === picked) ? picked : ""
+  return { chosen, inboxId: chosen || global, global }
+}
+
+export function useDuplicatePairs(dismissed: string[] = readDismissed()) {
+  const { inboxId } = usePeopleScope()
+  const everyone = useContactDirectory("", {}, inboxId, "last_seen")
+  const all = useMemo(() => everyone.data?.pages.flatMap((p) => p.items) ?? [], [everyone.data])
+  const pairs = useDuplicates(all, dismissed)
+  return { everyone, pairs, complete: !!everyone.data && !everyone.hasNextPage }
+}
+
+function FilterMenu({
   value,
   onChange,
   options,
-  placeholder,
   anyLabel,
-  ariaLabel,
+  label,
   testId,
 }: {
   value: string
   onChange: (v: string) => void
   options: { value: string; label: string }[]
-  placeholder: React.ReactNode
-  anyLabel: React.ReactNode
-  ariaLabel: string
+  anyLabel: string
+  label: string
   testId: string
 }) {
   const current = options.find((o) => o.value === value)
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        render={<button type="button" className={cn(chipBase, current ? chipOn : chipOff)} />}
-        aria-label={ariaLabel}
+        render={
+          <Button variant="outline" size="sm" className={cn(filterButton, "max-w-52", current && filterButtonOn)} />
+        }
+        aria-label={label}
         data-testid={testId}
       >
-        {current ? (
-          <>
-            <span className="max-w-28 truncate">{current.label}</span>
-            <ChevronDownIcon className="size-3 text-faint" />
-          </>
-        ) : (
-          <>
-            <PlusIcon className="size-3.5" />
-            {placeholder}
-          </>
-        )}
+        <span className="truncate">{current?.label ?? anyLabel}</span>
+        <ChevronDownIcon className="text-muted-foreground" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="min-w-44">
+      <DropdownMenuContent align="start" className="max-h-[60svh] min-w-44">
         <DropdownMenuRadioGroup value={value} onValueChange={(v) => onChange(String(v))}>
           <DropdownMenuRadioItem value="">{anyLabel}</DropdownMenuRadioItem>
           {options.map((o) => (
@@ -170,120 +184,139 @@ function FilterChip({
   )
 }
 
-function ToggleChip({
-  on,
-  onClick,
-  testId,
-  children,
-}: {
-  on: boolean
-  onClick: () => void
-  testId: string
-  children: React.ReactNode
-}) {
-  return (
-    <button
-      type="button"
-      aria-pressed={on}
-      onClick={onClick}
-      className={cn(chipBase, on ? toggleOn : toggleOff)}
-      data-testid={testId}
-    >
-      {children}
-    </button>
-  )
-}
-
 function Tag({ tone, children }: { tone: "danger" | "warn"; children: React.ReactNode }) {
   return (
-    <span
+    <Badge
+      variant="secondary"
       className={cn(
-        "inline-flex h-5 shrink-0 items-center rounded-md px-[7px] text-[11px] font-semibold",
+        "h-5 rounded-md px-[7px] text-[11px] font-semibold",
         tone === "danger" ? "bg-destructive/10 text-destructive" : "bg-warning/10 text-warning"
       )}
     >
       {children}
-    </span>
+    </Badge>
   )
 }
 
+const head = "h-9 px-3 text-start text-caption font-medium text-muted-foreground"
+const cell = "px-3 py-2.5 text-body"
+const hideCompany = "@max-3xl/list:hidden"
+const hidePlan = "@max-2xl/list:hidden"
+const hideProducts = "@max-5xl/list:hidden"
+const hideCount = "@max-md/list:hidden"
+
 function Row({
   c,
-  current,
   cursor,
-  search,
-  onOpen,
+  checked,
+  selecting,
   check,
+  to,
+  onOpen,
 }: {
   c: Contact
-  current: boolean
   cursor: boolean
-  search: string
+  checked: boolean
+  selecting: boolean
+  check?: (range: boolean) => void
+  to: string
   onOpen: () => void
-  check?: { checked: boolean; onToggle: (range: boolean) => void }
 }) {
-  const { t, i18n } = useLingui()
+  const { t } = useLingui()
   const inboxes = useInboxes().data
   const name = contactName(c, t`Unnamed contact`)
   const sub = c.emails[0] && c.emails[0] !== name ? c.emails[0] : (c.external_ids[0]?.external_id ?? "")
   const seen = c.activity?.last_seen_at
   const open = c.activity?.open_conversations ?? 0
+  const count = c.activity?.conversations ?? 0
+  const company = attr(c, "company")
+  const plan = attr(c, "plan")
   return (
-    <li
+    <TableRow
+      onClick={(e) => {
+        if (check && (e.shiftKey || selecting)) check(e.shiftKey)
+        else onOpen()
+      }}
       className={cn(
-        "relative flex scroll-mt-3 scroll-mb-6 items-center border-t border-line-soft transition-colors hover:bg-subtle",
-        (current || cursor) && "bg-subtle shadow-[inset_2px_0_0_var(--brand)] rtl:shadow-[inset_-2px_0_0_var(--brand)]",
-        check?.checked && "bg-brand-wash"
+        "cursor-pointer border-line-soft hover:bg-subtle",
+        cursor && "bg-subtle [&>td:first-child]:shadow-[inset_2px_0_0_var(--brand)]",
+        checked && "bg-brand-wash hover:bg-brand-wash"
       )}
+      data-testid="contact-row"
+      data-checked={checked || undefined}
     >
-      {check && <RowCheck className="ms-1" checked={check.checked} name={name} onToggle={check.onToggle} />}
-      <Link
-        to={`/contacts/${c.id}${search}`}
-        onClick={(e) => {
-          if (!check) return onOpen()
-          e.preventDefault()
-          check.onToggle(e.shiftKey)
-        }}
-        className="flex min-w-0 flex-1 items-center gap-3.5 px-1 py-[11px] text-body text-fg2 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
-        aria-current={current ? "page" : undefined}
-        data-testid="contact-row"
-      >
-        <ContactAvatar id={c.id} name={name} className="size-7 shrink-0 text-[11px] font-semibold" />
-        <span className="flex min-w-0 flex-1 flex-col">
-          <span className="flex min-w-0 items-center gap-1.5">
-            <span className="truncate font-medium text-foreground">{name}</span>
-            {c.blocked && (
-              <Tag tone="danger">
-                <Trans>Blocked</Trans>
-              </Tag>
-            )}
-            {c.undeliverable.length > 0 && (
-              <Tag tone="warn">
-                <Trans>Undeliverable</Trans>
-              </Tag>
-            )}
+      {check && (
+        <TableCell className="w-10 py-2.5 ps-3 pe-0" onClick={(e) => e.stopPropagation()}>
+          <RowCheckbox checked={checked} name={name} onToggle={check} className="mt-0" />
+        </TableCell>
+      )}
+      <TableCell className={cn(cell, "min-w-0 overflow-hidden", !check && "ps-4")}>
+        <Link
+          to={to}
+          onClick={(e) => {
+            e.stopPropagation()
+            if (check && (e.shiftKey || selecting)) {
+              e.preventDefault()
+              check(e.shiftKey)
+            } else onOpen()
+          }}
+          className="flex min-w-0 items-center gap-3 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          data-testid="contact-open"
+        >
+          <ContactAvatar id={c.id} name={name} className="size-7 shrink-0 text-[11px] font-semibold" />
+          <span className="flex min-w-0 flex-col leading-5">
+            <span className="flex min-w-0 items-center gap-1.5">
+              <span className="truncate font-medium text-foreground">{name}</span>
+              {c.blocked && (
+                <Tag tone="danger">
+                  <Trans>Blocked</Trans>
+                </Tag>
+              )}
+              {c.undeliverable.length > 0 && (
+                <Tag tone="warn">
+                  <Trans>Undeliverable</Trans>
+                </Tag>
+              )}
+            </span>
+            <span className="truncate text-small text-muted-foreground">{sub || <Trans>Visitor</Trans>}</span>
           </span>
-          <span className="truncate font-mono text-xs text-muted-foreground">{sub || <Trans>Visitor</Trans>}</span>
-        </span>
-        <span className="flex w-40 min-w-0 shrink-0 items-center gap-1.5 @max-2xl/list:hidden">
-          {c.inboxes.slice(0, 4).map((i) => (
-            <span key={i.id} title={i.name} className="inline-flex">
+        </Link>
+      </TableCell>
+      <TableCell className={cn(cell, hideCompany, "truncate text-fg2")}>{company ?? "–"}</TableCell>
+      <TableCell className={cn(cell, hidePlan, "text-fg2")}>
+        {plan ? (
+          <Badge variant="secondary" className="max-w-full truncate rounded-md font-normal">
+            {plan}
+          </Badge>
+        ) : (
+          <span className="text-muted-foreground">–</span>
+        )}
+      </TableCell>
+      <TableCell className={cn(cell, hideProducts)}>
+        <span className="flex min-w-0 items-center gap-2 overflow-hidden">
+          {c.inboxes.slice(0, 2).map((i) => (
+            <span key={i.id} className="inline-flex min-w-0 items-center gap-1.5 text-small text-muted-foreground">
               <Dot color={inboxes?.find((x) => x.id === i.id)?.branding.color} className="size-[7px] rounded-full" />
+              <span className="truncate">{i.name}</span>
             </span>
           ))}
-          {c.inboxes.length === 1 && (
-            <span className="min-w-0 truncate text-small text-muted-foreground">{c.inboxes[0].name}</span>
+          {c.inboxes.length > 2 && <span className="text-small text-faint">+{c.inboxes.length - 2}</span>}
+        </span>
+      </TableCell>
+      <TableCell className={cn(cell, "text-small text-muted-foreground tabular-nums")}>
+        {seen ? <Ago iso={seen} /> : "–"}
+      </TableCell>
+      <TableCell className={cn(cell, hideCount, "pe-4 text-end tabular-nums")}>
+        <span className="inline-flex items-center gap-1.5">
+          <span className={count ? "text-fg2" : "text-muted-foreground"}>{count}</span>
+          {open > 0 && (
+            <Badge className="h-[18px] min-w-[18px] rounded-full bg-brand px-1.5 text-[11px] text-white">
+              {plural(open, { one: "# open", other: "# open" })}
+            </Badge>
           )}
         </span>
-        <span className="w-24 shrink-0 truncate text-small text-muted-foreground @max-3xl/list:hidden">
-          {countryOf(c, i18n.locale) ?? "—"}
-        </span>
-        <span className="w-20 shrink-0 truncate font-mono text-xs text-muted2">{seen ? <Ago iso={seen} /> : "—"}</span>
-        <span className="flex w-7 shrink-0 justify-end">
-          {open > 0 && <UnreadBadge label={plural(open, { one: "# open", other: "# open" })}>{open}</UnreadBadge>}
-        </span>
-      </Link>
-    </li>
+      </TableCell>
+    </TableRow>
   )
 }
 
@@ -296,11 +329,11 @@ function Side({ c }: { c: Contact }) {
     <div className="flex min-w-0 flex-1 items-center gap-3">
       <ContactAvatar id={c.id} name={name} className="size-[34px] shrink-0 text-caption font-semibold" />
       <span className="flex min-w-0 flex-col leading-[1.35]">
-        <Link to={`/contacts/${c.id}`} className="truncate text-[13.5px] font-semibold hover:underline">
+        <Link to={`/contacts/${c.id}`} className="truncate text-body font-semibold hover:underline">
           {name}
         </Link>
-        <span className="truncate text-caption text-faint">{c.emails[0] ?? <Trans>no e-mail</Trans>}</span>
-        <span className="truncate text-caption text-faint">
+        <span className="truncate text-caption text-muted-foreground">{c.emails[0] ?? <Trans>no e-mail</Trans>}</span>
+        <span className="truncate text-caption text-muted-foreground">
           {products ? `${products} · ` : ""}
           {n === 1 ? <Trans>1 conversation</Trans> : <Trans>{n} conversations</Trans>}
         </span>
@@ -309,119 +342,98 @@ function Side({ c }: { c: Contact }) {
   )
 }
 
-function PairCard({ pair, onDismiss }: { pair: Pair; onDismiss: () => void }) {
+function PairRow({ pair, onDismiss }: { pair: Pair; onDismiss: () => void }) {
   const { canManage } = useSession()
   const [merging, setMerging] = useState(false)
   const shared = pair.inbox
   return (
-    <li
-      className="grid grid-cols-[minmax(0,1fr)_40px_minmax(0,1fr)_auto] items-center gap-3 border-t border-line-soft px-1 py-3.5 @max-3xl/list:grid-cols-[minmax(0,1fr)_40px_minmax(0,1fr)] @max-3xl/list:[&>:last-child]:col-span-full"
+    <div
+      data-row
+      className="@container/pair flex flex-col gap-3 border-line-soft px-4 py-3.5"
       data-testid="duplicate-pair"
     >
-      <Side c={pair.a} />
-      <ArrowLeftRightIcon className="mx-auto size-4 text-faint" aria-hidden />
-      <Side c={pair.b} />
-      <div className="flex flex-col items-end gap-1.5 @max-3xl/list:items-start">
-        <p className="text-caption text-faint">
+      <div className="grid grid-cols-[minmax(0,1fr)_32px_minmax(0,1fr)] items-center gap-3 @max-md/pair:grid-cols-1">
+        <Side c={pair.a} />
+        <ArrowLeftRightIcon className="mx-auto size-4 text-faint @max-md/pair:hidden" aria-hidden />
+        <Side c={pair.b} />
+      </div>
+      <div className="flex flex-wrap items-center gap-2">
+        <p className="m-0 me-auto text-caption text-muted-foreground">
           {shared ? <Trans>Same name, both wrote to {shared}.</Trans> : <Trans>Same name.</Trans>}
         </p>
-        <div className="flex gap-1.5">
-          <Button variant="outline" className={actionOutline} onClick={onDismiss} data-testid="duplicate-dismiss">
-            <Trans>Not the same</Trans>
+        <Button variant="outline" size="sm" onClick={onDismiss} data-testid="duplicate-dismiss">
+          <Trans>Not the same</Trans>
+        </Button>
+        {canManage && (
+          <Button size="sm" onClick={() => setMerging(true)} data-testid="duplicate-merge">
+            <Trans>Merge…</Trans>
           </Button>
-          {canManage && (
-            <Button className={actionInk} onClick={() => setMerging(true)} data-testid="duplicate-merge">
-              <Trans>Merge…</Trans>
-            </Button>
-          )}
-        </div>
+        )}
       </div>
       {canManage && (
         <MergeContactDialog target={pair.a} initialSource={pair.b} open={merging} onOpenChange={setMerging} />
       )}
-    </li>
+    </div>
   )
 }
 
-function AddContactDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+function AddContactForm({ onClose }: { onClose: () => void }) {
   const navigate = useNavigate()
   const errorText = useErrorText()
   const create = useCreateContact()
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
-  const ready = !!name.trim() || !!email.trim()
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent data-testid="add-contact">
-        <DialogHeader>
-          <DialogTitle>
-            <Trans>Add contact</Trans>
-          </DialogTitle>
-          <DialogDescription>
-            <Trans>Someone who has not written yet. You can start a conversation with them next.</Trans>
-          </DialogDescription>
-        </DialogHeader>
-        <form
-          id="add-contact-form"
-          className="flex flex-col gap-4"
-          onSubmit={(e) => {
-            e.preventDefault()
-            if (!ready) return
-            create.mutate(
-              { name: name.trim() || undefined, emails: email.trim() ? [email.trim()] : undefined },
-              {
-                onSuccess: (c) => {
-                  onOpenChange(false)
-                  setName("")
-                  setEmail("")
-                  navigate(`/contacts/${c.id}`)
-                  toast(<Trans>Contact added. Use New conversation to write to them.</Trans>)
-                },
-                onError: (err) => toast(errorText(err)),
-              }
-            )
-          }}
-        >
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="add-contact-name">
-              <Trans>Name</Trans>
-            </Label>
-            <Input
-              id="add-contact-name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              maxLength={200}
-              className="h-[38px] rounded-[9px]"
-            />
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="add-contact-email">
-              <Trans>E-mail</Trans>
-            </Label>
-            <Input
-              id="add-contact-email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="h-[38px] rounded-[9px]"
-            />
-          </div>
-        </form>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            <Trans>Cancel</Trans>
-          </Button>
-          <Button
-            type="submit"
-            form="add-contact-form"
-            disabled={!ready || create.isPending}
-            data-testid="add-contact-create"
-          >
-            <Trans>Add contact</Trans>
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <FormCard
+      title={<Trans>Add contact</Trans>}
+      description={<Trans>Someone who has not written yet. You can start a conversation with them next.</Trans>}
+      submit={<Trans>Add contact</Trans>}
+      ready={!!name.trim() || !!email.trim()}
+      busy={create.isPending}
+      onCancel={onClose}
+      onSubmit={() =>
+        create.mutate(
+          { name: name.trim() || undefined, emails: email.trim() ? [email.trim()] : undefined },
+          {
+            onSuccess: (c) => {
+              onClose()
+              navigate(`/contacts/${c.id}`)
+              toast(<Trans>Contact added. Use New conversation to write to them.</Trans>)
+            },
+            onError: (err) => toast(errorText(err)),
+          }
+        )
+      }
+      testId="add-contact"
+    >
+      <FormGrid>
+        <Field>
+          <FieldLabel htmlFor="add-contact-name">
+            <Trans>Name</Trans>
+          </FieldLabel>
+          <Input
+            id="add-contact-name"
+            value={name}
+            autoFocus
+            onChange={(e) => setName(e.target.value)}
+            maxLength={200}
+            className="h-9"
+          />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="add-contact-email">
+            <Trans>E-mail</Trans>
+          </FieldLabel>
+          <Input
+            id="add-contact-email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="h-9"
+          />
+        </Field>
+      </FormGrid>
+    </FormCard>
   )
 }
 
@@ -432,29 +444,28 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
   const { canManage } = useSession()
   const navigate = useNavigate()
   const [params, setParams] = useSearchParams()
-  const tabParam = params.get("tab")
-  const tab: Tab = tabParam === "recent" || tabParam === "duplicates" ? tabParam : "all"
-  const [global] = useInboxFilter()
+  const view = viewOf(params)
+  const names = usePeopleViewNames()
   const inboxes = useInboxes().data
-  const picked = params.get("inbox") ?? ""
-  const chosen = inboxes?.some((i) => i.id === picked) ? picked : ""
-  const inboxId = chosen || global
+  const { chosen, inboxId, global } = usePeopleScope()
   const product = inboxes?.find((i) => i.id === inboxId)?.name
   const q = params.get("q") ?? ""
+  const plan = params.get("plan") ?? ""
   const country = params.get("country") ?? ""
   const openOnly = params.get("open") === "1"
   const blockedOnly = params.get("blocked") === "1"
   const undeliverableOnly = params.get("undeliverable") === "1"
   const query = useDebounced(q.trim(), 250)
-  const directory = useContactDirectory(
-    query,
-    openOnly ? "open" : "all",
-    inboxId,
-    tab === "recent" ? "last_seen" : "created"
-  )
-  const everyone = useContactDirectory("", "all", inboxId, "last_seen")
+  const filter: DirectoryFilter = {
+    kind: view === "customers" ? "known" : view === "visitors" ? "visitor" : undefined,
+    open: openOnly,
+  }
+  const directory = useContactDirectory(query, filter, inboxId, view === "recent" ? "last_seen" : "created")
   const loaded = useMemo(() => directory.data?.pages.flatMap((p) => p.items) ?? [], [directory.data])
-  const all = useMemo(() => everyone.data?.pages.flatMap((p) => p.items) ?? [], [everyone.data])
+  const plans = useMemo(
+    () => [...new Set(loaded.map((c) => attr(c, "plan")).filter((x): x is string => !!x))].sort(),
+    [loaded]
+  )
   const countries = useMemo(
     () => [...new Set(loaded.map((c) => countryOf(c, i18n.locale)).filter((x): x is string => !!x))].sort(),
     [loaded, i18n.locale]
@@ -463,28 +474,28 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
     () =>
       loaded.filter(
         (c) =>
+          (!plan || attr(c, "plan") === plan) &&
           (!country || countryOf(c, i18n.locale) === country) &&
           (!blockedOnly || c.blocked) &&
           (!undeliverableOnly || c.undeliverable.length > 0)
       ),
-    [loaded, country, blockedOnly, undeliverableOnly, i18n.locale]
+    [loaded, plan, country, blockedOnly, undeliverableOnly, i18n.locale]
   )
   const [dismissed, setDismissed] = useState(readDismissed)
-  const pairs = useDuplicates(all, dismissed)
+  const { everyone, pairs } = useDuplicatePairs(dismissed)
   const [cursor, setCursor] = useState(-1)
   const [adding, setAdding] = useState(false)
   const selection = useSelection(
     items.map((c) => c.id),
-    `${tab}|${query}|${inboxId}|${country}|${openOnly}|${blockedOnly}|${undeliverableOnly}`
+    `${view}|${query}|${inboxId}|${plan}|${country}|${openOnly}|${blockedOnly}|${undeliverableOnly}`
   )
-  const list = useRef<HTMLUListElement>(null)
+  const list = useRef<HTMLDivElement>(null)
   const search = useRef<HTMLInputElement>(null)
-  const listParams = new URLSearchParams(params)
-  listParams.delete("view")
-  const suffix = listParams.toString() ? `?${listParams.toString()}` : ""
-  const anyFilter = !!(q || chosen || country || openOnly || blockedOnly || undeliverableOnly)
-  const shownCount = new Intl.NumberFormat(i18n.locale).format(items.length)
-  const viewName = tab === "recent" ? t`Recently active` : tab === "duplicates" ? t`Duplicates` : t`People`
+  const suffix = params.toString() ? `?${params.toString()}` : ""
+  const anyFilter = !!(q || chosen || plan || country || openOnly || blockedOnly || undeliverableOnly)
+  const fmt = new Intl.NumberFormat(i18n.locale)
+  const shown = `${fmt.format(items.length)}${directory.hasNextPage ? "+" : ""}`
+  const viewName = names[view]
   const pair = contactId ? pairs.find((p) => p.a.id === contactId || p.b.id === contactId) : undefined
   const listPath = `/contacts${suffix}`
 
@@ -506,18 +517,11 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
       },
       { replace: true }
     )
-  const tabTo = (k: Tab) => {
-    const next = new URLSearchParams(params)
-    next.delete("view")
-    if (k === "all") next.delete("tab")
-    else next.set("tab", k)
-    return { pathname: "/contacts", search: next.toString() ? `?${next.toString()}` : "" }
-  }
   const clearFilters = () =>
     setParams(
       (prev) => {
         const next = new URLSearchParams(prev)
-        for (const k of ["q", "inbox", "country", "open", "blocked", "undeliverable"]) next.delete(k)
+        for (const k of FILTERS) next.delete(k)
         return next
       },
       { replace: true }
@@ -536,22 +540,21 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
   useHotkeys(
     contactId
       ? { Escape: () => navigate(listPath) }
-      : tab === "duplicates"
+      : view === "duplicates"
         ? {}
         : {
-            j: () => setCursor((i) => Math.min(items.length - 1, i + 1)),
-            k: () => setCursor((i) => Math.max(0, i - 1)),
+            [SHORTCUTS.next]: () => setCursor((i) => Math.min(items.length - 1, i + 1)),
+            [SHORTCUTS.previous]: () => setCursor((i) => Math.max(0, i - 1)),
             ArrowDown: () => setCursor((i) => Math.min(items.length - 1, i + 1)),
             ArrowUp: () => setCursor((i) => Math.max(0, i - 1)),
             Enter: () => cursor >= 0 && items[cursor] && open(items[cursor].id),
             o: () => cursor >= 0 && items[cursor] && open(items[cursor].id),
-            "/": () => search.current?.focus(),
+            [SHORTCUTS.search]: () => search.current?.focus(),
             ...(canManage
               ? {
-                  x: () => {
+                  [SHORTCUTS.select]: () => {
                     const id = items[cursor]?.id
                     if (id) selection.toggle(id)
-                    else selection.start()
                   },
                 }
               : {}),
@@ -562,86 +565,116 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
       list.current?.querySelectorAll("[data-testid=contact-row]")[cursor]?.scrollIntoView({ block: "nearest" })
   }, [cursor])
 
-  const nav = (
-    <NavList label={t`Contacts`}>
-      <NavGroup
-        items={[
-          { key: "all", label: t`People`, to: tabTo("all"), current: tab === "all", testId: "contacts-filter-all" },
-          {
-            key: "recent",
-            label: t`Recently active`,
-            to: tabTo("recent"),
-            current: tab === "recent",
-            testId: "contacts-filter-recent",
-          },
-          {
-            key: "duplicates",
-            label: t`Duplicates`,
-            to: tabTo("duplicates"),
-            current: tab === "duplicates",
-            count: everyone.data && !everyone.hasNextPage ? pairs.length : undefined,
-            testId: "contacts-filter-duplicates",
-          },
-        ]}
-      />
-    </NavList>
-  )
+  if (contactId) {
+    return (
+      <PageLayout
+        testId="contacts-page"
+        label={t`People`}
+        aside={
+          <InfoColumn label={t`Details`}>
+            <ContactInfo
+              key={contactId}
+              id={contactId}
+              duplicate={pair ? (pair.a.id === contactId ? pair.b : pair.a) : undefined}
+              onNotSame={pair ? () => dismiss(pair.key) : undefined}
+            />
+          </InfoColumn>
+        }
+      >
+        <PageTop back={{ label: viewName, to: listPath }} />
+        <div className="max-w-[860px]">
+          <ContactDetail key={contactId} id={contactId} page={false} />
+        </div>
+      </PageLayout>
+    )
+  }
+
+  const lede =
+    view === "duplicates" ? (
+      <Trans>These look like the same person</Trans>
+    ) : view === "customers" ? (
+      <Trans>People with an e-mail address or an id from your app</Trans>
+    ) : view === "visitors" ? (
+      <Trans>Visitors without a confirmed e-mail address or id</Trans>
+    ) : view === "recent" ? (
+      <Trans>Most recently seen first</Trans>
+    ) : product ? (
+      <Trans>People who wrote to {product}</Trans>
+    ) : (
+      <Trans>Everyone who has written to your products</Trans>
+    )
 
   const heading = (
-    <div data-testid="contacts-head">
-      <PageHeading
-        title={viewName}
-        lede={
-          tab === "duplicates" ? (
-            <Trans>
-              These look like the same person. Merging keeps the left one and moves addresses, ids and conversations
-              into it. Nothing is merged until you have seen what changes.
-            </Trans>
-          ) : product ? (
-            <Trans>People who wrote to {product}</Trans>
-          ) : (
-            <Trans>Everyone who has written to your products</Trans>
-          )
-        }
-      />
-    </div>
+    <PageTitle
+      title={viewName}
+      sub={
+        <span data-testid="contacts-lede">
+          {lede}
+          {view !== "duplicates" && directory.data && (
+            <span data-testid="contacts-count">
+              {" · "}
+              {plural(items.length, { one: `${shown} person`, other: `${shown} people` })}
+            </span>
+          )}
+        </span>
+      }
+      actions={
+        <Button onClick={() => setAdding(true)} disabled={adding} data-testid="add-contact-open">
+          <PlusIcon />
+          <Trans>Add contact</Trans>
+        </Button>
+      }
+      testId="contacts-head"
+    />
   )
 
   const duplicates = (
-    <div className="mt-7 flex flex-col gap-3" data-testid="duplicates">
-      {everyone.isPending ? (
-        <Skeleton className="h-16 w-full" />
-      ) : pairs.length === 0 ? (
-        <FlatEmpty>
-          <p className="m-0">
+    <>
+      <p className="m-0 mt-3 max-w-[720px] text-body text-muted-foreground">
+        <Trans>
+          Merging keeps the left one and moves addresses, ids and conversations into it. Nothing is merged until you
+          have seen what changes.
+        </Trans>
+      </p>
+      <ListBox testId="duplicates">
+        {everyone.isPending ? (
+          <ListBoxSkeleton rows={3} />
+        ) : pairs.length === 0 ? (
+          <ListBoxEmpty>
             <Trans>No contacts look alike right now.</Trans>
-          </p>
-        </FlatEmpty>
-      ) : (
-        <ul className="m-0 flex list-none flex-col p-0">
-          {pairs.map((p) => (
-            <PairCard key={p.key} pair={p} onDismiss={() => dismiss(p.key)} />
-          ))}
-        </ul>
-      )}
+          </ListBoxEmpty>
+        ) : (
+          pairs.map((p) => <PairRow key={p.key} pair={p} onDismiss={() => dismiss(p.key)} />)
+        )}
+      </ListBox>
       {everyone.hasNextPage && (
         <Button
           variant="outline"
-          className={cn(actionOutline, "self-start")}
+          size="sm"
+          className="mt-3"
           onClick={() => void everyone.fetchNextPage()}
           disabled={everyone.isFetchingNextPage}
         >
           <Trans>Look through more contacts</Trans>
         </Button>
       )}
-    </div>
+    </>
   )
 
-  const toolbar = (
-    <div className="mt-5 flex flex-wrap items-center gap-2" data-testid="contacts-filters">
-      <label className="flex h-[34px] max-w-[360px] min-w-[220px] flex-1 items-center gap-2 rounded-[9px] border border-input bg-card px-2.5 focus-within:border-brand focus-within:ring-[3px] focus-within:ring-brand/20">
-        <SearchIcon className="pointer-events-none size-3.5 shrink-0 text-faint" aria-hidden />
-        <input
+  const states = [
+    { key: "open", on: openOnly, label: t`Has an open conversation` },
+    { key: "blocked", on: blockedOnly, label: t`Blocked` },
+    { key: "undeliverable", on: undeliverableOnly, label: t`Undeliverable` },
+  ]
+  const chosenStates = states.filter((s) => s.on)
+
+  const filters = (
+    <FilterRow testId="contacts-filters">
+      <InputGroup className="h-8 min-w-48 flex-[1_1_240px] rounded-md border-input bg-card shadow-none focus-within:border-faint">
+        <InputGroupAddon>
+          <SearchIcon className="size-[15px] text-faint" />
+        </InputGroupAddon>
+        <InputGroupInput
           ref={search}
           value={q}
           onChange={(e) => {
@@ -665,231 +698,211 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
           }}
           placeholder={t`Search name, e-mail or id…`}
           aria-label={t`Search contacts`}
-          className="min-w-0 flex-1 bg-transparent text-small outline-none placeholder:text-faint"
           data-testid="contacts-search"
         />
-        {q && (
-          <button
-            type="button"
-            onClick={() => set("q", "")}
-            className="grid size-6 shrink-0 place-items-center rounded-lg text-faint hover:bg-muted hover:text-foreground"
-            aria-label={t`Clear the search`}
-          >
-            <XIcon className="size-3.5" />
-          </button>
-        )}
-      </label>
+        <InputGroupAddon align="inline-end">
+          {q ? (
+            <InputGroupButton size="icon-xs" onClick={() => set("q", "")} aria-label={t`Clear the search`}>
+              <XIcon />
+            </InputGroupButton>
+          ) : (
+            <Kbd className="phone:hidden">/</Kbd>
+          )}
+        </InputGroupAddon>
+      </InputGroup>
       {!global && (inboxes?.length ?? 0) > 1 && (
-        <FilterChip
+        <FilterMenu
           value={chosen}
           onChange={(id) => set("inbox", id)}
           options={(inboxes ?? []).map((i) => ({ value: i.id, label: i.name }))}
-          placeholder={<Trans>Product</Trans>}
-          anyLabel={<Trans>Every product</Trans>}
-          ariaLabel={t`Filter by product`}
+          anyLabel={t`Every product`}
+          label={t`Filter by product`}
           testId="contacts-product"
         />
       )}
+      {(plans.length > 0 || plan) && (
+        <FilterMenu
+          value={plan}
+          onChange={(v) => set("plan", v)}
+          options={plans.map((x) => ({ value: x, label: x }))}
+          anyLabel={t`Any plan`}
+          label={t`Filter by plan`}
+          testId="contacts-plan"
+        />
+      )}
       {(countries.length > 0 || country) && (
-        <FilterChip
+        <FilterMenu
           value={country}
           onChange={(v) => set("country", v)}
           options={countries.map((x) => ({ value: x, label: x }))}
-          placeholder={<Trans>Country</Trans>}
-          anyLabel={<Trans>Any country</Trans>}
-          ariaLabel={t`Filter by country`}
+          anyLabel={t`Any country`}
+          label={t`Filter by country`}
           testId="contacts-country"
         />
       )}
-      <ToggleChip on={openOnly} onClick={() => set("open", openOnly ? "" : "1")} testId="contacts-open">
-        <Trans>Has an open conversation</Trans>
-      </ToggleChip>
-      <ToggleChip on={blockedOnly} onClick={() => set("blocked", blockedOnly ? "" : "1")} testId="contacts-blocked">
-        <Trans>Blocked</Trans>
-      </ToggleChip>
-      <ToggleChip
-        on={undeliverableOnly}
-        onClick={() => set("undeliverable", undeliverableOnly ? "" : "1")}
-        testId="contacts-undeliverable"
-      >
-        <Trans>Undeliverable</Trans>
-      </ToggleChip>
-      {anyFilter && (
-        <button
-          type="button"
-          onClick={clearFilters}
-          className="h-7 rounded-[7px] px-2 text-small font-medium outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
-          data-testid="contacts-clear"
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="outline"
+              size="sm"
+              className={cn(filterButton, "max-w-60", chosenStates.length > 0 && filterButtonOn)}
+            />
+          }
+          aria-label={t`Filter by state`}
+          data-testid="contacts-state"
         >
+          <span className="truncate">
+            {chosenStates.length > 0 ? chosenStates.map((s) => s.label).join(", ") : t`Any status`}
+          </span>
+          <ChevronDownIcon className="text-muted-foreground" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" className="min-w-56">
+          <DropdownMenuGroup>
+            {states.map((s) => (
+              <DropdownMenuCheckboxItem
+                key={s.key}
+                checked={s.on}
+                onCheckedChange={(on) => set(s.key, on ? "1" : "")}
+                data-testid={`contacts-${s.key}`}
+              >
+                {s.label}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      {anyFilter && (
+        <Button variant="ghost" size="sm" className="h-8" onClick={clearFilters} data-testid="contacts-clear">
           <Trans>Clear filters</Trans>
-        </button>
+        </Button>
       )}
-      <span className="ms-auto text-caption text-muted-foreground tabular-nums" data-testid="contacts-count">
-        {directory.hasNextPage ? <Trans>People so far: {shownCount}</Trans> : <Trans>People: {shownCount}</Trans>}
-      </span>
-      {canManage && items.length > 0 && !selection.selecting && <SelectToggle selection={selection} />}
-    </div>
+    </FilterRow>
   )
 
+  const check = canManage
+    ? (id: string) => (range: boolean) => {
+        selection.toggle(id, range)
+      }
+    : undefined
+
   const table = (
-    <div className="mt-7">
-      <div
-        className="flex items-center gap-3.5 px-1 pb-2 text-caption font-medium text-muted2"
-        aria-hidden
-        data-testid="contacts-columns"
-      >
-        <span className="w-7 shrink-0" />
-        <span className="min-w-0 flex-1">
-          <Trans>Person</Trans>
-        </span>
-        <span className="w-40 shrink-0 @max-2xl/list:hidden">
-          <Trans>Products</Trans>
-        </span>
-        <span className="w-24 shrink-0 @max-3xl/list:hidden">
-          <Trans>Country</Trans>
-        </span>
-        <span className="w-20 shrink-0">
-          <Trans>Last seen</Trans>
-        </span>
-        <span className="w-7 shrink-0 text-end">
-          <Trans>Open</Trans>
-        </span>
-      </div>
-      {directory.isPending ? (
-        <div className="flex flex-col gap-3 border-t border-line-soft pt-3" aria-busy="true">
-          {[62, 48, 70, 54, 66].map((w, i) => (
-            <Skeleton key={i} className="h-5" style={{ width: `${w}%` }} />
-          ))}
-        </div>
-      ) : directory.error ? (
-        <ErrorLine error={directory.error} className="py-4" />
-      ) : items.length === 0 ? (
-        <FlatEmpty>
-          <p className="m-0">
+    <div ref={list}>
+      <ListBox bar={canManage && <ContactBulkBar items={items} selection={selection} />} testId="contacts-list">
+        {directory.isPending ? (
+          <ListBoxSkeleton />
+        ) : directory.error && !directory.data ? (
+          <ErrorLine error={directory.error} className="px-4 py-4" />
+        ) : items.length === 0 ? (
+          <ListBoxEmpty
+            testId="contacts-empty"
+            action={
+              anyFilter ? (
+                <Button variant="outline" size="sm" onClick={clearFilters}>
+                  <Trans>Clear filters</Trans>
+                </Button>
+              ) : (
+                <Button variant="outline" size="sm" onClick={() => setAdding(true)}>
+                  <Trans>Add contact</Trans>
+                </Button>
+              )
+            }
+          >
             {query ? (
               <Trans>No contact matches “{query}”.</Trans>
-            ) : anyFilter ? (
+            ) : anyFilter || view !== "all" ? (
               <Trans>No contacts in this view.</Trans>
             ) : (
               <Trans>No contacts yet. They appear when someone writes in.</Trans>
             )}
-          </p>
-          {anyFilter ? (
-            <Button variant="outline" className={actionOutline} onClick={clearFilters}>
-              <Trans>Clear filters</Trans>
-            </Button>
-          ) : (
-            <Button variant="outline" className={actionOutline} onClick={() => setAdding(true)}>
-              <Trans>Add contact</Trans>
-            </Button>
-          )}
-        </FlatEmpty>
-      ) : (
-        <ul ref={list} className="m-0 flex list-none flex-col p-0">
-          {items.map((c, i) => (
-            <Row
-              key={c.id}
-              c={c}
-              current={false}
-              cursor={i === cursor}
-              search={suffix}
-              onOpen={() => {
-                listY = window.scrollY
-              }}
-              check={
-                canManage && selection.selecting
-                  ? { checked: selection.has(c.id), onToggle: (range) => selection.toggle(c.id, range) }
-                  : undefined
-              }
-            />
-          ))}
-        </ul>
-      )}
+          </ListBoxEmpty>
+        ) : (
+          <Table className="table-fixed text-body">
+            <TableHeader>
+              <TableRow className="border-line-soft hover:bg-transparent" data-testid="contacts-columns">
+                {canManage && <TableHead className="w-10 ps-3 pe-0" aria-hidden />}
+                <TableHead className={cn(head, !canManage && "ps-4")}>
+                  <Trans>Person</Trans>
+                </TableHead>
+                <TableHead className={cn(head, hideCompany, "w-[18%]")}>
+                  <Trans>Company</Trans>
+                </TableHead>
+                <TableHead className={cn(head, hidePlan, "w-28")}>
+                  <Trans>Plan</Trans>
+                </TableHead>
+                <TableHead className={cn(head, hideProducts, "w-40")}>
+                  <Trans>Products</Trans>
+                </TableHead>
+                <TableHead className={cn(head, "w-28 @max-md/list:w-24")}>
+                  <Trans>Last seen</Trans>
+                </TableHead>
+                <TableHead className={cn(head, hideCount, "w-32 pe-4 text-end")}>
+                  <Trans>Conversations</Trans>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {items.map((c, i) => (
+                <Row
+                  key={c.id}
+                  c={c}
+                  cursor={i === cursor}
+                  checked={selection.has(c.id)}
+                  selecting={selection.selecting}
+                  check={check?.(c.id)}
+                  to={`/contacts/${c.id}${suffix}`}
+                  onOpen={() => open(c.id)}
+                />
+              ))}
+            </TableBody>
+          </Table>
+        )}
+      </ListBox>
+      <ErrorLine error={directory.data ? directory.error : null} className="py-2" />
       {directory.hasNextPage && (
-        <div className="flex border-t border-line-soft pt-4">
-          <Button
-            variant="outline"
-            className={actionOutline}
-            onClick={() => void directory.fetchNextPage()}
-            disabled={directory.isFetchingNextPage}
-            data-testid="contacts-more"
-          >
-            <Trans>Load more</Trans>
-          </Button>
-        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          className="mt-3"
+          onClick={() => void directory.fetchNextPage()}
+          disabled={directory.isFetchingNextPage}
+          data-testid="contacts-more"
+        >
+          <Trans>Load more</Trans>
+        </Button>
       )}
+      <KeyHints
+        items={[
+          [[SHORTCUTS.next, SHORTCUTS.previous], <Trans key="move">move</Trans>],
+          [
+            ["↵"],
+            <Trans key="open" context="keyboard hint">
+              open
+            </Trans>,
+          ],
+          ...(canManage
+            ? [[[SHORTCUTS.select], <Trans key="select">select</Trans>] as [string[], React.ReactNode]]
+            : []),
+          [[SHORTCUTS.search], <Trans key="search">search</Trans>],
+        ]}
+      />
     </div>
   )
 
-  const withOpen = items.filter((c) => (c.activity?.open_conversations ?? 0) > 0).length
-  const fmt = new Intl.NumberFormat(i18n.locale)
-
   return (
-    <PageLayout
-      testId="contacts-page"
-      label={t`Contacts`}
-      nav={nav}
-      aside={
-        <InfoColumn label={t`Details`}>
-          {contactId ? (
-            <ContactInfo
-              key={contactId}
-              id={contactId}
-              duplicate={pair ? (pair.a.id === contactId ? pair.b : pair.a) : undefined}
-              onNotSame={pair ? () => dismiss(pair.key) : undefined}
-            />
-          ) : (
-            <InfoSection title={viewName} testId="contacts-summary">
-              <KV label={t`People`} value={`${shownCount}${directory.hasNextPage ? "+" : ""}`} />
-              <KV
-                label={t`Has an open conversation`}
-                value={fmt.format(withOpen)}
-                tone={withOpen > 0 ? "brand" : undefined}
-              />
-              {everyone.data && !everyone.hasNextPage && (
-                <KV label={t`Duplicates`} value={fmt.format(pairs.length)} to={tabTo("duplicates")} />
-              )}
-            </InfoSection>
-          )}
-        </InfoColumn>
-      }
-    >
-      <PageTop
-        back={contactId ? { label: viewName, to: listPath } : undefined}
-        actions={
-          <Button className={actionInk} onClick={() => setAdding(true)} data-testid="add-contact-open">
-            <PlusIcon className="size-3.5" aria-hidden />
-            <span className={contactId ? "sr-only" : "max-lg:sr-only"}>
-              <Trans>Add contact</Trans>
-            </span>
-          </Button>
-        }
-      >
-        <span className="font-medium text-foreground">
-          <Trans>Contacts</Trans>
-        </span>
-        <TopSep />
-        <span className="truncate">{viewName}</span>
-        <TopSep />
-        <span className="truncate">{product ?? t`All products`}</span>
-      </PageTop>
-      {contactId ? (
-        <ContactDetail key={contactId} id={contactId} page={false} />
-      ) : (
-        <section aria-label={viewName} className="@container/list max-w-[860px]">
-          {heading}
-          {tab === "duplicates" ? (
-            duplicates
-          ) : (
-            <>
-              {toolbar}
-              {canManage && <ContactBulkBar items={items} selection={selection} className="mt-3" />}
-              {table}
-            </>
-          )}
-        </section>
-      )}
-      <AddContactDialog open={adding} onOpenChange={setAdding} />
+    <PageLayout testId="contacts-page" label={t`People`}>
+      <section aria-label={viewName} className="@container/list min-w-0">
+        {heading}
+        {adding && <AddContactForm onClose={() => setAdding(false)} />}
+        {view === "duplicates" ? (
+          duplicates
+        ) : (
+          <>
+            {filters}
+            {table}
+          </>
+        )}
+      </section>
     </PageLayout>
   )
 }

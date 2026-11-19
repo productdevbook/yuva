@@ -6,7 +6,6 @@ import { useSection } from "@/app/nav"
 import { SectionPlacesSidebar } from "@/app/places"
 import { isChats, isInboxRoot, isSectionHome, type Section } from "@/app/shell"
 import { SidebarProvider } from "@/components/ui/sidebar"
-import { ContactsColumn } from "@/features/contact/ContactsColumn"
 import { FeedbackList } from "@/features/feedback/FeedbackList"
 import { AssistantsPanel } from "@/features/inbox/AssistantsPage"
 import { setRailView } from "@/features/inbox/railView"
@@ -18,7 +17,7 @@ import { cn } from "@/lib/utils"
 const HelpColumn = lazy(() => import("@/features/help/HelpColumn"))
 const AnalyticsColumn = lazy(() => import("@/features/analytics/AnalyticsColumn"))
 
-const COLUMNS: Section[] = ["mentions", "assistants", "feedback", "contacts", "knowledge", "analytics"]
+const COLUMNS: Section[] = ["mentions", "assistants", "feedback", "knowledge", "analytics"]
 
 function PhoneColumn({ section }: { section: Section }) {
   const navigate = useNavigate()
@@ -27,7 +26,6 @@ function PhoneColumn({ section }: { section: Section }) {
   if (section === "feedback") return <FeedbackList currentId={feedbackId} onOpen={openFeedback} />
   if (section === "mentions") return <MentionsPanel />
   if (section === "assistants") return <AssistantsPanel />
-  if (section === "contacts") return <ContactsColumn />
   return (
     <Suspense fallback={<div className="flex-1 bg-background" />}>
       {section === "knowledge" ? <HelpColumn /> : <AnalyticsColumn />}

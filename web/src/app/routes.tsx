@@ -12,7 +12,7 @@ import { BroadcastRoute } from "@/features/broadcasts/BroadcastRoute"
 import { TriggeredHome } from "@/features/broadcasts/TriggeredHome"
 import { ListPage, ListsHome } from "@/features/broadcasts/ListPage"
 import { ContactPage } from "@/features/contact/ContactPage"
-import { ContactsHome } from "@/features/contact/ContactsColumn"
+import { ContactsPage } from "@/features/contact/ContactsPage"
 import { DocsPage } from "@/features/docs/DocsPage"
 import { HomePage } from "@/features/home/HomePage"
 import { ChatsPage } from "@/features/inbox/ChatsPage"
@@ -172,7 +172,7 @@ export function AppRoutes() {
           <Route path="assistants" element={<ChatsPage />} />
           <Route path="feedback" element={<ChatsPage section="feedback" />} />
           <Route path="feedback/:conversationId" element={<ChatsPage section="feedback" />} />
-          <Route path="contacts" element={<ContactsHome />} />
+          <Route path="contacts" element={<ContactsPage />} />
           <Route path="contacts/:contactId" element={<ContactPage />} />
           <Route path="team" element={<TeamPage />} />
           <Route path="team/invites" element={<TeamPage tab="invites" />} />
@@ -295,6 +295,7 @@ export function AppRoutes() {
               </Suspense>
             }
           />
+          <Route path="settings/teams" element={<TeamsPage />} />
           <Route path="settings">
             <Route index element={<SettingsHome />} />
             <Route element={<SettingsPane />}>
@@ -311,7 +312,6 @@ export function AppRoutes() {
               <Route path="labels" element={<LabelsPage />} />
               <Route path="canned-replies" element={<CannedRepliesPage />} />
               <Route path="macros" element={<MacrosPage />} />
-              <Route path="teams" element={<TeamsPage />} />
               <Route path="fields" element={<FieldsPage />} />
               <Route path="sla" element={<SlaPage />} />
               <Route path="automation" element={<AutomationPage />} />

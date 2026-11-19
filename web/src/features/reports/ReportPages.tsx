@@ -1,23 +1,11 @@
 import { Plural, Trans, useLingui } from "@lingui/react/macro"
-import { ThumbsDownIcon, ThumbsUpIcon } from "lucide-react"
+import { DownloadIcon, ThumbsDownIcon, ThumbsUpIcon } from "lucide-react"
 import { useMemo, useState } from "react"
 import { Bar, BarChart, Cell, XAxis, YAxis } from "recharts"
 import { Outlet, useLocation, useSearchParams } from "react-router"
 
-import {
-  ErrorLine,
-  InboxMark,
-  InfoSection,
-  KV,
-  PageHeading,
-  PageTop as FlatTop,
-  SectionPage,
-  Stat,
-  StatCard,
-  topButton,
-  topInk,
-  TopSep,
-} from "@/components/common"
+import { ErrorLine, InboxMark, PageLayout, Stat, StatCard } from "@/components/common"
+import { PageTitle } from "@/components/common/ListBox"
 import { ChipGroup } from "@/components/common/ChipGroup"
 import { EmptyBox } from "@/components/common/EmptyBox"
 import { Segmented } from "@/components/common/Segmented"
@@ -35,9 +23,9 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { Panel } from "@/features/analytics/parts"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
-import { useStats } from "@/features/inbox/queries"
-import { FrameTabs, look, PageTop } from "@/features/inbox/PageFrame"
+import { look } from "@/features/inbox/PageFrame"
 import {
+  addDays,
   createdSince,
   dayKey,
   dayStart,
@@ -45,11 +33,12 @@ import {
   share,
   useInboxStats,
   useRecentConversations,
+  useReport,
   useWindowStats,
 } from "@/features/reports/data"
 import { headClass, LoadProblem, ReportSkeleton, SlaBar, SlotsContext, ToolbarPortal } from "@/features/reports/parts"
+import { Delta, ratingShare, slaShare } from "@/features/reports/TrendsReport"
 import { Face, headButton, ProductTag } from "@/features/settings/ui"
-import { useIsPhone } from "@/hooks/use-media-query"
 import { useNow } from "@/hooks/use-now"
 import type { ConversationListItem, Stats } from "@/lib/api"
 import { cn } from "@/lib/utils"
@@ -57,11 +46,6 @@ import { useInboxes, useMembers } from "@/lib/workspace"
 
 const RANGES = ["today", "7d", "30d"] as const
 type Range = (typeof RANGES)[number]
-
-function useTodayStats() {
-  const [inboxId] = useInboxFilter()
-  return useStats(inboxId)
-}
 
 function useRange(): Range {
   const [params] = useSearchParams()
@@ -226,222 +210,98 @@ function CsvDialog({ csv, onClose }: { csv: ReturnType<typeof useCsv>; onClose: 
 }
 
 function PeriodBar() {
-  const { t, i18n } = useLingui()
-  const range = useRange()
-  const names = useRangeText()
-  const scope = useScopeName()
-  const now = new Date(useNow(60_000))
-  const [, setParams] = useSearchParams()
-  const day = new Intl.DateTimeFormat(i18n.locale, { month: "short", day: "numeric" })
-  const note =
-    range === "today"
-      ? new Intl.DateTimeFormat(i18n.locale, { weekday: "long", month: "short", day: "numeric" }).format(now)
-      : `${day.format(startOf(range))} – ${day.format(now)}`
-  return (
-    <>
-      <Segmented
-        value={range}
-        label={t`Period`}
-        onChange={(v) =>
-          setParams(
-            (prev) => {
-              const next = new URLSearchParams(prev)
-              if (v === "today") next.delete("range")
-              else next.set("range", v)
-              return next
-            },
-            { replace: true }
-          )
-        }
-        items={RANGES.map((r) => ({ value: r, label: names[r], testId: `report-range-${r}` }))}
-      />
-      <span className="shrink-0 text-small whitespace-nowrap text-faint" data-testid="report-range-note">
-        {note} · {scope}
-      </span>
-    </>
-  )
-}
-
-function ReportsTrail({ name }: { name: string }) {
   const { t } = useLingui()
-  const scope = useScopeName()
-  return (
-    <>
-      <span className="font-medium text-foreground">{t`Reports`}</span>
-      <TopSep />
-      <span className="truncate">{name}</span>
-      <TopSep />
-      <span className="truncate normal-case">{scope}</span>
-    </>
-  )
-}
-
-function ReportsAside({ trends, csvReady, onCsv }: { trends: boolean; csvReady: boolean; onCsv: () => void }) {
-  const { t, i18n } = useLingui()
-  const names = useRangeText()
   const range = useRange()
-  const today = useTodayStats()
-  const s = today.data
-  const fmt = new Intl.NumberFormat(i18n.locale)
-  const rated = s ? s.ratings.good + s.ratings.bad : 0
-  const pct = s && rated ? new Intl.NumberFormat(i18n.locale, { style: "percent" }).format(s.ratings.good / rated) : ""
+  const names = useRangeText()
+  const [, setParams] = useSearchParams()
   return (
-    <>
-      {!trends && (
-        <InfoSection title={<Trans>Period</Trans>} testId="reports-aside-period">
-          <p className="m-0 text-small text-fg2">{names[range]}</p>
-        </InfoSection>
-      )}
-      <InfoSection title={<Trans>Today</Trans>} testId="reports-aside-today">
-        <ErrorLine error={today.error} />
-        <KV
-          label={<Trans>Replies and closes</Trans>}
-          value={s ? t`${fmt.format(s.replies)} replies · ${fmt.format(s.closed)} closed` : "–"}
-          to="/reports/today"
-        />
-        <KV
-          label={<Trans>Ratings</Trans>}
-          value={s ? (rated ? t`${pct} satisfied` : t`No ratings today`) : "–"}
-          to="/reports/ratings"
-        />
-        <KV
-          label={<Trans>By member</Trans>}
-          value={s ? t`${fmt.format(s.members.length)} active today` : "–"}
-          to="/reports/members"
-        />
-      </InfoSection>
-      {!trends && (
-        <InfoSection title={<Trans>Download CSV</Trans>}>
-          <Button
-            variant="outline"
-            className={topButton}
-            disabled={!csvReady}
-            onClick={onCsv}
-            data-testid="reports-aside-csv"
-          >
-            <Trans>Download CSV</Trans>
-          </Button>
-        </InfoSection>
-      )}
-    </>
+    <Segmented
+      value={range}
+      label={t`Period`}
+      onChange={(v) =>
+        setParams(
+          (prev) => {
+            const next = new URLSearchParams(prev)
+            if (v === "today") next.delete("range")
+            else next.set("range", v)
+            return next
+          },
+          { replace: true }
+        )
+      }
+      items={RANGES.map((r) => ({ value: r, label: names[r], testId: `report-range-${r}` }))}
+    />
   )
 }
 
 export function ReportsPane() {
-  const { t } = useLingui()
-  const { pathname, search } = useLocation()
-  const current = pathname.split("/")[2] ?? "today"
-  const trends = current === "trends"
+  const { t, i18n } = useLingui()
+  const { pathname } = useLocation()
+  const range = useRange()
+  const rangeNames = useRangeText()
+  const scope = useScopeName()
+  const now = new Date(useNow(60_000))
+  const tab = (["today", "trends", "ratings", "members"] as const).find((k) => k === pathname.split("/")[2]) ?? "today"
+  const trends = tab === "trends"
   const csv = useCsv()
   const [csvOpen, setCsvOpen] = useState(false)
   const [toolbar, setToolbar] = useState<HTMLElement | null>(null)
   const [actions, setActions] = useState<HTMLElement | null>(null)
   const slots = useMemo(() => ({ toolbar, actions }), [toolbar, actions])
-  const phone = useIsPhone()
-  const tabs = [
-    { key: "today", to: { pathname: "/reports/today", search }, label: t`Overview`, testId: "report-tab-today" },
-    { key: "trends", to: { pathname: "/reports/trends", search: "" }, label: t`Trends`, testId: "report-tab-trends" },
-    { key: "ratings", to: { pathname: "/reports/ratings", search }, label: t`Ratings`, testId: "report-tab-ratings" },
-    { key: "members", to: { pathname: "/reports/members", search }, label: t`Team`, testId: "report-tab-members" },
-  ]
-  if (!phone) {
-    const tab = (["today", "trends", "ratings", "members"] as const).find((k) => k === current) ?? "today"
-    const names = { today: t`Overview`, trends: t`Trends`, ratings: t`Ratings`, members: t`Team` }
-    const ledes = {
-      today: t`How fast and how well your team answers`,
-      trends: t`Up to 13 months, by group`,
-      ratings: t`Scores and comments after a conversation closed.`,
-      members: t`Each person’s replies, closes and ratings.`,
-    }
-    return (
-      <SlotsContext.Provider value={slots}>
-        <SectionPage
-          title={t`Reports`}
-          testId="reports"
-          aside={<ReportsAside trends={trends} csvReady={csv.ready} onCsv={() => setCsvOpen(true)} />}
-        >
-          <div className="@container flex min-w-0 flex-col">
-            <FlatTop
-              actions={
-                <>
-                  {!trends && (
-                    <Button
-                      className={topInk}
-                      disabled={!csv.ready}
-                      onClick={() => setCsvOpen(true)}
-                      data-testid="report-export"
-                    >
-                      <Trans>Download CSV</Trans>
-                    </Button>
-                  )}
-                  <span ref={setActions} className="contents" />
-                </>
-              }
-            >
-              <ReportsTrail name={names[tab]} />
-            </FlatTop>
-            <div className="mt-3">
-              <PageHeading title={names[tab]} lede={ledes[tab]} />
-            </div>
-            <div
-              ref={setToolbar}
-              className="mt-5 flex flex-wrap items-center gap-2 empty:hidden"
-              data-testid="reports-toolbar"
-            />
-            {!trends && (
-              <ToolbarPortal>
-                <PeriodBar />
-              </ToolbarPortal>
-            )}
-            <div className="mt-6 flex flex-col gap-5">
-              <Outlet />
-            </div>
-          </div>
-          {csvOpen && <CsvDialog csv={csv} onClose={() => setCsvOpen(false)} />}
-        </SectionPage>
-      </SlotsContext.Provider>
-    )
+  const names = { today: t`Today`, trends: t`Trends`, ratings: t`Ratings`, members: t`Members` }
+  const day = new Intl.DateTimeFormat(i18n.locale, { month: "short", day: "numeric" })
+  const period =
+    range === "today"
+      ? new Intl.DateTimeFormat(i18n.locale, { weekday: "long", month: "short", day: "numeric" }).format(now)
+      : `${rangeNames[range]}, ${day.format(startOf(range))} – ${day.format(now)}`
+  const ledes = {
+    today: t`How fast and how well your team answers`,
+    trends: t`Up to 13 months, by group`,
+    ratings: t`Scores and comments after a conversation closed`,
+    members: t`Each person’s replies, closes and ratings`,
   }
   return (
     <SlotsContext.Provider value={slots}>
-      <main className="@container flex min-h-0 min-w-0 flex-1 flex-col bg-surface" data-testid="reports">
-        <PageTop
-          title={<Trans>Reports</Trans>}
-          sub={<Trans>How fast and how well your team answers</Trans>}
-          actions={
-            <>
-              {!trends && (
-                <Button
-                  className={look.btnInk}
-                  disabled={!csv.ready}
-                  onClick={() => setCsvOpen(true)}
-                  data-testid="report-export"
-                >
-                  <Trans>Download CSV</Trans>
-                </Button>
-              )}
-              <span ref={setActions} className="contents" />
-            </>
-          }
-          tabs={<FrameTabs label={t`Reports`} value={current} items={tabs} />}
-        />
-        <div
-          ref={setToolbar}
-          className="flex flex-wrap items-center gap-2 border-b px-6 py-3 empty:hidden phone:px-4"
-          data-testid="reports-toolbar"
-        />
-        {!trends && (
-          <ToolbarPortal>
-            <PeriodBar />
-          </ToolbarPortal>
-        )}
-        <div className="min-h-0 flex-1 overflow-y-auto">
-          <div className="mx-auto flex w-full max-w-[1240px] flex-col gap-4 p-6 pb-16 @max-xl:p-4 @max-xl:pb-16">
+      <PageLayout testId="reports" label={t`Reports`}>
+        <div className="@container flex min-w-0 flex-col">
+          <PageTitle
+            title={names[tab]}
+            sub={<span data-testid="report-range-note">{trends ? ledes.trends : `${period} · ${scope}`}</span>}
+            actions={
+              <>
+                {!trends && (
+                  <Button
+                    variant="outline"
+                    disabled={!csv.ready}
+                    onClick={() => setCsvOpen(true)}
+                    data-testid="report-export"
+                  >
+                    <DownloadIcon />
+                    <Trans>Download CSV</Trans>
+                  </Button>
+                )}
+                <span ref={setActions} className="contents" />
+              </>
+            }
+            testId="reports-head"
+          />
+          {!trends && <p className="m-0 mt-1 text-body text-muted-foreground">{ledes[tab]}</p>}
+          <div
+            ref={setToolbar}
+            className="mt-4 flex flex-wrap items-center gap-2 empty:hidden"
+            data-testid="reports-toolbar"
+          />
+          {!trends && (
+            <ToolbarPortal>
+              <PeriodBar />
+            </ToolbarPortal>
+          )}
+          <div className="mt-4 flex flex-col gap-4">
             <Outlet />
           </div>
         </div>
         {csvOpen && <CsvDialog csv={csv} onClose={() => setCsvOpen(false)} />}
-      </main>
+      </PageLayout>
     </SlotsContext.Provider>
   )
 }
@@ -627,12 +487,34 @@ function ByProduct({ items }: { items: ConversationListItem[] }) {
   )
 }
 
+function useComparison() {
+  const range = useRange()
+  const [inboxId] = useInboxFilter()
+  const today = dayKey(new Date(useNow(60_000)))
+  const days = range === "today" ? 1 : range === "7d" ? 7 : 30
+  const from = addDays(today, -(days - 1))
+  const base = { granularity: "day" as const, inbox_id: inboxId || undefined }
+  const cur = useReport({ ...base, from, to: today }).data?.totals
+  const prev = useReport({ ...base, from: addDays(from, -days), to: addDays(from, -1) }).data?.totals
+  return { cur, prev }
+}
+
+function Hint({ text, delta }: { text?: React.ReactNode; delta: React.ReactNode }) {
+  return (
+    <>
+      {text && <span className="block truncate">{text}</span>}
+      <span className="block truncate">{delta}</span>
+    </>
+  )
+}
+
 export function TodayReport() {
   const { t, i18n } = useLingui()
   const range = useRange()
   const { since, recent } = useRecent()
   const fmt = new Intl.NumberFormat(i18n.locale)
   const fresh = createdSince(recent.data?.items ?? [], since)
+  const { cur, prev } = useComparison()
   return (
     <Report>
       {(s) => {
@@ -644,7 +526,12 @@ export function TodayReport() {
               <Stat
                 label={t`New`}
                 value={recent.data ? `${fmt.format(fresh.length)}${recent.data.complete ? "" : "+"}` : "–"}
-                hint={t`conversations started`}
+                hint={
+                  <Hint
+                    text={t`conversations started`}
+                    delta={<Delta cur={cur?.opened} prev={prev?.opened} kind="count" />}
+                  />
+                }
                 testId="report-new"
               />
               {s.sla.met + s.sla.breached > 0 && (
@@ -653,12 +540,35 @@ export function TodayReport() {
                   value={new Intl.NumberFormat(i18n.locale, { style: "percent" }).format(
                     s.sla.met / (s.sla.met + s.sla.breached)
                   )}
-                  hint={t`${met} met, ${breached} breached`}
+                  hint={
+                    <Hint
+                      text={t`${met} met, ${breached} breached`}
+                      delta={<Delta cur={slaShare(cur)} prev={slaShare(prev)} kind="share" better="up" />}
+                    />
+                  }
                   testId="report-sla"
                 />
               )}
-              <Stat label={t`Replied`} value={fmt.format(s.replies)} hint={t`messages sent`} />
-              <Stat label={t`Closed`} value={fmt.format(s.closed)} hint={t`conversations`} />
+              <Stat
+                label={t`Replied`}
+                value={fmt.format(s.replies)}
+                hint={
+                  <Hint
+                    text={t`messages sent`}
+                    delta={<Delta cur={cur?.replies} prev={prev?.replies} kind="count" />}
+                  />
+                }
+              />
+              <Stat
+                label={t`Closed`}
+                value={fmt.format(s.closed)}
+                hint={
+                  <Hint
+                    text={t`conversations`}
+                    delta={<Delta cur={cur?.closed} prev={prev?.closed} kind="count" better="up" />}
+                  />
+                }
+              />
               <Stat
                 label={t`First reply`}
                 value={
@@ -666,7 +576,19 @@ export function TodayReport() {
                     ? formatDuration(s.median_first_reply_seconds, i18n.locale)
                     : "–"
                 }
-                hint={range === "today" ? t`median today` : t`median`}
+                hint={
+                  <Hint
+                    text={range === "today" ? t`median today` : t`median`}
+                    delta={
+                      <Delta
+                        cur={cur?.first_reply_median_seconds}
+                        prev={prev?.first_reply_median_seconds}
+                        kind="time"
+                        better="down"
+                      />
+                    }
+                  />
+                }
               />
               <Stat
                 label={t`Resolved in`}
@@ -675,7 +597,19 @@ export function TodayReport() {
                     ? formatDuration(s.median_resolution_seconds, i18n.locale)
                     : "–"
                 }
-                hint={t`median, first message to closed`}
+                hint={
+                  <Hint
+                    text={t`median, first message to closed`}
+                    delta={
+                      <Delta
+                        cur={cur?.resolution_median_seconds}
+                        prev={prev?.resolution_median_seconds}
+                        kind="time"
+                        better="down"
+                      />
+                    }
+                  />
+                }
                 testId="report-resolved"
               />
             </StatCard>
@@ -720,6 +654,7 @@ export function RatingsReport() {
   const pct = new Intl.NumberFormat(i18n.locale, { style: "percent" })
   const written = ratedSince(recent.data?.items ?? [], since).filter((c) => c.rating?.comment)
   const shown = written.filter((c) => filter === "all" || (filter === "good") === (c.rating!.rating === "good"))
+  const { cur, prev } = useComparison()
   return (
     <Report tiles={1}>
       {(s) => {
@@ -768,6 +703,9 @@ export function RatingsReport() {
                 <span className="text-small text-muted-foreground">
                   <Trans>good</Trans> · <Plural value={rated} one="# rating" other="# ratings" />
                 </span>
+              </span>
+              <span className="text-small" data-testid="report-ratings-delta">
+                <Delta cur={ratingShare(cur)} prev={ratingShare(prev)} kind="share" better="up" />
               </span>
               <span className="flex h-2.5 gap-0.5" role="img" aria-label={t`Satisfied`}>
                 {s.ratings.good > 0 && (

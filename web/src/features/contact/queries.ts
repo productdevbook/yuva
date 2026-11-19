@@ -77,7 +77,7 @@ export function useClearUndeliverable(contactId: string) {
   return { ...update, mutate: (email: string) => update.mutate({ clear_undeliverable: [email] }) }
 }
 
-export type DirectoryFilter = "all" | "open" | "known" | "visitor"
+export type DirectoryFilter = { kind?: "known" | "visitor"; open?: boolean }
 
 export function useContactDirectory(
   q: string,
@@ -87,7 +87,7 @@ export function useContactDirectory(
 ) {
   const { workspaceId: ws } = useSession()
   return useInfiniteQuery({
-    queryKey: [...keys.contactSearch(ws), "directory", q, filter, inboxId ?? "", sort],
+    queryKey: [...keys.contactSearch(ws), "directory", q, filter.kind ?? "", !!filter.open, inboxId ?? "", sort],
     queryFn: ({ pageParam }) =>
       unwrap(
         api.GET("/v1/contacts", {
@@ -95,8 +95,8 @@ export function useContactDirectory(
             query: {
               q: q || undefined,
               inbox_id: inboxId || undefined,
-              kind: filter === "known" || filter === "visitor" ? filter : undefined,
-              has_open: filter === "open" ? true : undefined,
+              kind: filter.kind,
+              has_open: filter.open ? true : undefined,
               sort: q ? undefined : sort,
               cursor: pageParam,
               limit: 50,

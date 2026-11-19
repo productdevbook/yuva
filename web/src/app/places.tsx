@@ -16,6 +16,12 @@ import {
   viewOf,
   type BroadcastsPlace,
 } from "@/features/broadcasts/BroadcastsFrame"
+import {
+  useDuplicatePairs,
+  usePeopleViewNames,
+  viewOf as peopleViewOf,
+  type PeopleView,
+} from "@/features/contact/ContactsPage"
 import { centerLink } from "@/features/help/queries"
 import {
   rememberChip,
@@ -51,6 +57,7 @@ import {
   type SettingsPlace,
 } from "@/features/settings/SettingsFrame"
 import { useStatusCounts } from "@/features/status/StatusFrame"
+import { useInvites } from "@/features/team/TeamPage"
 import { useSession } from "@/lib/session"
 import { isSupport, useInboxes, useMembers, useTeams } from "@/lib/workspace"
 
@@ -230,13 +237,29 @@ function useMailPlaces(): SectionPlaces {
 
 function usePeoplePlaces(): SectionPlaces {
   const { t } = useLingui()
+  const [params] = useSearchParams()
+  const names = usePeopleViewNames()
+  const { pairs, complete } = useDuplicatePairs()
+  const current = peopleViewOf(params)
+  const link = (v: PeopleView) => {
+    const next = new URLSearchParams(params)
+    if (v === "all") next.delete("tab")
+    else next.set("tab", v)
+    return { pathname: "/contacts", search: next.toString() ? `?${next.toString()}` : "" }
+  }
+  const item = (v: PeopleView): Place => ({
+    key: v,
+    label: names[v],
+    to: link(v),
+    current: current === v,
+    count: v === "duplicates" && complete ? pairs.length : undefined,
+    testId: v === "all" ? "people-all" : `people-${v}`,
+  })
   return {
     label: t`People`,
     groups: [
-      {
-        key: "people",
-        items: [{ key: "all", label: t`All people`, to: "/contacts", current: true, testId: "people-all" }],
-      },
+      { key: "people", title: t`People`, items: [item("all"), item("customers"), item("visitors")] },
+      { key: "tidy", title: t`Views`, items: [item("recent"), item("duplicates")] },
     ],
   }
 }
@@ -247,6 +270,7 @@ function useTeamPlaces(): SectionPlaces {
   const { canManage } = useSession()
   const members = useMembers().data
   const teams = useTeams().data
+  const pending = useInvites(canManage).data
   const invites = pathname === "/team/invites"
   const teamsPage = pathname === "/settings/teams"
   return {
@@ -277,6 +301,7 @@ function useTeamPlaces(): SectionPlaces {
                   key: "invites",
                   label: t`Invites`,
                   to: "/team/invites",
+                  count: pending?.length,
                   current: invites,
                   testId: "team-tab-invites",
                 },

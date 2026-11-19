@@ -53,6 +53,11 @@ msgstr "(nincs tárgy)"
 msgid "{0, plural, one {{name} · # waiting} other {{name} · # waiting}}"
 msgstr "{0, plural, one {{name} · # várakozik} other {{name} · # várakozik}}"
 
+#. placeholder {0}: items.length
+#: src/features/contact/ContactsPage.tsx
+msgid "{0, plural, one {{shown} person} other {{shown} people}}"
+msgstr "{0, plural, other {{shown} személy}}"
+
 #. placeholder {0}: msg.attachments
 #: src/features/migrations/ReviewStep.tsx
 msgid "{0, plural, one {# attachment} other {# attachments}}"
@@ -97,6 +102,16 @@ msgstr "{0, plural, one {# hour after someone confirms {list}} other {# hours af
 msgid "{0, plural, one {# hour after someone starts to match {match}} other {# hours after someone starts to match {match}}}"
 msgstr "{0, plural, one {# hour after someone starts to match {match}} other {# hours after someone starts to match {match}}}"
 
+#. placeholder {0}: team.inbox_ids.length
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "{0, plural, one {# inbox} other {# inboxes}}"
+msgstr "{0, plural, other {# postafiók}}"
+
+#. placeholder {0}: team.member_ids.length
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "{0, plural, one {# member} other {# members}}"
+msgstr "{0, plural, other {# tag}}"
+
 #. placeholder {0}: items.length
 #: src/features/inbox/SidePanels.tsx
 msgid "{0, plural, one {# mention} other {# mentions}}"
@@ -106,11 +121,6 @@ msgstr "{0, plural, one {# említés} other {# említés}}"
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "{0, plural, one {# of them gets it because their language has no version} other {# of them get it because their language has no version}}"
 msgstr "{0, plural, one {Közülük # azért kapja ezt, mert a nyelvének nincs változata} other {Közülük # azért kapja ezt, mert a nyelvének nincs változata}}"
-
-#. placeholder {0}: c.activity.open_conversations
-#: src/features/contact/ContactsColumn.tsx
-msgid "{0, plural, one {# open} other {# open}}"
-msgstr "{0, plural, one {# nyitott} other {# nyitott}}"
 
 #. placeholder {0}: p.unanswered_threads
 #: src/features/home/HomeWork.tsx
@@ -146,11 +156,6 @@ msgstr "{0, plural, one {címzett} other {címzett}}"
 #: src/features/settings/slack/SlackPage.tsx
 msgid "{0} (private)"
 msgstr "{0} (private)"
-
-#. placeholder {0}: fmt.format(s.members.length)
-#: src/features/reports/ReportPages.tsx
-msgid "{0} active today"
-msgstr "{0} aktív ma"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
@@ -199,11 +204,10 @@ msgstr "{0} a Kukába helyezve"
 msgid "{0} of {1}"
 msgstr "{0} / {1}"
 
-#. placeholder {0}: fmt.format(s.replies)
-#. placeholder {1}: fmt.format(s.closed)
-#: src/features/reports/ReportPages.tsx
-msgid "{0} replies · {1} closed"
-msgstr "{0} válasz · {1} lezárva"
+#. placeholder {0}: fmt.format(unassigned)
+#: src/features/team/TeamPage.tsx
+msgid "{0} open, unassigned"
+msgstr "{0} nyitott, nincs hozzárendelve"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
@@ -330,10 +334,6 @@ msgstr "{author} {ownerName} nevében"
 #: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
 msgstr "{author}, küldte: {by}"
-
-#: src/features/team/TeamPage.tsx
-msgid "{available} of {total}"
-msgstr "{available} / {total}"
 
 #: src/features/team/TeamPage.tsx
 msgid "{available} of {total} available now"
@@ -921,10 +921,6 @@ msgstr "{open} nyitott"
 msgid "{out, plural, one {# row is left out} other {# rows are left out}}"
 msgstr "{out, plural, one {# sor kimarad} other {# sor kimarad}}"
 
-#: src/features/reports/ReportPages.tsx
-msgid "{pct} satisfied"
-msgstr "{pct} elégedett"
-
 #: src/features/docs/PagesTab.tsx
 msgid "{pending} posts waiting for approval"
 msgstr "{pending} bejegyzés vár jóváhagyásra"
@@ -1083,10 +1079,6 @@ msgstr "{replies} válasz"
 #: src/features/contact/ContactVisits.tsx
 msgid "{rest, plural, one {and # more page} other {and # more pages}}"
 msgstr "{rest, plural, one {és még # oldal} other {és még # oldal}}"
-
-#: src/features/team/TeamPage.tsx
-msgid "{role} · {language} · sent {sent} · expires {expires}"
-msgstr "{role} · {language} · elküldve {sent} · lejár {expires}"
 
 #: src/features/broadcasts/Import.tsx
 msgid "{rows} rows, read as {encoding}, separated by {delimiter}."
@@ -1890,8 +1882,8 @@ msgid "A subscription changed"
 msgstr "Egy feliratkozás megváltozott"
 
 #: src/features/settings/teams/TeamsPage.tsx
-msgid "A team gives its members the inboxes it covers. A conversation can go to a team as well as to a member."
-msgstr "A csapat megadja tagjainak az általa lefedett postafiókokat. Egy beszélgetés egy csapathoz is rendelhető, nem csak egy taghoz."
+msgid "A team gives its members the inboxes it covers"
+msgstr "A csapat a tagjainak adja a postafiókokat, amelyeket lefed"
 
 #: src/components/common/text.ts
 msgid "A team holds at most 500 members and 100 inboxes."
@@ -2041,6 +2033,8 @@ msgid "ACS URL"
 msgstr "ACS URL"
 
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Actions"
 msgstr "Műveletek"
 
@@ -2492,7 +2486,6 @@ msgstr "Alertmanager"
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactDetails.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -2576,7 +2569,7 @@ msgstr "Az összes beszélgetése, üzenete és melléklete is törlődik vele. 
 msgid "All parts arrived. Reading the file…"
 msgstr "Minden rész megérkezett. A fájl olvasása…"
 
-#: src/app/places.tsx
+#: src/features/contact/ContactsPage.tsx
 msgid "All people"
 msgstr "Minden személy"
 
@@ -2586,7 +2579,6 @@ msgstr "minden termék"
 
 #: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
@@ -2596,7 +2588,6 @@ msgstr "minden termék"
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/status/StatusFrame.tsx
-#: src/features/team/TeamPage.tsx
 msgid "All products"
 msgstr "Minden termék"
 
@@ -3135,10 +3126,15 @@ msgstr "Bármely címke"
 msgid "Any of the labels you pick."
 msgstr "A kiválasztott címkék bármelyike."
 
+#: src/features/contact/ContactsPage.tsx
+msgid "Any plan"
+msgstr "Bármely csomag"
+
 #: src/features/inbox/SourceFilter.tsx
 msgid "Any state"
 msgstr "Bármely állapot"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Any status"
 msgstr "Bármely állapot"
@@ -3642,6 +3638,7 @@ msgstr "automatikus"
 
 #: src/components/common/AssignmentFields.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Automatic assignment"
 msgstr "Automatikus hozzárendelés"
 
@@ -3659,10 +3656,6 @@ msgstr "Automatizálás"
 msgid "Available"
 msgstr "Elérhető"
 
-#: src/features/team/TeamPage.tsx
-msgid "available now"
-msgstr "most elérhető"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Available until {until}"
 msgstr "Elérhető eddig: {until}"
@@ -3671,7 +3664,6 @@ msgstr "Elérhető eddig: {until}"
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/home/HomePage.tsx
-#: src/features/team/TeamPage.tsx
 msgid "Away"
 msgstr "Távol"
 
@@ -3809,7 +3801,7 @@ msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignore
 msgstr "1 és 500 között, a teljes munkaterületen számolva. A kézi hozzárendelés figyelmen kívül hagyja. Hagyja üresen, ha nincs korlát."
 
 #: src/features/settings/labels/LabelDialog.tsx
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 msgid "Billing"
 msgstr "Számlázás"
 
@@ -4055,10 +4047,6 @@ msgstr "Csoportok szerint"
 msgid "By language"
 msgstr "Nyelv szerint"
 
-#: src/features/reports/ReportPages.tsx
-msgid "By member"
-msgstr "Tagok szerint"
-
 #: src/features/conversation/messages/Thread.tsx
 msgid "by rule {rule}"
 msgstr "a(z) {rule} szabály által"
@@ -4078,6 +4066,7 @@ msgstr "Kampány neve"
 
 #: src/app/Palette.tsx
 #: src/components/common/ConfirmDialog.tsx
+#: src/components/common/FormCard.tsx
 #: src/components/common/Linked.tsx
 #: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
@@ -4094,7 +4083,6 @@ msgstr "Kampány neve"
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/contact/DeleteContactDialog.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
@@ -4112,6 +4100,7 @@ msgstr "Kampány neve"
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/NewsletterStep.tsx
 #: src/features/status/AddSubscriberDialog.tsx
@@ -4621,6 +4610,7 @@ msgstr "claude.ai és Claude Desktop"
 
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Clear"
 msgstr "Törlés"
 
@@ -4638,7 +4628,6 @@ msgstr "Válasz törlése"
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
@@ -4709,6 +4698,7 @@ msgstr "Az óraátállítás {date} napján van; az órák helyi idő szerint {s
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/migrations/Wizard.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
 msgstr "Bezárás"
@@ -4872,6 +4862,10 @@ msgstr "vesszők"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Common choices"
 msgstr "Gyakori választások"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Company"
+msgstr "Cég"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Comparison of condition {n}"
@@ -5216,9 +5210,6 @@ msgstr "Kontakt {since} óta"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/contact/ContactPage.tsx
-#: src/features/contact/ContactsColumn.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Contacts"
@@ -5319,6 +5310,7 @@ msgstr "beszélgetés"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/contact/MergePreview.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/docs/PagesTab.tsx
@@ -5329,7 +5321,6 @@ msgstr "beszélgetés"
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/webhooks/events.tsx
-#: src/features/team/TeamPage.tsx
 msgid "Conversations"
 msgstr "Beszélgetések"
 
@@ -5512,10 +5503,6 @@ msgstr "counted so far"
 msgid "Counting…"
 msgstr "Számolás…"
 
-#: src/features/contact/ContactsPage.tsx
-msgid "Country"
-msgstr "Ország"
-
 #: src/features/broadcasts/Trigger.tsx
 msgid "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
 msgstr "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
@@ -5635,7 +5622,7 @@ msgstr "Állapotoldal létrehozása ({newKey})"
 msgid "Create status page for {product}"
 msgstr "Állapotoldal létrehozása: {product}"
 
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 msgid "Create team"
 msgstr "Csapat létrehozása"
 
@@ -5759,6 +5746,10 @@ msgstr "Egyéni mező"
 #: src/features/settings/SettingsFrame.tsx
 msgid "Custom fields"
 msgstr "Egyéni mezők"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Customers"
+msgstr "Ügyfelek"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Customers cannot see this yet. Tell them with an incident."
@@ -5938,6 +5929,10 @@ msgstr "Törlés ({removeKey})"
 #: src/features/status/SettingsTab.tsx
 msgid "Delete {0}?"
 msgstr "Törlöd ezt: {0}?"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Delete {name}"
+msgstr "{name} törlése"
 
 #: src/features/contact/DeleteContactDialog.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
@@ -6292,7 +6287,7 @@ msgid "Deny"
 msgstr "Elutasítás"
 
 #: src/features/issues/IssueDialog.tsx
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
@@ -6349,6 +6344,7 @@ msgstr "Az asztali értesítések le vannak tiltva ennél a webhelynél a böng�
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Details"
 msgstr "Részletek"
 
@@ -6787,6 +6783,7 @@ msgstr "Duplikátumok"
 #: src/features/settings/notifications/EventsSection.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/setup/ChannelStep.tsx
+#: src/features/team/TeamPage.tsx
 msgid "E-mail"
 msgstr "E-mail"
 
@@ -6910,8 +6907,8 @@ msgid "Each person is checked once, when their mail is due: someone who left, bo
 msgstr "Each person is checked once, when their mail is due: someone who left, bounced or no longer matches gets nothing."
 
 #: src/features/reports/ReportPages.tsx
-msgid "Each person’s replies, closes and ratings."
-msgstr "Minden ember válaszai, lezárásai és értékelései."
+msgid "Each person’s replies, closes and ratings"
+msgstr "Mindenki válaszai, lezárásai és értékelései"
 
 #: src/features/settings/ProductsPage.tsx
 msgid "Each product has its own name, branding, hours, team and channels"
@@ -6958,6 +6955,10 @@ msgstr "Szerkesztés ({editKey})"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Edit {keyName}"
 msgstr "{keyName} szerkesztése"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Edit {name}"
+msgstr "{name} szerkesztése"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 msgid "Edit API key"
@@ -7016,7 +7017,7 @@ msgstr "Szabály szerkesztése"
 msgid "Edit rule"
 msgstr "Szabály szerkesztése"
 
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 msgid "Edit team"
 msgstr "Csapat szerkesztése"
 
@@ -7374,7 +7375,6 @@ msgstr "Mindenki ebben a fájlban beleegyezett, hogy megkapja a(z) {listName} li
 msgid "Everyone on the lists. Conditions keep only contacts whose attributes match, all of them."
 msgstr "Mindenki a listákon. A feltételek csak azokat a kontaktokat tartják meg, akiknek az attribútumai egyeznek, mindegyik."
 
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Everyone who has written to your products"
 msgstr "Mindenki, aki írt a termékeidnek"
@@ -7617,6 +7617,7 @@ msgid "Feedback, {feedback} open"
 msgstr "Visszajelzések, {feedback} nyitott"
 
 #: src/components/common/AssignmentFields.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Fewest open conversations"
 msgstr "Legkevesebb nyitott beszélgetés"
 
@@ -7678,8 +7679,16 @@ msgid "Filter by label"
 msgstr "Szűrés címke szerint"
 
 #: src/features/contact/ContactsPage.tsx
+msgid "Filter by plan"
+msgstr "Szűrés csomag szerint"
+
+#: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "Szűrés termék szerint"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Filter by state"
+msgstr "Szűrés állapot szerint"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Filter by team"
@@ -8389,7 +8398,6 @@ msgstr "van melléklete"
 msgid "Has an attachment"
 msgstr "Van melléklete"
 
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Has an open conversation"
 msgstr "Van nyitott beszélgetése"
@@ -9055,7 +9063,8 @@ msgctxt "mail folder"
 msgid "Inbox"
 msgstr "Beérkezett"
 
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Inbox access"
 msgstr "Postafiók-hozzáférés"
 
@@ -9079,7 +9088,6 @@ msgstr "Postafiók: {name}"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
-#: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
 msgstr "Postafiókok"
 
@@ -9169,16 +9177,12 @@ msgid "Investigating"
 msgstr "Kivizsgálás alatt"
 
 #: src/features/team/TeamPage.tsx
-msgid "Invite"
-msgstr "Meghívás"
-
-#: src/features/team/TeamPage.tsx
 msgid "Invite a teammate"
 msgstr "Csapattárs meghívása"
 
 #: src/features/team/TeamPage.tsx
-msgid "Invite language"
-msgstr "Meghívó nyelve"
+msgid "Invite sent to {sent}."
+msgstr "Meghívó elküldve ide: {sent}."
 
 #: src/features/setup/WaitStep.tsx
 msgid "Invite your team"
@@ -9564,10 +9568,6 @@ msgstr "Kulcsszó"
 #: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "Típus"
-
-#: src/features/contact/ContactsColumn.tsx
-msgid "Known"
-msgstr "Ismert"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Known only from the receiving server’s results of the test mail."
@@ -10133,7 +10133,6 @@ msgstr "Képek betöltése"
 #: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactNotes.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -10679,9 +10678,10 @@ msgstr "Tag"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/features/inbox/AssistantsPage.tsx
+#: src/features/reports/ReportPages.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
@@ -10757,6 +10757,10 @@ msgstr "Egyesítés másik kontakttal"
 #: src/features/contact/ContactsPage.tsx
 msgid "Merge…"
 msgstr "Egyesítés…"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Merging keeps the left one and moves addresses, ids and conversations into it. Nothing is merged until you have seen what changes."
+msgstr "Az egyesítés a bal oldalit tartja meg, és abba viszi át a címeket, azonosítókat és beszélgetéseket. Semmi sem egyesül, amíg nem láttad, mi változik."
 
 #: src/features/mail/Compose.tsx
 #: src/features/setup/previews.tsx
@@ -11019,12 +11023,18 @@ msgstr "Legfeljebb ennyi nyitott beszélgetés tagonként"
 msgid "Most ratings, open feedback, open discussions and waiting posts first"
 msgstr "Először a legtöbb értékelés, nyitott visszajelzés, nyitott vita és várakozó bejegyzés"
 
+#: src/features/contact/ContactsPage.tsx
+msgid "Most recently seen first"
+msgstr "Legutóbb látottak elöl"
+
 #: src/features/docs/DocsPage.tsx
 msgid "Most votes"
 msgstr "Legtöbb szavazat"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/team/TeamPage.tsx
 msgid "move"
 msgstr "mozgás"
 
@@ -11284,7 +11294,7 @@ msgstr "Saját nézeteim"
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
@@ -11326,10 +11336,6 @@ msgstr "Az új postafiók neve"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Name, colour and the first thing the chat says"
 msgstr "Név, szín és az első, amit a csevegés mond"
-
-#: src/features/contact/ContactsColumn.tsx
-msgid "Name, e-mail or id"
-msgstr "Név, e-mail vagy azonosító"
 
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
@@ -11648,7 +11654,7 @@ msgstr "Új állapotoldal"
 msgid "New subscribers added"
 msgstr "Új feliratkozók hozzáadva"
 
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "New team"
 msgstr "Új csapat"
@@ -11911,12 +11917,10 @@ msgstr "Megerősítés nélkül"
 msgid "No connected apps"
 msgstr "Nincs csatlakoztatott alkalmazás"
 
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "No contact matches “{query}”."
 msgstr "Egyetlen kontakt sem egyezik ezzel: „{query}”."
 
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "No contacts in this view."
 msgstr "Ebben a nézetben nincsenek kontaktok."
@@ -11925,7 +11929,6 @@ msgstr "Ebben a nézetben nincsenek kontaktok."
 msgid "No contacts look alike right now."
 msgstr "Jelenleg nincsenek hasonló kontaktok."
 
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "No contacts yet. They appear when someone writes in."
 msgstr "Még nincsenek kontaktok. Akkor jelennek meg, amikor valaki ír."
@@ -12242,10 +12245,6 @@ msgstr "Ebben az időszakban nincs értékelés"
 #: src/features/docs/PagesTab.tsx
 msgid "No ratings in this window."
 msgstr "Ebben az időszakban nincsenek értékelések."
-
-#: src/features/reports/ReportPages.tsx
-msgid "No ratings today"
-msgstr "Ma nincsenek értékelések"
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -12958,6 +12957,7 @@ msgstr "ki"
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/sla/SlaPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/webhooks/parts.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Off"
@@ -12998,7 +12998,6 @@ msgstr "Feliratkozási űrlapokon és a beállítások oldalon kínáljuk fel. A
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
-#: src/features/team/TeamPage.tsx
 msgid "Offline"
 msgstr "Offline"
 
@@ -13336,8 +13335,10 @@ msgstr "Csak a csapatod látja."
 msgid "open"
 msgstr "nyitott"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/team/TeamPage.tsx
 msgctxt "keyboard hint"
 msgid "open"
 msgstr "megnyitás"
@@ -13346,8 +13347,6 @@ msgstr "megnyitás"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactDetails.tsx
-#: src/features/contact/ContactsColumn.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -13647,10 +13646,6 @@ msgstr "A webhely, cél vagy tölcsér megnyitása"
 msgid "Open the triggered e-mail"
 msgstr "Open the triggered e-mail"
 
-#: src/features/team/TeamPage.tsx
-msgid "Open the unassigned queue"
-msgstr "A nem kiosztottak sorának megnyitása"
-
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Open the workspace settings"
 msgstr "Munkaterület-beállítások megnyitása"
@@ -13679,10 +13674,6 @@ msgstr "Zoho Accounts megnyitása"
 #: src/features/team/TeamPage.tsx
 msgid "open, assigned"
 msgstr "nyitott, hozzárendelt"
-
-#: src/features/team/TeamPage.tsx
-msgid "open, unassigned"
-msgstr "nyitott, nem hozzárendelt"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "Opened"
@@ -13850,7 +13841,6 @@ msgstr "Idővel"
 
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/reports/ReportPages.tsx
 #: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
@@ -14105,6 +14095,7 @@ msgstr "Adattartalom"
 
 #: src/components/common/text.ts
 #: src/features/settings/OwnDomainCard.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Pending"
 msgstr "Függőben"
 
@@ -14118,6 +14109,10 @@ msgstr "A függő kézbesítések elvetésre kerülnek vele."
 #: src/features/contact/ContactsPage.tsx
 msgid "People"
 msgstr "People"
+
+#: src/features/team/TeamPage.tsx
+msgid "People asked to join who have not signed in yet"
+msgstr "Meghívott személyek, akik még nem jelentkeztek be"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "People join it on a subscribe form or are added with their consent. Broadcasts go to lists."
@@ -14139,10 +14134,6 @@ msgstr "Az emberek hibát, ötletet vagy dicséretet küldenek képernyőképpel
 #: src/features/settings/sso/SsoPage.tsx
 msgid "People sign in with a code or a passkey again, and single sign-on stops being required. Your domains stay."
 msgstr "People sign in with a code or a passkey again, and single sign-on stops being required. Your domains stay."
-
-#: src/features/contact/ContactsPage.tsx
-msgid "People so far: {shownCount}"
-msgstr "Eddig személyek: {shownCount}"
 
 #: src/features/setup/SetupHub.tsx
 msgid "People subscribe on your site; broadcasts go to the list."
@@ -14173,6 +14164,10 @@ msgstr "People who signed in and whose mail is not due yet, the one due first on
 msgid "People who wrote to {product}"
 msgstr "{product} termékhez író személyek"
 
+#: src/features/contact/ContactsPage.tsx
+msgid "People with an e-mail address or an id from your app"
+msgstr "E-mail-címmel vagy az alkalmazásodból származó azonosítóval rendelkezők"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "People with this domain stop signing in through your provider. Removing the last verified domain turns off required single sign-on."
 msgstr "People with this domain stop signing in through your provider. Removing the last verified domain turns off required single sign-on."
@@ -14181,10 +14176,6 @@ msgstr "People with this domain stop signing in through your provider. Removing 
 #: src/features/setup/SetupHub.tsx
 msgid "People write from inside your app, signed in as themselves."
 msgstr "Az emberek az alkalmazásodon belülről írnak, önmagukként bejelentkezve."
-
-#: src/features/contact/ContactsPage.tsx
-msgid "People: {shownCount}"
-msgstr "Személyek: {shownCount}"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "Per day"
@@ -14221,7 +14212,6 @@ msgid "Permission to send"
 msgstr "Küldési engedély"
 
 #: src/features/contact/ContactsPage.tsx
-#: src/features/team/TeamPage.tsx
 msgid "Person"
 msgstr "Személy"
 
@@ -14276,10 +14266,6 @@ msgstr "Válassz színt."
 #: src/features/status/SettingsTab.tsx
 msgid "Pick a colour"
 msgstr "Szín kiválasztása"
-
-#: src/features/contact/ContactsColumn.tsx
-msgid "Pick a contact"
-msgstr "Válassz kontaktot"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Pick a CSV file, or drop it here"
@@ -14540,6 +14526,10 @@ msgstr "Sima szöveg hivatkozásokkal és sortörésekkel, legfeljebb 5000 karak
 msgid "Plain text, shown above the forwarded mail."
 msgstr "Egyszerű szöveg, a továbbított levél fölött jelenik meg."
 
+#: src/features/contact/ContactsPage.tsx
+msgid "Plan"
+msgstr "Csomag"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentDialog.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -14723,7 +14713,6 @@ msgid "pro, team"
 msgstr "pro, csapat"
 
 #: src/components/common/WorkspaceSelector.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -15738,10 +15727,6 @@ msgstr "Az asszisztens, bot vagy munkatárs által írt válaszok itt jelennek m
 msgid "Replies and answers in the discussions you follow"
 msgstr "Válaszok és megoldások a követett vitákban"
 
-#: src/features/reports/ReportPages.tsx
-msgid "Replies and closes"
-msgstr "Válaszok és lezárások"
-
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Replies and ratings"
 msgstr "Válaszok és értékelések"
@@ -16213,10 +16198,6 @@ msgstr "Visszavonta a(z) {name} API-kulcsot"
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "Közvetlenül a feliratkozás után az emberek kapnak egy rövid levelet, amely megerősíti, leiratkozási linkkel."
 
-#: src/features/team/TeamPage.tsx
-msgid "Right now"
-msgstr "Épp most"
-
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -16292,6 +16273,7 @@ msgid "Rotated the webhook secret of an issue tracker connection"
 msgstr "Megújította egy hibakövető kapcsolatának webhook-titkát"
 
 #: src/components/common/AssignmentFields.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Round robin"
 msgstr "Sorban"
 
@@ -16397,7 +16379,7 @@ msgstr "Szombat"
 #: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/parts.tsx
 #: src/features/status/ComponentDialogs.tsx
@@ -16622,8 +16604,8 @@ msgid "Score {score} out of 5"
 msgstr "Pontszám: {score} az 5-ből"
 
 #: src/features/reports/ReportPages.tsx
-msgid "Scores and comments after a conversation closed."
-msgstr "Pontszámok és megjegyzések egy beszélgetés lezárása után."
+msgid "Scores and comments after a conversation closed"
+msgstr "Értékelések és megjegyzések egy lezárt beszélgetés után"
 
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/Feedback.tsx
@@ -16646,6 +16628,7 @@ msgstr "Képernyőkép csatolva"
 msgid "SDK"
 msgstr "SDK"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "search"
 msgstr "keresés"
@@ -16661,12 +16644,7 @@ msgstr "Keresés"
 msgid "Search by name, e-mail or external id"
 msgstr "Keresés név, e-mail vagy külső azonosító szerint"
 
-#: src/features/contact/ContactsColumn.tsx
-msgid "Search by name, e-mail or the id your app gives them, then open one to see their conversations, details and notes."
-msgstr "Keress név, e-mail vagy az alkalmazásod által adott azonosító szerint, majd nyiss meg egyet, hogy lásd a beszélgetéseit, részleteit és jegyzeteit."
-
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Search contacts"
@@ -16813,6 +16791,7 @@ msgstr "Látva: {seen}"
 msgid "Seen by the monitor"
 msgstr "A figyelő látta"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "select"
@@ -17304,6 +17283,11 @@ msgctxt "mail folder"
 msgid "Sent"
 msgstr "Elküldött"
 
+#. placeholder {0}: formatDate(invite.created_at, i18n.locale)
+#: src/features/team/TeamPage.tsx
+msgid "sent {0}"
+msgstr "elküldve {0}"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "{count} üzenetet küldött erről a címről"
@@ -17564,7 +17548,6 @@ msgstr "Gyorsbillentyű"
 #: src/components/common/PageLayout.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -18928,10 +18911,10 @@ msgstr "TCP-ellenőrzés"
 #: src/features/docs/discussions/parts.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
-#: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
 msgstr "Csapat"
@@ -19001,6 +18984,7 @@ msgstr "kollega@ceg.hu"
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Teams"
 msgstr "Csapatok"
@@ -20260,8 +20244,8 @@ msgid "These choices are kept on this device only."
 msgstr "Ezek a választások csak ezen az eszközön maradnak meg."
 
 #: src/features/contact/ContactsPage.tsx
-msgid "These look like the same person. Merging keeps the left one and moves addresses, ids and conversations into it. Nothing is merged until you have seen what changes."
-msgstr "Úgy tűnik, ugyanaz a személy. Az egyesítés a bal oldalit tartja meg, és hozzá viszi a címeket, azonosítókat és beszélgetéseket. Semmi sem egyesül, amíg meg nem nézte, mi változik."
+msgid "These look like the same person"
+msgstr "Ez ugyanannak a személynek tűnik"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "These merge fields have no fallback and would be empty for some recipients:"
@@ -21376,7 +21360,6 @@ msgstr "Feloldva"
 #: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -21929,7 +21912,6 @@ msgid "Visible to"
 msgstr "Ki láthatja"
 
 #: src/components/common/Source.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/docs/PagesTab.tsx
@@ -21946,7 +21928,7 @@ msgstr "Látogató · {where}"
 msgid "visitors"
 msgstr "látogató"
 
-#: src/features/contact/ContactsColumn.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 msgid "Visitors"
 msgstr "Látogatók"
@@ -21974,6 +21956,10 @@ msgstr "A látogatók az oldalon iratkoznak fel, és levelet kapnak, ha egy inci
 #: src/features/home/PropertyCard.tsx
 msgid "visitors today"
 msgstr "látogató ma"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Visitors without a confirmed e-mail address or id"
+msgstr "Megerősített e-mail-cím vagy azonosító nélküli látogatók"
 
 #: src/features/setup/ChannelStep.tsx
 #: src/features/setup/SetupHub.tsx
@@ -22147,6 +22133,10 @@ msgstr "Egyszer használatos kódot küldünk e-mailben. Nem kell jelszót megje
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "We mailed a 6-digit code to this address. It is valid for 10 minutes."
 msgstr "6 számjegyű kódot küldtünk erre a címre. 10 percig érvényes."
+
+#: src/features/team/TeamPage.tsx
+msgid "We send a sign-in link that is valid for 7 days."
+msgstr "7 napig érvényes bejelentkezési linket küldünk."
 
 #: src/features/auth/SignInForm.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
@@ -22662,10 +22652,6 @@ msgstr "Visszavonás"
 #: src/features/team/TeamPage.tsx
 msgid "Withdraw the invite for {0}"
 msgstr "Meghívó visszavonása neki: {0}"
-
-#: src/features/team/TeamPage.tsx
-msgid "Withdraw this invite?"
-msgstr "Visszavonod ezt a meghívót?"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Within {m} minutes"

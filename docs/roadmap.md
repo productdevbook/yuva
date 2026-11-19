@@ -745,7 +745,7 @@ workspace cannot start one before approval; another workspace sees none of it.
 
 ## M41 — Panel redesign
 
-Status: M41.1, M41.2 and M41.3 (Inbox and Mail) done on main; M41.4–M41.7 planned. Spec `docs/specs/panel-redesign.md`, decision in
+Status: M41.1, M41.2, M41.3 (Inbox and Mail) and M41.4 (People, Team, Reports) done on main; M41.5–M41.7 planned. Spec `docs/specs/panel-redesign.md`, decision in
 `architecture.md` › Panel. Panel only (`web/`), on shadcn; every route, endpoint and shortcut stays.
 
 - **M41.1 Shell:** a 40px header (workspace and product, the pages menu, search, bell, account)

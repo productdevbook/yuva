@@ -7,11 +7,10 @@ import { ErrorLine } from "@/components/common"
 import { useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Field } from "@/features/settings/ui"
 import { api, unwrap, type AssignmentMode, type Team } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
@@ -71,34 +70,44 @@ function Details({
     capNumber !== (team.assignment_cap ?? null)
   return (
     <form
-      className="flex flex-col gap-5"
+      className="flex flex-col gap-4"
       onSubmit={(e) => {
         e.preventDefault()
         save.mutate()
       }}
     >
-      <Field label={<Trans>Name</Trans>} htmlFor="team-name">
-        <Input
-          id="team-name"
-          required
-          maxLength={64}
-          value={name}
-          placeholder={t`Billing`}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </Field>
-      <Field label={<Trans>Description</Trans>} htmlFor="team-description">
-        <Textarea
-          id="team-description"
-          rows={2}
-          maxLength={500}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      </Field>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field>
+          <FieldLabel htmlFor="team-name">
+            <Trans>Name</Trans>
+          </FieldLabel>
+          <Input
+            id="team-name"
+            required
+            autoFocus={!team}
+            maxLength={64}
+            value={name}
+            placeholder={t`Billing`}
+            onChange={(e) => setName(e.target.value)}
+            className="h-9"
+          />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="team-description">
+            <Trans>Description</Trans>
+          </FieldLabel>
+          <Input
+            id="team-description"
+            maxLength={500}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="h-9"
+          />
+        </Field>
+      </div>
       <AssignmentFields scope="team" mode={mode} cap={cap} onMode={setMode} onCap={setCap} />
       <ErrorLine error={save.error} />
-      <DialogFooter>
+      <div className="flex flex-wrap gap-2">
         <Button
           type="submit"
           disabled={save.isPending || name.trim() === "" || !changed || !capValid(cap)}
@@ -106,7 +115,10 @@ function Details({
         >
           {team ? <Trans>Save</Trans> : <Trans>Create team</Trans>}
         </Button>
-      </DialogFooter>
+        <Button type="button" variant="outline" onClick={onClose}>
+          {team ? <Trans>Close</Trans> : <Trans>Cancel</Trans>}
+        </Button>
+      </div>
     </form>
   )
 }
@@ -185,7 +197,7 @@ function Access({ team }: { team: Team }) {
     onSettled: () => qc.invalidateQueries({ queryKey: keys.teams(ws) }),
   })
   return (
-    <div className="flex flex-col gap-5">
+    <div className="grid gap-5 sm:grid-cols-2">
       <Picks title={<Trans>Members</Trans>} count={team.member_ids.length} limit={MAX_MEMBERS}>
         {members.map((m) => (
           <Pick
@@ -216,7 +228,7 @@ function Access({ team }: { team: Team }) {
   )
 }
 
-export function TeamDialog({
+export function TeamEditor({
   teamId,
   onSaved,
   onClose,
@@ -227,16 +239,18 @@ export function TeamDialog({
 }) {
   const team = useTeams().data?.find((x) => x.id === teamId) ?? null
   return (
-    <Dialog open onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-h-[90svh] overflow-y-auto sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>{teamId ? <Trans>Edit team</Trans> : <Trans>New team</Trans>}</DialogTitle>
-        </DialogHeader>
+    <Card className="mt-4 gap-0 py-0 shadow-none" data-testid="team-editor">
+      <CardHeader className="border-b px-4 py-3 [.border-b]:pb-3">
+        <CardTitle className="text-[15px] font-semibold">
+          {teamId ? <Trans>Edit team</Trans> : <Trans>New team</Trans>}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-6 px-4 py-4">
         {(teamId === null || team) && (
           <Details key={team?.id ?? "new"} team={team} onSaved={onSaved} onClose={onClose} />
         )}
         {team && <Access team={team} />}
-      </DialogContent>
-    </Dialog>
+      </CardContent>
+    </Card>
   )
 }

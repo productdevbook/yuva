@@ -53,6 +53,11 @@ msgstr "(தலைப்பு இல்லை)"
 msgid "{0, plural, one {{name} · # waiting} other {{name} · # waiting}}"
 msgstr "{0, plural, one {{name} · # காத்திருக்கின்றன} other {{name} · # காத்திருக்கின்றன}}"
 
+#. placeholder {0}: items.length
+#: src/features/contact/ContactsPage.tsx
+msgid "{0, plural, one {{shown} person} other {{shown} people}}"
+msgstr "{0, plural, one {{shown} நபர்} other {{shown} நபர்கள்}}"
+
 #. placeholder {0}: msg.attachments
 #: src/features/migrations/ReviewStep.tsx
 msgid "{0, plural, one {# attachment} other {# attachments}}"
@@ -97,6 +102,16 @@ msgstr "{0, plural, one {# hour after someone confirms {list}} other {# hours af
 msgid "{0, plural, one {# hour after someone starts to match {match}} other {# hours after someone starts to match {match}}}"
 msgstr "{0, plural, one {# hour after someone starts to match {match}} other {# hours after someone starts to match {match}}}"
 
+#. placeholder {0}: team.inbox_ids.length
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "{0, plural, one {# inbox} other {# inboxes}}"
+msgstr "{0, plural, one {# இன்பாக்ஸ்} other {# இன்பாக்ஸ்கள்}}"
+
+#. placeholder {0}: team.member_ids.length
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "{0, plural, one {# member} other {# members}}"
+msgstr "{0, plural, one {# உறுப்பினர்} other {# உறுப்பினர்கள்}}"
+
 #. placeholder {0}: items.length
 #: src/features/inbox/SidePanels.tsx
 msgid "{0, plural, one {# mention} other {# mentions}}"
@@ -106,11 +121,6 @@ msgstr "{0, plural, one {# குறிப்பீடு} other {# குறி
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "{0, plural, one {# of them gets it because their language has no version} other {# of them get it because their language has no version}}"
 msgstr "{0, plural, one {இவர்களில் # பேருக்கு, அவர்களின் மொழிக்கு பதிப்பு இல்லாததால் இது கிடைக்கிறது} other {இவர்களில் # பேருக்கு, அவர்களின் மொழிக்கு பதிப்பு இல்லாததால் இது கிடைக்கிறது}}"
-
-#. placeholder {0}: c.activity.open_conversations
-#: src/features/contact/ContactsColumn.tsx
-msgid "{0, plural, one {# open} other {# open}}"
-msgstr "{0, plural, one {# திறந்தது} other {# திறந்தவை}}"
 
 #. placeholder {0}: p.unanswered_threads
 #: src/features/home/HomeWork.tsx
@@ -146,11 +156,6 @@ msgstr "{0, plural, one {பெறுநர்} other {பெறுநர்க�
 #: src/features/settings/slack/SlackPage.tsx
 msgid "{0} (private)"
 msgstr "{0} (private)"
-
-#. placeholder {0}: fmt.format(s.members.length)
-#: src/features/reports/ReportPages.tsx
-msgid "{0} active today"
-msgstr "இன்று {0} செயலில்"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
@@ -199,11 +204,10 @@ msgstr "{0} குப்பைக்கு நகர்த்தப்பட்�
 msgid "{0} of {1}"
 msgstr "{0} / {1}"
 
-#. placeholder {0}: fmt.format(s.replies)
-#. placeholder {1}: fmt.format(s.closed)
-#: src/features/reports/ReportPages.tsx
-msgid "{0} replies · {1} closed"
-msgstr "{0} பதில்கள் · {1} மூடப்பட்டவை"
+#. placeholder {0}: fmt.format(unassigned)
+#: src/features/team/TeamPage.tsx
+msgid "{0} open, unassigned"
+msgstr "{0} திறந்தவை, ஒதுக்கப்படவில்லை"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
@@ -330,10 +334,6 @@ msgstr "{ownerName} சார்பாக {author}"
 #: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
 msgstr "{author}, {by} அனுப்பியது"
-
-#: src/features/team/TeamPage.tsx
-msgid "{available} of {total}"
-msgstr "{total} பேரில் {available}"
 
 #: src/features/team/TeamPage.tsx
 msgid "{available} of {total} available now"
@@ -921,10 +921,6 @@ msgstr "{open} திறந்தவை"
 msgid "{out, plural, one {# row is left out} other {# rows are left out}}"
 msgstr "{out, plural, one {# வரிசை விடுபட்டது} other {# வரிசைகள் விடுபட்டன}}"
 
-#: src/features/reports/ReportPages.tsx
-msgid "{pct} satisfied"
-msgstr "{pct} திருப்தி"
-
 #: src/features/docs/PagesTab.tsx
 msgid "{pending} posts waiting for approval"
 msgstr "{pending} இடுகைகள் ஒப்புதலுக்காகக் காத்திருக்கின்றன"
@@ -1083,10 +1079,6 @@ msgstr "{replies} பதில்கள்"
 #: src/features/contact/ContactVisits.tsx
 msgid "{rest, plural, one {and # more page} other {and # more pages}}"
 msgstr "{rest, plural, one {மேலும் # பக்கம்} other {மேலும் # பக்கங்கள்}}"
-
-#: src/features/team/TeamPage.tsx
-msgid "{role} · {language} · sent {sent} · expires {expires}"
-msgstr "{role} · {language} · அனுப்பியது {sent} · காலாவதி {expires}"
 
 #: src/features/broadcasts/Import.tsx
 msgid "{rows} rows, read as {encoding}, separated by {delimiter}."
@@ -1890,8 +1882,8 @@ msgid "A subscription changed"
 msgstr "ஒரு சந்தா மாறியது"
 
 #: src/features/settings/teams/TeamsPage.tsx
-msgid "A team gives its members the inboxes it covers. A conversation can go to a team as well as to a member."
-msgstr "குழு தான் கவனிக்கும் இன்பாக்ஸ்களை உறுப்பினர்களுக்கு வழங்குகிறது. உரையாடலை உறுப்பினருக்கு மட்டுமின்றி குழுவுக்கும் ஒதுக்கலாம்."
+msgid "A team gives its members the inboxes it covers"
+msgstr "குழு தான் கவனிக்கும் இன்பாக்ஸ்களை உறுப்பினர்களுக்கு வழங்குகிறது"
 
 #: src/components/common/text.ts
 msgid "A team holds at most 500 members and 100 inboxes."
@@ -2041,6 +2033,8 @@ msgid "ACS URL"
 msgstr "ACS URL"
 
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Actions"
 msgstr "செயல்கள்"
 
@@ -2492,7 +2486,6 @@ msgstr "Alertmanager"
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactDetails.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -2576,7 +2569,7 @@ msgstr "அதன் அனைத்து உரையாடல்கள், �
 msgid "All parts arrived. Reading the file…"
 msgstr "அனைத்துப் பகுதிகளும் வந்துவிட்டன. கோப்பைப் படிக்கிறது…"
 
-#: src/app/places.tsx
+#: src/features/contact/ContactsPage.tsx
 msgid "All people"
 msgstr "எல்லா நபர்களும்"
 
@@ -2586,7 +2579,6 @@ msgstr "அனைத்து தயாரிப்புகள்"
 
 #: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
@@ -2596,7 +2588,6 @@ msgstr "அனைத்து தயாரிப்புகள்"
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/status/StatusFrame.tsx
-#: src/features/team/TeamPage.tsx
 msgid "All products"
 msgstr "எல்லாத் தயாரிப்புகளும்"
 
@@ -3135,10 +3126,15 @@ msgstr "ஏதேனும் லேபிள்"
 msgid "Any of the labels you pick."
 msgstr "நீங்கள் தேர்ந்தெடுக்கும் லேபிள்களில் ஏதேனும் ஒன்று."
 
+#: src/features/contact/ContactsPage.tsx
+msgid "Any plan"
+msgstr "எந்தத் திட்டமும்"
+
 #: src/features/inbox/SourceFilter.tsx
 msgid "Any state"
 msgstr "எந்த நிலையும்"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Any status"
 msgstr "எந்த நிலையும்"
@@ -3642,6 +3638,7 @@ msgstr "தானியங்கி"
 
 #: src/components/common/AssignmentFields.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Automatic assignment"
 msgstr "தானியங்கி ஒதுக்கீடு"
 
@@ -3659,10 +3656,6 @@ msgstr "தானியக்கம்"
 msgid "Available"
 msgstr "கிடைக்கிறது"
 
-#: src/features/team/TeamPage.tsx
-msgid "available now"
-msgstr "இப்போது கிடைக்கிறது"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Available until {until}"
 msgstr "{until} வரை கிடைக்கிறது"
@@ -3671,7 +3664,6 @@ msgstr "{until} வரை கிடைக்கிறது"
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/home/HomePage.tsx
-#: src/features/team/TeamPage.tsx
 msgid "Away"
 msgstr "வெளியே"
 
@@ -3809,7 +3801,7 @@ msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignore
 msgstr "1 முதல் 500 வரை, முழு பணியிடத்திலும் கணக்கிடப்படும். கையால் ஒதுக்குவது இதை புறக்கணிக்கும். வரம்பு வேண்டாமெனில் காலியாக விடுங்கள்."
 
 #: src/features/settings/labels/LabelDialog.tsx
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 msgid "Billing"
 msgstr "கட்டணம்"
 
@@ -4055,10 +4047,6 @@ msgstr "குழு வாரியாக"
 msgid "By language"
 msgstr "மொழி வாரியாக"
 
-#: src/features/reports/ReportPages.tsx
-msgid "By member"
-msgstr "உறுப்பினர் வாரியாக"
-
 #: src/features/conversation/messages/Thread.tsx
 msgid "by rule {rule}"
 msgstr "விதி {rule} மூலம்"
@@ -4078,6 +4066,7 @@ msgstr "பிரசாரப் பெயர்"
 
 #: src/app/Palette.tsx
 #: src/components/common/ConfirmDialog.tsx
+#: src/components/common/FormCard.tsx
 #: src/components/common/Linked.tsx
 #: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
@@ -4094,7 +4083,6 @@ msgstr "பிரசாரப் பெயர்"
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/contact/DeleteContactDialog.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
@@ -4112,6 +4100,7 @@ msgstr "பிரசாரப் பெயர்"
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/NewsletterStep.tsx
 #: src/features/status/AddSubscriberDialog.tsx
@@ -4621,6 +4610,7 @@ msgstr "claude.ai மற்றும் Claude Desktop"
 
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Clear"
 msgstr "அழி"
 
@@ -4638,7 +4628,6 @@ msgstr "பதிலை அழி"
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
@@ -4709,6 +4698,7 @@ msgstr "{date} அன்று கடிகாரங்கள் மாறுக
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/migrations/Wizard.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
 msgstr "மூடு"
@@ -4872,6 +4862,10 @@ msgstr "காற்புள்ளிகள்"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Common choices"
 msgstr "பொதுவான தேர்வுகள்"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Company"
+msgstr "நிறுவனம்"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Comparison of condition {n}"
@@ -5216,9 +5210,6 @@ msgstr "{since} முதல் தொடர்பு"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/contact/ContactPage.tsx
-#: src/features/contact/ContactsColumn.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Contacts"
@@ -5319,6 +5310,7 @@ msgstr "உரையாடல்கள்"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/contact/MergePreview.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/docs/PagesTab.tsx
@@ -5329,7 +5321,6 @@ msgstr "உரையாடல்கள்"
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/webhooks/events.tsx
-#: src/features/team/TeamPage.tsx
 msgid "Conversations"
 msgstr "உரையாடல்கள்"
 
@@ -5512,10 +5503,6 @@ msgstr "counted so far"
 msgid "Counting…"
 msgstr "எண்ணப்படுகிறது…"
 
-#: src/features/contact/ContactsPage.tsx
-msgid "Country"
-msgstr "நாடு"
-
 #: src/features/broadcasts/Trigger.tsx
 msgid "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
 msgstr "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
@@ -5635,7 +5622,7 @@ msgstr "நிலைப் பக்கத்தை உருவாக்கு 
 msgid "Create status page for {product}"
 msgstr "{product}க்கான நிலைப் பக்கத்தை உருவாக்கு"
 
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 msgid "Create team"
 msgstr "குழுவை உருவாக்கு"
 
@@ -5759,6 +5746,10 @@ msgstr "தனிப்பயன் புலம்"
 #: src/features/settings/SettingsFrame.tsx
 msgid "Custom fields"
 msgstr "தனிப்பயன் புலங்கள்"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Customers"
+msgstr "வாடிக்கையாளர்கள்"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Customers cannot see this yet. Tell them with an incident."
@@ -5938,6 +5929,10 @@ msgstr "நீக்கு ({removeKey})"
 #: src/features/status/SettingsTab.tsx
 msgid "Delete {0}?"
 msgstr "{0}-ஐ நீக்கவா?"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Delete {name}"
+msgstr "{name} ஐ நீக்கு"
 
 #: src/features/contact/DeleteContactDialog.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
@@ -6292,7 +6287,7 @@ msgid "Deny"
 msgstr "மறு"
 
 #: src/features/issues/IssueDialog.tsx
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
@@ -6349,6 +6344,7 @@ msgstr "உலாவியின் அமைப்புகளில் இந�
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Details"
 msgstr "விவரங்கள்"
 
@@ -6787,6 +6783,7 @@ msgstr "நகல்கள்"
 #: src/features/settings/notifications/EventsSection.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/setup/ChannelStep.tsx
+#: src/features/team/TeamPage.tsx
 msgid "E-mail"
 msgstr "மின்னஞ்சல்"
 
@@ -6910,8 +6907,8 @@ msgid "Each person is checked once, when their mail is due: someone who left, bo
 msgstr "Each person is checked once, when their mail is due: someone who left, bounced or no longer matches gets nothing."
 
 #: src/features/reports/ReportPages.tsx
-msgid "Each person’s replies, closes and ratings."
-msgstr "ஒவ்வொருவரின் பதில்கள், மூடியவை மற்றும் மதிப்பீடுகள்."
+msgid "Each person’s replies, closes and ratings"
+msgstr "ஒவ்வொருவரின் பதில்கள், மூடியவை, மதிப்பீடுகள்"
 
 #: src/features/settings/ProductsPage.tsx
 msgid "Each product has its own name, branding, hours, team and channels"
@@ -6958,6 +6955,10 @@ msgstr "திருத்து ({editKey})"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Edit {keyName}"
 msgstr "{keyName}-ஐத் திருத்து"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Edit {name}"
+msgstr "{name} ஐத் திருத்து"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 msgid "Edit API key"
@@ -7016,7 +7017,7 @@ msgstr "கொள்கையைத் திருத்து"
 msgid "Edit rule"
 msgstr "விதியைத் திருத்து"
 
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 msgid "Edit team"
 msgstr "குழுவைத் திருத்து"
 
@@ -7374,7 +7375,6 @@ msgstr "இந்தக் கோப்பில் உள்ள அனைவர
 msgid "Everyone on the lists. Conditions keep only contacts whose attributes match, all of them."
 msgstr "பட்டியல்களில் உள்ள அனைவரும். நிபந்தனைகள், பண்புக்கூறுகள் அனைத்தும் பொருந்தும் தொடர்புகளை மட்டும் வைக்கும்."
 
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Everyone who has written to your products"
 msgstr "உங்கள் தயாரிப்புகளுக்கு எழுதிய அனைவரும்"
@@ -7617,6 +7617,7 @@ msgid "Feedback, {feedback} open"
 msgstr "Feedback, {feedback} open"
 
 #: src/components/common/AssignmentFields.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Fewest open conversations"
 msgstr "குறைந்த திறந்த உரையாடல்கள்"
 
@@ -7678,8 +7679,16 @@ msgid "Filter by label"
 msgstr "லேபிள் மூலம் வடிகட்டு"
 
 #: src/features/contact/ContactsPage.tsx
+msgid "Filter by plan"
+msgstr "திட்டப்படி வடிகட்டு"
+
+#: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "தயாரிப்பு மூலம் வடிகட்டு"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Filter by state"
+msgstr "நிலைப்படி வடிகட்டு"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Filter by team"
@@ -8389,7 +8398,6 @@ msgstr "இணைப்பு உள்ளது"
 msgid "Has an attachment"
 msgstr "இணைப்பு உள்ளது"
 
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Has an open conversation"
 msgstr "திறந்த உரையாடல் உள்ளது"
@@ -9055,7 +9063,8 @@ msgctxt "mail folder"
 msgid "Inbox"
 msgstr "இன்பாக்ஸ்"
 
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Inbox access"
 msgstr "இன்பாக்ஸ் அணுகல்"
 
@@ -9079,7 +9088,6 @@ msgstr "{name}-க்கான இன்பாக்ஸ்"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
-#: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
 msgstr "இன்பாக்ஸ்கள்"
 
@@ -9169,16 +9177,12 @@ msgid "Investigating"
 msgstr "விசாரிக்கப்படுகிறது"
 
 #: src/features/team/TeamPage.tsx
-msgid "Invite"
-msgstr "அழை"
-
-#: src/features/team/TeamPage.tsx
 msgid "Invite a teammate"
 msgstr "ஒரு சக ஊழியரை அழையுங்கள்"
 
 #: src/features/team/TeamPage.tsx
-msgid "Invite language"
-msgstr "அழைப்பு மொழி"
+msgid "Invite sent to {sent}."
+msgstr "{sent} க்கு அழைப்பு அனுப்பப்பட்டது."
 
 #: src/features/setup/WaitStep.tsx
 msgid "Invite your team"
@@ -9564,10 +9568,6 @@ msgstr "முக்கிய சொல்"
 #: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "வகை"
-
-#: src/features/contact/ContactsColumn.tsx
-msgid "Known"
-msgstr "அறியப்பட்டது"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Known only from the receiving server’s results of the test mail."
@@ -10133,7 +10133,6 @@ msgstr "படங்களை ஏற்று"
 #: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactNotes.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -10679,9 +10678,10 @@ msgstr "உறுப்பினர்"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/features/inbox/AssistantsPage.tsx
+#: src/features/reports/ReportPages.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
@@ -10757,6 +10757,10 @@ msgstr "மற்றொரு தொடர்புடன் இணை"
 #: src/features/contact/ContactsPage.tsx
 msgid "Merge…"
 msgstr "இணை…"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Merging keeps the left one and moves addresses, ids and conversations into it. Nothing is merged until you have seen what changes."
+msgstr "இணைப்பது இடதுபுறத்ததை வைத்து, முகவரிகள், ID-கள், உரையாடல்களை அதற்கு மாற்றும். என்ன மாறும் என்று பார்க்கும் வரை எதுவும் இணைக்கப்படாது."
 
 #: src/features/mail/Compose.tsx
 #: src/features/setup/previews.tsx
@@ -11019,12 +11023,18 @@ msgstr "ஒரு உறுப்பினருக்கு அதிகபட�
 msgid "Most ratings, open feedback, open discussions and waiting posts first"
 msgstr "அதிக மதிப்பீடுகள், திறந்த கருத்துகள், திறந்த விவாதங்கள், காத்திருக்கும் இடுகைகள் முதலில்"
 
+#: src/features/contact/ContactsPage.tsx
+msgid "Most recently seen first"
+msgstr "சமீபத்தில் பார்த்தவர்கள் முதலில்"
+
 #: src/features/docs/DocsPage.tsx
 msgid "Most votes"
 msgstr "அதிக வாக்குகள்"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/team/TeamPage.tsx
 msgid "move"
 msgstr "நகர்"
 
@@ -11284,7 +11294,7 @@ msgstr "என் காட்சிகள்"
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
@@ -11326,10 +11336,6 @@ msgstr "புதிய இன்பாக்ஸின் பெயர்"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Name, colour and the first thing the chat says"
 msgstr "பெயர், வண்ணம், அரட்டை முதலில் சொல்வது"
-
-#: src/features/contact/ContactsColumn.tsx
-msgid "Name, e-mail or id"
-msgstr "பெயர், மின்னஞ்சல் அல்லது ID"
 
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
@@ -11648,7 +11654,7 @@ msgstr "புதிய நிலைப் பக்கம்"
 msgid "New subscribers added"
 msgstr "புதிய சந்தாதாரர்கள் சேர்க்கப்பட்டனர்"
 
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "New team"
 msgstr "புதிய குழு"
@@ -11911,12 +11917,10 @@ msgstr "உறுதிப்படுத்தல் இல்லை"
 msgid "No connected apps"
 msgstr "இணைக்கப்பட்ட ஆப்கள் இல்லை"
 
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "No contact matches “{query}”."
 msgstr "எந்தத் தொடர்பும் “{query}”-உடன் பொருந்தவில்லை."
 
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "No contacts in this view."
 msgstr "இந்தப் பார்வையில் தொடர்புகள் இல்லை."
@@ -11925,7 +11929,6 @@ msgstr "இந்தப் பார்வையில் தொடர்பு�
 msgid "No contacts look alike right now."
 msgstr "இப்போது ஒன்றுபோல் தோன்றும் தொடர்புகள் இல்லை."
 
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "No contacts yet. They appear when someone writes in."
 msgstr "இன்னும் தொடர்புகள் இல்லை. யாராவது எழுதும்போது அவை தோன்றும்."
@@ -12242,10 +12245,6 @@ msgstr "இந்தக் காலத்தில் மதிப்பீட�
 #: src/features/docs/PagesTab.tsx
 msgid "No ratings in this window."
 msgstr "இந்தக் காலத்தில் மதிப்பீடுகள் இல்லை."
-
-#: src/features/reports/ReportPages.tsx
-msgid "No ratings today"
-msgstr "இன்று மதிப்பீடுகள் இல்லை"
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -12958,6 +12957,7 @@ msgstr "முடக்கம்"
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/sla/SlaPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/webhooks/parts.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Off"
@@ -12998,7 +12998,6 @@ msgstr "சந்தா படிவங்களிலும் விருப�
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
-#: src/features/team/TeamPage.tsx
 msgid "Offline"
 msgstr "ஆஃப்லைன்"
 
@@ -13336,8 +13335,10 @@ msgstr "உங்கள் குழு மட்டுமே பார்க்
 msgid "open"
 msgstr "திறந்தது"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/team/TeamPage.tsx
 msgctxt "keyboard hint"
 msgid "open"
 msgstr "திற"
@@ -13346,8 +13347,6 @@ msgstr "திற"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactDetails.tsx
-#: src/features/contact/ContactsColumn.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -13647,10 +13646,6 @@ msgstr "தளம், இலக்கு அல்லது புனலைத�
 msgid "Open the triggered e-mail"
 msgstr "Open the triggered e-mail"
 
-#: src/features/team/TeamPage.tsx
-msgid "Open the unassigned queue"
-msgstr "ஒதுக்கப்படாதவற்றின் வரிசையைத் திற"
-
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Open the workspace settings"
 msgstr "பணியிட அமைப்புகளைத் திற"
@@ -13679,10 +13674,6 @@ msgstr "Zoho Accounts-ஐத் திற"
 #: src/features/team/TeamPage.tsx
 msgid "open, assigned"
 msgstr "திறந்தவை, ஒதுக்கப்பட்டவை"
-
-#: src/features/team/TeamPage.tsx
-msgid "open, unassigned"
-msgstr "திறந்தவை, ஒதுக்கப்படாதவை"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "Opened"
@@ -13850,7 +13841,6 @@ msgstr "காலப்போக்கில்"
 
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/reports/ReportPages.tsx
 #: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
@@ -14105,6 +14095,7 @@ msgstr "பேலோட்"
 
 #: src/components/common/text.ts
 #: src/features/settings/OwnDomainCard.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Pending"
 msgstr "நிலுவையில்"
 
@@ -14118,6 +14109,10 @@ msgstr "நிலுவையில் உள்ள விநியோகங்�
 #: src/features/contact/ContactsPage.tsx
 msgid "People"
 msgstr "People"
+
+#: src/features/team/TeamPage.tsx
+msgid "People asked to join who have not signed in yet"
+msgstr "சேர அழைக்கப்பட்டு இன்னும் உள்நுழையாதவர்கள்"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "People join it on a subscribe form or are added with their consent. Broadcasts go to lists."
@@ -14139,10 +14134,6 @@ msgstr "மக்கள் திரைப்பிடிப்பு மற்�
 #: src/features/settings/sso/SsoPage.tsx
 msgid "People sign in with a code or a passkey again, and single sign-on stops being required. Your domains stay."
 msgstr "People sign in with a code or a passkey again, and single sign-on stops being required. Your domains stay."
-
-#: src/features/contact/ContactsPage.tsx
-msgid "People so far: {shownCount}"
-msgstr "இதுவரை நபர்கள்: {shownCount}"
 
 #: src/features/setup/SetupHub.tsx
 msgid "People subscribe on your site; broadcasts go to the list."
@@ -14173,6 +14164,10 @@ msgstr "People who signed in and whose mail is not due yet, the one due first on
 msgid "People who wrote to {product}"
 msgstr "{product}-க்கு எழுதியவர்கள்"
 
+#: src/features/contact/ContactsPage.tsx
+msgid "People with an e-mail address or an id from your app"
+msgstr "மின்னஞ்சல் முகவரி அல்லது உங்கள் ஆப்பின் ID உள்ளவர்கள்"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "People with this domain stop signing in through your provider. Removing the last verified domain turns off required single sign-on."
 msgstr "People with this domain stop signing in through your provider. Removing the last verified domain turns off required single sign-on."
@@ -14181,10 +14176,6 @@ msgstr "People with this domain stop signing in through your provider. Removing 
 #: src/features/setup/SetupHub.tsx
 msgid "People write from inside your app, signed in as themselves."
 msgstr "மக்கள் உங்கள் ஆப்பிற்குள் இருந்து, தம் சொந்த அடையாளத்துடன் உள்நுழைந்து எழுதுகின்றனர்."
-
-#: src/features/contact/ContactsPage.tsx
-msgid "People: {shownCount}"
-msgstr "நபர்கள்: {shownCount}"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "Per day"
@@ -14221,7 +14212,6 @@ msgid "Permission to send"
 msgstr "அனுப்ப அனுமதி"
 
 #: src/features/contact/ContactsPage.tsx
-#: src/features/team/TeamPage.tsx
 msgid "Person"
 msgstr "நபர்"
 
@@ -14276,10 +14266,6 @@ msgstr "ஒரு நிறத்தைத் தேர்ந்தெடுங�
 #: src/features/status/SettingsTab.tsx
 msgid "Pick a colour"
 msgstr "நிறத்தைத் தேர்ந்தெடு"
-
-#: src/features/contact/ContactsColumn.tsx
-msgid "Pick a contact"
-msgstr "ஒரு தொடர்பைத் தேர்ந்தெடுங்கள்"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Pick a CSV file, or drop it here"
@@ -14540,6 +14526,10 @@ msgstr "இணைப்புகளும் வரி முறிவுகள�
 msgid "Plain text, shown above the forwarded mail."
 msgstr "எளிய உரை, ஃபார்வர்டு செய்த மின்னஞ்சலுக்கு மேலே காட்டப்படும்."
 
+#: src/features/contact/ContactsPage.tsx
+msgid "Plan"
+msgstr "திட்டம்"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentDialog.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -14723,7 +14713,6 @@ msgid "pro, team"
 msgstr "pro, team"
 
 #: src/components/common/WorkspaceSelector.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -15738,10 +15727,6 @@ msgstr "உதவியாளர், பாட் அல்லது சக ஊ�
 msgid "Replies and answers in the discussions you follow"
 msgstr "நீங்கள் பின்தொடரும் விவாதங்களில் பதில்களும் தீர்வுகளும்"
 
-#: src/features/reports/ReportPages.tsx
-msgid "Replies and closes"
-msgstr "பதில்களும் மூடல்களும்"
-
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Replies and ratings"
 msgstr "பதில்களும் மதிப்பீடுகளும்"
@@ -16213,10 +16198,6 @@ msgstr "API விசை {name}-ஐ திரும்பப் பெற்ற�
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "சந்தா செய்த உடனே, அதை உறுதிப்படுத்தும் சிறு அஞ்சல் மக்களுக்குக் கிடைக்கும், சந்தா விலகல் இணைப்புடன்."
 
-#: src/features/team/TeamPage.tsx
-msgid "Right now"
-msgstr "இப்போது"
-
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -16292,6 +16273,7 @@ msgid "Rotated the webhook secret of an issue tracker connection"
 msgstr "சிக்கல் கண்காணிப்பு இணைப்பின் வெப்ஹுக் ரகசியத்தைப் புதுப்பித்தார்"
 
 #: src/components/common/AssignmentFields.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Round robin"
 msgstr "சுழற்சி முறை"
 
@@ -16397,7 +16379,7 @@ msgstr "சனிக்கிழமை"
 #: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
-#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/parts.tsx
 #: src/features/status/ComponentDialogs.tsx
@@ -16622,8 +16604,8 @@ msgid "Score {score} out of 5"
 msgstr "5-க்கு {score} மதிப்பெண்"
 
 #: src/features/reports/ReportPages.tsx
-msgid "Scores and comments after a conversation closed."
-msgstr "உரையாடல் மூடப்பட்ட பின் மதிப்பெண்களும் கருத்துகளும்."
+msgid "Scores and comments after a conversation closed"
+msgstr "உரையாடல் மூடிய பின் வந்த மதிப்பீடுகளும் கருத்துகளும்"
 
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/Feedback.tsx
@@ -16646,6 +16628,7 @@ msgstr "Screenshots attached"
 msgid "SDK"
 msgstr "SDK"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "search"
 msgstr "தேடு"
@@ -16661,12 +16644,7 @@ msgstr "தேடு"
 msgid "Search by name, e-mail or external id"
 msgstr "பெயர், மின்னஞ்சல் அல்லது வெளி ID மூலம் தேடுங்கள்"
 
-#: src/features/contact/ContactsColumn.tsx
-msgid "Search by name, e-mail or the id your app gives them, then open one to see their conversations, details and notes."
-msgstr "பெயர், மின்னஞ்சல் அல்லது உங்கள் ஆப் அவர்களுக்கு வழங்கும் ID மூலம் தேடி, அவர்களின் உரையாடல்கள், விவரங்கள், குறிப்புகளைக் காண ஒன்றைத் திறவுங்கள்."
-
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Search contacts"
@@ -16813,6 +16791,7 @@ msgstr "{seen} பார்த்தது"
 msgid "Seen by the monitor"
 msgstr "கண்காணிப்பு பார்த்தது"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "select"
@@ -17304,6 +17283,11 @@ msgctxt "mail folder"
 msgid "Sent"
 msgstr "அனுப்பியவை"
 
+#. placeholder {0}: formatDate(invite.created_at, i18n.locale)
+#: src/features/team/TeamPage.tsx
+msgid "sent {0}"
+msgstr "அனுப்பப்பட்டது {0}"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "இந்த முகவரியிலிருந்து {count} செய்திகள் அனுப்பப்பட்டன"
@@ -17564,7 +17548,6 @@ msgstr "குறுக்குவழி"
 #: src/components/common/PageLayout.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -18928,10 +18911,10 @@ msgstr "TCP சோதனை"
 #: src/features/docs/discussions/parts.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
-#: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
 msgstr "குழு"
@@ -19001,6 +18984,7 @@ msgstr "teammate@company.com"
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Teams"
 msgstr "குழுக்கள்"
@@ -20260,8 +20244,8 @@ msgid "These choices are kept on this device only."
 msgstr "இந்தத் தேர்வுகள் இந்தச் சாதனத்தில் மட்டுமே வைக்கப்படும்."
 
 #: src/features/contact/ContactsPage.tsx
-msgid "These look like the same person. Merging keeps the left one and moves addresses, ids and conversations into it. Nothing is merged until you have seen what changes."
-msgstr "இவர்கள் ஒரே நபராகத் தெரிகிறார்கள். இணைத்தால் இடதுபுறத் தொடர்பு இருக்கும்; முகவரிகள், ஐடிகள், உரையாடல்கள் அதற்கு மாறும். மாற்றங்களைப் பார்க்கும் வரை எதுவும் இணைக்கப்படாது."
+msgid "These look like the same person"
+msgstr "இவர்கள் ஒரே நபர் போலத் தெரிகிறது"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "These merge fields have no fallback and would be empty for some recipients:"
@@ -21376,7 +21360,6 @@ msgstr "திறக்கப்பட்டது"
 #: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -21929,7 +21912,6 @@ msgid "Visible to"
 msgstr "யாருக்குத் தெரியும்"
 
 #: src/components/common/Source.tsx
-#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/docs/PagesTab.tsx
@@ -21946,7 +21928,7 @@ msgstr "பார்வையாளர் · {where}"
 msgid "visitors"
 msgstr "பார்வையாளர்கள்"
 
-#: src/features/contact/ContactsColumn.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 msgid "Visitors"
 msgstr "பார்வையாளர்கள்"
@@ -21974,6 +21956,10 @@ msgstr "பார்வையாளர்கள் பக்கத்தில�
 #: src/features/home/PropertyCard.tsx
 msgid "visitors today"
 msgstr "இன்று பார்வையாளர்கள்"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Visitors without a confirmed e-mail address or id"
+msgstr "உறுதிசெய்த மின்னஞ்சல் முகவரி அல்லது ID இல்லாத பார்வையாளர்கள்"
 
 #: src/features/setup/ChannelStep.tsx
 #: src/features/setup/SetupHub.tsx
@@ -22147,6 +22133,10 @@ msgstr "ஒருமுறை பயன்படுத்தும் குற�
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "We mailed a 6-digit code to this address. It is valid for 10 minutes."
 msgstr "இந்த முகவரிக்கு 6 இலக்கக் குறியீட்டை அனுப்பினோம். இது 10 நிமிடங்கள் செல்லும்."
+
+#: src/features/team/TeamPage.tsx
+msgid "We send a sign-in link that is valid for 7 days."
+msgstr "7 நாள் செல்லுபடியாகும் உள்நுழைவு இணைப்பை அனுப்புகிறோம்."
 
 #: src/features/auth/SignInForm.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
@@ -22662,10 +22652,6 @@ msgstr "திரும்பப் பெறு"
 #: src/features/team/TeamPage.tsx
 msgid "Withdraw the invite for {0}"
 msgstr "{0}-க்கான அழைப்பைத் திரும்பப் பெறு"
-
-#: src/features/team/TeamPage.tsx
-msgid "Withdraw this invite?"
-msgstr "இந்த அழைப்பைத் திரும்பப் பெறவா?"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Within {m} minutes"

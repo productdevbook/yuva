@@ -1,24 +1,18 @@
 import { Trans, useLingui } from "@lingui/react/macro"
+import { Trash2Icon } from "lucide-react"
 
 import { toast, useConfirm } from "@/components/common"
 import { useBulkReport } from "@/components/common/BulkReport"
-import { BulkButton, SelectionBar } from "@/components/common/Selection"
+import { BulkBar, bulkButton } from "@/components/common/ListBox"
 import { useErrorText } from "@/components/common/text"
+import { Button } from "@/components/ui/button"
 import { useDeleteContacts } from "@/features/contact/queries"
 import { contactName } from "@/features/contact/Section"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import type { Selection } from "@/hooks/use-selection"
 import type { Contact } from "@/lib/api"
 
-export function ContactBulkBar({
-  items,
-  selection,
-  className,
-}: {
-  items: Contact[]
-  selection: Selection
-  className?: string
-}) {
+export function ContactBulkBar({ items, selection }: { items: Contact[]; selection: Selection }) {
   const { t } = useLingui()
   const errorText = useErrorText()
   const bulk = useDeleteContacts()
@@ -49,20 +43,30 @@ export function ContactBulkBar({
     })
   }
   useHotkeys({ Delete: ask }, selection.selecting && n > 0)
+  useHotkeys({ Escape: selection.stop }, selection.selecting)
   return (
     <>
-      <SelectionBar selection={selection} busy={bulk.isPending} className={className}>
-        <BulkButton
-          selection={selection}
-          destructive
-          disabled={bulk.isPending}
-          onClick={ask}
-          title={t`Delete the selected contacts (Del)`}
-          data-testid="delete-selected"
+      {selection.selecting && (
+        <BulkBar
+          picked={n}
+          total={items.length}
+          onToggleAll={selection.toggleAll}
+          onCancel={selection.stop}
+          busy={bulk.isPending}
         >
-          <Trans>Delete</Trans>
-        </BulkButton>
-      </SelectionBar>
+          <Button
+            variant="outline"
+            className={bulkButton(true)}
+            disabled={n === 0 || bulk.isPending}
+            onClick={ask}
+            title={t`Delete the selected contacts (Del)`}
+            data-testid="delete-selected"
+          >
+            <Trash2Icon />
+            <Trans>Delete</Trans>
+          </Button>
+        </BulkBar>
+      )}
       {confirmDialog}
       {reportDialog}
     </>
