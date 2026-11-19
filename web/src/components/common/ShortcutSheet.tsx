@@ -286,15 +286,7 @@ export const mod = apple ? "⌘" : "Ctrl"
 
 export const alt = apple ? "⌥" : "Alt"
 
-export function ShortcutSheet({
-  open,
-  onOpenChange,
-  home,
-}: {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  home?: boolean
-}) {
+export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   const { t } = useLingui()
   const k = keyLabel
   const groups: { title: string; items: [string[], string][] }[] = [
@@ -689,21 +681,17 @@ export function ShortcutSheet({
         ],
       ],
     },
-    ...(home
-      ? [
-          {
-            title: t`Home`,
-            items: [
-              [[HOME_KEYS.next, HOME_KEYS.previous], t`Move through the conversations waiting longest`],
-              [k(HOME_KEYS.take), t`Assign the selected waiting conversation to you`],
-            ] as [string[], string][],
-          },
-        ]
-      : []),
+    {
+      title: t`Home`,
+      items: [
+        [[HOME_KEYS.next, HOME_KEYS.previous], t`Move through the rows`],
+        [k(HOME_KEYS.take), t`Assign the selected waiting conversation to you`],
+      ],
+    },
     {
       title: t`Everywhere`,
       items: [
-        ...(home ? [[k(SHORTCUTS.home), t`Home`] as [string[], string]] : []),
+        [k(SHORTCUTS.home), t`Home`],
         [k(SHORTCUTS.conversations), t`Conversations`],
         [k(SHORTCUTS.mail), t`Mail`],
         [k(SHORTCUTS.mentions), t`Mentions`],

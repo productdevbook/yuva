@@ -15,10 +15,31 @@ msgstr "Tệp .eml trong một tệp zip"
 msgid "“{name}” holds a value that does not fit"
 msgstr "Giá trị của “{name}” không phù hợp"
 
+#: src/features/home/HomeSide.tsx
+msgid "“{title}” was closed"
+msgstr "“{title}” đã được đóng"
+
+#: src/features/home/HomeSide.tsx
+msgid "“{title}” was published"
+msgstr "“{title}” đã được xuất bản"
+
+#: src/features/home/HomeSide.tsx
+msgid "“{title}” was rated bad"
+msgstr "“{title}” bị đánh giá kém"
+
+#: src/features/home/HomeSide.tsx
+msgid "“{title}” was rated good"
+msgstr "“{title}” được đánh giá tốt"
+
+#: src/features/home/HomeSide.tsx
+msgid "“{title}” was sent"
+msgstr "“{title}” đã được gửi"
+
 #: src/features/setup/ChannelStep.tsx
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "“Trang này có hữu ích không?”, phản hồi và thảo luận trên tài liệu của bạn"
 
+#: src/features/home/HomeSide.tsx
 #: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailSide.tsx
@@ -86,6 +107,11 @@ msgstr "{0, plural, other {# người trong số đó nhận bản này vì ngô
 msgid "{0, plural, one {# open} other {# open}}"
 msgstr "{0, plural, other {# đang mở}}"
 
+#. placeholder {0}: p.unanswered_threads
+#: src/features/home/HomeWork.tsx
+msgid "{0, plural, one {# question needs a reply} other {# questions need a reply}}"
+msgstr "{0, plural, other {# câu hỏi cần trả lời}}"
+
 #. placeholder {0}: d.reply_count
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "{0, plural, one {# reply} other {# replies}}"
@@ -132,9 +158,7 @@ msgstr "{0} đã đóng"
 msgid "{0} events"
 msgstr "{0} sự kiện"
 
-#. placeholder {0}: pct.format(good ?? 0)
 #. placeholder {0}: pct.format(p.share)
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 msgid "{0} good"
 msgstr "{0} tốt"
@@ -311,10 +335,6 @@ msgstr "{available} trên {total}"
 msgid "{available} of {total} available now"
 msgstr "{available}/{total} người đang sẵn sàng"
 
-#: src/features/home/HomePage.tsx
-msgid "{bad, plural, one {# bad rating} other {# bad ratings}}"
-msgstr "{bad, plural, other {# đánh giá xấu}}"
-
 #: src/features/contact/ContactDetails.tsx
 msgid "{bad} bad"
 msgstr "{bad} không tốt"
@@ -364,10 +384,6 @@ msgstr "{count, plural, other {# điều kiện}}"
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
 msgstr "{count, plural, other {# thư mục}}"
-
-#: src/features/home/HomeSide.tsx
-msgid "{count, plural, one {# issue} other {# issues}}"
-msgstr "{count, plural, other {# sự cố}}"
 
 #: src/features/broadcasts/ListsHome.tsx
 msgid "{count, plural, one {# list} other {# lists}}"
@@ -437,14 +453,9 @@ msgstr "{count} tin nhắn · {size}"
 msgid "{count} settings"
 msgstr "{count} cài đặt"
 
-#: src/features/home/HomePage.tsx
 #: src/features/migrations/ReviewStep.tsx
 msgid "{created, plural, one {# new} other {# new}}"
 msgstr "{created, plural, other {# mới}}"
-
-#: src/features/home/HomePage.tsx
-msgid "{created} new conversations and {replied} first replies in the period"
-msgstr "{created} cuộc hội thoại mới và {replied} phản hồi đầu tiên trong kỳ"
 
 #: src/features/broadcasts/Growth.tsx
 #: src/features/docs/Toolbar.tsx
@@ -452,10 +463,6 @@ msgstr "{created} cuộc hội thoại mới và {replied} phản hồi đầu t
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, other {# ngày}}"
-
-#: src/features/home/HomePage.tsx
-msgid "{date}: {newCount} new, {replyCount} first replies"
-msgstr "{date}: {newCount} mới, {replyCount} phản hồi đầu tiên"
 
 #: src/features/status/StatusPages.tsx
 msgid "{days, plural, one {# day} other {# days}}"
@@ -476,6 +483,10 @@ msgstr "{days, plural, other {Đã chờ # ngày}}"
 #: src/components/common/BulkReport.tsx
 msgid "{deleted} deleted"
 msgstr "Đã xóa {deleted}"
+
+#: src/features/home/HomeSide.tsx
+msgid "{done} of {total} copied"
+msgstr "Đã sao chép {done}/{total}"
 
 #: src/features/broadcasts/Import.tsx
 msgid "{done} of {total} rows"
@@ -593,13 +604,17 @@ msgstr "{imported} tin nhắn"
 msgid "{inboxName} has no e-mail channel for {address} yet. History is stored in that channel, so replies after the switch go out from the same address."
 msgstr "{inboxName} chưa có kênh email cho {address}. Lịch sử được lưu trong kênh đó, nên các phản hồi sau khi chuyển sẽ được gửi từ cùng địa chỉ."
 
+#: src/features/home/HomeSide.tsx
+msgid "{incidents, plural, one {# incident} other {# incidents}}"
+msgstr "{incidents, plural, other {# sự cố}}"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "{incoming} received, {outgoing} sent"
 msgstr "đã nhận {incoming}, đã gửi {outgoing}"
 
-#: src/features/home/HomePage.tsx
-msgid "{left, plural, one {# setup step left.} other {# setup steps left.}}"
-msgstr "{left, plural, other {Còn # bước thiết lập.}}"
+#: src/features/home/HomeWork.tsx
+msgid "{lateText} late"
+msgstr "{lateText} trễ hạn"
 
 #: src/features/conversation/SlaPopover.tsx
 msgid "{left} left when it resumes"
@@ -649,6 +664,10 @@ msgstr "{monitorName} đã phản hồi bình thường trở lại"
 msgid "{mxDomain} has no MX record, so replies to broadcasts cannot arrive. Publish the MX records of your mail service."
 msgstr "{mxDomain} không có bản ghi MX, nên các phản hồi cho thư hàng loạt không thể đến nơi. Hãy đăng các bản ghi MX của dịch vụ thư của bạn."
 
+#: src/features/home/HomeWork.tsx
+msgid "{n, plural, =0 {no first replies} one {# first reply} other {# first replies}}"
+msgstr "{n, plural, =0 {chưa có phản hồi đầu tiên} other {# phản hồi đầu tiên}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# app} other {# apps}}"
 msgstr "{n, plural, other {# ứng dụng}}"
@@ -656,10 +675,6 @@ msgstr "{n, plural, other {# ứng dụng}}"
 #: src/features/broadcasts/Trigger.tsx
 msgid "{n, plural, one {# day after someone first signs in to {inbox}} other {# days after someone first signs in to {inbox}}}"
 msgstr "{n, plural, one {# day after someone first signs in to {inbox}} other {# days after someone first signs in to {inbox}}}"
-
-#: src/features/home/HomePage.tsx
-msgid "{n, plural, one {# day ago} other {# days ago}}"
-msgstr "{n, plural, other {# ngày trước}}"
 
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# documentation site} other {# documentation sites}}"
@@ -686,12 +701,17 @@ msgid "{n, plural, one {# other conversation} other {# other conversations}}"
 msgstr "{n, plural, other {# cuộc trò chuyện khác}}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/home/HomeSide.tsx
 msgid "{n, plural, one {# person} other {# people}}"
 msgstr "{n, plural, other {# người}}"
 
 #: src/features/settings/audit/sentence.ts
 msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
 msgstr "{n, plural, other {# người nhận mỗi ngày}}"
+
+#: src/features/home/HomePage.tsx
+msgid "{n, plural, one {# step} other {# steps}}"
+msgstr "{n, plural, other {# bước}}"
 
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# team mailbox} other {# team mailboxes}}"
@@ -772,7 +792,6 @@ msgstr "Đã bỏ sao {n}"
 msgid "{name} · {statusText}"
 msgstr "{name} · {statusText}"
 
-#: src/features/home/HomeSide.tsx
 #: src/features/team/TeamPage.tsx
 msgid "{name} (you)"
 msgstr "{name} (bạn)"
@@ -784,6 +803,10 @@ msgstr "Đã chặn {name}. Email của họ sẽ bị từ chối."
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "{name} can reply"
 msgstr "{name} có thể trả lời"
+
+#: src/features/home/HomeSide.tsx
+msgid "{name} comes back"
+msgstr "{name} quay lại"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "{name} connects from its vendor's cloud, so it needs this server at a public https address. The panel is open at {url}, which it probably cannot reach."
@@ -800,6 +823,10 @@ msgstr "Đã xóa {name}"
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "{name} docs"
 msgstr "Tài liệu {name}"
+
+#: src/features/home/HomeSide.tsx
+msgid "{name} goes out"
+msgstr "{name} được gửi đi"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{name} is looking"
@@ -859,19 +886,23 @@ msgstr "Trang web {name}"
 msgid "{name}, visitors in the last seven days: {series}"
 msgstr "{name}, khách truy cập trong bảy ngày qua: {series}"
 
-#: src/features/home/HomeSide.tsx
-msgid "{names} operational"
-msgstr "{names} hoạt động bình thường"
-
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "{names} will be notified"
 msgstr "{names} sẽ được thông báo"
 
+#: src/features/home/HomePage.tsx
+msgid "{online} of {total} online"
+msgstr "{online}/{total} đang trực tuyến"
+
 #: src/components/common/Linked.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/home/HomeSide.tsx
 msgid "{open, plural, one {# open} other {# open}}"
 msgstr "{open, plural, other {# đang mở}}"
+
+#: src/features/home/HomeSide.tsx
+#: src/features/home/HomeWork.tsx
+msgid "{open} open"
+msgstr "{open} đang mở"
 
 #: src/features/broadcasts/Import.tsx
 msgid "{out, plural, one {# row is left out} other {# rows are left out}}"
@@ -901,10 +932,6 @@ msgstr "{people, plural, other {# đăng ký và bản ghi đồng ý của nó 
 #: src/features/broadcasts/Overview.tsx
 msgid "{people} people"
 msgstr "{people} người"
-
-#: src/features/home/HomeSide.tsx
-msgid "{people} recipients"
-msgstr "{people} người nhận"
 
 #: src/features/migrations/ImportBanner.tsx
 msgid "{percent}%"
@@ -998,10 +1025,6 @@ msgstr "{provider} yêu cầu bạn đăng nhập một lần trên trình duy�
 msgid "{provider}'s tags become Yuva labels on their conversations."
 msgstr "Các thẻ của {provider} trở thành nhãn Yuva trên các cuộc trò chuyện của chúng."
 
-#: src/features/home/HomePage.tsx
-msgid "{ptsText} pts"
-msgstr "{ptsText} điểm"
-
 #: src/features/migrations/CopyStep.tsx
 msgid "{rate} a minute"
 msgstr "{rate} mỗi phút"
@@ -1019,7 +1042,7 @@ msgstr "{rate} thư mỗi giây"
 msgid "{rate} mails a second · one every {every}"
 msgstr "{rate} thư mỗi giây · cứ {every} một thư"
 
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeWork.tsx
 msgid "{rated, plural, =0 {no ratings} one {# rating} other {# ratings}}"
 msgstr "{rated, plural, =0 {chưa có đánh giá} other {# đánh giá}}"
 
@@ -1093,6 +1116,14 @@ msgstr "{shown, plural, other {# cuộc trò chuyện}}"
 msgid "{size} · pick another file"
 msgstr "{size} · chọn tệp khác"
 
+#: src/features/home/HomeWork.tsx
+msgid "{source} import needs attention"
+msgstr "Lượt nhập từ {source} cần chú ý"
+
+#: src/features/home/HomeSide.tsx
+msgid "{source} import should finish"
+msgstr "Lượt nhập từ {source} sắp hoàn tất"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "{spam} marked as spam"
 msgstr "{spam} bị đánh dấu là thư rác"
@@ -1116,6 +1147,10 @@ msgstr "{text} so với kỳ trước"
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "{threads} cuộc thảo luận đang mở"
+
+#: src/features/home/HomeWork.tsx
+msgid "{total, plural, one {# conversation nobody has taken} other {# conversations nobody has taken}}"
+msgstr "{total, plural, other {# cuộc trò chuyện chưa ai nhận}}"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "{total, plural, one {Last 30 days · # broadcast} other {Last 30 days · # broadcasts}}"
@@ -1184,14 +1219,6 @@ msgstr "{votes} lượt bình chọn"
 msgid "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
 msgstr "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
 
-#: src/features/home/HomePage.tsx
-msgid "{waiting, plural, one {# conversation is waiting.} other {# conversations are waiting.}}"
-msgstr "{waiting, plural, other {# cuộc trò chuyện đang chờ.}}"
-
-#: src/features/home/HomePage.tsx
-msgid "{waiting, plural, one {Open in Inbox} other {All {total} in Inbox}}"
-msgstr "{waiting, plural, one {Mở trong Hộp thư} other {Tất cả {total} trong Hộp thư}}"
-
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "{waiting} waiting"
 msgstr "{waiting} waiting"
@@ -1203,6 +1230,10 @@ msgstr "{watching, plural, other {Được # trình giám sát theo dõi}}"
 #: src/features/reports/ReportPages.tsx
 msgid "{who} · answered by {name}"
 msgstr "{who} · {name} đã trả lời"
+
+#: src/features/home/HomeSide.tsx
+msgid "{who} closed “{title}”"
+msgstr "{who} đã đóng “{title}”"
 
 #: src/app/Header.tsx
 msgid "{who} in {where}"
@@ -1216,9 +1247,21 @@ msgstr "{who} đã nhắc đến bạn trong {contact}, {subject}. Mở cuộc t
 msgid "{who} mentioned you in {contact}. Open the conversation"
 msgstr "{who} đã nhắc đến bạn trong {contact}. Mở cuộc trò chuyện"
 
+#: src/features/home/HomeSide.tsx
+msgid "{who} posted an update on “{title}”"
+msgstr "{who} đã đăng cập nhật cho “{title}”"
+
+#: src/features/home/HomeSide.tsx
+msgid "{who} published “{title}”"
+msgstr "{who} đã xuất bản “{title}”"
+
 #: src/features/account/AccountPage.tsx
 msgid "{who} replied in <0>{title}</0>"
 msgstr "{who} đã trả lời trong <0>{title}</0>"
+
+#: src/features/home/HomeSide.tsx
+msgid "{who} sent “{title}”"
+msgstr "{who} đã gửi “{title}”"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
@@ -1232,14 +1275,6 @@ msgstr "+ Thêm địa chỉ"
 #: src/features/broadcasts/ListsHome.tsx
 msgid "+{added} this month"
 msgstr "+{added} tháng này"
-
-#: src/features/home/HomeSide.tsx
-msgid "+{off} offline"
-msgstr "+{off} ngoại tuyến"
-
-#: src/features/home/HomeSide.tsx
-msgid "+{off} offline · {offOpen} open"
-msgstr "+{off} ngoại tuyến · {offOpen} đang mở"
 
 #: src/features/settings/channels/email/Ses.tsx
 msgid "<0>{domain}</0> is not a verified identity in the server’s Amazon SES account. Mail goes out without tenant isolation and broadcasts are blocked. Ask the server’s operator to verify the domain."
@@ -2159,10 +2194,6 @@ msgstr "Thêm ghi chú nội bộ"
 msgid "Add an OAuth client named “Yuva”, as a confidential client, and enter the redirect URL below as its redirect URL."
 msgstr "Thêm một ứng dụng khách OAuth tên “Yuva”, loại bảo mật (confidential), và nhập URL chuyển hướng bên dưới làm URL chuyển hướng của nó."
 
-#: src/features/home/HomePage.tsx
-msgid "Add analytics"
-msgstr "Thêm phân tích"
-
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Add another"
@@ -2225,10 +2256,6 @@ msgstr "Thêm nhãn {labelName}"
 #: src/features/settings/automation/text.ts
 msgid "Add labels"
 msgstr "Thêm nhãn"
-
-#: src/features/home/HomePage.tsx
-msgid "Add live chat to your site"
-msgstr "Thêm chat trực tiếp vào trang của bạn"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Add monitor"
@@ -2531,10 +2558,6 @@ msgstr "Tất cả trình giám sát"
 msgid "All of its conversations, messages and attachments are deleted with it. This cannot be undone."
 msgstr "Mọi cuộc trò chuyện, tin nhắn và tệp đính kèm bị xóa theo. Không thể hoàn tác."
 
-#: src/features/home/HomeSide.tsx
-msgid "All operational"
-msgstr "Mọi thứ hoạt động bình thường"
-
 #: src/features/migrations/UploadStep.tsx
 msgid "All parts arrived. Reading the file…"
 msgstr "Đã nhận đủ các phần. Đang đọc tệp…"
@@ -2573,6 +2596,10 @@ msgstr "Tất cả phạm vi"
 #: src/features/docs/Toolbar.tsx
 msgid "All sites"
 msgstr "Tất cả trang web"
+
+#: src/features/home/HomePage.tsx
+msgid "All steps"
+msgstr "Tất cả các bước"
 
 #: src/features/status/StatusPages.tsx
 msgid "All systems operational"
@@ -2914,6 +2941,10 @@ msgstr "Một mục tiêu SLA đã bị vi phạm"
 msgid "an unknown person"
 msgstr "một người không xác định"
 
+#: src/features/home/HomeSide.tsx
+msgid "An update was posted on “{title}”"
+msgstr "Đã đăng cập nhật cho “{title}”"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
 msgstr "Một lần tải lên bị gián đoạn: {count} phần, {size}, đã có trên máy chủ."
@@ -2922,7 +2953,6 @@ msgstr "Một lần tải lên bị gián đoạn: {count} phần, {size}, đã 
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/settings/webhooks/events.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Analytics"
@@ -3353,10 +3383,6 @@ msgstr "Hãy nhờ quản trị viên máy chủ thư của bạn chuyển {addr
 msgid "Ask the admin of your mail server to forward {address} to the address below on the server, keeping delivery to the mailbox."
 msgstr "Hãy nhờ quản trị viên máy chủ thư của bạn chuyển tiếp {address} đến địa chỉ bên dưới trên máy chủ, vẫn giữ việc chuyển vào hộp thư."
 
-#: src/features/home/HomePage.tsx
-msgid "Ask the operator"
-msgstr "Gửi yêu cầu tới nhà vận hành"
-
 #: src/features/settings/ProductsPage.tsx
 msgid "asked after closing"
 msgstr "được hỏi sau khi đóng"
@@ -3599,6 +3625,7 @@ msgid "Automation"
 msgstr "Tự động hóa"
 
 #: src/app/UserMenu.tsx
+#: src/features/home/HomePage.tsx
 msgid "Available"
 msgstr "Khả dụng"
 
@@ -3613,6 +3640,7 @@ msgstr "Có sẵn đến {until}"
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Away"
 msgstr "Vắng mặt"
@@ -3625,6 +3653,10 @@ msgstr "Vắng mặt"
 #: src/features/migrations/Wizard.tsx
 msgid "Back"
 msgstr "Quay lại"
+
+#: src/features/home/HomeWork.tsx
+msgid "Back {at}"
+msgstr "Quay lại lúc {at}"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Back to API keys"
@@ -3639,6 +3671,10 @@ msgstr "Quay lại các cột"
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "Back to draft"
 msgstr "Quay lại bản nháp"
+
+#: src/features/setup/BackHome.tsx
+msgid "Back to Home"
+msgstr "Về Trang chủ"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Back to setup"
@@ -3942,10 +3978,6 @@ msgstr "Gửi thư hàng loạt"
 msgid "Broadcasts"
 msgstr "Thư hàng loạt"
 
-#: src/features/home/HomePage.tsx
-msgid "Broadcasts are suspended."
-msgstr "Gửi hàng loạt đã bị đình chỉ."
-
 #: src/components/common/text.ts
 msgid "Broadcasts are turned off on this server."
 msgstr "Thư hàng loạt đã bị tắt trên máy chủ này."
@@ -3954,17 +3986,9 @@ msgstr "Thư hàng loạt đã bị tắt trên máy chủ này."
 msgid "Broadcasts are turned off on this server. Lists and their forms still work, so you can collect subscribers."
 msgstr "Thư hàng loạt đã bị tắt trên máy chủ này. Danh sách và biểu mẫu của chúng vẫn hoạt động, nên bạn vẫn có thể thu thập người đăng ký."
 
-#: src/features/home/HomePage.tsx
-msgid "Broadcasts can’t go out yet."
-msgstr "Gửi hàng loạt chưa thể gửi đi."
-
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Broadcasts from this channel go out through its SMTP account for replies, or through a separate account. A separate account, ideally on its own subdomain, keeps spam complaints about newsletters away from your support mail."
 msgstr "Thư hàng loạt từ kênh này được gửi qua tài khoản SMTP dùng cho phản hồi, hoặc qua một tài khoản riêng. Tài khoản riêng, tốt nhất trên tên miền phụ riêng, giữ các khiếu nại thư rác về bản tin tránh xa thư hỗ trợ của bạn."
-
-#: src/features/home/HomePage.tsx
-msgid "Broadcasts wait for the operator’s approval."
-msgstr "Gửi hàng loạt đang chờ nhà vận hành phê duyệt."
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
@@ -4615,10 +4639,6 @@ msgstr "Đếm lượt nhấp"
 msgid "Click tracking"
 msgstr "Theo dõi lượt nhấp"
 
-#: src/features/home/HomeSide.tsx
-msgid "clicked"
-msgstr "đã nhấp"
-
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 msgid "Clicked"
@@ -4628,9 +4648,9 @@ msgstr "Đã nhấp"
 msgid "clicked a link, roughly"
 msgstr "đã nhấp vào một liên kết, ước chừng"
 
-#: src/features/home/HomeSide.tsx
-msgid "clicks not tracked"
-msgstr "không theo dõi lượt nhấp"
+#: src/features/home/HomeWork.tsx
+msgid "clicks · replies · {name}"
+msgstr "lượt nhấp · trả lời · {name}"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Clicks not tracked"
@@ -4770,10 +4790,6 @@ msgstr "Đã gửi mã"
 msgid "Collapse"
 msgstr "Thu gọn"
 
-#: src/features/home/HomePage.tsx
-msgid "Collect ratings on your docs pages"
-msgstr "Thu thập đánh giá trên trang tài liệu"
-
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Collections"
@@ -4805,7 +4821,6 @@ msgstr "Cột"
 msgid "Coming later"
 msgstr "Sắp có"
 
-#: src/features/home/HomeSide.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Coming up"
 msgstr "Sắp tới"
@@ -4939,7 +4954,6 @@ msgid "confirmed their address in the last {days} days"
 msgstr "đã xác nhận địa chỉ của họ trong {days} ngày qua"
 
 #: src/features/account/ConnectPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/migrations/text.ts
 #: src/features/migrations/Wizard.tsx
@@ -4966,10 +4980,6 @@ msgstr "Kết nối {provider}"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Connect a provider and verify a domain first."
 msgstr "Connect a provider and verify a domain first."
-
-#: src/features/home/HomePage.tsx
-msgid "Connect a support address"
-msgstr "Kết nối địa chỉ hỗ trợ"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Connect a tracker"
@@ -5005,10 +5015,6 @@ msgstr "Connect Slack"
 #: src/features/account/ConnectPage.tsx
 msgid "Connect to {host}"
 msgstr "Kết nối tới {host}"
-
-#: src/features/home/HomePage.tsx
-msgid "Connect your iOS or Android app"
-msgstr "Kết nối ứng dụng iOS hoặc Android của bạn"
 
 #: src/features/settings/SettingsFrame.tsx
 msgid "Connect your servers and bots to Yuva"
@@ -5093,10 +5099,6 @@ msgstr "Đã kết nối tới {provider}"
 #: src/features/migrations/ConnectStep.tsx
 msgid "Connected to {storedHost}. Enter the password again only to change it."
 msgstr "Đã kết nối tới {storedHost}. Chỉ nhập lại mật khẩu khi muốn đổi."
-
-#: src/features/home/HomePage.tsx
-msgid "Connecting"
-msgstr "Đang kết nối"
 
 #: src/features/setup/email/EmailTestStep.tsx
 #: src/features/setup/WaitStep.tsx
@@ -5311,10 +5313,6 @@ msgstr "Các cuộc trò chuyện chưa ai viết thêm sau khi nhập sẽ bị
 msgid "Conversations nobody wrote in after the import are deleted. Nothing changed in {provider}."
 msgstr "Các cuộc trò chuyện chưa ai viết thêm sau khi nhập sẽ bị xóa. Không có gì thay đổi trong {provider}."
 
-#: src/features/home/HomePage.tsx
-msgid "Conversations show up here as soon as the first customer writes."
-msgstr "Cuộc hội thoại sẽ xuất hiện ở đây ngay khi khách hàng đầu tiên nhắn tin."
-
 #: src/features/reports/ReportPages.tsx
 msgid "conversations started"
 msgstr "cuộc trò chuyện đã bắt đầu"
@@ -5330,10 +5328,6 @@ msgstr "Các cuộc trò chuyện bắt đầu từ đó vẫn giữ tin nhắn 
 #: src/features/settings/channels/sections.tsx
 msgid "Conversations that started on this channel keep their messages."
 msgstr "Các cuộc trò chuyện bắt đầu trên kênh này vẫn giữ tin nhắn của chúng."
-
-#: src/features/home/HomePage.tsx
-msgid "Conversations waiting for an answer, oldest first."
-msgstr "Các cuộc trò chuyện đang chờ trả lời, cũ nhất trước."
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Conversations your team wrote in stay. Nothing changes in {address}."
@@ -5465,17 +5459,9 @@ msgstr "Không thể kết nối tới máy chủ. Hãy kiểm tra kết nối v
 msgid "Couldn’t load Home. Your inbox still works."
 msgstr "Không tải được Trang chủ. Hộp thư vẫn hoạt động."
 
-#: src/features/home/HomePage.tsx
-msgid "Couldn’t refresh since {time}. The figures below may be out of date; your inbox still works."
-msgstr "Không làm mới được từ {time}. Số liệu bên dưới có thể đã cũ; hộp thư vẫn hoạt động."
-
 #: src/features/broadcasts/Composer.tsx
 msgid "Count clicks"
 msgstr "Đếm lượt nhấp"
-
-#: src/features/home/HomePage.tsx
-msgid "Count visitors on your site"
-msgstr "Đếm khách truy cập trang của bạn"
 
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "counted so far"
@@ -5494,7 +5480,6 @@ msgstr "Quốc gia"
 msgid "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
 msgstr "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
 
-#: src/features/home/HomePage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/DeveloperTabs.tsx
 msgid "Create"
@@ -6315,7 +6300,6 @@ msgstr "Thông báo trên màn hình bị chặn cho trang này trong cài đặ
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/mail/MailPage.tsx
@@ -6411,6 +6395,7 @@ msgstr "Đã ngắt kết nối trình theo dõi sự cố {name} ({provider})"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/home/HomeWork.tsx
 msgid "Discussion"
 msgstr "Thảo luận"
 
@@ -6705,10 +6690,6 @@ msgstr "Bản nháp và phê duyệt"
 #: src/components/common/text.ts
 msgid "Drafts and timeline events cannot be removed."
 msgstr "Không thể gỡ bản nháp và sự kiện trên dòng thời gian."
-
-#: src/features/home/HomeSide.tsx
-msgid "Drafts to review"
-msgstr "Bản nháp cần xem lại"
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Drafts waiting"
@@ -7729,12 +7710,8 @@ msgid "Finish now"
 msgstr "Hoàn tất ngay"
 
 #: src/features/home/HomePage.tsx
-msgid "Finish setting up"
-msgstr "Hoàn tất thiết lập"
-
-#: src/features/home/HomePage.tsx
-msgid "Finish setup"
-msgstr "Hoàn tất thiết lập"
+msgid "Finish setting up {name}"
+msgstr "Hoàn tất thiết lập {name}"
 
 #: src/features/migrations/parts.tsx
 msgid "Finish the migration?"
@@ -7765,19 +7742,12 @@ msgstr "Tin nhắn đầu tiên"
 msgid "First name"
 msgstr "Tên"
 
-#: src/features/home/HomePage.tsx
-msgid "First replies"
-msgstr "Phản hồi đầu tiên"
-
-#: src/features/home/HomePage.tsx
-msgid "First replies today took {took} at the median."
-msgstr "Hôm nay phản hồi đầu tiên mất trung vị {took}."
-
 #: src/features/contact/ContactDetail.tsx
 msgid "first reply"
 msgstr "phản hồi đầu tiên"
 
 #: src/features/conversation/SlaPopover.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
@@ -8192,7 +8162,6 @@ msgstr "Lấy tệp"
 msgid "Get the SDK lines"
 msgstr "Lấy các dòng SDK"
 
-#: src/features/home/HomePage.tsx
 #: src/features/setup/AddChannelStep.tsx
 msgid "Get the snippet"
 msgstr "Lấy đoạn mã"
@@ -8206,6 +8175,7 @@ msgid "Get the subscribe form"
 msgstr "Lấy biểu mẫu đăng ký"
 
 #: src/app/UserMenu.tsx
+#: src/features/home/HomePage.tsx
 msgid "Getting started"
 msgstr "Bắt đầu"
 
@@ -8220,10 +8190,6 @@ msgstr "Cấp cho kênh một địa chỉ chuyển tiếp mới?"
 #: src/features/status/SettingsTab.tsx
 msgid "Give the page a name."
 msgstr "Hãy đặt tên cho trang."
-
-#: src/features/home/HomePage.tsx
-msgid "Give the team a shared mailbox"
-msgstr "Cho nhóm một hộp thư chung"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Gives a conversation without an assignee to a teammate when it arrives or is reopened by the contact. Automation rules run first."
@@ -8520,6 +8486,7 @@ msgstr "Bị nhóm ẩn"
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/home/HomePage.tsx
 msgid "Hide"
 msgstr "Ẩn"
 
@@ -8822,6 +8789,7 @@ msgstr "Mức ảnh hưởng"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/broadcasts/ListPage.tsx
+#: src/features/home/HomeWork.tsx
 msgid "Import"
 msgstr "Nhập"
 
@@ -8875,10 +8843,6 @@ msgstr "Đã nhập vào Yuva ngày {date}"
 #: src/features/broadcasts/Import.tsx
 msgid "Importing"
 msgstr "Đang nhập"
-
-#: src/features/home/HomeSide.tsx
-msgid "Importing {source} history"
-msgstr "Đang nhập lịch sử từ {source}"
 
 #: src/features/migrations/ImportBanner.tsx
 msgid "Importing history from {address} · {percent}% · new mail keeps arriving as usual"
@@ -9090,7 +9054,7 @@ msgstr "Hộp thư"
 msgid "Inboxes cut off subjects longer than 80 characters."
 msgstr "Hộp thư cắt bớt chủ đề dài hơn 80 ký tự."
 
-#: src/features/home/HomeSide.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Incident"
@@ -9498,10 +9462,6 @@ msgstr "Hãy giữ trang này mở. Nếu kết nối bị đứt, việc tải 
 msgid "Keep writing"
 msgstr "Viết tiếp"
 
-#: src/features/home/HomePage.tsx
-msgid "Keeping up"
-msgstr "Theo kịp"
-
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Keeps everything"
 msgstr "Giữ tất cả"
@@ -9664,24 +9624,15 @@ msgstr "Lớn hơn giới hạn của máy chủ này cho một tin nhắn"
 msgid "Largest file (MB)"
 msgstr "Tệp lớn nhất (MB)"
 
-#: src/features/home/HomePage.tsx
-msgid "last {shown} days"
-msgstr "{shown} ngày qua"
-
 #: src/features/reports/TrendsReport.tsx
 msgid "Last 12 months"
 msgstr "12 tháng qua"
-
-#: src/features/home/HomePage.tsx
-msgid "Last 14 days"
-msgstr "14 ngày qua"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "Last 3 months"
 msgstr "3 tháng qua"
 
 #: src/features/broadcasts/Overview.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Last 30 days"
@@ -9691,7 +9642,6 @@ msgstr "30 ngày qua"
 msgid "Last 6 months"
 msgstr "6 tháng qua"
 
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Last 7 days"
@@ -9701,9 +9651,9 @@ msgstr "7 ngày qua"
 msgid "Last attempt"
 msgstr "Lần thử cuối"
 
-#: src/features/home/HomeSide.tsx
-msgid "Last broadcast · {name}"
-msgstr "Lần gửi gần nhất · {name}"
+#: src/features/home/HomeWork.tsx
+msgid "Last broadcast"
+msgstr "Bản tin gần nhất"
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Last check"
@@ -9782,6 +9732,14 @@ msgstr "dùng lần cuối {used}"
 msgid "Last used {used}"
 msgstr "Dùng lần cuối {used}"
 
+#: src/features/home/HomeWork.tsx
+msgid "Late"
+msgstr "Trễ hạn"
+
+#: src/features/home/HomeWork.tsx
+msgid "Late by {time}"
+msgstr "Trễ {time}"
+
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Latency"
 msgstr "Độ trễ"
@@ -9791,6 +9749,7 @@ msgid "Later"
 msgstr "Sau"
 
 #: src/components/common/SendLater.tsx
+#: src/features/home/HomeSide.tsx
 msgid "Later today"
 msgstr "Lát nữa hôm nay"
 
@@ -10118,7 +10077,6 @@ msgid "Lists"
 msgstr "Danh sách"
 
 #: src/components/common/text.ts
-#: src/features/home/HomePage.tsx
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Live"
 msgstr "Trực tiếp"
@@ -10160,10 +10118,6 @@ msgstr "Tải thêm"
 #: src/features/mail/MailThread.tsx
 msgid "Load older messages"
 msgstr "Tải các tin nhắn cũ hơn"
-
-#: src/features/home/HomePage.tsx
-msgid "Loading your day…"
-msgstr "Đang tải ngày của bạn…"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "Loading…"
@@ -10434,7 +10388,6 @@ msgstr "Mails go out {sentence}, once to each person. Pausing stops sending but 
 msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
 msgstr "Thư được gửi từ {start} đến {end} giờ {city} ({utcStart}–{utcEnd} UTC) và tiếp tục vào ngày hôm sau."
 
-#: src/features/home/HomeSide.tsx
 #: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
 msgid "Maintenance"
@@ -10670,10 +10623,6 @@ msgstr "trung vị {median}"
 msgid "median first reply"
 msgstr "thời gian phản hồi đầu tiên trung vị"
 
-#: src/features/home/HomePage.tsx
-msgid "Median first reply"
-msgstr "Trung vị phản hồi đầu tiên"
-
 #: src/features/reports/ReportPages.tsx
 msgid "median today"
 msgstr "trung vị hôm nay"
@@ -10728,7 +10677,6 @@ msgstr "đã nhắc đến bạn"
 #: src/app/places.tsx
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/home/HomeSide.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -11013,7 +10961,6 @@ msgid "Most active"
 msgstr "Hoạt động nhiều nhất"
 
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomeSide.tsx
 msgid "Most asked for"
 msgstr "Được yêu cầu nhiều nhất"
 
@@ -11040,10 +10987,6 @@ msgstr "Nhiều đánh giá nhất, phản hồi đang mở, thảo luận đang
 #: src/features/docs/DocsPage.tsx
 msgid "Most votes"
 msgstr "Nhiều phiếu nhất"
-
-#: src/features/home/HomePage.tsx
-msgid "move"
-msgstr "di chuyển"
 
 #. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
@@ -11109,10 +11052,6 @@ msgid "Move through the contacts"
 msgstr "Di chuyển qua các liên hệ"
 
 #: src/components/common/ShortcutSheet.tsx
-msgid "Move through the conversations waiting longest"
-msgstr "Di chuyển qua các cuộc hội thoại chờ lâu nhất"
-
-#: src/components/common/ShortcutSheet.tsx
 msgid "Move through the designs"
 msgstr "Di chuyển giữa các thiết kế"
 
@@ -11143,6 +11082,10 @@ msgstr "Di chuyển giữa các trình giám sát"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the posts"
 msgstr "Di chuyển giữa các bài đăng"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move through the rows"
+msgstr "Di chuyển giữa các hàng"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the sites, goals or funnels"
@@ -11253,6 +11196,10 @@ msgstr "Chuyển ý tưởng sang Đã lên kế hoạch, Đang làm hoặc Đã
 #: src/features/migrations/SwitchStep.tsx
 msgid "MX change"
 msgstr "Thay đổi MX"
+
+#: src/features/home/HomeWork.tsx
+msgid "My conversations"
+msgstr "Cuộc trò chuyện của tôi"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "My designs"
@@ -11395,10 +11342,6 @@ msgstr "Cần chú ý"
 msgid "Needs the operator’s approval"
 msgstr "Cần người vận hành chấp thuận"
 
-#: src/features/home/HomePage.tsx
-msgid "Needs you"
-msgstr "Cần bạn xử lý"
-
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "never"
 msgstr "chưa bao giờ"
@@ -11429,7 +11372,6 @@ msgid "new"
 msgstr "mới"
 
 #: src/features/broadcasts/Growth.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 msgid "New"
 msgstr "Mới"
@@ -11492,19 +11434,10 @@ msgstr "Cuộc trò chuyện mới trong hộp thư trực tiếp"
 msgid "New conversation in an async inbox"
 msgstr "Cuộc trò chuyện mới trong hộp thư không đồng bộ"
 
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "New conversations"
 msgstr "Cuộc trò chuyện mới"
-
-#: src/features/home/HomePage.tsx
-msgid "New conversations against first replies, per day."
-msgstr "Cuộc trò chuyện mới so với phản hồi đầu tiên, theo ngày."
-
-#: src/features/home/HomePage.tsx
-msgid "New conversations and feedback show up here."
-msgstr "Cuộc trò chuyện và phản hồi mới sẽ hiện ở đây."
 
 #: src/features/reports/ReportPages.tsx
 msgid "New conversations by day"
@@ -11539,10 +11472,6 @@ msgstr "thảo luận mới"
 #: src/components/common/ShortcutSheet.tsx
 msgid "New entry"
 msgstr "Mục mới"
-
-#: src/features/home/HomePage.tsx
-msgid "New feedback"
-msgstr "Phản hồi mới"
 
 #: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/fields/FieldsPage.tsx
@@ -11758,10 +11687,6 @@ msgstr "Lần thử tiếp theo"
 msgid "next attempt {when}"
 msgstr "lần thử tiếp theo {when}"
 
-#: src/features/home/HomePage.tsx
-msgid "Next broadcast goes out {when}."
-msgstr "Lần gửi tiếp theo vào {when}."
-
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Next check {next}."
 msgstr "Lần kiểm tra tiếp theo {next}."
@@ -11865,7 +11790,6 @@ msgid "No attempts yet."
 msgstr "Chưa có lần thử nào."
 
 #: src/features/broadcasts/Overview.tsx
-#: src/features/home/HomePage.tsx
 msgid "No broadcast is scheduled."
 msgstr "Không có bản tin nào được lên lịch."
 
@@ -12474,10 +12398,6 @@ msgstr "Không ai trả lời hoặc đóng gì trong khoảng thời gian này.
 msgid "Nobody is on the list of recipients yet."
 msgstr "Chưa có ai trong danh sách người nhận."
 
-#: src/features/home/HomeSide.tsx
-msgid "Nobody is online right now."
-msgstr "Hiện không có ai trực tuyến."
-
 #: src/features/broadcasts/Import.tsx
 msgid "Nobody is subscribed yet: each new address gets the list’s confirmation mail, spread over days by the daily sending limit, and joins only after clicking it."
 msgstr "Chưa có ai đăng ký: mỗi địa chỉ mới nhận thư xác nhận của danh sách, rải ra nhiều ngày theo giới hạn gửi hằng ngày, và chỉ tham gia sau khi nhấp vào đó."
@@ -12487,7 +12407,6 @@ msgid "Nobody is waiting for a reply."
 msgstr "Không ai đang chờ trả lời."
 
 #: src/features/broadcasts/TriggeredPage.tsx
-#: src/features/home/HomePage.tsx
 msgid "Nobody is waiting."
 msgstr "Không ai đang chờ."
 
@@ -12891,10 +12810,6 @@ msgstr "Không có gì đang tạm hoãn."
 msgid "Nothing is waiting for approval."
 msgstr "Không có gì đang chờ duyệt."
 
-#: src/features/home/HomePage.tsx
-msgid "Nothing is waiting."
-msgstr "Không có gì đang chờ."
-
 #: src/features/status/IncidentsPage.tsx
 msgid "Nothing is wrong right now. Open an incident when something breaks."
 msgstr "Hiện không có gì bất thường. Hãy mở sự cố khi có gì đó hỏng."
@@ -12932,6 +12847,10 @@ msgstr "Không có gì được đo trong kỳ này."
 #: src/features/reports/TrendsReport.tsx
 msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
 msgstr "Ở đây không có gì được mở, trả lời hoặc đóng. Hãy thử kỳ dài hơn hoặc bộ lọc khác."
+
+#: src/features/home/HomeWork.tsx
+msgid "Nothing yet. Once mail or chat is on, new conversations and incidents show up here."
+msgstr "Chưa có gì. Khi bật email hoặc chat, cuộc trò chuyện mới và sự cố sẽ xuất hiện ở đây."
 
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "Nothing. Replies from this inbox go out without a signature."
@@ -13039,14 +12958,9 @@ msgstr "Được đưa ra trên biểu mẫu đăng ký và trang tùy chọn. D
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Offline"
 msgstr "Ngoại tuyến"
-
-#: src/features/home/HomePage.tsx
-msgid "Offline · last updated {time}"
-msgstr "Ngoại tuyến · cập nhật lần cuối {time}"
 
 #: src/features/status/MonitorChecks.tsx
 #: src/features/status/ResponseChart.tsx
@@ -13072,14 +12986,6 @@ msgstr "Cũ hơn khoảng đã chọn"
 #: src/features/contact/ContactVisits.tsx
 msgid "Older visits"
 msgstr "Lượt truy cập cũ hơn"
-
-#: src/features/home/HomePage.tsx
-msgid "Oldest has waited {waited}."
-msgstr "Cuộc chờ lâu nhất đã chờ {waited}."
-
-#: src/features/home/HomePage.tsx
-msgid "Oldest wait"
-msgstr "Chờ lâu nhất"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -13115,7 +13021,6 @@ msgstr "Với gói Team và Enterprise, chủ sở hữu thêm một lần trong
 msgid "On the web"
 msgstr "Trên web"
 
-#: src/features/home/HomePage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "On this page"
@@ -13203,7 +13108,6 @@ msgstr "Trực tuyến"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/Presence.tsx
 #: src/features/conversation/ConversationStatus.tsx
-#: src/features/home/HomeSide.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Online now"
@@ -13388,6 +13292,10 @@ msgstr "chỉ nhóm của bạn có thể xem trước"
 msgid "Only your team sees it."
 msgstr "Chỉ nhóm của bạn thấy."
 
+#: src/features/home/HomeWork.tsx
+msgid "open"
+msgstr "đang mở"
+
 #: src/components/common/text.ts
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -13397,7 +13305,6 @@ msgstr "Chỉ nhóm của bạn thấy."
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
@@ -13485,16 +13392,13 @@ msgstr "Mở cuộc trò chuyện"
 
 #: src/app/Palette.tsx
 #: src/features/contact/ContactDetail.tsx
+#: src/features/home/HomeWork.tsx
 msgid "Open conversations"
 msgstr "Cuộc trò chuyện đang mở"
 
 #: src/features/team/TeamPage.tsx
 msgid "Open conversations assigned"
 msgstr "Cuộc trò chuyện đang mở được giao"
-
-#: src/features/home/HomePage.tsx
-msgid "Open conversations now, new ones and ratings over the last {shown} days."
-msgstr "Cuộc trò chuyện đang mở, cuộc trò chuyện mới và đánh giá trong {shown} ngày qua."
 
 #: src/features/status/LinkConversationsDialog.tsx
 msgid "Open conversations of this product that may be about {title}."
@@ -13544,9 +13448,9 @@ msgstr "Mở ý tưởng"
 msgid "Open in Analytics"
 msgstr "Mở trong Phân tích"
 
-#: src/features/home/HomePage.tsx
-msgid "Open inbox"
-msgstr "Mở hộp thư"
+#: src/features/home/HomeWork.tsx
+msgid "Open in Inbox"
+msgstr "Mở trong Hộp thư"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Open incident"
@@ -13555,10 +13459,6 @@ msgstr "Mở sự cố"
 #: src/features/status/StatusPages.tsx
 msgid "Open incidents"
 msgstr "Sự cố đang mở"
-
-#: src/features/home/HomePage.tsx
-msgid "Open includes conversations waiting on the customer. Rating turns amber below 85% good once a product has 5 ratings."
-msgstr "Đang mở bao gồm cả các cuộc hội thoại chờ khách hàng. Đánh giá chuyển màu cam khi dưới 85% tốt, sau khi sản phẩm có 5 đánh giá."
 
 #: src/features/account/ConnectPage.tsx
 msgid "Open it from the sign-in button of a documentation page."
@@ -13741,6 +13641,10 @@ msgstr "đang mở, chưa giao"
 #: src/features/reports/TrendsReport.tsx
 msgid "Opened"
 msgstr "Đã mở"
+
+#: src/features/home/HomeWork.tsx
+msgid "Opened · closed"
+msgstr "Đã mở · đã đóng"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "OpenID Connect"
@@ -14094,10 +13998,6 @@ msgstr "Tạm dừng hoặc tiếp tục gửi"
 msgid "Pause or resume the monitor"
 msgstr "Tạm dừng hoặc tiếp tục trình giám sát"
 
-#: src/features/home/HomeSide.tsx
-msgid "paused"
-msgstr "tạm dừng"
-
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/SlaBadge.tsx
 #: src/components/common/text.ts
@@ -14264,7 +14164,6 @@ msgstr "Mỗi hộp thư"
 msgid "Per month (30 days)"
 msgstr "Mỗi tháng (30 ngày)"
 
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Period"
@@ -14494,10 +14393,6 @@ msgstr "Tự chọn từng phạm vi."
 msgid "Pick mails"
 msgstr "Chọn thư"
 
-#: src/features/home/HomePage.tsx
-msgid "Pick one at the top of the page."
-msgstr "Chọn một mục ở đầu trang."
-
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
 msgstr "Hãy chọn sau trong cài đặt danh sách."
@@ -14682,10 +14577,6 @@ msgstr "Phản hồi bài đăng cho người dùng ứng dụng của bạn"
 msgid "Post new conversations and mentions to a Slack channel, and answer from the thread. The <0>guide</0> shows how to set up the Slack app."
 msgstr "Post new conversations and mentions to a Slack channel, and answer from the thread. The <0>guide</0> shows how to set up the Slack app."
 
-#: src/features/home/HomeSide.tsx
-msgid "Post status update"
-msgstr "Đăng cập nhật trạng thái"
-
 #: src/features/status/StatusPages.tsx
 msgid "Post update"
 msgstr "Đăng cập nhật"
@@ -14800,7 +14691,6 @@ msgstr "pro, team"
 #: src/components/common/WorkspaceSelector.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
@@ -14844,7 +14734,7 @@ msgstr "Backend production"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeSide.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
@@ -14948,7 +14838,6 @@ msgstr "Khóa công khai"
 msgid "Public pages that say whether your products work"
 msgstr "Các trang công khai cho biết sản phẩm của bạn có hoạt động hay không"
 
-#: src/features/home/HomeSide.tsx
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Publish"
@@ -15108,12 +14997,11 @@ msgstr "đánh giá tốt"
 
 #: src/features/contact/ContactDetail.tsx
 #: src/features/conversation/rating.tsx
-#: src/features/home/HomePage.tsx
 msgid "Rated good"
 msgstr "Đánh giá tốt"
 
 #: src/features/conversation/Feedback.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/reports/ReportPages.tsx
 msgid "Rating"
 msgstr "Đánh giá"
@@ -15334,6 +15222,10 @@ msgstr "chỉ nhận, không có tài khoản SMTP"
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "Receiving"
 msgstr "Đang nhận"
+
+#: src/features/home/HomeSide.tsx
+msgid "Recent"
+msgstr "Gần đây"
 
 #: src/features/docs/DocsPage.tsx
 msgid "Recent activity"
@@ -15777,7 +15669,6 @@ msgid "Replace the view’s filters, search and order with the ones on screen."
 msgstr "Thay bộ lọc, tìm kiếm và thứ tự của chế độ xem bằng những gì đang hiển thị."
 
 #: src/features/broadcasts/Report.tsx
-#: src/features/home/HomeSide.tsx
 msgid "replied"
 msgstr "đã trả lời"
 
@@ -15932,6 +15823,10 @@ msgstr "Reply command"
 msgid "Reply held back to protect the customer"
 msgstr "Câu trả lời bị giữ lại để bảo vệ khách hàng"
 
+#: src/features/home/HomeWork.tsx
+msgid "Reply in {time}"
+msgstr "Trả lời trong {time}"
+
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Reply posted"
 msgstr "Đã đăng phản hồi"
@@ -16040,7 +15935,7 @@ msgstr "Lỗi được báo cáo"
 #: src/app/nav.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/reports/ReportPages.tsx
 msgid "Reports"
 msgstr "Báo cáo"
@@ -16291,7 +16186,6 @@ msgstr "Đã thu hồi khóa API {name}"
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "Ngay sau khi đăng ký, mọi người nhận một thư ngắn xác nhận, kèm liên kết hủy đăng ký."
 
-#: src/features/home/HomePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Right now"
 msgstr "Ngay lúc này"
@@ -16301,7 +16195,6 @@ msgstr "Ngay lúc này"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/feedback/RoadmapCard.tsx
-#: src/features/home/HomeSide.tsx
 msgid "Roadmap"
 msgstr "Lộ trình"
 
@@ -16659,6 +16552,10 @@ msgctxt "mail folder"
 msgid "Scheduled"
 msgstr "Đã hẹn giờ"
 
+#: src/features/home/HomeSide.tsx
+msgid "Scheduled broadcast"
+msgstr "Bản tin đã lên lịch"
+
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Scheduled by"
@@ -16877,10 +16774,6 @@ msgstr "Bảo mật"
 #: src/features/inbox/SidePanels.tsx
 msgid "See all mentions"
 msgstr "Xem tất cả lượt nhắc"
-
-#: src/features/home/HomePage.tsx
-msgid "See paused broadcasts"
-msgstr "Xem các lần gửi đã tạm dừng"
 
 #: src/features/contact/ContactCard.tsx
 msgid "Seen {seen}"
@@ -17269,10 +17162,6 @@ msgstr "Giờ gửi"
 msgid "Sending hours of “{name}”"
 msgstr "Giờ gửi của “{name}”"
 
-#: src/features/home/HomePage.tsx
-msgid "Sending is suspended."
-msgstr "Việc gửi đã bị đình chỉ."
-
 #: src/components/common/Linked.tsx
 msgid "Sending kept failing, so Yuva gave up."
 msgstr "Việc gửi liên tục thất bại nên Yuva đã bỏ cuộc."
@@ -17363,7 +17252,6 @@ msgid "sends through {0}"
 msgstr "gửi qua {0}"
 
 #: src/features/broadcasts/Report.tsx
-#: src/features/home/HomeSide.tsx
 msgid "sent"
 msgstr "đã gửi"
 
@@ -17538,6 +17426,7 @@ msgstr "Đặt trạng thái"
 msgid "Set up"
 msgstr "Thiết lập"
 
+#: src/features/home/HomePage.tsx
 #: src/features/status/MonitorToken.tsx
 msgid "Set up {name}"
 msgstr "Thiết lập {name}"
@@ -17685,10 +17574,6 @@ msgstr "Hiện {nRevoked} đã thu hồi"
 msgid "Show all authors"
 msgstr "Hiện tất cả tác giả"
 
-#: src/features/home/HomePage.tsx
-msgid "Show all products"
-msgstr "Hiện tất cả sản phẩm"
-
 #: src/components/common/ShortcutSheet.tsx
 msgid "Show archived designs"
 msgstr "Hiện thiết kế đã lưu trữ"
@@ -17727,10 +17612,6 @@ msgstr "Hiện thêm"
 #: src/features/status/ComponentsTab.tsx
 msgid "Show on the page"
 msgstr "Hiện trên trang"
-
-#: src/features/home/HomePage.tsx
-msgid "Show only {name}"
-msgstr "Chỉ hiện {name}"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Show or hide quoted text"
@@ -17804,14 +17685,6 @@ msgstr "Hiện thời gian hoạt động"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Show who is online"
 msgstr "Hiện ai đang trực tuyến"
-
-#: src/features/home/HomePage.tsx
-msgid "Showing {product} only."
-msgstr "Chỉ hiện {product}."
-
-#: src/features/home/HomePage.tsx
-msgid "Showing every product."
-msgstr "Đang hiện tất cả sản phẩm."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "Shown after the subject in most inboxes. Empty uses the design’s own."
@@ -18098,6 +17971,7 @@ msgstr "Signing secret"
 msgid "Since"
 msgstr "Từ"
 
+#: src/features/home/HomeWork.tsx
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Since {since}"
@@ -18314,6 +18188,10 @@ msgstr "Báo lại sau (phút)"
 msgid "Snooze for {time}"
 msgstr "Báo lại sau {time}"
 
+#: src/features/home/HomeWork.tsx
+msgid "snoozed"
+msgstr "tạm hoãn"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -18324,6 +18202,10 @@ msgstr "Đã tạm hoãn"
 msgctxt "mail folder"
 msgid "Snoozed"
 msgstr "Đã tạm hoãn"
+
+#: src/features/home/HomeSide.tsx
+msgid "Snoozed conversation"
+msgstr "Cuộc trò chuyện tạm hoãn"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Snoozed until {until}"
@@ -18547,7 +18429,6 @@ msgstr "Start “{name}” on {when}?"
 msgid "Start a discussion"
 msgstr "Bắt đầu một cuộc thảo luận"
 
-#: src/features/home/HomePage.tsx
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Start a mailing list"
 msgstr "Tạo danh sách gửi thư"
@@ -18671,7 +18552,6 @@ msgstr "Trạng thái khi ngừng"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomeSide.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 #: src/features/migrations/MapStep.tsx
@@ -18684,10 +18564,6 @@ msgstr "Trạng thái khi ngừng"
 #: src/features/team/TeamPage.tsx
 msgid "Status"
 msgstr "Trạng thái"
-
-#: src/features/home/HomePage.tsx
-msgid "Status and coming up"
-msgstr "Trạng thái và sắp tới"
 
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
@@ -18987,10 +18863,6 @@ msgstr "các tab"
 msgid "Tags"
 msgstr "Thẻ"
 
-#: src/features/home/HomePage.tsx
-msgid "take"
-msgstr "nhận"
-
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "Take {name} off the waiting list"
 msgstr "Take {name} off the waiting list"
@@ -19035,7 +18907,6 @@ msgstr "Kiểm tra TCP"
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/conversation/History.tsx
 #: src/features/docs/discussions/parts.tsx
-#: src/features/home/HomeSide.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
@@ -20146,10 +20017,6 @@ msgstr "Người vận hành máy chủ đọc mục này trước khi cho khôn
 msgid "The server's operator registers the Slack app and sets its credentials. The guide explains how."
 msgstr "The server's operator registers the Slack app and sets its credentials. The guide explains how."
 
-#: src/features/home/HomePage.tsx
-msgid "The server’s operator suspended sending for this workspace. Scheduled broadcasts are paused and new schedules are refused."
-msgstr "Nhà vận hành máy chủ đã đình chỉ việc gửi cho không gian làm việc này. Các lần gửi đã lên lịch bị tạm dừng và lịch mới bị từ chối."
-
 #: src/features/settings/audit/sentence.ts
 msgid "The server's operator vouched for the address {address}"
 msgstr "Người vận hành máy chủ đã bảo đảm địa chỉ {address}"
@@ -20895,10 +20762,6 @@ msgstr "Máy chủ này gửi thư hàng loạt cho một không gian làm việ
 msgid "This server sends broadcasts for a workspace once its operator approves it. Tell them about your mail to ask. Until then you can build lists, designs and drafts and send tests."
 msgstr "Máy chủ này gửi thư hàng loạt cho một không gian làm việc sau khi người vận hành chấp thuận. Hãy cho họ biết về thư của bạn để yêu cầu. Trong lúc đó bạn có thể tạo danh sách, thiết kế, bản nháp và gửi thử."
 
-#: src/features/home/HomePage.tsx
-msgid "This server sends broadcasts only after its operator approves the workspace. Drafts are kept."
-msgstr "Máy chủ này chỉ gửi hàng loạt sau khi nhà vận hành phê duyệt không gian làm việc. Bản nháp vẫn được giữ."
-
 #: src/components/common/text.ts
 msgid "This server's limit for migrations is reached. Wait until a running one ends, or ask the server's operator."
 msgstr "Đã đạt giới hạn di chuyển của máy chủ này. Hãy chờ một lần đang chạy kết thúc, hoặc hỏi người vận hành máy chủ."
@@ -21084,7 +20947,7 @@ msgstr "Đến: {who}"
 #: src/app/places.tsx
 #: src/components/common/FlatList.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -21353,7 +21216,7 @@ msgid "Unassign"
 msgstr "Hủy giao"
 
 #: src/features/conversation/ChatView.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -21746,10 +21609,6 @@ msgstr "Đang tải lên…"
 msgid "Uptime"
 msgstr "Thời gian hoạt động"
 
-#: src/features/home/HomeSide.tsx
-msgid "uptime {uptime} over {shown} days"
-msgstr "thời gian hoạt động {uptime} trong {shown} ngày"
-
 #: src/features/status/ComponentsTab.tsx
 msgid "Uptime is hidden on this page. Turn it on in the settings to see each day here."
 msgstr "Thời gian hoạt động đang bị ẩn trên trang này. Bật nó trong cài đặt để xem từng ngày ở đây."
@@ -22075,10 +21934,6 @@ msgstr "khách truy cập"
 msgid "Visitors"
 msgstr "Khách truy cập"
 
-#: src/features/home/HomePage.tsx
-msgid "Visitors · 7 days"
-msgstr "Khách truy cập · 7 ngày"
-
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Visitors can chat without an identity token from your backend."
 msgstr "Khách truy cập có thể chat mà không cần token danh tính từ backend của bạn."
@@ -22086,6 +21941,10 @@ msgstr "Khách truy cập có thể chat mà không cần token danh tính từ 
 #: src/features/home/PropertyCard.tsx
 msgid "Visitors in the last seven days: {series}"
 msgstr "Khách truy cập trong bảy ngày qua: {series}"
+
+#: src/features/home/HomeWork.tsx
+msgid "Visitors now"
+msgstr "Khách truy cập hiện tại"
 
 #: src/features/setup/SetupHub.tsx
 msgid "Visitors of your website or app, without cookies"
@@ -22125,7 +21984,6 @@ msgstr "Được người vận hành máy chủ bảo đảm lúc {when}."
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -22213,10 +22071,6 @@ msgstr "Đang chờ kết quả đầu tiên"
 msgid "Waiting for the operator"
 msgstr "Đang chờ người vận hành"
 
-#: src/features/home/HomePage.tsx
-msgid "Waiting for the operator."
-msgstr "Đang chờ nhà vận hành."
-
 #: src/features/migrations/parts.tsx
 msgid "Waiting for the provider's limit; continues at {time}."
 msgstr "Đang chờ giới hạn của nhà cung cấp; tiếp tục lúc {time}."
@@ -22237,17 +22091,21 @@ msgstr "waiting for their time"
 msgid "Waiting for validation"
 msgstr "Đang chờ xác thực"
 
+#: src/features/home/HomeWork.tsx
+msgid "Waiting for you"
+msgstr "Đang chờ bạn"
+
 #: src/features/inbox/ChatList.tsx
 msgid "Waiting longest"
 msgstr "Chờ lâu nhất"
 
-#: src/features/home/HomeSide.tsx
-msgid "Waiting on you"
-msgstr "Đang chờ bạn"
+#: src/features/home/HomeWork.tsx
+msgid "waiting on the customer"
+msgstr "đang chờ khách hàng"
 
-#: src/features/home/HomeSide.tsx
-msgid "waits for approval"
-msgstr "chờ phê duyệt"
+#: src/features/home/HomeWork.tsx
+msgid "waiting on you"
+msgstr "đang chờ bạn"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Warn about the certificate"
@@ -22511,7 +22369,6 @@ msgstr "Yuva dùng để làm gì"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/home/HomeSide.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 msgid "What’s new"
 msgstr "Có gì mới"
@@ -22973,7 +22830,6 @@ msgstr "Có"
 
 #: src/components/common/FlatList.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/home/HomePage.tsx
 msgid "Yesterday"
 msgstr "Hôm qua"
 
@@ -23014,14 +22870,6 @@ msgstr "Bạn chưa ở trong không gian làm việc nào"
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You are the only owner of a workspace. Make someone else an owner there, or delete that workspace, before you delete your account."
 msgstr "Bạn là chủ sở hữu duy nhất của một không gian làm việc. Hãy đặt người khác làm chủ sở hữu ở đó, hoặc xóa không gian làm việc đó, trước khi xóa tài khoản."
-
-#: src/features/home/HomePage.tsx
-msgid "You asked on {asked} to send broadcasts. Drafts and schedules wait until the operator answers."
-msgstr "Bạn đã yêu cầu gửi hàng loạt vào {asked}. Bản nháp và lịch gửi sẽ chờ đến khi nhà vận hành trả lời."
-
-#: src/features/home/HomePage.tsx
-msgid "You asked to send broadcasts. Drafts and schedules wait until the operator answers."
-msgstr "Bạn đã yêu cầu gửi hàng loạt. Bản nháp và lịch gửi sẽ chờ đến khi nhà vận hành trả lời."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "You can change the delay, the pace, the sending hours and turn click counting off. Pause it to change the content."
@@ -23234,6 +23082,10 @@ msgstr "Your e-mail address is not in a domain this organisation has claimed in 
 msgid "Your first conversation is here"
 msgstr "Cuộc trò chuyện đầu tiên của bạn ở đây"
 
+#: src/features/home/HomeWork.tsx
+msgid "Your first reply"
+msgstr "Phản hồi đầu tiên của bạn"
+
 #: src/features/migrations/text.ts
 msgid "Your folder"
 msgstr "Thư mục của bạn"
@@ -23284,6 +23136,10 @@ msgstr "Tổ chức Microsoft 365 của bạn chỉ cho phép quản trị viên
 msgid "Your name"
 msgstr "Tên của bạn"
 
+#: src/features/home/HomeWork.tsx
+msgid "Your open conversations"
+msgstr "Cuộc trò chuyện đang mở của bạn"
+
 #: src/features/auth/SignInForm.tsx
 msgid "Your organisation requires this sign-in for its workspace."
 msgstr "Your organisation requires this sign-in for its workspace."
@@ -23331,6 +23187,10 @@ msgstr "Sản phẩm của bạn"
 #: src/features/status/SettingsTab.tsx
 msgid "Your product."
 msgstr "Sản phẩm của bạn."
+
+#: src/features/home/HomeWork.tsx
+msgid "Your rating"
+msgstr "Đánh giá của bạn"
 
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "Your replies by e-mail end with"

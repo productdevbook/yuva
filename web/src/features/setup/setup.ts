@@ -3,6 +3,8 @@ import type { HomeSetupItem, WorkspaceFocus } from "@/lib/api"
 export type SetupKind = "chat" | "email" | "app" | "docs"
 export const SETUP_KINDS: SetupKind[] = ["chat", "email", "app", "docs"]
 
+export const HOME_BACK = "/home"
+
 export type SetupState = { secret?: string; back?: string; existing?: boolean; emailError?: "taken" | "invalid" }
 
 export type SetupStage = "name" | "pick" | "fields" | "install" | "wait"

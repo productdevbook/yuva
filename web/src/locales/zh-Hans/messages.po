@@ -15,10 +15,31 @@ msgstr "zip 中的 .eml 文件"
 msgid "“{name}” holds a value that does not fit"
 msgstr "“{name}”的值与字段不符"
 
+#: src/features/home/HomeSide.tsx
+msgid "“{title}” was closed"
+msgstr "“{title}”已关闭"
+
+#: src/features/home/HomeSide.tsx
+msgid "“{title}” was published"
+msgstr "“{title}”已发布"
+
+#: src/features/home/HomeSide.tsx
+msgid "“{title}” was rated bad"
+msgstr "“{title}”收到差评"
+
+#: src/features/home/HomeSide.tsx
+msgid "“{title}” was rated good"
+msgstr "“{title}”收到好评"
+
+#: src/features/home/HomeSide.tsx
+msgid "“{title}” was sent"
+msgstr "“{title}”已发送"
+
 #: src/features/setup/ChannelStep.tsx
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "“此页面对您有帮助吗?”、文档上的反馈和讨论"
 
+#: src/features/home/HomeSide.tsx
 #: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailSide.tsx
@@ -86,6 +107,11 @@ msgstr "{0, plural, other {其中 # 人因其语言没有对应版本而收到�
 msgid "{0, plural, one {# open} other {# open}}"
 msgstr "{0, plural, other {# 个未关闭}}"
 
+#. placeholder {0}: p.unanswered_threads
+#: src/features/home/HomeWork.tsx
+msgid "{0, plural, one {# question needs a reply} other {# questions need a reply}}"
+msgstr "{0, plural, other {# 个问题待回复}}"
+
 #. placeholder {0}: d.reply_count
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "{0, plural, one {# reply} other {# replies}}"
@@ -132,9 +158,7 @@ msgstr "{0} 个已关闭"
 msgid "{0} events"
 msgstr "{0} 个事件"
 
-#. placeholder {0}: pct.format(good ?? 0)
 #. placeholder {0}: pct.format(p.share)
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 msgid "{0} good"
 msgstr "{0} 个良好"
@@ -311,10 +335,6 @@ msgstr "{available} / {total}"
 msgid "{available} of {total} available now"
 msgstr "{total} 人中 {available} 人现在有空"
 
-#: src/features/home/HomePage.tsx
-msgid "{bad, plural, one {# bad rating} other {# bad ratings}}"
-msgstr "{bad, plural, other {# 个差评}}"
-
 #: src/features/contact/ContactDetails.tsx
 msgid "{bad} bad"
 msgstr "差 {bad}"
@@ -364,10 +384,6 @@ msgstr "{count, plural, other {# 个条件}}"
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
 msgstr "{count, plural, other {# 个文件夹}}"
-
-#: src/features/home/HomeSide.tsx
-msgid "{count, plural, one {# issue} other {# issues}}"
-msgstr "{count, plural, other {# 个问题}}"
 
 #: src/features/broadcasts/ListsHome.tsx
 msgid "{count, plural, one {# list} other {# lists}}"
@@ -437,14 +453,9 @@ msgstr "{count} 条消息 · {size}"
 msgid "{count} settings"
 msgstr "{count} 项设置"
 
-#: src/features/home/HomePage.tsx
 #: src/features/migrations/ReviewStep.tsx
 msgid "{created, plural, one {# new} other {# new}}"
 msgstr "{created, plural, other {新增 #}}"
-
-#: src/features/home/HomePage.tsx
-msgid "{created} new conversations and {replied} first replies in the period"
-msgstr "本期新会话 {created} 个，首次回复 {replied} 次"
 
 #: src/features/broadcasts/Growth.tsx
 #: src/features/docs/Toolbar.tsx
@@ -452,10 +463,6 @@ msgstr "本期新会话 {created} 个，首次回复 {replied} 次"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, other {# 天}}"
-
-#: src/features/home/HomePage.tsx
-msgid "{date}: {newCount} new, {replyCount} first replies"
-msgstr "{date}：新增 {newCount} 个，首次回复 {replyCount} 次"
 
 #: src/features/status/StatusPages.tsx
 msgid "{days, plural, one {# day} other {# days}}"
@@ -476,6 +483,10 @@ msgstr "{days, plural, other {已等待 # 天}}"
 #: src/components/common/BulkReport.tsx
 msgid "{deleted} deleted"
 msgstr "已删除 {deleted} 个"
+
+#: src/features/home/HomeSide.tsx
+msgid "{done} of {total} copied"
+msgstr "已复制 {done}/{total}"
 
 #: src/features/broadcasts/Import.tsx
 msgid "{done} of {total} rows"
@@ -593,13 +604,17 @@ msgstr "{imported} 条消息"
 msgid "{inboxName} has no e-mail channel for {address} yet. History is stored in that channel, so replies after the switch go out from the same address."
 msgstr "{inboxName} 还没有 {address} 的邮件渠道。历史记录保存在该渠道中,因此切换后的回复仍从同一地址发出。"
 
+#: src/features/home/HomeSide.tsx
+msgid "{incidents, plural, one {# incident} other {# incidents}}"
+msgstr "{incidents, plural, other {# 个事件}}"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "{incoming} received, {outgoing} sent"
 msgstr "收到 {incoming} 封,发送 {outgoing} 封"
 
-#: src/features/home/HomePage.tsx
-msgid "{left, plural, one {# setup step left.} other {# setup steps left.}}"
-msgstr "{left, plural, other {还剩 # 个设置步骤。}}"
+#: src/features/home/HomeWork.tsx
+msgid "{lateText} late"
+msgstr "{lateText} 个已逾期"
 
 #: src/features/conversation/SlaPopover.tsx
 msgid "{left} left when it resumes"
@@ -649,6 +664,10 @@ msgstr "{monitorName} 已恢复正常响应"
 msgid "{mxDomain} has no MX record, so replies to broadcasts cannot arrive. Publish the MX records of your mail service."
 msgstr "{mxDomain} 没有 MX 记录,因此群发邮件的回复无法送达。请发布你的邮件服务的 MX 记录。"
 
+#: src/features/home/HomeWork.tsx
+msgid "{n, plural, =0 {no first replies} one {# first reply} other {# first replies}}"
+msgstr "{n, plural, =0 {暂无首次回复} other {# 次首次回复}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# app} other {# apps}}"
 msgstr "{n, plural, other {# 个应用}}"
@@ -656,10 +675,6 @@ msgstr "{n, plural, other {# 个应用}}"
 #: src/features/broadcasts/Trigger.tsx
 msgid "{n, plural, one {# day after someone first signs in to {inbox}} other {# days after someone first signs in to {inbox}}}"
 msgstr "{n, plural, one {# day after someone first signs in to {inbox}} other {# days after someone first signs in to {inbox}}}"
-
-#: src/features/home/HomePage.tsx
-msgid "{n, plural, one {# day ago} other {# days ago}}"
-msgstr "{n, plural, other {# 天前}}"
 
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# documentation site} other {# documentation sites}}"
@@ -686,12 +701,17 @@ msgid "{n, plural, one {# other conversation} other {# other conversations}}"
 msgstr "{n, plural, other {另外 # 个对话}}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/home/HomeSide.tsx
 msgid "{n, plural, one {# person} other {# people}}"
 msgstr "{n, plural, other {# 人}}"
 
 #: src/features/settings/audit/sentence.ts
 msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
 msgstr "{n, plural, other {每天 # 位收件人}}"
+
+#: src/features/home/HomePage.tsx
+msgid "{n, plural, one {# step} other {# steps}}"
+msgstr "{n, plural, other {# 步}}"
 
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# team mailbox} other {# team mailboxes}}"
@@ -772,7 +792,6 @@ msgstr "已取消 {n} 个星标"
 msgid "{name} · {statusText}"
 msgstr "{name} · {statusText}"
 
-#: src/features/home/HomeSide.tsx
 #: src/features/team/TeamPage.tsx
 msgid "{name} (you)"
 msgstr "{name}(你)"
@@ -784,6 +803,10 @@ msgstr "已屏蔽 {name}。其邮件将被拒收。"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "{name} can reply"
 msgstr "{name} 可以回复"
+
+#: src/features/home/HomeSide.tsx
+msgid "{name} comes back"
+msgstr "{name} 将回来"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "{name} connects from its vendor's cloud, so it needs this server at a public https address. The panel is open at {url}, which it probably cannot reach."
@@ -800,6 +823,10 @@ msgstr "已删除 {name}"
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "{name} docs"
 msgstr "{name} 文档"
+
+#: src/features/home/HomeSide.tsx
+msgid "{name} goes out"
+msgstr "{name} 即将发送"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{name} is looking"
@@ -859,19 +886,23 @@ msgstr "{name} 网站"
 msgid "{name}, visitors in the last seven days: {series}"
 msgstr "{name}，过去七天的访客：{series}"
 
-#: src/features/home/HomeSide.tsx
-msgid "{names} operational"
-msgstr "{names} 运行正常"
-
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "{names} will be notified"
 msgstr "将通知 {names}"
 
+#: src/features/home/HomePage.tsx
+msgid "{online} of {total} online"
+msgstr "{online}/{total} 在线"
+
 #: src/components/common/Linked.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/home/HomeSide.tsx
 msgid "{open, plural, one {# open} other {# open}}"
 msgstr "{open, plural, other {# 个未关闭}}"
+
+#: src/features/home/HomeSide.tsx
+#: src/features/home/HomeWork.tsx
+msgid "{open} open"
+msgstr "{open} 个未结"
 
 #: src/features/broadcasts/Import.tsx
 msgid "{out, plural, one {# row is left out} other {# rows are left out}}"
@@ -901,10 +932,6 @@ msgstr "{people, plural, other {其 # 个订阅及同意记录将被删除。}}"
 #: src/features/broadcasts/Overview.tsx
 msgid "{people} people"
 msgstr "{people} 人"
-
-#: src/features/home/HomeSide.tsx
-msgid "{people} recipients"
-msgstr "{people} 位收件人"
 
 #: src/features/migrations/ImportBanner.tsx
 msgid "{percent}%"
@@ -998,10 +1025,6 @@ msgstr "{provider} 要求你先在浏览器中登录一次。请在网页上登�
 msgid "{provider}'s tags become Yuva labels on their conversations."
 msgstr "{provider} 的标签会成为这些对话上的 Yuva 标签。"
 
-#: src/features/home/HomePage.tsx
-msgid "{ptsText} pts"
-msgstr "{ptsText} 个百分点"
-
 #: src/features/migrations/CopyStep.tsx
 msgid "{rate} a minute"
 msgstr "每分钟 {rate} 个"
@@ -1019,7 +1042,7 @@ msgstr "每秒 {rate} 封邮件"
 msgid "{rate} mails a second · one every {every}"
 msgstr "每秒 {rate} 封邮件 · 每 {every} 一封"
 
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeWork.tsx
 msgid "{rated, plural, =0 {no ratings} one {# rating} other {# ratings}}"
 msgstr "{rated, plural, =0 {暂无评价} other {# 个评价}}"
 
@@ -1093,6 +1116,14 @@ msgstr "{shown, plural, other {# 个对话}}"
 msgid "{size} · pick another file"
 msgstr "{size} · 选择其他文件"
 
+#: src/features/home/HomeWork.tsx
+msgid "{source} import needs attention"
+msgstr "{source} 导入需要处理"
+
+#: src/features/home/HomeSide.tsx
+msgid "{source} import should finish"
+msgstr "{source} 导入预计完成"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "{spam} marked as spam"
 msgstr "{spam} 封被标记为垃圾邮件"
@@ -1116,6 +1147,10 @@ msgstr "较上一周期{text}"
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "{threads} 个未关闭的讨论"
+
+#: src/features/home/HomeWork.tsx
+msgid "{total, plural, one {# conversation nobody has taken} other {# conversations nobody has taken}}"
+msgstr "{total, plural, other {# 个无人接手的会话}}"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "{total, plural, one {Last 30 days · # broadcast} other {Last 30 days · # broadcasts}}"
@@ -1184,14 +1219,6 @@ msgstr "{votes} 票"
 msgid "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
 msgstr "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
 
-#: src/features/home/HomePage.tsx
-msgid "{waiting, plural, one {# conversation is waiting.} other {# conversations are waiting.}}"
-msgstr "{waiting, plural, other {有 # 个对话在等待。}}"
-
-#: src/features/home/HomePage.tsx
-msgid "{waiting, plural, one {Open in Inbox} other {All {total} in Inbox}}"
-msgstr "{waiting, plural, one {在收件箱中打开} other {收件箱中的全部 {total} 个}}"
-
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "{waiting} waiting"
 msgstr "{waiting} waiting"
@@ -1203,6 +1230,10 @@ msgstr "{watching, plural, other {由 # 个监控监视中}}"
 #: src/features/reports/ReportPages.tsx
 msgid "{who} · answered by {name}"
 msgstr "{who} · 由 {name} 回复"
+
+#: src/features/home/HomeSide.tsx
+msgid "{who} closed “{title}”"
+msgstr "{who} 关闭了“{title}”"
 
 #: src/app/Header.tsx
 msgid "{who} in {where}"
@@ -1216,9 +1247,21 @@ msgstr "{who} 在 {contact} 中提到了你，{subject}。打开会话"
 msgid "{who} mentioned you in {contact}. Open the conversation"
 msgstr "{who} 在 {contact} 中提到了你。打开会话"
 
+#: src/features/home/HomeSide.tsx
+msgid "{who} posted an update on “{title}”"
+msgstr "{who} 在“{title}”发布了更新"
+
+#: src/features/home/HomeSide.tsx
+msgid "{who} published “{title}”"
+msgstr "{who} 发布了“{title}”"
+
 #: src/features/account/AccountPage.tsx
 msgid "{who} replied in <0>{title}</0>"
 msgstr "{who} 在 <0>{title}</0> 中回复了"
+
+#: src/features/home/HomeSide.tsx
+msgid "{who} sent “{title}”"
+msgstr "{who} 发送了“{title}”"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
@@ -1232,14 +1275,6 @@ msgstr "+ 添加地址"
 #: src/features/broadcasts/ListsHome.tsx
 msgid "+{added} this month"
 msgstr "本月 +{added}"
-
-#: src/features/home/HomeSide.tsx
-msgid "+{off} offline"
-msgstr "+{off} 人离线"
-
-#: src/features/home/HomeSide.tsx
-msgid "+{off} offline · {offOpen} open"
-msgstr "+{off} 人离线 · {offOpen} 个未结"
 
 #: src/features/settings/channels/email/Ses.tsx
 msgid "<0>{domain}</0> is not a verified identity in the server’s Amazon SES account. Mail goes out without tenant isolation and broadcasts are blocked. Ask the server’s operator to verify the domain."
@@ -2159,10 +2194,6 @@ msgstr "添加内部备注"
 msgid "Add an OAuth client named “Yuva”, as a confidential client, and enter the redirect URL below as its redirect URL."
 msgstr "添加一个名为“Yuva”的 OAuth 客户端,类型为机密客户端,并把下面的重定向 URL 填为它的重定向 URL。"
 
-#: src/features/home/HomePage.tsx
-msgid "Add analytics"
-msgstr "添加分析"
-
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Add another"
@@ -2225,10 +2256,6 @@ msgstr "添加标签 {labelName}"
 #: src/features/settings/automation/text.ts
 msgid "Add labels"
 msgstr "添加标签"
-
-#: src/features/home/HomePage.tsx
-msgid "Add live chat to your site"
-msgstr "为网站添加在线聊天"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Add monitor"
@@ -2531,10 +2558,6 @@ msgstr "所有监控"
 msgid "All of its conversations, messages and attachments are deleted with it. This cannot be undone."
 msgstr "其中的所有会话、消息和附件将一并删除。此操作无法撤销。"
 
-#: src/features/home/HomeSide.tsx
-msgid "All operational"
-msgstr "全部运行正常"
-
 #: src/features/migrations/UploadStep.tsx
 msgid "All parts arrived. Reading the file…"
 msgstr "所有部分都已到达。正在读取文件…"
@@ -2573,6 +2596,10 @@ msgstr "所有权限范围"
 #: src/features/docs/Toolbar.tsx
 msgid "All sites"
 msgstr "所有站点"
+
+#: src/features/home/HomePage.tsx
+msgid "All steps"
+msgstr "全部步骤"
 
 #: src/features/status/StatusPages.tsx
 msgid "All systems operational"
@@ -2914,6 +2941,10 @@ msgstr "某个 SLA 目标已被违反"
 msgid "an unknown person"
 msgstr "未知用户"
 
+#: src/features/home/HomeSide.tsx
+msgid "An update was posted on “{title}”"
+msgstr "“{title}”有新的更新"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
 msgstr "上传被中断:已有 {count} 个部分、{size} 在服务器上。"
@@ -2922,7 +2953,6 @@ msgstr "上传被中断:已有 {count} 个部分、{size} 在服务器上。"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/settings/webhooks/events.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Analytics"
@@ -3353,10 +3383,6 @@ msgstr "请让你的邮件服务器管理员把 {address} 投递到下面的地�
 msgid "Ask the admin of your mail server to forward {address} to the address below on the server, keeping delivery to the mailbox."
 msgstr "请让你的邮件服务器管理员在服务器上把 {address} 转发到下面的地址,同时保留投递到邮箱。"
 
-#: src/features/home/HomePage.tsx
-msgid "Ask the operator"
-msgstr "向运营方申请"
-
 #: src/features/settings/ProductsPage.tsx
 msgid "asked after closing"
 msgstr "关闭后被询问"
@@ -3599,6 +3625,7 @@ msgid "Automation"
 msgstr "自动化"
 
 #: src/app/UserMenu.tsx
+#: src/features/home/HomePage.tsx
 msgid "Available"
 msgstr "可用"
 
@@ -3613,6 +3640,7 @@ msgstr "可用至 {until}"
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Away"
 msgstr "离开"
@@ -3625,6 +3653,10 @@ msgstr "离开"
 #: src/features/migrations/Wizard.tsx
 msgid "Back"
 msgstr "返回"
+
+#: src/features/home/HomeWork.tsx
+msgid "Back {at}"
+msgstr "{at} 恢复"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Back to API keys"
@@ -3639,6 +3671,10 @@ msgstr "返回列"
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "Back to draft"
 msgstr "返回草稿"
+
+#: src/features/setup/BackHome.tsx
+msgid "Back to Home"
+msgstr "返回首页"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Back to setup"
@@ -3942,10 +3978,6 @@ msgstr "群发发送"
 msgid "Broadcasts"
 msgstr "群发"
 
-#: src/features/home/HomePage.tsx
-msgid "Broadcasts are suspended."
-msgstr "群发已被暂停。"
-
 #: src/components/common/text.ts
 msgid "Broadcasts are turned off on this server."
 msgstr "此服务器已关闭群发。"
@@ -3954,17 +3986,9 @@ msgstr "此服务器已关闭群发。"
 msgid "Broadcasts are turned off on this server. Lists and their forms still work, so you can collect subscribers."
 msgstr "此服务器已关闭群发。列表及其表单仍可使用,因此你可以收集订阅者。"
 
-#: src/features/home/HomePage.tsx
-msgid "Broadcasts can’t go out yet."
-msgstr "群发暂时无法发出。"
-
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Broadcasts from this channel go out through its SMTP account for replies, or through a separate account. A separate account, ideally on its own subdomain, keeps spam complaints about newsletters away from your support mail."
 msgstr "此渠道的群发通过用于回复的 SMTP 账号发出,或通过单独的账号发出。使用单独的账号(最好有自己的子域名),可以让关于新闻简报的垃圾邮件投诉远离你的支持邮箱。"
-
-#: src/features/home/HomePage.tsx
-msgid "Broadcasts wait for the operator’s approval."
-msgstr "群发正在等待运营方批准。"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
@@ -4615,10 +4639,6 @@ msgstr "点击计数"
 msgid "Click tracking"
 msgstr "点击跟踪"
 
-#: src/features/home/HomeSide.tsx
-msgid "clicked"
-msgstr "已点击"
-
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 msgid "Clicked"
@@ -4628,9 +4648,9 @@ msgstr "已点击"
 msgid "clicked a link, roughly"
 msgstr "点击过链接(大致)"
 
-#: src/features/home/HomeSide.tsx
-msgid "clicks not tracked"
-msgstr "未跟踪点击"
+#: src/features/home/HomeWork.tsx
+msgid "clicks · replies · {name}"
+msgstr "点击 · 回复 · {name}"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Clicks not tracked"
@@ -4770,10 +4790,6 @@ msgstr "验证码已发送"
 msgid "Collapse"
 msgstr "收起"
 
-#: src/features/home/HomePage.tsx
-msgid "Collect ratings on your docs pages"
-msgstr "在文档页面收集评价"
-
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Collections"
@@ -4805,7 +4821,6 @@ msgstr "列"
 msgid "Coming later"
 msgstr "即将推出"
 
-#: src/features/home/HomeSide.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Coming up"
 msgstr "即将到来"
@@ -4939,7 +4954,6 @@ msgid "confirmed their address in the last {days} days"
 msgstr "最近 {days} 天内确认了地址"
 
 #: src/features/account/ConnectPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/migrations/text.ts
 #: src/features/migrations/Wizard.tsx
@@ -4966,10 +4980,6 @@ msgstr "连接 {provider}"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Connect a provider and verify a domain first."
 msgstr "Connect a provider and verify a domain first."
-
-#: src/features/home/HomePage.tsx
-msgid "Connect a support address"
-msgstr "连接支持邮箱地址"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Connect a tracker"
@@ -5005,10 +5015,6 @@ msgstr "Connect Slack"
 #: src/features/account/ConnectPage.tsx
 msgid "Connect to {host}"
 msgstr "连接到 {host}"
-
-#: src/features/home/HomePage.tsx
-msgid "Connect your iOS or Android app"
-msgstr "连接你的 iOS 或 Android 应用"
 
 #: src/features/settings/SettingsFrame.tsx
 msgid "Connect your servers and bots to Yuva"
@@ -5093,10 +5099,6 @@ msgstr "已连接到 {provider}"
 #: src/features/migrations/ConnectStep.tsx
 msgid "Connected to {storedHost}. Enter the password again only to change it."
 msgstr "已连接到 {storedHost}。只有要更改密码时才需要再次输入。"
-
-#: src/features/home/HomePage.tsx
-msgid "Connecting"
-msgstr "正在连接"
 
 #: src/features/setup/email/EmailTestStep.tsx
 #: src/features/setup/WaitStep.tsx
@@ -5311,10 +5313,6 @@ msgstr "导入后无人回复的对话会被删除。{address} 不会有任何�
 msgid "Conversations nobody wrote in after the import are deleted. Nothing changed in {provider}."
 msgstr "导入后无人回复的对话会被删除。{provider} 不会有任何变化。"
 
-#: src/features/home/HomePage.tsx
-msgid "Conversations show up here as soon as the first customer writes."
-msgstr "第一位客户发来消息后，会话就会显示在这里。"
-
 #: src/features/reports/ReportPages.tsx
 msgid "conversations started"
 msgstr "已发起的对话"
@@ -5330,10 +5328,6 @@ msgstr "在其上开始的对话会保留其消息。"
 #: src/features/settings/channels/sections.tsx
 msgid "Conversations that started on this channel keep their messages."
 msgstr "在此渠道上开始的对话会保留其消息。"
-
-#: src/features/home/HomePage.tsx
-msgid "Conversations waiting for an answer, oldest first."
-msgstr "等待回复的对话，最早的在前。"
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Conversations your team wrote in stay. Nothing changes in {address}."
@@ -5465,17 +5459,9 @@ msgstr "无法连接到服务器。请检查网络连接后重试。"
 msgid "Couldn’t load Home. Your inbox still works."
 msgstr "无法加载主页。收件箱仍可正常使用。"
 
-#: src/features/home/HomePage.tsx
-msgid "Couldn’t refresh since {time}. The figures below may be out of date; your inbox still works."
-msgstr "自 {time} 起未能刷新。以下数据可能不是最新的；收件箱仍可正常使用。"
-
 #: src/features/broadcasts/Composer.tsx
 msgid "Count clicks"
 msgstr "统计点击"
-
-#: src/features/home/HomePage.tsx
-msgid "Count visitors on your site"
-msgstr "统计网站访客"
 
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "counted so far"
@@ -5494,7 +5480,6 @@ msgstr "国家/地区"
 msgid "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
 msgstr "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
 
-#: src/features/home/HomePage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/DeveloperTabs.tsx
 msgid "Create"
@@ -6315,7 +6300,6 @@ msgstr "浏览器设置中已屏蔽此站点的桌面通知,因此只会播放�
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/mail/MailPage.tsx
@@ -6411,6 +6395,7 @@ msgstr "已断开问题跟踪器 {name}（{provider}）"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/home/HomeWork.tsx
 msgid "Discussion"
 msgstr "讨论"
 
@@ -6705,10 +6690,6 @@ msgstr "草稿和审批"
 #: src/components/common/text.ts
 msgid "Drafts and timeline events cannot be removed."
 msgstr "草稿和时间线事件无法移除。"
-
-#: src/features/home/HomeSide.tsx
-msgid "Drafts to review"
-msgstr "待审阅的草稿"
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Drafts waiting"
@@ -7729,12 +7710,8 @@ msgid "Finish now"
 msgstr "立即完成"
 
 #: src/features/home/HomePage.tsx
-msgid "Finish setting up"
-msgstr "完成设置"
-
-#: src/features/home/HomePage.tsx
-msgid "Finish setup"
-msgstr "完成设置"
+msgid "Finish setting up {name}"
+msgstr "完成 {name} 的设置"
 
 #: src/features/migrations/parts.tsx
 msgid "Finish the migration?"
@@ -7765,19 +7742,12 @@ msgstr "第一条消息"
 msgid "First name"
 msgstr "名"
 
-#: src/features/home/HomePage.tsx
-msgid "First replies"
-msgstr "首次回复"
-
-#: src/features/home/HomePage.tsx
-msgid "First replies today took {took} at the median."
-msgstr "今天首次回复的中位时长为 {took}。"
-
 #: src/features/contact/ContactDetail.tsx
 msgid "first reply"
 msgstr "首次回复"
 
 #: src/features/conversation/SlaPopover.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
@@ -8192,7 +8162,6 @@ msgstr "获取文件"
 msgid "Get the SDK lines"
 msgstr "获取 SDK 代码"
 
-#: src/features/home/HomePage.tsx
 #: src/features/setup/AddChannelStep.tsx
 msgid "Get the snippet"
 msgstr "获取代码片段"
@@ -8206,6 +8175,7 @@ msgid "Get the subscribe form"
 msgstr "获取订阅表单"
 
 #: src/app/UserMenu.tsx
+#: src/features/home/HomePage.tsx
 msgid "Getting started"
 msgstr "入门"
 
@@ -8220,10 +8190,6 @@ msgstr "为渠道生成新的转发地址?"
 #: src/features/status/SettingsTab.tsx
 msgid "Give the page a name."
 msgstr "请为页面起个名字。"
-
-#: src/features/home/HomePage.tsx
-msgid "Give the team a shared mailbox"
-msgstr "为团队提供共享邮箱"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Gives a conversation without an assignee to a teammate when it arrives or is reopened by the contact. Automation rules run first."
@@ -8520,6 +8486,7 @@ msgstr "被团队隐藏"
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/home/HomePage.tsx
 msgid "Hide"
 msgstr "隐藏"
 
@@ -8822,6 +8789,7 @@ msgstr "影响"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/broadcasts/ListPage.tsx
+#: src/features/home/HomeWork.tsx
 msgid "Import"
 msgstr "导入"
 
@@ -8875,10 +8843,6 @@ msgstr "{date} 导入到 Yuva"
 #: src/features/broadcasts/Import.tsx
 msgid "Importing"
 msgstr "正在导入"
-
-#: src/features/home/HomeSide.tsx
-msgid "Importing {source} history"
-msgstr "正在导入 {source} 历史记录"
 
 #: src/features/migrations/ImportBanner.tsx
 msgid "Importing history from {address} · {percent}% · new mail keeps arriving as usual"
@@ -9090,7 +9054,7 @@ msgstr "收件箱"
 msgid "Inboxes cut off subjects longer than 80 characters."
 msgstr "收件箱会截断超过 80 个字符的主题。"
 
-#: src/features/home/HomeSide.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Incident"
@@ -9498,10 +9462,6 @@ msgstr "请保持此页面打开。如果连接中断,恢复后上传会继续;�
 msgid "Keep writing"
 msgstr "继续写"
 
-#: src/features/home/HomePage.tsx
-msgid "Keeping up"
-msgstr "处理进度"
-
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Keeps everything"
 msgstr "保留全部内容"
@@ -9664,24 +9624,15 @@ msgstr "超过此服务器对单封邮件的限制"
 msgid "Largest file (MB)"
 msgstr "最大文件 (MB)"
 
-#: src/features/home/HomePage.tsx
-msgid "last {shown} days"
-msgstr "最近 {shown} 天"
-
 #: src/features/reports/TrendsReport.tsx
 msgid "Last 12 months"
 msgstr "最近 12 个月"
-
-#: src/features/home/HomePage.tsx
-msgid "Last 14 days"
-msgstr "最近 14 天"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "Last 3 months"
 msgstr "最近 3 个月"
 
 #: src/features/broadcasts/Overview.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Last 30 days"
@@ -9691,7 +9642,6 @@ msgstr "最近 30 天"
 msgid "Last 6 months"
 msgstr "最近 6 个月"
 
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Last 7 days"
@@ -9701,9 +9651,9 @@ msgstr "最近 7 天"
 msgid "Last attempt"
 msgstr "最近一次尝试"
 
-#: src/features/home/HomeSide.tsx
-msgid "Last broadcast · {name}"
-msgstr "上次群发 · {name}"
+#: src/features/home/HomeWork.tsx
+msgid "Last broadcast"
+msgstr "上次群发"
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Last check"
@@ -9782,6 +9732,14 @@ msgstr "最近使用 {used}"
 msgid "Last used {used}"
 msgstr "最近使用 {used}"
 
+#: src/features/home/HomeWork.tsx
+msgid "Late"
+msgstr "已逾期"
+
+#: src/features/home/HomeWork.tsx
+msgid "Late by {time}"
+msgstr "逾期 {time}"
+
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Latency"
 msgstr "延迟"
@@ -9791,6 +9749,7 @@ msgid "Later"
 msgstr "稍后"
 
 #: src/components/common/SendLater.tsx
+#: src/features/home/HomeSide.tsx
 msgid "Later today"
 msgstr "今天晚些时候"
 
@@ -10118,7 +10077,6 @@ msgid "Lists"
 msgstr "列表"
 
 #: src/components/common/text.ts
-#: src/features/home/HomePage.tsx
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Live"
 msgstr "在线"
@@ -10160,10 +10118,6 @@ msgstr "加载更多"
 #: src/features/mail/MailThread.tsx
 msgid "Load older messages"
 msgstr "加载更早的消息"
-
-#: src/features/home/HomePage.tsx
-msgid "Loading your day…"
-msgstr "正在加载今天的数据…"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "Loading…"
@@ -10434,7 +10388,6 @@ msgstr "Mails go out {sentence}, once to each person. Pausing stops sending but 
 msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
 msgstr "邮件在{city}时间 {start} 至 {end}（{utcStart}–{utcEnd} UTC）发出，并在次日继续。"
 
-#: src/features/home/HomeSide.tsx
 #: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
 msgid "Maintenance"
@@ -10670,10 +10623,6 @@ msgstr "中位数 {median}"
 msgid "median first reply"
 msgstr "首次回复中位数"
 
-#: src/features/home/HomePage.tsx
-msgid "Median first reply"
-msgstr "首次回复中位数"
-
 #: src/features/reports/ReportPages.tsx
 msgid "median today"
 msgstr "今日中位数"
@@ -10728,7 +10677,6 @@ msgstr "提到了你"
 #: src/app/places.tsx
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/home/HomeSide.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -11013,7 +10961,6 @@ msgid "Most active"
 msgstr "最活跃"
 
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomeSide.tsx
 msgid "Most asked for"
 msgstr "呼声最高"
 
@@ -11040,10 +10987,6 @@ msgstr "评分最多、待处理反馈、未关闭讨论和等待审核的帖子
 #: src/features/docs/DocsPage.tsx
 msgid "Most votes"
 msgstr "票数最多"
-
-#: src/features/home/HomePage.tsx
-msgid "move"
-msgstr "移动"
 
 #. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
@@ -11109,10 +11052,6 @@ msgid "Move through the contacts"
 msgstr "在联系人之间移动"
 
 #: src/components/common/ShortcutSheet.tsx
-msgid "Move through the conversations waiting longest"
-msgstr "在等待最久的会话之间移动"
-
-#: src/components/common/ShortcutSheet.tsx
 msgid "Move through the designs"
 msgstr "在设计之间移动"
 
@@ -11143,6 +11082,10 @@ msgstr "在监控之间移动"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the posts"
 msgstr "在帖子之间移动"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move through the rows"
+msgstr "在各行之间移动"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the sites, goals or funnels"
@@ -11253,6 +11196,10 @@ msgstr "将想法移到“已计划”“进行中”或“已发布”，会为
 #: src/features/migrations/SwitchStep.tsx
 msgid "MX change"
 msgstr "MX 变更"
+
+#: src/features/home/HomeWork.tsx
+msgid "My conversations"
+msgstr "我的会话"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "My designs"
@@ -11395,10 +11342,6 @@ msgstr "需要处理"
 msgid "Needs the operator’s approval"
 msgstr "需要运维人员批准"
 
-#: src/features/home/HomePage.tsx
-msgid "Needs you"
-msgstr "待你处理"
-
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "never"
 msgstr "从不"
@@ -11429,7 +11372,6 @@ msgid "new"
 msgstr "新"
 
 #: src/features/broadcasts/Growth.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 msgid "New"
 msgstr "新"
@@ -11492,19 +11434,10 @@ msgstr "在线收件箱中的新对话"
 msgid "New conversation in an async inbox"
 msgstr "异步收件箱中的新对话"
 
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "New conversations"
 msgstr "新对话"
-
-#: src/features/home/HomePage.tsx
-msgid "New conversations against first replies, per day."
-msgstr "每天的新对话与首次回复。"
-
-#: src/features/home/HomePage.tsx
-msgid "New conversations and feedback show up here."
-msgstr "新的对话和反馈会显示在这里。"
 
 #: src/features/reports/ReportPages.tsx
 msgid "New conversations by day"
@@ -11539,10 +11472,6 @@ msgstr "新讨论"
 #: src/components/common/ShortcutSheet.tsx
 msgid "New entry"
 msgstr "新条目"
-
-#: src/features/home/HomePage.tsx
-msgid "New feedback"
-msgstr "新反馈"
 
 #: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/fields/FieldsPage.tsx
@@ -11758,10 +11687,6 @@ msgstr "下次尝试"
 msgid "next attempt {when}"
 msgstr "下次尝试 {when}"
 
-#: src/features/home/HomePage.tsx
-msgid "Next broadcast goes out {when}."
-msgstr "下一次群发将于 {when} 发出。"
-
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Next check {next}."
 msgstr "下次检查：{next}。"
@@ -11865,7 +11790,6 @@ msgid "No attempts yet."
 msgstr "还没有尝试。"
 
 #: src/features/broadcasts/Overview.tsx
-#: src/features/home/HomePage.tsx
 msgid "No broadcast is scheduled."
 msgstr "没有已安排的群发。"
 
@@ -12474,10 +12398,6 @@ msgstr "此期间没有人回复或关闭任何会话。"
 msgid "Nobody is on the list of recipients yet."
 msgstr "收件人列表中还没有人。"
 
-#: src/features/home/HomeSide.tsx
-msgid "Nobody is online right now."
-msgstr "当前没有人在线。"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Nobody is subscribed yet: each new address gets the list’s confirmation mail, spread over days by the daily sending limit, and joins only after clicking it."
 msgstr "还没有人订阅:每个新地址会收到列表的确认邮件,按每日发送上限分散在数天内发出,点击后才会加入。"
@@ -12487,7 +12407,6 @@ msgid "Nobody is waiting for a reply."
 msgstr "没有人在等待回复。"
 
 #: src/features/broadcasts/TriggeredPage.tsx
-#: src/features/home/HomePage.tsx
 msgid "Nobody is waiting."
 msgstr "没有人在等待。"
 
@@ -12891,10 +12810,6 @@ msgstr "没有被推迟的内容。"
 msgid "Nothing is waiting for approval."
 msgstr "没有等待审核的内容。"
 
-#: src/features/home/HomePage.tsx
-msgid "Nothing is waiting."
-msgstr "没有待处理的内容。"
-
 #: src/features/status/IncidentsPage.tsx
 msgid "Nothing is wrong right now. Open an incident when something breaks."
 msgstr "目前一切正常。出现问题时请创建事件。"
@@ -12932,6 +12847,10 @@ msgstr "此期间没有测量到任何数据。"
 #: src/features/reports/TrendsReport.tsx
 msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
 msgstr "这里没有打开、回复或关闭任何内容。请尝试更长的时间段或其他筛选条件。"
+
+#: src/features/home/HomeWork.tsx
+msgid "Nothing yet. Once mail or chat is on, new conversations and incidents show up here."
+msgstr "暂时没有内容。开启邮件或聊天后，新的会话和事件会显示在这里。"
 
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "Nothing. Replies from this inbox go out without a signature."
@@ -13039,14 +12958,9 @@ msgstr "会在订阅表单和偏好设置页面中提供。私有列表由团队
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Offline"
 msgstr "离线"
-
-#: src/features/home/HomePage.tsx
-msgid "Offline · last updated {time}"
-msgstr "离线 · 最后更新于 {time}"
 
 #: src/features/status/MonitorChecks.tsx
 #: src/features/status/ResponseChart.tsx
@@ -13072,14 +12986,6 @@ msgstr "早于所选范围"
 #: src/features/contact/ContactVisits.tsx
 msgid "Older visits"
 msgstr "较早的访问"
-
-#: src/features/home/HomePage.tsx
-msgid "Oldest has waited {waited}."
-msgstr "等待最久的已等了 {waited}。"
-
-#: src/features/home/HomePage.tsx
-msgid "Oldest wait"
-msgstr "最长等待"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -13115,7 +13021,6 @@ msgstr "在 Team 和 Enterprise 套餐中,由所有者在<0>组织设置 › 连
 msgid "On the web"
 msgstr "在网页上"
 
-#: src/features/home/HomePage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "On this page"
@@ -13203,7 +13108,6 @@ msgstr "在线"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/Presence.tsx
 #: src/features/conversation/ConversationStatus.tsx
-#: src/features/home/HomeSide.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Online now"
@@ -13388,6 +13292,10 @@ msgstr "只有你的团队可以预览"
 msgid "Only your team sees it."
 msgstr "仅团队可见。"
 
+#: src/features/home/HomeWork.tsx
+msgid "open"
+msgstr "未结"
+
 #: src/components/common/text.ts
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -13397,7 +13305,6 @@ msgstr "仅团队可见。"
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
@@ -13485,16 +13392,13 @@ msgstr "打开对话"
 
 #: src/app/Palette.tsx
 #: src/features/contact/ContactDetail.tsx
+#: src/features/home/HomeWork.tsx
 msgid "Open conversations"
 msgstr "未关闭的对话"
 
 #: src/features/team/TeamPage.tsx
 msgid "Open conversations assigned"
 msgstr "已分配的未关闭对话"
-
-#: src/features/home/HomePage.tsx
-msgid "Open conversations now, new ones and ratings over the last {shown} days."
-msgstr "当前未关闭的对话，以及最近 {shown} 天的新对话和评分。"
 
 #: src/features/status/LinkConversationsDialog.tsx
 msgid "Open conversations of this product that may be about {title}."
@@ -13544,9 +13448,9 @@ msgstr "打开想法"
 msgid "Open in Analytics"
 msgstr "在分析中打开"
 
-#: src/features/home/HomePage.tsx
-msgid "Open inbox"
-msgstr "打开收件箱"
+#: src/features/home/HomeWork.tsx
+msgid "Open in Inbox"
+msgstr "在收件箱中打开"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Open incident"
@@ -13555,10 +13459,6 @@ msgstr "打开事件"
 #: src/features/status/StatusPages.tsx
 msgid "Open incidents"
 msgstr "进行中的事件"
-
-#: src/features/home/HomePage.tsx
-msgid "Open includes conversations waiting on the customer. Rating turns amber below 85% good once a product has 5 ratings."
-msgstr "未结会话包括等待客户回复的会话。产品有 5 个评价后，好评率低于 85% 时评分显示为橙色。"
 
 #: src/features/account/ConnectPage.tsx
 msgid "Open it from the sign-in button of a documentation page."
@@ -13741,6 +13641,10 @@ msgstr "未关闭,未分配"
 #: src/features/reports/TrendsReport.tsx
 msgid "Opened"
 msgstr "已开启"
+
+#: src/features/home/HomeWork.tsx
+msgid "Opened · closed"
+msgstr "新开 · 已关闭"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "OpenID Connect"
@@ -14094,10 +13998,6 @@ msgstr "暂停或继续发送"
 msgid "Pause or resume the monitor"
 msgstr "暂停或继续监控"
 
-#: src/features/home/HomeSide.tsx
-msgid "paused"
-msgstr "已暂停"
-
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/SlaBadge.tsx
 #: src/components/common/text.ts
@@ -14264,7 +14164,6 @@ msgstr "按收件箱"
 msgid "Per month (30 days)"
 msgstr "每月(30 天)"
 
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Period"
@@ -14494,10 +14393,6 @@ msgstr "自己逐个选择权限范围。"
 msgid "Pick mails"
 msgstr "选择邮件"
 
-#: src/features/home/HomePage.tsx
-msgid "Pick one at the top of the page."
-msgstr "在页面顶部选择一个。"
-
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
 msgstr "稍后在列表设置中选择。"
@@ -14682,10 +14577,6 @@ msgstr "为你的应用用户发布反馈"
 msgid "Post new conversations and mentions to a Slack channel, and answer from the thread. The <0>guide</0> shows how to set up the Slack app."
 msgstr "Post new conversations and mentions to a Slack channel, and answer from the thread. The <0>guide</0> shows how to set up the Slack app."
 
-#: src/features/home/HomeSide.tsx
-msgid "Post status update"
-msgstr "发布状态更新"
-
 #: src/features/status/StatusPages.tsx
 msgid "Post update"
 msgstr "发布更新"
@@ -14800,7 +14691,6 @@ msgstr "pro、team"
 #: src/components/common/WorkspaceSelector.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
@@ -14844,7 +14734,7 @@ msgstr "生产环境后端"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeSide.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
@@ -14948,7 +14838,6 @@ msgstr "公钥"
 msgid "Public pages that say whether your products work"
 msgstr "告诉用户你的产品是否正常的公开页面"
 
-#: src/features/home/HomeSide.tsx
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Publish"
@@ -15108,12 +14997,11 @@ msgstr "评为好"
 
 #: src/features/contact/ContactDetail.tsx
 #: src/features/conversation/rating.tsx
-#: src/features/home/HomePage.tsx
 msgid "Rated good"
 msgstr "评为好"
 
 #: src/features/conversation/Feedback.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/reports/ReportPages.tsx
 msgid "Rating"
 msgstr "评分"
@@ -15334,6 +15222,10 @@ msgstr "仅接收,无 SMTP 账号"
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "Receiving"
 msgstr "接收中"
+
+#: src/features/home/HomeSide.tsx
+msgid "Recent"
+msgstr "最近"
 
 #: src/features/docs/DocsPage.tsx
 msgid "Recent activity"
@@ -15777,7 +15669,6 @@ msgid "Replace the view’s filters, search and order with the ones on screen."
 msgstr "用屏幕上的筛选、搜索和排序替换该视图的设置。"
 
 #: src/features/broadcasts/Report.tsx
-#: src/features/home/HomeSide.tsx
 msgid "replied"
 msgstr "已回复"
 
@@ -15932,6 +15823,10 @@ msgstr "Reply command"
 msgid "Reply held back to protect the customer"
 msgstr "为保护客户,回复已被拦下"
 
+#: src/features/home/HomeWork.tsx
+msgid "Reply in {time}"
+msgstr "{time} 内回复"
+
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Reply posted"
 msgstr "回复已发布"
@@ -16040,7 +15935,7 @@ msgstr "上报的失败"
 #: src/app/nav.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/reports/ReportPages.tsx
 msgid "Reports"
 msgstr "报告"
@@ -16291,7 +16186,6 @@ msgstr "吊销了 API 密钥 {name}"
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "订阅后,人们会立即收到一封带退订链接的简短确认邮件。"
 
-#: src/features/home/HomePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Right now"
 msgstr "当前"
@@ -16301,7 +16195,6 @@ msgstr "当前"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/feedback/RoadmapCard.tsx
-#: src/features/home/HomeSide.tsx
 msgid "Roadmap"
 msgstr "路线图"
 
@@ -16659,6 +16552,10 @@ msgctxt "mail folder"
 msgid "Scheduled"
 msgstr "定时"
 
+#: src/features/home/HomeSide.tsx
+msgid "Scheduled broadcast"
+msgstr "定时群发"
+
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Scheduled by"
@@ -16877,10 +16774,6 @@ msgstr "安全"
 #: src/features/inbox/SidePanels.tsx
 msgid "See all mentions"
 msgstr "查看全部提及"
-
-#: src/features/home/HomePage.tsx
-msgid "See paused broadcasts"
-msgstr "查看已暂停的群发"
 
 #: src/features/contact/ContactCard.tsx
 msgid "Seen {seen}"
@@ -17269,10 +17162,6 @@ msgstr "发送时段"
 msgid "Sending hours of “{name}”"
 msgstr "“{name}”的发送时段"
 
-#: src/features/home/HomePage.tsx
-msgid "Sending is suspended."
-msgstr "发送已被暂停。"
-
 #: src/components/common/Linked.tsx
 msgid "Sending kept failing, so Yuva gave up."
 msgstr "发送一再失败，Yuva 已放弃。"
@@ -17363,7 +17252,6 @@ msgid "sends through {0}"
 msgstr "通过 {0} 发送"
 
 #: src/features/broadcasts/Report.tsx
-#: src/features/home/HomeSide.tsx
 msgid "sent"
 msgstr "已发送"
 
@@ -17538,6 +17426,7 @@ msgstr "设置状态"
 msgid "Set up"
 msgstr "设置"
 
+#: src/features/home/HomePage.tsx
 #: src/features/status/MonitorToken.tsx
 msgid "Set up {name}"
 msgstr "设置 {name}"
@@ -17685,10 +17574,6 @@ msgstr "显示 {nRevoked} 个已撤销"
 msgid "Show all authors"
 msgstr "显示所有作者"
 
-#: src/features/home/HomePage.tsx
-msgid "Show all products"
-msgstr "显示所有产品"
-
 #: src/components/common/ShortcutSheet.tsx
 msgid "Show archived designs"
 msgstr "显示已归档的设计"
@@ -17727,10 +17612,6 @@ msgstr "显示更多"
 #: src/features/status/ComponentsTab.tsx
 msgid "Show on the page"
 msgstr "在页面上显示"
-
-#: src/features/home/HomePage.tsx
-msgid "Show only {name}"
-msgstr "仅显示 {name}"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Show or hide quoted text"
@@ -17804,14 +17685,6 @@ msgstr "显示可用率"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Show who is online"
 msgstr "显示谁在线"
-
-#: src/features/home/HomePage.tsx
-msgid "Showing {product} only."
-msgstr "仅显示 {product}。"
-
-#: src/features/home/HomePage.tsx
-msgid "Showing every product."
-msgstr "正在显示所有产品。"
 
 #: src/features/broadcasts/Composer.tsx
 msgid "Shown after the subject in most inboxes. Empty uses the design’s own."
@@ -18098,6 +17971,7 @@ msgstr "签名密钥"
 msgid "Since"
 msgstr "自"
 
+#: src/features/home/HomeWork.tsx
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Since {since}"
@@ -18314,6 +18188,10 @@ msgstr "延后时长（分钟）"
 msgid "Snooze for {time}"
 msgstr "延后 {time}"
 
+#: src/features/home/HomeWork.tsx
+msgid "snoozed"
+msgstr "已暂停"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -18324,6 +18202,10 @@ msgstr "已推迟"
 msgctxt "mail folder"
 msgid "Snoozed"
 msgstr "已推迟"
+
+#: src/features/home/HomeSide.tsx
+msgid "Snoozed conversation"
+msgstr "已暂停的会话"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Snoozed until {until}"
@@ -18547,7 +18429,6 @@ msgstr "Start “{name}” on {when}?"
 msgid "Start a discussion"
 msgstr "发起讨论"
 
-#: src/features/home/HomePage.tsx
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Start a mailing list"
 msgstr "创建邮件列表"
@@ -18671,7 +18552,6 @@ msgstr "故障时的状态"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomeSide.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 #: src/features/migrations/MapStep.tsx
@@ -18684,10 +18564,6 @@ msgstr "故障时的状态"
 #: src/features/team/TeamPage.tsx
 msgid "Status"
 msgstr "状态"
-
-#: src/features/home/HomePage.tsx
-msgid "Status and coming up"
-msgstr "状态和即将发生"
 
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
@@ -18987,10 +18863,6 @@ msgstr "标签页"
 msgid "Tags"
 msgstr "标签"
 
-#: src/features/home/HomePage.tsx
-msgid "take"
-msgstr "接手"
-
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "Take {name} off the waiting list"
 msgstr "Take {name} off the waiting list"
@@ -19035,7 +18907,6 @@ msgstr "TCP 检查"
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/conversation/History.tsx
 #: src/features/docs/discussions/parts.tsx
-#: src/features/home/HomeSide.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
@@ -20146,10 +20017,6 @@ msgstr "服务器运维人员会在允许工作区发送之前查看这一点。
 msgid "The server's operator registers the Slack app and sets its credentials. The guide explains how."
 msgstr "The server's operator registers the Slack app and sets its credentials. The guide explains how."
 
-#: src/features/home/HomePage.tsx
-msgid "The server’s operator suspended sending for this workspace. Scheduled broadcasts are paused and new schedules are refused."
-msgstr "服务器运营方已暂停此工作区的发送。已安排的群发已暂停，新的安排会被拒绝。"
-
 #: src/features/settings/audit/sentence.ts
 msgid "The server's operator vouched for the address {address}"
 msgstr "服务器运营方为地址 {address} 担保"
@@ -20895,10 +20762,6 @@ msgstr "服务器运维人员批准工作区后,此服务器才会为其发送�
 msgid "This server sends broadcasts for a workspace once its operator approves it. Tell them about your mail to ask. Until then you can build lists, designs and drafts and send tests."
 msgstr "服务器运维人员批准工作区后,此服务器才会为其发送群发。请告知你的邮件情况以申请。在此之前你可以创建列表、设计和草稿并发送测试。"
 
-#: src/features/home/HomePage.tsx
-msgid "This server sends broadcasts only after its operator approves the workspace. Drafts are kept."
-msgstr "此服务器仅在运营方批准工作区后才发送群发。草稿会保留。"
-
 #: src/components/common/text.ts
 msgid "This server's limit for migrations is reached. Wait until a running one ends, or ask the server's operator."
 msgstr "已达到此服务器的迁移上限。请等待正在运行的结束,或联系服务器运维人员。"
@@ -21084,7 +20947,7 @@ msgstr "收件人：{who}"
 #: src/app/places.tsx
 #: src/components/common/FlatList.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -21353,7 +21216,7 @@ msgid "Unassign"
 msgstr "取消分配"
 
 #: src/features/conversation/ChatView.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -21746,10 +21609,6 @@ msgstr "上传中…"
 msgid "Uptime"
 msgstr "可用率"
 
-#: src/features/home/HomeSide.tsx
-msgid "uptime {uptime} over {shown} days"
-msgstr "{shown} 天内可用率 {uptime}"
-
 #: src/features/status/ComponentsTab.tsx
 msgid "Uptime is hidden on this page. Turn it on in the settings to see each day here."
 msgstr "此页面隐藏了可用率。在设置中开启后，可在这里查看每天的情况。"
@@ -22075,10 +21934,6 @@ msgstr "访客"
 msgid "Visitors"
 msgstr "访客"
 
-#: src/features/home/HomePage.tsx
-msgid "Visitors · 7 days"
-msgstr "访客 · 7 天"
-
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Visitors can chat without an identity token from your backend."
 msgstr "访客无需来自你后端的身份令牌即可聊天。"
@@ -22086,6 +21941,10 @@ msgstr "访客无需来自你后端的身份令牌即可聊天。"
 #: src/features/home/PropertyCard.tsx
 msgid "Visitors in the last seven days: {series}"
 msgstr "最近七天的访客:{series}"
+
+#: src/features/home/HomeWork.tsx
+msgid "Visitors now"
+msgstr "当前访客"
 
 #: src/features/setup/SetupHub.tsx
 msgid "Visitors of your website or app, without cookies"
@@ -22125,7 +21984,6 @@ msgstr "已于 {when} 由服务器运营方担保。"
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -22213,10 +22071,6 @@ msgstr "等待第一个结果"
 msgid "Waiting for the operator"
 msgstr "等待运维人员"
 
-#: src/features/home/HomePage.tsx
-msgid "Waiting for the operator."
-msgstr "正在等待运营方。"
-
 #: src/features/migrations/parts.tsx
 msgid "Waiting for the provider's limit; continues at {time}."
 msgstr "正在等待服务商的限制;将在 {time} 继续。"
@@ -22237,17 +22091,21 @@ msgstr "waiting for their time"
 msgid "Waiting for validation"
 msgstr "等待验证"
 
+#: src/features/home/HomeWork.tsx
+msgid "Waiting for you"
+msgstr "等你处理"
+
 #: src/features/inbox/ChatList.tsx
 msgid "Waiting longest"
 msgstr "等待最久"
 
-#: src/features/home/HomeSide.tsx
-msgid "Waiting on you"
-msgstr "等你处理"
+#: src/features/home/HomeWork.tsx
+msgid "waiting on the customer"
+msgstr "等待客户"
 
-#: src/features/home/HomeSide.tsx
-msgid "waits for approval"
-msgstr "等待批准"
+#: src/features/home/HomeWork.tsx
+msgid "waiting on you"
+msgstr "等待你"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Warn about the certificate"
@@ -22511,7 +22369,6 @@ msgstr "Yuva 的用途"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/home/HomeSide.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 msgid "What’s new"
 msgstr "新动态"
@@ -22973,7 +22830,6 @@ msgstr "是"
 
 #: src/components/common/FlatList.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/home/HomePage.tsx
 msgid "Yesterday"
 msgstr "昨天"
 
@@ -23014,14 +22870,6 @@ msgstr "你还不在任何工作区中"
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You are the only owner of a workspace. Make someone else an owner there, or delete that workspace, before you delete your account."
 msgstr "你是某个工作区的唯一所有者。在删除账号之前,请先让其他人成为所有者,或删除该工作区。"
-
-#: src/features/home/HomePage.tsx
-msgid "You asked on {asked} to send broadcasts. Drafts and schedules wait until the operator answers."
-msgstr "你已于 {asked} 申请发送群发。在运营方回复前，草稿和安排将保持等待。"
-
-#: src/features/home/HomePage.tsx
-msgid "You asked to send broadcasts. Drafts and schedules wait until the operator answers."
-msgstr "你已申请发送群发。在运营方回复前，草稿和安排将保持等待。"
 
 #: src/features/broadcasts/Composer.tsx
 msgid "You can change the delay, the pace, the sending hours and turn click counting off. Pause it to change the content."
@@ -23234,6 +23082,10 @@ msgstr "Your e-mail address is not in a domain this organisation has claimed in 
 msgid "Your first conversation is here"
 msgstr "你的第一个对话在这里"
 
+#: src/features/home/HomeWork.tsx
+msgid "Your first reply"
+msgstr "你的首次回复"
+
 #: src/features/migrations/text.ts
 msgid "Your folder"
 msgstr "你的文件夹"
@@ -23284,6 +23136,10 @@ msgstr "你的 Microsoft 365 组织只允许管理员同意应用。请把下面
 msgid "Your name"
 msgstr "你的姓名"
 
+#: src/features/home/HomeWork.tsx
+msgid "Your open conversations"
+msgstr "你的未结会话"
+
 #: src/features/auth/SignInForm.tsx
 msgid "Your organisation requires this sign-in for its workspace."
 msgstr "Your organisation requires this sign-in for its workspace."
@@ -23331,6 +23187,10 @@ msgstr "你的产品"
 #: src/features/status/SettingsTab.tsx
 msgid "Your product."
 msgstr "你的产品。"
+
+#: src/features/home/HomeWork.tsx
+msgid "Your rating"
+msgstr "你的评分"
 
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "Your replies by e-mail end with"

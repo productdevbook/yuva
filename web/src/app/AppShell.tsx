@@ -27,7 +27,7 @@ function Title() {
 }
 
 export function AppShell() {
-  const { workspaceId, membership, canManage, apart } = useSession()
+  const { workspaceId, membership, apart } = useSession()
   const navigate = useNavigate()
   const [shortcuts, setShortcuts] = useState(false)
   const [palette, setPalette] = useState(false)
@@ -61,7 +61,7 @@ export function AppShell() {
       if (!chats && !pathname.startsWith("/feedback")) navigate(inboxRoot(apart))
       focusListSearch()
     },
-    [SHORTCUTS.home]: () => canManage && go("home"),
+    [SHORTCUTS.home]: () => go("home"),
     [SHORTCUTS.contacts]: () => go("contacts"),
     [SHORTCUTS.conversations]: () => go("conversations"),
     [SHORTCUTS.mail]: () => go("mail"),
@@ -101,7 +101,7 @@ export function AppShell() {
         <Outlet />
       </div>
       <Palette open={palette} onOpenChange={setPalette} />
-      <ShortcutSheet open={shortcuts} onOpenChange={setShortcuts} home={canManage} />
+      <ShortcutSheet open={shortcuts} onOpenChange={setShortcuts} />
       <FocusQuestion key={workspaceId} />
       <RequiredFieldsHost />
       <Toaster />

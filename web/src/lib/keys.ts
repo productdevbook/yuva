@@ -188,6 +188,7 @@ export const keys = {
     ["ws", ws, "status", "reply", id, reply, part] as const,
   migrations: (ws: string) => ["ws", ws, "migrations"] as const,
   migrationPages: (ws: string) => ["ws", ws, "migrations", "pages"] as const,
+  migrationAttention: (ws: string) => ["ws", ws, "migrations", "attention"] as const,
   migration: (ws: string, id: string) => ["ws", ws, "migrations", "one", id] as const,
   migrationFolders: (ws: string, id: string) => ["ws", ws, "migrations", "folders", id] as const,
   migrationPresets: (ws: string) => ["ws", ws, "migrations", "presets"] as const,

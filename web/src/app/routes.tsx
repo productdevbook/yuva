@@ -93,11 +93,6 @@ function IndexPage() {
   return canManage ? <HomePage /> : <ChatsPage />
 }
 
-function HomeRoute() {
-  const { canManage } = useSession()
-  return canManage ? <HomePage /> : <Navigate to="/" replace />
-}
-
 export function AppRoutes() {
   return (
     <Routes>
@@ -162,7 +157,7 @@ export function AppRoutes() {
         />
         <Route element={<Layout />}>
           <Route index element={<IndexPage />} />
-          <Route path="home" element={<HomeRoute />} />
+          <Route path="home" element={<HomePage />} />
           <Route path="migrations/new" element={<NewMigrationPage />} />
           <Route path="migrations/:migrationId" element={<MigrationPage />} />
           <Route path="migrations/:migrationId/:step" element={<MigrationPage />} />

@@ -13,6 +13,7 @@ import { NEWSLETTER_PATHS, useNewsletterDraft, type NewsletterState } from "@/fe
 import { DEFAULT_COLOR, PreviewCaption, SubscribeMock } from "@/features/setup/previews"
 import type { SetupState } from "@/features/setup/setup"
 import { idempotencyKey } from "@/features/setup/draft"
+import { BackHome } from "@/features/setup/BackHome"
 import { SetupLayout } from "@/features/setup/SetupLayout"
 import { api, ApiError, unwrap, type MailingListCreate } from "@/lib/api"
 import { useSession } from "@/lib/session"
@@ -441,6 +442,7 @@ export function NewsletterDoneStep({ listId }: { listId: string }) {
             <Button size="lg" variant="outline" render={<Link to={listLink(l.id)} />} data-testid="newsletter-open">
               <Trans>Add a subscriber</Trans>
             </Button>
+            <BackHome variant="outline" />
             {back === "/setup" && (
               <Button size="lg" variant="outline" render={<Link to="/setup" />}>
                 <Trans>Back to setup</Trans>

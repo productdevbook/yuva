@@ -61,7 +61,7 @@ const routed = [
 ] as const
 
 export function sectionOf(pathname: string, view: Section, apart: boolean, manager: boolean): Section {
-  if (manager && (pathname === "/home" || (apart && pathname === "/"))) return "home"
+  if (pathname === "/home" || (manager && apart && pathname === "/")) return "home"
   // The server answers /status/{slug} with the public page, so the panel keeps a status page under /status-pages.
   if (pathname.startsWith("/status-pages/") || pathname.startsWith("/incidents") || pathname.startsWith("/monitors"))
     return "status"

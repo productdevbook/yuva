@@ -132,7 +132,7 @@ function useItems(open: boolean): Item[] {
         focusListSearch()
       },
     })
-    if (canManage) go(t`Home`, homePath, keyLabel(SHORTCUTS.home))
+    go(t`Home`, canManage ? homePath : "/home", keyLabel(SHORTCUTS.home))
     if (inboxList?.some((i) => i.purpose === "mail")) go(t`Mail`, "/mail", keyLabel(SHORTCUTS.mail))
     if (pathname.startsWith("/mail"))
       list.push({ group: t`Mail`, label: t`Write a new mail`, keys: [MAIL_KEYS.compose], run: openCompose })

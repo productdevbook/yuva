@@ -15,10 +15,31 @@ msgstr "ไฟล์ .eml ในไฟล์ zip"
 msgid "“{name}” holds a value that does not fit"
 msgstr "ค่าของ “{name}” ไม่ตรงกับฟิลด์"
 
+#: src/features/home/HomeSide.tsx
+msgid "“{title}” was closed"
+msgstr "“{title}” ถูกปิดแล้ว"
+
+#: src/features/home/HomeSide.tsx
+msgid "“{title}” was published"
+msgstr "“{title}” เผยแพร่แล้ว"
+
+#: src/features/home/HomeSide.tsx
+msgid "“{title}” was rated bad"
+msgstr "“{title}” ได้รับคะแนนไม่ดี"
+
+#: src/features/home/HomeSide.tsx
+msgid "“{title}” was rated good"
+msgstr "“{title}” ได้รับคะแนนดี"
+
+#: src/features/home/HomeSide.tsx
+msgid "“{title}” was sent"
+msgstr "“{title}” ส่งแล้ว"
+
 #: src/features/setup/ChannelStep.tsx
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "“หน้านี้มีประโยชน์ไหม” ความคิดเห็นและการพูดคุยในเอกสารของคุณ"
 
+#: src/features/home/HomeSide.tsx
 #: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailSide.tsx
@@ -86,6 +107,11 @@ msgstr "{0, plural, other {# คนในกลุ่มนี้ได้รั
 msgid "{0, plural, one {# open} other {# open}}"
 msgstr "{0, plural, other {เปิดอยู่ #}}"
 
+#. placeholder {0}: p.unanswered_threads
+#: src/features/home/HomeWork.tsx
+msgid "{0, plural, one {# question needs a reply} other {# questions need a reply}}"
+msgstr "{0, plural, other {# คำถามรอการตอบ}}"
+
 #. placeholder {0}: d.reply_count
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "{0, plural, one {# reply} other {# replies}}"
@@ -132,9 +158,7 @@ msgstr "{0} ปิดแล้ว"
 msgid "{0} events"
 msgstr "{0} เหตุการณ์"
 
-#. placeholder {0}: pct.format(good ?? 0)
 #. placeholder {0}: pct.format(p.share)
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 msgid "{0} good"
 msgstr "{0} ดี"
@@ -311,10 +335,6 @@ msgstr "{available} จาก {total}"
 msgid "{available} of {total} available now"
 msgstr "ว่างอยู่ตอนนี้ {available} จาก {total}"
 
-#: src/features/home/HomePage.tsx
-msgid "{bad, plural, one {# bad rating} other {# bad ratings}}"
-msgstr "{bad, plural, other {คะแนนไม่ดี # รายการ}}"
-
 #: src/features/contact/ContactDetails.tsx
 msgid "{bad} bad"
 msgstr "{bad} ไม่ดี"
@@ -364,10 +384,6 @@ msgstr "{count, plural, other {# เงื่อนไข}}"
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
 msgstr "{count, plural, other {# โฟลเดอร์}}"
-
-#: src/features/home/HomeSide.tsx
-msgid "{count, plural, one {# issue} other {# issues}}"
-msgstr "{count, plural, other {# ปัญหา}}"
 
 #: src/features/broadcasts/ListsHome.tsx
 msgid "{count, plural, one {# list} other {# lists}}"
@@ -437,14 +453,9 @@ msgstr "{count} ข้อความ · {size}"
 msgid "{count} settings"
 msgstr "{count} การตั้งค่า"
 
-#: src/features/home/HomePage.tsx
 #: src/features/migrations/ReviewStep.tsx
 msgid "{created, plural, one {# new} other {# new}}"
 msgstr "{created, plural, other {ใหม่ #}}"
-
-#: src/features/home/HomePage.tsx
-msgid "{created} new conversations and {replied} first replies in the period"
-msgstr "บทสนทนาใหม่ {created} รายการ และตอบกลับครั้งแรก {replied} ครั้งในช่วงนี้"
 
 #: src/features/broadcasts/Growth.tsx
 #: src/features/docs/Toolbar.tsx
@@ -452,10 +463,6 @@ msgstr "บทสนทนาใหม่ {created} รายการ และ
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, other {# วัน}}"
-
-#: src/features/home/HomePage.tsx
-msgid "{date}: {newCount} new, {replyCount} first replies"
-msgstr "{date}: ใหม่ {newCount} ตอบกลับครั้งแรก {replyCount}"
 
 #: src/features/status/StatusPages.tsx
 msgid "{days, plural, one {# day} other {# days}}"
@@ -476,6 +483,10 @@ msgstr "{days, plural, other {รอมา # วัน}}"
 #: src/components/common/BulkReport.tsx
 msgid "{deleted} deleted"
 msgstr "ลบ {deleted} รายการแล้ว"
+
+#: src/features/home/HomeSide.tsx
+msgid "{done} of {total} copied"
+msgstr "คัดลอกแล้ว {done} จาก {total}"
 
 #: src/features/broadcasts/Import.tsx
 msgid "{done} of {total} rows"
@@ -593,13 +604,17 @@ msgstr "{imported} ข้อความ"
 msgid "{inboxName} has no e-mail channel for {address} yet. History is stored in that channel, so replies after the switch go out from the same address."
 msgstr "{inboxName} ยังไม่มีช่องทางอีเมลสำหรับ {address} ประวัติจะถูกเก็บในช่องทางนั้น ดังนั้นการตอบกลับหลังการเปลี่ยนจะส่งจากที่อยู่เดิม"
 
+#: src/features/home/HomeSide.tsx
+msgid "{incidents, plural, one {# incident} other {# incidents}}"
+msgstr "{incidents, plural, other {เหตุขัดข้อง # รายการ}}"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "{incoming} received, {outgoing} sent"
 msgstr "รับ {incoming} ส่ง {outgoing}"
 
-#: src/features/home/HomePage.tsx
-msgid "{left, plural, one {# setup step left.} other {# setup steps left.}}"
-msgstr "{left, plural, other {เหลืออีก # ขั้นตอนการตั้งค่า}}"
+#: src/features/home/HomeWork.tsx
+msgid "{lateText} late"
+msgstr "ล่าช้า {lateText}"
 
 #: src/features/conversation/SlaPopover.tsx
 msgid "{left} left when it resumes"
@@ -649,6 +664,10 @@ msgstr "{monitorName} ตอบสนองตามปกติอีกคร�
 msgid "{mxDomain} has no MX record, so replies to broadcasts cannot arrive. Publish the MX records of your mail service."
 msgstr "{mxDomain} ไม่มีระเบียน MX การตอบกลับบรอดคาสต์จึงส่งมาไม่ถึง เผยแพร่ระเบียน MX ของบริการอีเมลของคุณ"
 
+#: src/features/home/HomeWork.tsx
+msgid "{n, plural, =0 {no first replies} one {# first reply} other {# first replies}}"
+msgstr "{n, plural, =0 {ยังไม่มีการตอบกลับแรก} other {การตอบกลับแรก # ครั้ง}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# app} other {# apps}}"
 msgstr "{n, plural, other {# แอป}}"
@@ -656,10 +675,6 @@ msgstr "{n, plural, other {# แอป}}"
 #: src/features/broadcasts/Trigger.tsx
 msgid "{n, plural, one {# day after someone first signs in to {inbox}} other {# days after someone first signs in to {inbox}}}"
 msgstr "{n, plural, one {# day after someone first signs in to {inbox}} other {# days after someone first signs in to {inbox}}}"
-
-#: src/features/home/HomePage.tsx
-msgid "{n, plural, one {# day ago} other {# days ago}}"
-msgstr "{n, plural, other {# วันก่อน}}"
 
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# documentation site} other {# documentation sites}}"
@@ -686,12 +701,17 @@ msgid "{n, plural, one {# other conversation} other {# other conversations}}"
 msgstr "{n, plural, other {อีก # การสนทนา}}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/home/HomeSide.tsx
 msgid "{n, plural, one {# person} other {# people}}"
 msgstr "{n, plural, other {# คน}}"
 
 #: src/features/settings/audit/sentence.ts
 msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
 msgstr "{n, plural, other {ผู้รับ # คนต่อวัน}}"
+
+#: src/features/home/HomePage.tsx
+msgid "{n, plural, one {# step} other {# steps}}"
+msgstr "{n, plural, other {# ขั้นตอน}}"
 
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# team mailbox} other {# team mailboxes}}"
@@ -772,7 +792,6 @@ msgstr "เอาดาวออกจาก {n} รายการแล้ว"
 msgid "{name} · {statusText}"
 msgstr "{name} · {statusText}"
 
-#: src/features/home/HomeSide.tsx
 #: src/features/team/TeamPage.tsx
 msgid "{name} (you)"
 msgstr "{name} (คุณ)"
@@ -784,6 +803,10 @@ msgstr "บล็อก {name} แล้ว อีเมลจากผู้ต
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "{name} can reply"
 msgstr "{name} ตอบกลับได้"
+
+#: src/features/home/HomeSide.tsx
+msgid "{name} comes back"
+msgstr "{name} จะกลับมา"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "{name} connects from its vendor's cloud, so it needs this server at a public https address. The panel is open at {url}, which it probably cannot reach."
@@ -800,6 +823,10 @@ msgstr "ลบ {name} แล้ว"
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "{name} docs"
 msgstr "เอกสาร {name}"
+
+#: src/features/home/HomeSide.tsx
+msgid "{name} goes out"
+msgstr "{name} จะถูกส่งออก"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{name} is looking"
@@ -859,19 +886,23 @@ msgstr "เว็บไซต์ {name}"
 msgid "{name}, visitors in the last seven days: {series}"
 msgstr "{name} ผู้เข้าชมในเจ็ดวันที่ผ่านมา: {series}"
 
-#: src/features/home/HomeSide.tsx
-msgid "{names} operational"
-msgstr "{names} ทำงานปกติ"
-
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "{names} will be notified"
 msgstr "จะแจ้งเตือน {names}"
 
+#: src/features/home/HomePage.tsx
+msgid "{online} of {total} online"
+msgstr "ออนไลน์ {online} จาก {total}"
+
 #: src/components/common/Linked.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/home/HomeSide.tsx
 msgid "{open, plural, one {# open} other {# open}}"
 msgstr "{open, plural, other {เปิดอยู่ #}}"
+
+#: src/features/home/HomeSide.tsx
+#: src/features/home/HomeWork.tsx
+msgid "{open} open"
+msgstr "เปิดอยู่ {open}"
 
 #: src/features/broadcasts/Import.tsx
 msgid "{out, plural, one {# row is left out} other {# rows are left out}}"
@@ -901,10 +932,6 @@ msgstr "{people, plural, other {การสมัครรับ # รายก
 #: src/features/broadcasts/Overview.tsx
 msgid "{people} people"
 msgstr "{people} คน"
-
-#: src/features/home/HomeSide.tsx
-msgid "{people} recipients"
-msgstr "ผู้รับ {people} คน"
 
 #: src/features/migrations/ImportBanner.tsx
 msgid "{percent}%"
@@ -998,10 +1025,6 @@ msgstr "{provider} ต้องการให้คุณลงชื่อเ�
 msgid "{provider}'s tags become Yuva labels on their conversations."
 msgstr "แท็กของ {provider} จะกลายเป็นป้ายกำกับ Yuva บนการสนทนาของแท็กนั้น"
 
-#: src/features/home/HomePage.tsx
-msgid "{ptsText} pts"
-msgstr "{ptsText} จุด"
-
 #: src/features/migrations/CopyStep.tsx
 msgid "{rate} a minute"
 msgstr "{rate} ต่อนาที"
@@ -1019,7 +1042,7 @@ msgstr "{rate} อีเมลต่อวินาที"
 msgid "{rate} mails a second · one every {every}"
 msgstr "{rate} อีเมลต่อวินาที · หนึ่งฉบับทุก {every}"
 
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeWork.tsx
 msgid "{rated, plural, =0 {no ratings} one {# rating} other {# ratings}}"
 msgstr "{rated, plural, =0 {ยังไม่มีคะแนน} other {# คะแนน}}"
 
@@ -1093,6 +1116,14 @@ msgstr "{shown, plural, other {# การสนทนา}}"
 msgid "{size} · pick another file"
 msgstr "{size} · เลือกไฟล์อื่น"
 
+#: src/features/home/HomeWork.tsx
+msgid "{source} import needs attention"
+msgstr "การนำเข้าจาก {source} ต้องการความสนใจ"
+
+#: src/features/home/HomeSide.tsx
+msgid "{source} import should finish"
+msgstr "การนำเข้าจาก {source} น่าจะเสร็จ"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "{spam} marked as spam"
 msgstr "{spam} ถูกทำเครื่องหมายเป็นสแปม"
@@ -1116,6 +1147,10 @@ msgstr "{text} เทียบกับช่วงก่อนหน้า"
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "{threads} กระทู้ที่เปิดอยู่"
+
+#: src/features/home/HomeWork.tsx
+msgid "{total, plural, one {# conversation nobody has taken} other {# conversations nobody has taken}}"
+msgstr "{total, plural, other {# การสนทนาที่ยังไม่มีใครรับ}}"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "{total, plural, one {Last 30 days · # broadcast} other {Last 30 days · # broadcasts}}"
@@ -1184,14 +1219,6 @@ msgstr "{votes} โหวต"
 msgid "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
 msgstr "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
 
-#: src/features/home/HomePage.tsx
-msgid "{waiting, plural, one {# conversation is waiting.} other {# conversations are waiting.}}"
-msgstr "{waiting, plural, other {มี # บทสนทนารออยู่}}"
-
-#: src/features/home/HomePage.tsx
-msgid "{waiting, plural, one {Open in Inbox} other {All {total} in Inbox}}"
-msgstr "{waiting, plural, one {เปิดในกล่องข้อความ} other {ทั้งหมด {total} รายการในกล่องข้อความ}}"
-
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "{waiting} waiting"
 msgstr "{waiting} waiting"
@@ -1203,6 +1230,10 @@ msgstr "{watching, plural, other {มอนิเตอร์ # ตัวกำ�
 #: src/features/reports/ReportPages.tsx
 msgid "{who} · answered by {name}"
 msgstr "{who} · ตอบโดย {name}"
+
+#: src/features/home/HomeSide.tsx
+msgid "{who} closed “{title}”"
+msgstr "{who} ปิด “{title}”"
 
 #: src/app/Header.tsx
 msgid "{who} in {where}"
@@ -1216,9 +1247,21 @@ msgstr "{who} กล่าวถึงคุณใน {contact}, {subject} เ�
 msgid "{who} mentioned you in {contact}. Open the conversation"
 msgstr "{who} กล่าวถึงคุณใน {contact} เปิดการสนทนา"
 
+#: src/features/home/HomeSide.tsx
+msgid "{who} posted an update on “{title}”"
+msgstr "{who} โพสต์อัปเดตใน “{title}”"
+
+#: src/features/home/HomeSide.tsx
+msgid "{who} published “{title}”"
+msgstr "{who} เผยแพร่ “{title}”"
+
 #: src/features/account/AccountPage.tsx
 msgid "{who} replied in <0>{title}</0>"
 msgstr "{who} ตอบกลับใน <0>{title}</0>"
+
+#: src/features/home/HomeSide.tsx
+msgid "{who} sent “{title}”"
+msgstr "{who} ส่ง “{title}”"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
@@ -1232,14 +1275,6 @@ msgstr "+ เพิ่มที่อยู่"
 #: src/features/broadcasts/ListsHome.tsx
 msgid "+{added} this month"
 msgstr "+{added} เดือนนี้"
-
-#: src/features/home/HomeSide.tsx
-msgid "+{off} offline"
-msgstr "+{off} ออฟไลน์"
-
-#: src/features/home/HomeSide.tsx
-msgid "+{off} offline · {offOpen} open"
-msgstr "+{off} ออฟไลน์ · เปิดอยู่ {offOpen}"
 
 #: src/features/settings/channels/email/Ses.tsx
 msgid "<0>{domain}</0> is not a verified identity in the server’s Amazon SES account. Mail goes out without tenant isolation and broadcasts are blocked. Ask the server’s operator to verify the domain."
@@ -2159,10 +2194,6 @@ msgstr "เพิ่มบันทึกภายใน"
 msgid "Add an OAuth client named “Yuva”, as a confidential client, and enter the redirect URL below as its redirect URL."
 msgstr "เพิ่มไคลเอนต์ OAuth ชื่อ “Yuva” แบบ confidential และใส่ URL เปลี่ยนเส้นทางด้านล่างเป็น URL เปลี่ยนเส้นทางของไคลเอนต์"
 
-#: src/features/home/HomePage.tsx
-msgid "Add analytics"
-msgstr "เพิ่มการวิเคราะห์"
-
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Add another"
@@ -2225,10 +2256,6 @@ msgstr "เพิ่มป้ายกำกับ {labelName}"
 #: src/features/settings/automation/text.ts
 msgid "Add labels"
 msgstr "เพิ่มป้ายกำกับ"
-
-#: src/features/home/HomePage.tsx
-msgid "Add live chat to your site"
-msgstr "เพิ่มแชตสดในเว็บไซต์ของคุณ"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Add monitor"
@@ -2531,10 +2558,6 @@ msgstr "มอนิเตอร์ทั้งหมด"
 msgid "All of its conversations, messages and attachments are deleted with it. This cannot be undone."
 msgstr "การสนทนา ข้อความ และไฟล์แนบทั้งหมดจะถูกลบไปด้วย ย้อนกลับไม่ได้"
 
-#: src/features/home/HomeSide.tsx
-msgid "All operational"
-msgstr "ทุกอย่างทำงานปกติ"
-
 #: src/features/migrations/UploadStep.tsx
 msgid "All parts arrived. Reading the file…"
 msgstr "ได้รับครบทุกส่วนแล้ว กำลังอ่านไฟล์…"
@@ -2573,6 +2596,10 @@ msgstr "ทุกขอบเขต"
 #: src/features/docs/Toolbar.tsx
 msgid "All sites"
 msgstr "ทุกไซต์"
+
+#: src/features/home/HomePage.tsx
+msgid "All steps"
+msgstr "ทุกขั้นตอน"
 
 #: src/features/status/StatusPages.tsx
 msgid "All systems operational"
@@ -2914,6 +2941,10 @@ msgstr "เป้าหมาย SLA ถูกละเมิด"
 msgid "an unknown person"
 msgstr "บุคคลที่ไม่ทราบชื่อ"
 
+#: src/features/home/HomeSide.tsx
+msgid "An update was posted on “{title}”"
+msgstr "มีการโพสต์อัปเดตใน “{title}”"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
 msgstr "การอัปโหลดถูกตัดกลางคัน: {count} ส่วน {size} อยู่บนเซิร์ฟเวอร์แล้ว"
@@ -2922,7 +2953,6 @@ msgstr "การอัปโหลดถูกตัดกลางคัน: {
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/settings/webhooks/events.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Analytics"
@@ -3353,10 +3383,6 @@ msgstr "ขอให้ผู้ดูแลเซิร์ฟเวอร์อ
 msgid "Ask the admin of your mail server to forward {address} to the address below on the server, keeping delivery to the mailbox."
 msgstr "ขอให้ผู้ดูแลเซิร์ฟเวอร์อีเมลของคุณส่งต่อ {address} ไปยังที่อยู่ด้านล่างบนเซิร์ฟเวอร์ โดยยังส่งเข้ากล่องจดหมายเหมือนเดิม"
 
-#: src/features/home/HomePage.tsx
-msgid "Ask the operator"
-msgstr "ขอผู้ดูแลเซิร์ฟเวอร์"
-
 #: src/features/settings/ProductsPage.tsx
 msgid "asked after closing"
 msgstr "ถามหลังปิด"
@@ -3599,6 +3625,7 @@ msgid "Automation"
 msgstr "ระบบอัตโนมัติ"
 
 #: src/app/UserMenu.tsx
+#: src/features/home/HomePage.tsx
 msgid "Available"
 msgstr "ว่าง"
 
@@ -3613,6 +3640,7 @@ msgstr "ใช้ได้ถึง {until}"
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Away"
 msgstr "ไม่อยู่"
@@ -3625,6 +3653,10 @@ msgstr "ไม่อยู่"
 #: src/features/migrations/Wizard.tsx
 msgid "Back"
 msgstr "กลับ"
+
+#: src/features/home/HomeWork.tsx
+msgid "Back {at}"
+msgstr "กลับมา {at}"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Back to API keys"
@@ -3639,6 +3671,10 @@ msgstr "กลับไปที่คอลัมน์"
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "Back to draft"
 msgstr "กลับไปที่ฉบับร่าง"
+
+#: src/features/setup/BackHome.tsx
+msgid "Back to Home"
+msgstr "กลับไปหน้าหลัก"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Back to setup"
@@ -3942,10 +3978,6 @@ msgstr "การส่งบรอดคาสต์"
 msgid "Broadcasts"
 msgstr "บรอดคาสต์"
 
-#: src/features/home/HomePage.tsx
-msgid "Broadcasts are suspended."
-msgstr "การส่งแบบกลุ่มถูกระงับ"
-
 #: src/components/common/text.ts
 msgid "Broadcasts are turned off on this server."
 msgstr "บรอดคาสต์ถูกปิดบนเซิร์ฟเวอร์นี้"
@@ -3954,17 +3986,9 @@ msgstr "บรอดคาสต์ถูกปิดบนเซิร์ฟเ
 msgid "Broadcasts are turned off on this server. Lists and their forms still work, so you can collect subscribers."
 msgstr "บรอดคาสต์ถูกปิดบนเซิร์ฟเวอร์นี้ รายชื่อและแบบฟอร์มของรายชื่อยังใช้งานได้ คุณจึงยังรวบรวมผู้สมัครรับได้"
 
-#: src/features/home/HomePage.tsx
-msgid "Broadcasts can’t go out yet."
-msgstr "การส่งแบบกลุ่มยังส่งออกไม่ได้"
-
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Broadcasts from this channel go out through its SMTP account for replies, or through a separate account. A separate account, ideally on its own subdomain, keeps spam complaints about newsletters away from your support mail."
 msgstr "บรอดคาสต์จากช่องทางนี้ส่งผ่านบัญชี SMTP สำหรับการตอบกลับ หรือผ่านบัญชีแยกต่างหาก บัญชีแยกต่างหาก ควรอยู่บนโดเมนย่อยของตัวเอง จะกันคำร้องเรียนสแปมเกี่ยวกับจดหมายข่าวออกจากอีเมลฝ่ายสนับสนุนของคุณ"
-
-#: src/features/home/HomePage.tsx
-msgid "Broadcasts wait for the operator’s approval."
-msgstr "การส่งแบบกลุ่มกำลังรอการอนุมัติจากผู้ดูแลเซิร์ฟเวอร์"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
@@ -4615,10 +4639,6 @@ msgstr "การนับการคลิก"
 msgid "Click tracking"
 msgstr "การติดตามการคลิก"
 
-#: src/features/home/HomeSide.tsx
-msgid "clicked"
-msgstr "คลิกแล้ว"
-
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 msgid "Clicked"
@@ -4628,9 +4648,9 @@ msgstr "คลิกแล้ว"
 msgid "clicked a link, roughly"
 msgstr "คลิกลิงก์ โดยประมาณ"
 
-#: src/features/home/HomeSide.tsx
-msgid "clicks not tracked"
-msgstr "ไม่ติดตามการคลิก"
+#: src/features/home/HomeWork.tsx
+msgid "clicks · replies · {name}"
+msgstr "คลิก · ตอบกลับ · {name}"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Clicks not tracked"
@@ -4770,10 +4790,6 @@ msgstr "ส่งรหัสแล้ว"
 msgid "Collapse"
 msgstr "ยุบ"
 
-#: src/features/home/HomePage.tsx
-msgid "Collect ratings on your docs pages"
-msgstr "เก็บคะแนนในหน้าเอกสารของคุณ"
-
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Collections"
@@ -4805,7 +4821,6 @@ msgstr "คอลัมน์"
 msgid "Coming later"
 msgstr "เร็ว ๆ นี้"
 
-#: src/features/home/HomeSide.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Coming up"
 msgstr "เร็วๆ นี้"
@@ -4939,7 +4954,6 @@ msgid "confirmed their address in the last {days} days"
 msgstr "ยืนยันที่อยู่ของตนใน {days} วันที่ผ่านมา"
 
 #: src/features/account/ConnectPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/migrations/text.ts
 #: src/features/migrations/Wizard.tsx
@@ -4966,10 +4980,6 @@ msgstr "เชื่อมต่อ {provider}"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Connect a provider and verify a domain first."
 msgstr "Connect a provider and verify a domain first."
-
-#: src/features/home/HomePage.tsx
-msgid "Connect a support address"
-msgstr "เชื่อมต่อที่อยู่ฝ่ายสนับสนุน"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Connect a tracker"
@@ -5005,10 +5015,6 @@ msgstr "Connect Slack"
 #: src/features/account/ConnectPage.tsx
 msgid "Connect to {host}"
 msgstr "เชื่อมต่อกับ {host}"
-
-#: src/features/home/HomePage.tsx
-msgid "Connect your iOS or Android app"
-msgstr "เชื่อมต่อแอป iOS หรือ Android ของคุณ"
 
 #: src/features/settings/SettingsFrame.tsx
 msgid "Connect your servers and bots to Yuva"
@@ -5093,10 +5099,6 @@ msgstr "เชื่อมต่อกับ {provider} แล้ว"
 #: src/features/migrations/ConnectStep.tsx
 msgid "Connected to {storedHost}. Enter the password again only to change it."
 msgstr "เชื่อมต่อกับ {storedHost} แล้ว ใส่รหัสผ่านอีกครั้งเฉพาะเมื่อต้องการเปลี่ยน"
-
-#: src/features/home/HomePage.tsx
-msgid "Connecting"
-msgstr "กำลังเชื่อมต่อ"
 
 #: src/features/setup/email/EmailTestStep.tsx
 #: src/features/setup/WaitStep.tsx
@@ -5311,10 +5313,6 @@ msgstr "การสนทนาที่ไม่มีใครเขียน
 msgid "Conversations nobody wrote in after the import are deleted. Nothing changed in {provider}."
 msgstr "การสนทนาที่ไม่มีใครเขียนต่อหลังการนำเข้าจะถูกลบ ไม่มีอะไรเปลี่ยนแปลงใน {provider}"
 
-#: src/features/home/HomePage.tsx
-msgid "Conversations show up here as soon as the first customer writes."
-msgstr "บทสนทนาจะแสดงที่นี่ทันทีที่ลูกค้ารายแรกเขียนมา"
-
 #: src/features/reports/ReportPages.tsx
 msgid "conversations started"
 msgstr "การสนทนาที่เริ่มแล้ว"
@@ -5330,10 +5328,6 @@ msgstr "การสนทนาที่เริ่มจากสิ่งน
 #: src/features/settings/channels/sections.tsx
 msgid "Conversations that started on this channel keep their messages."
 msgstr "การสนทนาที่เริ่มจากช่องทางนี้ยังคงมีข้อความอยู่"
-
-#: src/features/home/HomePage.tsx
-msgid "Conversations waiting for an answer, oldest first."
-msgstr "บทสนทนาที่รอคำตอบ เก่าที่สุดก่อน"
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Conversations your team wrote in stay. Nothing changes in {address}."
@@ -5465,17 +5459,9 @@ msgstr "เชื่อมต่อเซิร์ฟเวอร์ไม่ไ
 msgid "Couldn’t load Home. Your inbox still works."
 msgstr "โหลดหน้าแรกไม่ได้ กล่องข้อความยังใช้งานได้"
 
-#: src/features/home/HomePage.tsx
-msgid "Couldn’t refresh since {time}. The figures below may be out of date; your inbox still works."
-msgstr "รีเฟรชไม่ได้ตั้งแต่ {time} ตัวเลขด้านล่างอาจไม่เป็นปัจจุบัน กล่องข้อความยังใช้งานได้"
-
 #: src/features/broadcasts/Composer.tsx
 msgid "Count clicks"
 msgstr "นับการคลิก"
-
-#: src/features/home/HomePage.tsx
-msgid "Count visitors on your site"
-msgstr "นับผู้เข้าชมเว็บไซต์ของคุณ"
 
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "counted so far"
@@ -5494,7 +5480,6 @@ msgstr "ประเทศ"
 msgid "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
 msgstr "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
 
-#: src/features/home/HomePage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/DeveloperTabs.tsx
 msgid "Create"
@@ -6315,7 +6300,6 @@ msgstr "การแจ้งเตือนบนเดสก์ท็อปถ
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/mail/MailPage.tsx
@@ -6411,6 +6395,7 @@ msgstr "ยกเลิกการเชื่อมต่อตัวติด
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/home/HomeWork.tsx
 msgid "Discussion"
 msgstr "กระทู้"
 
@@ -6705,10 +6690,6 @@ msgstr "ฉบับร่างและการอนุมัติ"
 #: src/components/common/text.ts
 msgid "Drafts and timeline events cannot be removed."
 msgstr "ไม่สามารถลบฉบับร่างและเหตุการณ์ในไทม์ไลน์ได้"
-
-#: src/features/home/HomeSide.tsx
-msgid "Drafts to review"
-msgstr "ร่างที่ต้องตรวจ"
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Drafts waiting"
@@ -7729,12 +7710,8 @@ msgid "Finish now"
 msgstr "เสร็จสิ้นตอนนี้"
 
 #: src/features/home/HomePage.tsx
-msgid "Finish setting up"
-msgstr "ตั้งค่าให้เสร็จ"
-
-#: src/features/home/HomePage.tsx
-msgid "Finish setup"
-msgstr "ตั้งค่าให้เสร็จ"
+msgid "Finish setting up {name}"
+msgstr "ตั้งค่า {name} ให้เสร็จ"
 
 #: src/features/migrations/parts.tsx
 msgid "Finish the migration?"
@@ -7765,19 +7742,12 @@ msgstr "ข้อความแรก"
 msgid "First name"
 msgstr "ชื่อ"
 
-#: src/features/home/HomePage.tsx
-msgid "First replies"
-msgstr "การตอบกลับครั้งแรก"
-
-#: src/features/home/HomePage.tsx
-msgid "First replies today took {took} at the median."
-msgstr "วันนี้การตอบกลับครั้งแรกใช้เวลามัธยฐาน {took}"
-
 #: src/features/contact/ContactDetail.tsx
 msgid "first reply"
 msgstr "การตอบกลับครั้งแรก"
 
 #: src/features/conversation/SlaPopover.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
@@ -8192,7 +8162,6 @@ msgstr "รับไฟล์"
 msgid "Get the SDK lines"
 msgstr "รับบรรทัด SDK"
 
-#: src/features/home/HomePage.tsx
 #: src/features/setup/AddChannelStep.tsx
 msgid "Get the snippet"
 msgstr "รับโค้ดตัวอย่าง"
@@ -8206,6 +8175,7 @@ msgid "Get the subscribe form"
 msgstr "รับแบบฟอร์มสมัครรับ"
 
 #: src/app/UserMenu.tsx
+#: src/features/home/HomePage.tsx
 msgid "Getting started"
 msgstr "เริ่มต้นใช้งาน"
 
@@ -8220,10 +8190,6 @@ msgstr "ให้ช่องทางมีที่อยู่ส่งต่
 #: src/features/status/SettingsTab.tsx
 msgid "Give the page a name."
 msgstr "ตั้งชื่อให้หน้านี้"
-
-#: src/features/home/HomePage.tsx
-msgid "Give the team a shared mailbox"
-msgstr "ให้ทีมมีกล่องจดหมายร่วมกัน"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Gives a conversation without an assignee to a teammate when it arrives or is reopened by the contact. Automation rules run first."
@@ -8520,6 +8486,7 @@ msgstr "ซ่อนโดยทีม"
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/home/HomePage.tsx
 msgid "Hide"
 msgstr "ซ่อน"
 
@@ -8822,6 +8789,7 @@ msgstr "ผลกระทบ"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/broadcasts/ListPage.tsx
+#: src/features/home/HomeWork.tsx
 msgid "Import"
 msgstr "นำเข้า"
 
@@ -8875,10 +8843,6 @@ msgstr "นำเข้าสู่ Yuva เมื่อ {date}"
 #: src/features/broadcasts/Import.tsx
 msgid "Importing"
 msgstr "กำลังนำเข้า"
-
-#: src/features/home/HomeSide.tsx
-msgid "Importing {source} history"
-msgstr "กำลังนำเข้าประวัติจาก {source}"
 
 #: src/features/migrations/ImportBanner.tsx
 msgid "Importing history from {address} · {percent}% · new mail keeps arriving as usual"
@@ -9090,7 +9054,7 @@ msgstr "กล่องข้อความ"
 msgid "Inboxes cut off subjects longer than 80 characters."
 msgstr "กล่องข้อความตัดหัวเรื่องที่ยาวกว่า 80 ตัวอักษร"
 
-#: src/features/home/HomeSide.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Incident"
@@ -9498,10 +9462,6 @@ msgstr "เปิดหน้านี้ค้างไว้ หากกา�
 msgid "Keep writing"
 msgstr "เขียนต่อ"
 
-#: src/features/home/HomePage.tsx
-msgid "Keeping up"
-msgstr "ตามทันไหม"
-
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Keeps everything"
 msgstr "เก็บทุกอย่างไว้"
@@ -9664,24 +9624,15 @@ msgstr "ใหญ่กว่าขีดจำกัดของเซิร์
 msgid "Largest file (MB)"
 msgstr "ไฟล์ที่ใหญ่ที่สุด (MB)"
 
-#: src/features/home/HomePage.tsx
-msgid "last {shown} days"
-msgstr "{shown} วันล่าสุด"
-
 #: src/features/reports/TrendsReport.tsx
 msgid "Last 12 months"
 msgstr "12 เดือนที่ผ่านมา"
-
-#: src/features/home/HomePage.tsx
-msgid "Last 14 days"
-msgstr "14 วันที่ผ่านมา"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "Last 3 months"
 msgstr "3 เดือนที่ผ่านมา"
 
 #: src/features/broadcasts/Overview.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Last 30 days"
@@ -9691,7 +9642,6 @@ msgstr "30 วันที่ผ่านมา"
 msgid "Last 6 months"
 msgstr "6 เดือนที่ผ่านมา"
 
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Last 7 days"
@@ -9701,9 +9651,9 @@ msgstr "7 วันที่ผ่านมา"
 msgid "Last attempt"
 msgstr "ความพยายามล่าสุด"
 
-#: src/features/home/HomeSide.tsx
-msgid "Last broadcast · {name}"
-msgstr "การส่งล่าสุด · {name}"
+#: src/features/home/HomeWork.tsx
+msgid "Last broadcast"
+msgstr "บรอดแคสต์ล่าสุด"
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Last check"
@@ -9782,6 +9732,14 @@ msgstr "ใช้ล่าสุด {used}"
 msgid "Last used {used}"
 msgstr "ใช้ล่าสุด {used}"
 
+#: src/features/home/HomeWork.tsx
+msgid "Late"
+msgstr "ล่าช้า"
+
+#: src/features/home/HomeWork.tsx
+msgid "Late by {time}"
+msgstr "ล่าช้า {time}"
+
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Latency"
 msgstr "เวลาแฝง"
@@ -9791,6 +9749,7 @@ msgid "Later"
 msgstr "ภายหลัง"
 
 #: src/components/common/SendLater.tsx
+#: src/features/home/HomeSide.tsx
 msgid "Later today"
 msgstr "ภายหลังวันนี้"
 
@@ -10118,7 +10077,6 @@ msgid "Lists"
 msgstr "รายชื่อ"
 
 #: src/components/common/text.ts
-#: src/features/home/HomePage.tsx
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Live"
 msgstr "สด"
@@ -10160,10 +10118,6 @@ msgstr "โหลดเพิ่ม"
 #: src/features/mail/MailThread.tsx
 msgid "Load older messages"
 msgstr "โหลดข้อความที่เก่ากว่า"
-
-#: src/features/home/HomePage.tsx
-msgid "Loading your day…"
-msgstr "กำลังโหลดวันของคุณ…"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "Loading…"
@@ -10434,7 +10388,6 @@ msgstr "Mails go out {sentence}, once to each person. Pausing stops sending but 
 msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
 msgstr "อีเมลจะส่งระหว่าง {start} ถึง {end} ตามเวลา{city} ({utcStart}–{utcEnd} UTC) และส่งต่อในวันถัดไป"
 
-#: src/features/home/HomeSide.tsx
 #: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
 msgid "Maintenance"
@@ -10670,10 +10623,6 @@ msgstr "ค่ามัธยฐาน {median}"
 msgid "median first reply"
 msgstr "มัธยฐานการตอบกลับครั้งแรก"
 
-#: src/features/home/HomePage.tsx
-msgid "Median first reply"
-msgstr "ค่ามัธยฐานของการตอบครั้งแรก"
-
 #: src/features/reports/ReportPages.tsx
 msgid "median today"
 msgstr "ค่ามัธยฐานวันนี้"
@@ -10728,7 +10677,6 @@ msgstr "กล่าวถึงคุณ"
 #: src/app/places.tsx
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/home/HomeSide.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -11013,7 +10961,6 @@ msgid "Most active"
 msgstr "ใช้งานมากที่สุด"
 
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomeSide.tsx
 msgid "Most asked for"
 msgstr "มีคนขอมากที่สุด"
 
@@ -11040,10 +10987,6 @@ msgstr "คะแนนมากที่สุด ความคิดเห�
 #: src/features/docs/DocsPage.tsx
 msgid "Most votes"
 msgstr "โหวตมากที่สุด"
-
-#: src/features/home/HomePage.tsx
-msgid "move"
-msgstr "เลื่อน"
 
 #. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
@@ -11109,10 +11052,6 @@ msgid "Move through the contacts"
 msgstr "เลื่อนดูผู้ติดต่อ"
 
 #: src/components/common/ShortcutSheet.tsx
-msgid "Move through the conversations waiting longest"
-msgstr "เลื่อนผ่านบทสนทนาที่รอนานที่สุด"
-
-#: src/components/common/ShortcutSheet.tsx
 msgid "Move through the designs"
 msgstr "เลื่อนดูดีไซน์"
 
@@ -11143,6 +11082,10 @@ msgstr "เลื่อนดูมอนิเตอร์"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the posts"
 msgstr "เลื่อนดูโพสต์"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move through the rows"
+msgstr "เลื่อนไปตามแถว"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the sites, goals or funnels"
@@ -11253,6 +11196,10 @@ msgstr "การย้ายไอเดียไปที่ วางแผ�
 #: src/features/migrations/SwitchStep.tsx
 msgid "MX change"
 msgstr "การเปลี่ยน MX"
+
+#: src/features/home/HomeWork.tsx
+msgid "My conversations"
+msgstr "การสนทนาของฉัน"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "My designs"
@@ -11395,10 +11342,6 @@ msgstr "ต้องดูแล"
 msgid "Needs the operator’s approval"
 msgstr "ต้องได้รับการอนุมัติจากผู้ดูแลระบบ"
 
-#: src/features/home/HomePage.tsx
-msgid "Needs you"
-msgstr "รอคุณอยู่"
-
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "never"
 msgstr "ไม่เคย"
@@ -11429,7 +11372,6 @@ msgid "new"
 msgstr "ใหม่"
 
 #: src/features/broadcasts/Growth.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 msgid "New"
 msgstr "ใหม่"
@@ -11492,19 +11434,10 @@ msgstr "การสนทนาใหม่ในกล่องข้อคว
 msgid "New conversation in an async inbox"
 msgstr "การสนทนาใหม่ในกล่องข้อความแบบอะซิงก์"
 
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "New conversations"
 msgstr "การสนทนาใหม่"
-
-#: src/features/home/HomePage.tsx
-msgid "New conversations against first replies, per day."
-msgstr "บทสนทนาใหม่เทียบกับการตอบครั้งแรก รายวัน"
-
-#: src/features/home/HomePage.tsx
-msgid "New conversations and feedback show up here."
-msgstr "การสนทนาและความคิดเห็นใหม่จะแสดงที่นี่"
 
 #: src/features/reports/ReportPages.tsx
 msgid "New conversations by day"
@@ -11539,10 +11472,6 @@ msgstr "กระทู้ใหม่"
 #: src/components/common/ShortcutSheet.tsx
 msgid "New entry"
 msgstr "รายการใหม่"
-
-#: src/features/home/HomePage.tsx
-msgid "New feedback"
-msgstr "ความคิดเห็นใหม่"
 
 #: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/fields/FieldsPage.tsx
@@ -11758,10 +11687,6 @@ msgstr "ความพยายามครั้งถัดไป"
 msgid "next attempt {when}"
 msgstr "ความพยายามครั้งถัดไป {when}"
 
-#: src/features/home/HomePage.tsx
-msgid "Next broadcast goes out {when}."
-msgstr "การส่งครั้งถัดไปจะออก {when}"
-
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Next check {next}."
 msgstr "ตรวจสอบครั้งถัดไป {next}"
@@ -11865,7 +11790,6 @@ msgid "No attempts yet."
 msgstr "ยังไม่มีความพยายาม"
 
 #: src/features/broadcasts/Overview.tsx
-#: src/features/home/HomePage.tsx
 msgid "No broadcast is scheduled."
 msgstr "ไม่มีการส่งที่ตั้งเวลาไว้"
 
@@ -12474,10 +12398,6 @@ msgstr "ไม่มีใครตอบหรือปิดอะไรใน
 msgid "Nobody is on the list of recipients yet."
 msgstr "ยังไม่มีใครในรายชื่อผู้รับ"
 
-#: src/features/home/HomeSide.tsx
-msgid "Nobody is online right now."
-msgstr "ขณะนี้ไม่มีใครออนไลน์"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Nobody is subscribed yet: each new address gets the list’s confirmation mail, spread over days by the daily sending limit, and joins only after clicking it."
 msgstr "ยังไม่มีใครสมัครรับ แต่ละที่อยู่ใหม่ได้รับอีเมลยืนยันของรายชื่อ กระจายหลายวันตามขีดจำกัดการส่งต่อวัน และเข้าร่วมหลังคลิกเท่านั้น"
@@ -12487,7 +12407,6 @@ msgid "Nobody is waiting for a reply."
 msgstr "ไม่มีใครรอคำตอบ"
 
 #: src/features/broadcasts/TriggeredPage.tsx
-#: src/features/home/HomePage.tsx
 msgid "Nobody is waiting."
 msgstr "ไม่มีใครรออยู่"
 
@@ -12891,10 +12810,6 @@ msgstr "ไม่มีอะไรที่เลื่อนไว้"
 msgid "Nothing is waiting for approval."
 msgstr "ไม่มีอะไรรออนุมัติ"
 
-#: src/features/home/HomePage.tsx
-msgid "Nothing is waiting."
-msgstr "ไม่มีอะไรรออยู่"
-
 #: src/features/status/IncidentsPage.tsx
 msgid "Nothing is wrong right now. Open an incident when something breaks."
 msgstr "ตอนนี้ไม่มีอะไรผิดปกติ เปิดเหตุการณ์เมื่อมีบางอย่างเสีย"
@@ -12932,6 +12847,10 @@ msgstr "ไม่มีสิ่งที่วัดได้ในช่วง
 #: src/features/reports/TrendsReport.tsx
 msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
 msgstr "ที่นี่ไม่มีอะไรถูกเปิด ตอบ หรือปิด ลองใช้ช่วงเวลาที่ยาวขึ้นหรือตัวกรองอื่น"
+
+#: src/features/home/HomeWork.tsx
+msgid "Nothing yet. Once mail or chat is on, new conversations and incidents show up here."
+msgstr "ยังไม่มีอะไร เมื่อเปิดอีเมลหรือแชตแล้ว การสนทนาใหม่และเหตุขัดข้องจะแสดงที่นี่"
 
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "Nothing. Replies from this inbox go out without a signature."
@@ -13039,14 +12958,9 @@ msgstr "เสนอบนแบบฟอร์มสมัครรับแล
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Offline"
 msgstr "ออฟไลน์"
-
-#: src/features/home/HomePage.tsx
-msgid "Offline · last updated {time}"
-msgstr "ออฟไลน์ · อัปเดตล่าสุด {time}"
 
 #: src/features/status/MonitorChecks.tsx
 #: src/features/status/ResponseChart.tsx
@@ -13072,14 +12986,6 @@ msgstr "เก่ากว่าช่วงที่เลือก"
 #: src/features/contact/ContactVisits.tsx
 msgid "Older visits"
 msgstr "การเข้าชมที่เก่ากว่า"
-
-#: src/features/home/HomePage.tsx
-msgid "Oldest has waited {waited}."
-msgstr "รายการที่รอนานที่สุดรอมา {waited}"
-
-#: src/features/home/HomePage.tsx
-msgid "Oldest wait"
-msgstr "รอนานที่สุด"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -13115,7 +13021,6 @@ msgstr "ในแพ็กเกจ Team และ Enterprise เจ้าขอ
 msgid "On the web"
 msgstr "บนเว็บ"
 
-#: src/features/home/HomePage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "On this page"
@@ -13203,7 +13108,6 @@ msgstr "ออนไลน์"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/Presence.tsx
 #: src/features/conversation/ConversationStatus.tsx
-#: src/features/home/HomeSide.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Online now"
@@ -13388,6 +13292,10 @@ msgstr "เฉพาะทีมของคุณเท่านั้นที
 msgid "Only your team sees it."
 msgstr "เฉพาะทีมของคุณที่เห็น"
 
+#: src/features/home/HomeWork.tsx
+msgid "open"
+msgstr "เปิดอยู่"
+
 #: src/components/common/text.ts
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -13397,7 +13305,6 @@ msgstr "เฉพาะทีมของคุณที่เห็น"
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
@@ -13485,16 +13392,13 @@ msgstr "เปิดการสนทนา"
 
 #: src/app/Palette.tsx
 #: src/features/contact/ContactDetail.tsx
+#: src/features/home/HomeWork.tsx
 msgid "Open conversations"
 msgstr "การสนทนาที่เปิดอยู่"
 
 #: src/features/team/TeamPage.tsx
 msgid "Open conversations assigned"
 msgstr "การสนทนาที่เปิดอยู่ที่มอบหมายแล้ว"
-
-#: src/features/home/HomePage.tsx
-msgid "Open conversations now, new ones and ratings over the last {shown} days."
-msgstr "บทสนทนาที่เปิดอยู่ตอนนี้ บทสนทนาใหม่และคะแนนใน {shown} วันที่ผ่านมา"
 
 #: src/features/status/LinkConversationsDialog.tsx
 msgid "Open conversations of this product that may be about {title}."
@@ -13544,9 +13448,9 @@ msgstr "เปิดไอเดีย"
 msgid "Open in Analytics"
 msgstr "เปิดในการวิเคราะห์"
 
-#: src/features/home/HomePage.tsx
-msgid "Open inbox"
-msgstr "เปิดกล่องข้อความ"
+#: src/features/home/HomeWork.tsx
+msgid "Open in Inbox"
+msgstr "เปิดในกล่องข้อความ"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Open incident"
@@ -13555,10 +13459,6 @@ msgstr "เปิดเหตุการณ์"
 #: src/features/status/StatusPages.tsx
 msgid "Open incidents"
 msgstr "เหตุขัดข้องที่ยังเปิดอยู่"
-
-#: src/features/home/HomePage.tsx
-msgid "Open includes conversations waiting on the customer. Rating turns amber below 85% good once a product has 5 ratings."
-msgstr "บทสนทนาที่เปิดอยู่รวมถึงบทสนทนาที่รอลูกค้าตอบ คะแนนจะเป็นสีส้มเมื่อดีต่ำกว่า 85% หลังจากผลิตภัณฑ์มี 5 คะแนน"
 
 #: src/features/account/ConnectPage.tsx
 msgid "Open it from the sign-in button of a documentation page."
@@ -13741,6 +13641,10 @@ msgstr "เปิดอยู่ ยังไม่มอบหมาย"
 #: src/features/reports/TrendsReport.tsx
 msgid "Opened"
 msgstr "เปิดแล้ว"
+
+#: src/features/home/HomeWork.tsx
+msgid "Opened · closed"
+msgstr "เปิด · ปิด"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "OpenID Connect"
@@ -14094,10 +13998,6 @@ msgstr "หยุดหรือกลับมาส่งอีเมล"
 msgid "Pause or resume the monitor"
 msgstr "หยุดชั่วคราวหรือดำเนินการต่อมอนิเตอร์"
 
-#: src/features/home/HomeSide.tsx
-msgid "paused"
-msgstr "หยุดชั่วคราว"
-
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/SlaBadge.tsx
 #: src/components/common/text.ts
@@ -14264,7 +14164,6 @@ msgstr "ต่อกล่องข้อความ"
 msgid "Per month (30 days)"
 msgstr "ต่อเดือน (30 วัน)"
 
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Period"
@@ -14494,10 +14393,6 @@ msgstr "เลือกแต่ละขอบเขตเอง"
 msgid "Pick mails"
 msgstr "เลือกอีเมล"
 
-#: src/features/home/HomePage.tsx
-msgid "Pick one at the top of the page."
-msgstr "เลือกหนึ่งรายการที่ด้านบนของหน้า"
-
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
 msgstr "เลือกภายหลังในการตั้งค่ารายชื่อ"
@@ -14682,10 +14577,6 @@ msgstr "โพสต์ความคิดเห็นสำหรับผู
 msgid "Post new conversations and mentions to a Slack channel, and answer from the thread. The <0>guide</0> shows how to set up the Slack app."
 msgstr "Post new conversations and mentions to a Slack channel, and answer from the thread. The <0>guide</0> shows how to set up the Slack app."
 
-#: src/features/home/HomeSide.tsx
-msgid "Post status update"
-msgstr "โพสต์การอัปเดตสถานะ"
-
 #: src/features/status/StatusPages.tsx
 msgid "Post update"
 msgstr "โพสต์การอัปเดต"
@@ -14800,7 +14691,6 @@ msgstr "pro, team"
 #: src/components/common/WorkspaceSelector.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
@@ -14844,7 +14734,7 @@ msgstr "แบ็กเอนด์โปรดักชัน"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeSide.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
@@ -14948,7 +14838,6 @@ msgstr "คีย์สาธารณะ"
 msgid "Public pages that say whether your products work"
 msgstr "หน้าสาธารณะที่บอกว่าผลิตภัณฑ์ของคุณทำงานอยู่หรือไม่"
 
-#: src/features/home/HomeSide.tsx
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Publish"
@@ -15108,12 +14997,11 @@ msgstr "ให้คะแนนดี"
 
 #: src/features/contact/ContactDetail.tsx
 #: src/features/conversation/rating.tsx
-#: src/features/home/HomePage.tsx
 msgid "Rated good"
 msgstr "ให้คะแนนดี"
 
 #: src/features/conversation/Feedback.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/reports/ReportPages.tsx
 msgid "Rating"
 msgstr "คะแนน"
@@ -15334,6 +15222,10 @@ msgstr "รับอย่างเดียว ไม่มีบัญชี S
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "Receiving"
 msgstr "กำลังรับ"
+
+#: src/features/home/HomeSide.tsx
+msgid "Recent"
+msgstr "ล่าสุด"
 
 #: src/features/docs/DocsPage.tsx
 msgid "Recent activity"
@@ -15777,7 +15669,6 @@ msgid "Replace the view’s filters, search and order with the ones on screen."
 msgstr "แทนที่ตัวกรอง การค้นหา และลำดับของมุมมองด้วยค่าที่อยู่บนหน้าจอ"
 
 #: src/features/broadcasts/Report.tsx
-#: src/features/home/HomeSide.tsx
 msgid "replied"
 msgstr "ตอบกลับแล้ว"
 
@@ -15932,6 +15823,10 @@ msgstr "Reply command"
 msgid "Reply held back to protect the customer"
 msgstr "การตอบกลับถูกระงับไว้เพื่อปกป้องลูกค้า"
 
+#: src/features/home/HomeWork.tsx
+msgid "Reply in {time}"
+msgstr "ตอบกลับภายใน {time}"
+
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Reply posted"
 msgstr "โพสต์การตอบกลับแล้ว"
@@ -16040,7 +15935,7 @@ msgstr "ความล้มเหลวที่รายงาน"
 #: src/app/nav.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/reports/ReportPages.tsx
 msgid "Reports"
 msgstr "รายงาน"
@@ -16291,7 +16186,6 @@ msgstr "เพิกถอนคีย์ API {name}"
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "ทันทีหลังสมัครรับ ผู้คนได้รับอีเมลสั้น ๆ ยืนยันการสมัคร พร้อมลิงก์ยกเลิกการสมัครรับ"
 
-#: src/features/home/HomePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Right now"
 msgstr "ขณะนี้"
@@ -16301,7 +16195,6 @@ msgstr "ขณะนี้"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/feedback/RoadmapCard.tsx
-#: src/features/home/HomeSide.tsx
 msgid "Roadmap"
 msgstr "แผนงาน"
 
@@ -16659,6 +16552,10 @@ msgctxt "mail folder"
 msgid "Scheduled"
 msgstr "ตั้งเวลาไว้"
 
+#: src/features/home/HomeSide.tsx
+msgid "Scheduled broadcast"
+msgstr "บรอดแคสต์ที่ตั้งเวลาไว้"
+
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Scheduled by"
@@ -16877,10 +16774,6 @@ msgstr "ความปลอดภัย"
 #: src/features/inbox/SidePanels.tsx
 msgid "See all mentions"
 msgstr "ดูการกล่าวถึงทั้งหมด"
-
-#: src/features/home/HomePage.tsx
-msgid "See paused broadcasts"
-msgstr "ดูการส่งที่หยุดชั่วคราว"
 
 #: src/features/contact/ContactCard.tsx
 msgid "Seen {seen}"
@@ -17269,10 +17162,6 @@ msgstr "ช่วงเวลาส่ง"
 msgid "Sending hours of “{name}”"
 msgstr "ช่วงเวลาส่งของ “{name}”"
 
-#: src/features/home/HomePage.tsx
-msgid "Sending is suspended."
-msgstr "การส่งถูกระงับ"
-
 #: src/components/common/Linked.tsx
 msgid "Sending kept failing, so Yuva gave up."
 msgstr "การส่งล้มเหลวซ้ำ ๆ Yuva จึงยอมแพ้"
@@ -17363,7 +17252,6 @@ msgid "sends through {0}"
 msgstr "ส่งผ่าน {0}"
 
 #: src/features/broadcasts/Report.tsx
-#: src/features/home/HomeSide.tsx
 msgid "sent"
 msgstr "ส่งแล้ว"
 
@@ -17538,6 +17426,7 @@ msgstr "ตั้งค่าสถานะ"
 msgid "Set up"
 msgstr "ตั้งค่า"
 
+#: src/features/home/HomePage.tsx
 #: src/features/status/MonitorToken.tsx
 msgid "Set up {name}"
 msgstr "ตั้งค่า {name}"
@@ -17685,10 +17574,6 @@ msgstr "แสดงที่เพิกถอนแล้ว {nRevoked} รา
 msgid "Show all authors"
 msgstr "แสดงผู้เขียนทั้งหมด"
 
-#: src/features/home/HomePage.tsx
-msgid "Show all products"
-msgstr "แสดงผลิตภัณฑ์ทั้งหมด"
-
 #: src/components/common/ShortcutSheet.tsx
 msgid "Show archived designs"
 msgstr "แสดงดีไซน์ที่เก็บถาวร"
@@ -17727,10 +17612,6 @@ msgstr "แสดงเพิ่มเติม"
 #: src/features/status/ComponentsTab.tsx
 msgid "Show on the page"
 msgstr "แสดงบนหน้า"
-
-#: src/features/home/HomePage.tsx
-msgid "Show only {name}"
-msgstr "แสดงเฉพาะ {name}"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Show or hide quoted text"
@@ -17804,14 +17685,6 @@ msgstr "แสดงเวลาทำงาน"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Show who is online"
 msgstr "แสดงว่าใครออนไลน์"
-
-#: src/features/home/HomePage.tsx
-msgid "Showing {product} only."
-msgstr "แสดงเฉพาะ {product}"
-
-#: src/features/home/HomePage.tsx
-msgid "Showing every product."
-msgstr "แสดงผลิตภัณฑ์ทั้งหมด"
 
 #: src/features/broadcasts/Composer.tsx
 msgid "Shown after the subject in most inboxes. Empty uses the design’s own."
@@ -18098,6 +17971,7 @@ msgstr "Signing secret"
 msgid "Since"
 msgstr "ตั้งแต่"
 
+#: src/features/home/HomeWork.tsx
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Since {since}"
@@ -18314,6 +18188,10 @@ msgstr "เลื่อนเตือนเป็นเวลา (นาที)
 msgid "Snooze for {time}"
 msgstr "เลื่อนเตือน {time}"
 
+#: src/features/home/HomeWork.tsx
+msgid "snoozed"
+msgstr "เลื่อนไว้"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -18324,6 +18202,10 @@ msgstr "เลื่อนไว้แล้ว"
 msgctxt "mail folder"
 msgid "Snoozed"
 msgstr "เลื่อนไว้"
+
+#: src/features/home/HomeSide.tsx
+msgid "Snoozed conversation"
+msgstr "การสนทนาที่เลื่อนไว้"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Snoozed until {until}"
@@ -18547,7 +18429,6 @@ msgstr "Start “{name}” on {when}?"
 msgid "Start a discussion"
 msgstr "เริ่มกระทู้"
 
-#: src/features/home/HomePage.tsx
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Start a mailing list"
 msgstr "สร้างรายชื่อผู้รับจดหมาย"
@@ -18671,7 +18552,6 @@ msgstr "สถานะเมื่อล่ม"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomeSide.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 #: src/features/migrations/MapStep.tsx
@@ -18684,10 +18564,6 @@ msgstr "สถานะเมื่อล่ม"
 #: src/features/team/TeamPage.tsx
 msgid "Status"
 msgstr "สถานะ"
-
-#: src/features/home/HomePage.tsx
-msgid "Status and coming up"
-msgstr "สถานะและสิ่งที่กำลังจะมา"
 
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
@@ -18987,10 +18863,6 @@ msgstr "แท็บ"
 msgid "Tags"
 msgstr "แท็ก"
 
-#: src/features/home/HomePage.tsx
-msgid "take"
-msgstr "รับเรื่อง"
-
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "Take {name} off the waiting list"
 msgstr "Take {name} off the waiting list"
@@ -19035,7 +18907,6 @@ msgstr "การตรวจสอบ TCP"
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/conversation/History.tsx
 #: src/features/docs/discussions/parts.tsx
-#: src/features/home/HomeSide.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
@@ -20146,10 +20017,6 @@ msgstr "ผู้ดูแลเซิร์ฟเวอร์อ่านสิ
 msgid "The server's operator registers the Slack app and sets its credentials. The guide explains how."
 msgstr "The server's operator registers the Slack app and sets its credentials. The guide explains how."
 
-#: src/features/home/HomePage.tsx
-msgid "The server’s operator suspended sending for this workspace. Scheduled broadcasts are paused and new schedules are refused."
-msgstr "ผู้ดูแลเซิร์ฟเวอร์ระงับการส่งของพื้นที่ทำงานนี้ การส่งที่ตั้งเวลาไว้ถูกหยุดชั่วคราวและการตั้งเวลาใหม่จะถูกปฏิเสธ"
-
 #: src/features/settings/audit/sentence.ts
 msgid "The server's operator vouched for the address {address}"
 msgstr "ผู้ดูแลเซิร์ฟเวอร์รับรองที่อยู่ {address}"
@@ -20895,10 +20762,6 @@ msgstr "เซิร์ฟเวอร์นี้ส่งบรอดคาส
 msgid "This server sends broadcasts for a workspace once its operator approves it. Tell them about your mail to ask. Until then you can build lists, designs and drafts and send tests."
 msgstr "เซิร์ฟเวอร์นี้ส่งบรอดคาสต์ให้พื้นที่ทำงานเมื่อผู้ดูแลอนุมัติ บอกพวกเขาเกี่ยวกับอีเมลของคุณเพื่อขอ ระหว่างนั้นคุณสร้างรายชื่อ ดีไซน์ ฉบับร่าง และส่งทดสอบได้"
 
-#: src/features/home/HomePage.tsx
-msgid "This server sends broadcasts only after its operator approves the workspace. Drafts are kept."
-msgstr "เซิร์ฟเวอร์นี้ส่งแบบกลุ่มได้หลังจากผู้ดูแลอนุมัติพื้นที่ทำงานแล้วเท่านั้น ฉบับร่างจะถูกเก็บไว้"
-
 #: src/components/common/text.ts
 msgid "This server's limit for migrations is reached. Wait until a running one ends, or ask the server's operator."
 msgstr "ถึงขีดจำกัดการย้ายของเซิร์ฟเวอร์นี้แล้ว รอให้อันที่รันอยู่สิ้นสุด หรือสอบถามผู้ดูแลเซิร์ฟเวอร์"
@@ -21084,7 +20947,7 @@ msgstr "ถึง: {who}"
 #: src/app/places.tsx
 #: src/components/common/FlatList.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -21353,7 +21216,7 @@ msgid "Unassign"
 msgstr "ยกเลิกการมอบหมาย"
 
 #: src/features/conversation/ChatView.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -21746,10 +21609,6 @@ msgstr "กำลังอัปโหลด…"
 msgid "Uptime"
 msgstr "เวลาทำงาน"
 
-#: src/features/home/HomeSide.tsx
-msgid "uptime {uptime} over {shown} days"
-msgstr "เวลาทำงาน {uptime} ใน {shown} วัน"
-
 #: src/features/status/ComponentsTab.tsx
 msgid "Uptime is hidden on this page. Turn it on in the settings to see each day here."
 msgstr "หน้านี้ซ่อนเวลาทำงานไว้ เปิดในการตั้งค่าเพื่อดูแต่ละวันที่นี่"
@@ -22075,10 +21934,6 @@ msgstr "ผู้เข้าชม"
 msgid "Visitors"
 msgstr "ผู้เข้าชม"
 
-#: src/features/home/HomePage.tsx
-msgid "Visitors · 7 days"
-msgstr "ผู้เข้าชม · 7 วัน"
-
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Visitors can chat without an identity token from your backend."
 msgstr "ผู้เข้าชมแชตได้โดยไม่ต้องมีโทเค็นตัวตนจากแบ็กเอนด์ของคุณ"
@@ -22086,6 +21941,10 @@ msgstr "ผู้เข้าชมแชตได้โดยไม่ต้อ
 #: src/features/home/PropertyCard.tsx
 msgid "Visitors in the last seven days: {series}"
 msgstr "ผู้เข้าชมในเจ็ดวันที่ผ่านมา: {series}"
+
+#: src/features/home/HomeWork.tsx
+msgid "Visitors now"
+msgstr "ผู้เข้าชมตอนนี้"
 
 #: src/features/setup/SetupHub.tsx
 msgid "Visitors of your website or app, without cookies"
@@ -22125,7 +21984,6 @@ msgstr "ผู้ดูแลเซิร์ฟเวอร์รับรอง
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -22213,10 +22071,6 @@ msgstr "กำลังรอผลลัพธ์แรก"
 msgid "Waiting for the operator"
 msgstr "รอผู้ดูแลระบบ"
 
-#: src/features/home/HomePage.tsx
-msgid "Waiting for the operator."
-msgstr "กำลังรอผู้ดูแลเซิร์ฟเวอร์"
-
 #: src/features/migrations/parts.tsx
 msgid "Waiting for the provider's limit; continues at {time}."
 msgstr "รอขีดจำกัดของผู้ให้บริการ ดำเนินต่อเมื่อ {time}"
@@ -22237,17 +22091,21 @@ msgstr "waiting for their time"
 msgid "Waiting for validation"
 msgstr "กำลังรอการตรวจสอบ"
 
+#: src/features/home/HomeWork.tsx
+msgid "Waiting for you"
+msgstr "รอคุณอยู่"
+
 #: src/features/inbox/ChatList.tsx
 msgid "Waiting longest"
 msgstr "รอนานที่สุด"
 
-#: src/features/home/HomeSide.tsx
-msgid "Waiting on you"
-msgstr "รอคุณอยู่"
+#: src/features/home/HomeWork.tsx
+msgid "waiting on the customer"
+msgstr "รอลูกค้า"
 
-#: src/features/home/HomeSide.tsx
-msgid "waits for approval"
-msgstr "รอการอนุมัติ"
+#: src/features/home/HomeWork.tsx
+msgid "waiting on you"
+msgstr "รอคุณ"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Warn about the certificate"
@@ -22511,7 +22369,6 @@ msgstr "Yuva ใช้ทำอะไร"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/home/HomeSide.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 msgid "What’s new"
 msgstr "มีอะไรใหม่"
@@ -22973,7 +22830,6 @@ msgstr "ใช่"
 
 #: src/components/common/FlatList.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/home/HomePage.tsx
 msgid "Yesterday"
 msgstr "เมื่อวานนี้"
 
@@ -23014,14 +22870,6 @@ msgstr "คุณยังไม่อยู่ในพื้นที่ทำ
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You are the only owner of a workspace. Make someone else an owner there, or delete that workspace, before you delete your account."
 msgstr "คุณเป็นเจ้าของคนเดียวของพื้นที่ทำงานหนึ่ง ให้คนอื่นเป็นเจ้าของที่นั่น หรือลบพื้นที่ทำงานนั้น ก่อนลบบัญชีของคุณ"
-
-#: src/features/home/HomePage.tsx
-msgid "You asked on {asked} to send broadcasts. Drafts and schedules wait until the operator answers."
-msgstr "คุณขอส่งแบบกลุ่มเมื่อ {asked} ฉบับร่างและการตั้งเวลาจะรอจนกว่าผู้ดูแลจะตอบ"
-
-#: src/features/home/HomePage.tsx
-msgid "You asked to send broadcasts. Drafts and schedules wait until the operator answers."
-msgstr "คุณขอส่งแบบกลุ่มแล้ว ฉบับร่างและการตั้งเวลาจะรอจนกว่าผู้ดูแลจะตอบ"
 
 #: src/features/broadcasts/Composer.tsx
 msgid "You can change the delay, the pace, the sending hours and turn click counting off. Pause it to change the content."
@@ -23234,6 +23082,10 @@ msgstr "Your e-mail address is not in a domain this organisation has claimed in 
 msgid "Your first conversation is here"
 msgstr "การสนทนาแรกของคุณอยู่ที่นี่"
 
+#: src/features/home/HomeWork.tsx
+msgid "Your first reply"
+msgstr "การตอบกลับแรกของคุณ"
+
 #: src/features/migrations/text.ts
 msgid "Your folder"
 msgstr "โฟลเดอร์ของคุณ"
@@ -23284,6 +23136,10 @@ msgstr "องค์กร Microsoft 365 ของคุณอนุญาตใ
 msgid "Your name"
 msgstr "ชื่อของคุณ"
 
+#: src/features/home/HomeWork.tsx
+msgid "Your open conversations"
+msgstr "การสนทนาที่เปิดอยู่ของคุณ"
+
 #: src/features/auth/SignInForm.tsx
 msgid "Your organisation requires this sign-in for its workspace."
 msgstr "Your organisation requires this sign-in for its workspace."
@@ -23331,6 +23187,10 @@ msgstr "ผลิตภัณฑ์ของคุณ"
 #: src/features/status/SettingsTab.tsx
 msgid "Your product."
 msgstr "ผลิตภัณฑ์ของคุณ"
+
+#: src/features/home/HomeWork.tsx
+msgid "Your rating"
+msgstr "คะแนนของคุณ"
 
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "Your replies by e-mail end with"

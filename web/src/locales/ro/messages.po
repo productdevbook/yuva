@@ -15,10 +15,31 @@ msgstr "Fișiere .eml într-un zip"
 msgid "“{name}” holds a value that does not fit"
 msgstr "Valoarea din „{name}” nu se potrivește"
 
+#: src/features/home/HomeSide.tsx
+msgid "“{title}” was closed"
+msgstr "„{title}” a fost închisă"
+
+#: src/features/home/HomeSide.tsx
+msgid "“{title}” was published"
+msgstr "„{title}” a fost publicat"
+
+#: src/features/home/HomeSide.tsx
+msgid "“{title}” was rated bad"
+msgstr "„{title}” a primit o notă proastă"
+
+#: src/features/home/HomeSide.tsx
+msgid "“{title}” was rated good"
+msgstr "„{title}” a primit o notă bună"
+
+#: src/features/home/HomeSide.tsx
+msgid "“{title}” was sent"
+msgstr "„{title}” a fost trimis"
+
 #: src/features/setup/ChannelStep.tsx
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "„Ți-a fost utilă această pagină?”, feedback și discuții în documentația ta"
 
+#: src/features/home/HomeSide.tsx
 #: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailSide.tsx
@@ -86,6 +107,11 @@ msgstr "{0, plural, one {# dintre ei îl primește pentru că limba sa nu are ve
 msgid "{0, plural, one {# open} other {# open}}"
 msgstr "{0, plural, one {# deschisă} few {# deschise} other {# de deschise}}"
 
+#. placeholder {0}: p.unanswered_threads
+#: src/features/home/HomeWork.tsx
+msgid "{0, plural, one {# question needs a reply} other {# questions need a reply}}"
+msgstr "{0, plural, one {# întrebare așteaptă răspuns} few {# întrebări așteaptă răspuns} other {# de întrebări așteaptă răspuns}}"
+
 #. placeholder {0}: d.reply_count
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "{0, plural, one {# reply} other {# replies}}"
@@ -132,9 +158,7 @@ msgstr "{0} închise"
 msgid "{0} events"
 msgstr "{0} evenimente"
 
-#. placeholder {0}: pct.format(good ?? 0)
 #. placeholder {0}: pct.format(p.share)
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 msgid "{0} good"
 msgstr "{0} bune"
@@ -311,10 +335,6 @@ msgstr "{available} din {total}"
 msgid "{available} of {total} available now"
 msgstr "{available} din {total} disponibili acum"
 
-#: src/features/home/HomePage.tsx
-msgid "{bad, plural, one {# bad rating} other {# bad ratings}}"
-msgstr "{bad, plural, one {# evaluare negativă} few {# evaluări negative} other {# de evaluări negative}}"
-
 #: src/features/contact/ContactDetails.tsx
 msgid "{bad} bad"
 msgstr "{bad} proaste"
@@ -364,10 +384,6 @@ msgstr "{count, plural, one {# condiție} few {# condiții} other {# de condiți
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
 msgstr "{count, plural, one {# dosar} few {# dosare} other {# de dosare}}"
-
-#: src/features/home/HomeSide.tsx
-msgid "{count, plural, one {# issue} other {# issues}}"
-msgstr "{count, plural, one {# problemă} few {# probleme} other {# de probleme}}"
 
 #: src/features/broadcasts/ListsHome.tsx
 msgid "{count, plural, one {# list} other {# lists}}"
@@ -437,14 +453,9 @@ msgstr "{count} mesaje · {size}"
 msgid "{count} settings"
 msgstr "{count} setări"
 
-#: src/features/home/HomePage.tsx
 #: src/features/migrations/ReviewStep.tsx
 msgid "{created, plural, one {# new} other {# new}}"
 msgstr "{created, plural, one {# nou} few {# noi} other {# de noi}}"
-
-#: src/features/home/HomePage.tsx
-msgid "{created} new conversations and {replied} first replies in the period"
-msgstr "{created} conversații noi și {replied} primele răspunsuri în perioadă"
 
 #: src/features/broadcasts/Growth.tsx
 #: src/features/docs/Toolbar.tsx
@@ -452,10 +463,6 @@ msgstr "{created} conversații noi și {replied} primele răspunsuri în perioad
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, one {# zi} few {# zile} other {# de zile}}"
-
-#: src/features/home/HomePage.tsx
-msgid "{date}: {newCount} new, {replyCount} first replies"
-msgstr "{date}: {newCount} noi, {replyCount} primele răspunsuri"
 
 #: src/features/status/StatusPages.tsx
 msgid "{days, plural, one {# day} other {# days}}"
@@ -476,6 +483,10 @@ msgstr "{days, plural, one {Așteaptă de # zi} few {Așteaptă de # zile} other
 #: src/components/common/BulkReport.tsx
 msgid "{deleted} deleted"
 msgstr "{deleted} șterse"
+
+#: src/features/home/HomeSide.tsx
+msgid "{done} of {total} copied"
+msgstr "{done} din {total} copiate"
 
 #: src/features/broadcasts/Import.tsx
 msgid "{done} of {total} rows"
@@ -593,13 +604,17 @@ msgstr "{imported} mesaje"
 msgid "{inboxName} has no e-mail channel for {address} yet. History is stored in that channel, so replies after the switch go out from the same address."
 msgstr "{inboxName} nu are încă un canal de e-mail pentru {address}. Istoricul este stocat în acel canal, deci răspunsurile după comutare pleacă de la aceeași adresă."
 
+#: src/features/home/HomeSide.tsx
+msgid "{incidents, plural, one {# incident} other {# incidents}}"
+msgstr "{incidents, plural, one {# incident} few {# incidente} other {# de incidente}}"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "{incoming} received, {outgoing} sent"
 msgstr "{incoming} primite, {outgoing} trimise"
 
-#: src/features/home/HomePage.tsx
-msgid "{left, plural, one {# setup step left.} other {# setup steps left.}}"
-msgstr "{left, plural, one {A mai rămas # pas de configurare.} few {Au mai rămas # pași de configurare.} other {Au mai rămas # de pași de configurare.}}"
+#: src/features/home/HomeWork.tsx
+msgid "{lateText} late"
+msgstr "{lateText} întârziate"
 
 #: src/features/conversation/SlaPopover.tsx
 msgid "{left} left when it resumes"
@@ -649,6 +664,10 @@ msgstr "{monitorName} răspunde din nou normal"
 msgid "{mxDomain} has no MX record, so replies to broadcasts cannot arrive. Publish the MX records of your mail service."
 msgstr "{mxDomain} nu are o înregistrare MX, deci răspunsurile la mesajele în masă nu pot ajunge. Publică înregistrările MX ale serviciului tău de e-mail."
 
+#: src/features/home/HomeWork.tsx
+msgid "{n, plural, =0 {no first replies} one {# first reply} other {# first replies}}"
+msgstr "{n, plural, =0 {niciun prim răspuns} one {# prim răspuns} few {# prime răspunsuri} other {# de prime răspunsuri}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# app} other {# apps}}"
 msgstr "{n, plural, one {# aplicație} few {# aplicații} other {# de aplicații}}"
@@ -656,10 +675,6 @@ msgstr "{n, plural, one {# aplicație} few {# aplicații} other {# de aplicații
 #: src/features/broadcasts/Trigger.tsx
 msgid "{n, plural, one {# day after someone first signs in to {inbox}} other {# days after someone first signs in to {inbox}}}"
 msgstr "{n, plural, one {# day after someone first signs in to {inbox}} other {# days after someone first signs in to {inbox}}}"
-
-#: src/features/home/HomePage.tsx
-msgid "{n, plural, one {# day ago} other {# days ago}}"
-msgstr "{n, plural, one {acum # zi} few {acum # zile} other {acum # de zile}}"
 
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# documentation site} other {# documentation sites}}"
@@ -686,12 +701,17 @@ msgid "{n, plural, one {# other conversation} other {# other conversations}}"
 msgstr "{n, plural, one {# altă conversație} few {# alte conversații} other {# de alte conversații}}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/home/HomeSide.tsx
 msgid "{n, plural, one {# person} other {# people}}"
 msgstr "{n, plural, one {# persoană} few {# persoane} other {# de persoane}}"
 
 #: src/features/settings/audit/sentence.ts
 msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
 msgstr "{n, plural, one {# destinatar pe zi} few {# destinatari pe zi} other {# de destinatari pe zi}}"
+
+#: src/features/home/HomePage.tsx
+msgid "{n, plural, one {# step} other {# steps}}"
+msgstr "{n, plural, one {# pas} few {# pași} other {# de pași}}"
 
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# team mailbox} other {# team mailboxes}}"
@@ -772,7 +792,6 @@ msgstr "Stea eliminată: {n}"
 msgid "{name} · {statusText}"
 msgstr "{name} · {statusText}"
 
-#: src/features/home/HomeSide.tsx
 #: src/features/team/TeamPage.tsx
 msgid "{name} (you)"
 msgstr "{name} (tu)"
@@ -784,6 +803,10 @@ msgstr "{name} blocat. E-mailurile lui sunt respinse."
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "{name} can reply"
 msgstr "{name} poate răspunde"
+
+#: src/features/home/HomeSide.tsx
+msgid "{name} comes back"
+msgstr "{name} revine"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "{name} connects from its vendor's cloud, so it needs this server at a public https address. The panel is open at {url}, which it probably cannot reach."
@@ -800,6 +823,10 @@ msgstr "{name} șters"
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "{name} docs"
 msgstr "Documentația {name}"
+
+#: src/features/home/HomeSide.tsx
+msgid "{name} goes out"
+msgstr "{name} pleacă"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{name} is looking"
@@ -859,19 +886,23 @@ msgstr "Site-ul {name}"
 msgid "{name}, visitors in the last seven days: {series}"
 msgstr "{name}, vizitatori în ultimele șapte zile: {series}"
 
-#: src/features/home/HomeSide.tsx
-msgid "{names} operational"
-msgstr "{names} funcționează"
-
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "{names} will be notified"
 msgstr "Vor fi notificați: {names}"
 
+#: src/features/home/HomePage.tsx
+msgid "{online} of {total} online"
+msgstr "{online} din {total} online"
+
 #: src/components/common/Linked.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/home/HomeSide.tsx
 msgid "{open, plural, one {# open} other {# open}}"
 msgstr "{open, plural, one {# deschisă} few {# deschise} other {# de deschise}}"
+
+#: src/features/home/HomeSide.tsx
+#: src/features/home/HomeWork.tsx
+msgid "{open} open"
+msgstr "{open} deschise"
 
 #: src/features/broadcasts/Import.tsx
 msgid "{out, plural, one {# row is left out} other {# rows are left out}}"
@@ -901,10 +932,6 @@ msgstr "{people, plural, one {Abonarea ei (#) și înregistrarea consimțământ
 #: src/features/broadcasts/Overview.tsx
 msgid "{people} people"
 msgstr "{people} persoane"
-
-#: src/features/home/HomeSide.tsx
-msgid "{people} recipients"
-msgstr "{people} destinatari"
 
 #: src/features/migrations/ImportBanner.tsx
 msgid "{percent}%"
@@ -998,10 +1025,6 @@ msgstr "{provider} vrea să te conectezi o dată în browser. Conectează-te la 
 msgid "{provider}'s tags become Yuva labels on their conversations."
 msgstr "Etichetele din {provider} devin etichete Yuva pe conversațiile lor."
 
-#: src/features/home/HomePage.tsx
-msgid "{ptsText} pts"
-msgstr "{ptsText} pct."
-
 #: src/features/migrations/CopyStep.tsx
 msgid "{rate} a minute"
 msgstr "{rate} pe minut"
@@ -1019,7 +1042,7 @@ msgstr "{rate} mesaje pe secundă"
 msgid "{rate} mails a second · one every {every}"
 msgstr "{rate} mesaje pe secundă · unul la {every}"
 
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeWork.tsx
 msgid "{rated, plural, =0 {no ratings} one {# rating} other {# ratings}}"
 msgstr "{rated, plural, =0 {nicio evaluare} one {# evaluare} few {# evaluări} other {# de evaluări}}"
 
@@ -1093,6 +1116,14 @@ msgstr "{shown, plural, one {# conversație} few {# conversații} other {# de co
 msgid "{size} · pick another file"
 msgstr "{size} · alege alt fișier"
 
+#: src/features/home/HomeWork.tsx
+msgid "{source} import needs attention"
+msgstr "Importul din {source} necesită atenție"
+
+#: src/features/home/HomeSide.tsx
+msgid "{source} import should finish"
+msgstr "Importul din {source} ar trebui să se încheie"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "{spam} marked as spam"
 msgstr "{spam} marcate ca spam"
@@ -1116,6 +1147,10 @@ msgstr "{text} față de perioada anterioară"
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "{threads} discuții deschise"
+
+#: src/features/home/HomeWork.tsx
+msgid "{total, plural, one {# conversation nobody has taken} other {# conversations nobody has taken}}"
+msgstr "{total, plural, one {# conversație pe care n-a preluat-o nimeni} few {# conversații pe care nu le-a preluat nimeni} other {# de conversații pe care nu le-a preluat nimeni}}"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "{total, plural, one {Last 30 days · # broadcast} other {Last 30 days · # broadcasts}}"
@@ -1184,14 +1219,6 @@ msgstr "{votes} voturi"
 msgid "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
 msgstr "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
 
-#: src/features/home/HomePage.tsx
-msgid "{waiting, plural, one {# conversation is waiting.} other {# conversations are waiting.}}"
-msgstr "{waiting, plural, one {# conversație așteaptă.} few {# conversații așteaptă.} other {# de conversații așteaptă.}}"
-
-#: src/features/home/HomePage.tsx
-msgid "{waiting, plural, one {Open in Inbox} other {All {total} in Inbox}}"
-msgstr "{waiting, plural, one {Deschide în căsuța de intrare} other {Toate cele {total} în căsuța de intrare}}"
-
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "{waiting} waiting"
 msgstr "{waiting} waiting"
@@ -1203,6 +1230,10 @@ msgstr "{watching, plural, one {Monitorizată de # monitor} few {Monitorizată d
 #: src/features/reports/ReportPages.tsx
 msgid "{who} · answered by {name}"
 msgstr "{who} · a răspuns {name}"
+
+#: src/features/home/HomeSide.tsx
+msgid "{who} closed “{title}”"
+msgstr "{who} a închis „{title}”"
 
 #: src/app/Header.tsx
 msgid "{who} in {where}"
@@ -1216,9 +1247,21 @@ msgstr "{who} te-a menționat în {contact}, {subject}. Deschide conversația"
 msgid "{who} mentioned you in {contact}. Open the conversation"
 msgstr "{who} te-a menționat în {contact}. Deschide conversația"
 
+#: src/features/home/HomeSide.tsx
+msgid "{who} posted an update on “{title}”"
+msgstr "{who} a publicat o actualizare la „{title}”"
+
+#: src/features/home/HomeSide.tsx
+msgid "{who} published “{title}”"
+msgstr "{who} a publicat „{title}”"
+
 #: src/features/account/AccountPage.tsx
 msgid "{who} replied in <0>{title}</0>"
 msgstr "{who} a răspuns în <0>{title}</0>"
+
+#: src/features/home/HomeSide.tsx
+msgid "{who} sent “{title}”"
+msgstr "{who} a trimis „{title}”"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
@@ -1232,14 +1275,6 @@ msgstr "+ Adaugă adresă"
 #: src/features/broadcasts/ListsHome.tsx
 msgid "+{added} this month"
 msgstr "+{added} luna aceasta"
-
-#: src/features/home/HomeSide.tsx
-msgid "+{off} offline"
-msgstr "+{off} offline"
-
-#: src/features/home/HomeSide.tsx
-msgid "+{off} offline · {offOpen} open"
-msgstr "+{off} offline · {offOpen} deschise"
 
 #: src/features/settings/channels/email/Ses.tsx
 msgid "<0>{domain}</0> is not a verified identity in the server’s Amazon SES account. Mail goes out without tenant isolation and broadcasts are blocked. Ask the server’s operator to verify the domain."
@@ -2159,10 +2194,6 @@ msgstr "Adaugă o notă internă"
 msgid "Add an OAuth client named “Yuva”, as a confidential client, and enter the redirect URL below as its redirect URL."
 msgstr "Adaugă un client OAuth numit „Yuva”, ca client confidențial, și introdu URL-ul de redirecționare de mai jos ca URL de redirecționare al lui."
 
-#: src/features/home/HomePage.tsx
-msgid "Add analytics"
-msgstr "Adaugă analytics"
-
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Add another"
@@ -2225,10 +2256,6 @@ msgstr "Adaugă eticheta {labelName}"
 #: src/features/settings/automation/text.ts
 msgid "Add labels"
 msgstr "Adaugă etichete"
-
-#: src/features/home/HomePage.tsx
-msgid "Add live chat to your site"
-msgstr "Adaugă chat live pe site"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Add monitor"
@@ -2531,10 +2558,6 @@ msgstr "Toate monitoarele"
 msgid "All of its conversations, messages and attachments are deleted with it. This cannot be undone."
 msgstr "Toate conversațiile, mesajele și atașamentele ei se șterg odată cu ea. Nu se poate anula."
 
-#: src/features/home/HomeSide.tsx
-msgid "All operational"
-msgstr "Totul funcționează"
-
 #: src/features/migrations/UploadStep.tsx
 msgid "All parts arrived. Reading the file…"
 msgstr "Toate părțile au ajuns. Se citește fișierul…"
@@ -2573,6 +2596,10 @@ msgstr "Toate domeniile de acces"
 #: src/features/docs/Toolbar.tsx
 msgid "All sites"
 msgstr "Toate site-urile"
+
+#: src/features/home/HomePage.tsx
+msgid "All steps"
+msgstr "Toți pașii"
 
 #: src/features/status/StatusPages.tsx
 msgid "All systems operational"
@@ -2914,6 +2941,10 @@ msgstr "Un obiectiv SLA a fost încălcat"
 msgid "an unknown person"
 msgstr "o persoană necunoscută"
 
+#: src/features/home/HomeSide.tsx
+msgid "An update was posted on “{title}”"
+msgstr "A fost publicată o actualizare la „{title}”"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
 msgstr "O încărcare a fost întreruptă: {count} părți, {size}, sunt deja pe server."
@@ -2922,7 +2953,6 @@ msgstr "O încărcare a fost întreruptă: {count} părți, {size}, sunt deja pe
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/settings/webhooks/events.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Analytics"
@@ -3353,10 +3383,6 @@ msgstr "Roagă administratorul serverului tău de e-mail să livreze {address} l
 msgid "Ask the admin of your mail server to forward {address} to the address below on the server, keeping delivery to the mailbox."
 msgstr "Roagă administratorul serverului tău de e-mail să redirecționeze {address} la adresa de mai jos pe server, păstrând livrarea în căsuță."
 
-#: src/features/home/HomePage.tsx
-msgid "Ask the operator"
-msgstr "Cere operatorului"
-
 #: src/features/settings/ProductsPage.tsx
 msgid "asked after closing"
 msgstr "întrebat după închidere"
@@ -3599,6 +3625,7 @@ msgid "Automation"
 msgstr "Automatizare"
 
 #: src/app/UserMenu.tsx
+#: src/features/home/HomePage.tsx
 msgid "Available"
 msgstr "Disponibil"
 
@@ -3613,6 +3640,7 @@ msgstr "Disponibil până la {until}"
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Away"
 msgstr "Plecat"
@@ -3625,6 +3653,10 @@ msgstr "Plecat"
 #: src/features/migrations/Wizard.tsx
 msgid "Back"
 msgstr "Înapoi"
+
+#: src/features/home/HomeWork.tsx
+msgid "Back {at}"
+msgstr "Revine {at}"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Back to API keys"
@@ -3639,6 +3671,10 @@ msgstr "Înapoi la coloane"
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "Back to draft"
 msgstr "Înapoi la ciornă"
+
+#: src/features/setup/BackHome.tsx
+msgid "Back to Home"
+msgstr "Înapoi la Acasă"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Back to setup"
@@ -3942,10 +3978,6 @@ msgstr "Trimitere în masă"
 msgid "Broadcasts"
 msgstr "Mesaje în masă"
 
-#: src/features/home/HomePage.tsx
-msgid "Broadcasts are suspended."
-msgstr "Trimiterile în masă sunt suspendate."
-
 #: src/components/common/text.ts
 msgid "Broadcasts are turned off on this server."
 msgstr "Mesajele în masă sunt dezactivate pe acest server."
@@ -3954,17 +3986,9 @@ msgstr "Mesajele în masă sunt dezactivate pe acest server."
 msgid "Broadcasts are turned off on this server. Lists and their forms still work, so you can collect subscribers."
 msgstr "Mesajele în masă sunt dezactivate pe acest server. Listele și formularele lor încă funcționează, deci poți strânge abonați."
 
-#: src/features/home/HomePage.tsx
-msgid "Broadcasts can’t go out yet."
-msgstr "Trimiterile în masă nu pot pleca încă."
-
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Broadcasts from this channel go out through its SMTP account for replies, or through a separate account. A separate account, ideally on its own subdomain, keeps spam complaints about newsletters away from your support mail."
 msgstr "Mesajele în masă de pe acest canal pleacă prin contul său SMTP pentru răspunsuri sau printr-un cont separat. Un cont separat, ideal pe propriul subdomeniu, ține plângerile de spam despre buletinele informative departe de e-mailul tău de suport."
-
-#: src/features/home/HomePage.tsx
-msgid "Broadcasts wait for the operator’s approval."
-msgstr "Trimiterile în masă așteaptă aprobarea operatorului."
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
@@ -4615,10 +4639,6 @@ msgstr "Numărare clicuri"
 msgid "Click tracking"
 msgstr "Urmărire clicuri"
 
-#: src/features/home/HomeSide.tsx
-msgid "clicked"
-msgstr "a dat clic"
-
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 msgid "Clicked"
@@ -4628,9 +4648,9 @@ msgstr "A dat clic"
 msgid "clicked a link, roughly"
 msgstr "a dat clic pe un link, aproximativ"
 
-#: src/features/home/HomeSide.tsx
-msgid "clicks not tracked"
-msgstr "clicurile nu sunt urmărite"
+#: src/features/home/HomeWork.tsx
+msgid "clicks · replies · {name}"
+msgstr "clicuri · răspunsuri · {name}"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Clicks not tracked"
@@ -4770,10 +4790,6 @@ msgstr "Cod trimis"
 msgid "Collapse"
 msgstr "Restrânge"
 
-#: src/features/home/HomePage.tsx
-msgid "Collect ratings on your docs pages"
-msgstr "Strânge evaluări pe paginile de documentație"
-
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Collections"
@@ -4805,7 +4821,6 @@ msgstr "Coloane"
 msgid "Coming later"
 msgstr "În curând"
 
-#: src/features/home/HomeSide.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Coming up"
 msgstr "Urmează"
@@ -4939,7 +4954,6 @@ msgid "confirmed their address in the last {days} days"
 msgstr "și-au confirmat adresa în ultimele {days} zile"
 
 #: src/features/account/ConnectPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/migrations/text.ts
 #: src/features/migrations/Wizard.tsx
@@ -4966,10 +4980,6 @@ msgstr "Conectează {provider}"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Connect a provider and verify a domain first."
 msgstr "Connect a provider and verify a domain first."
-
-#: src/features/home/HomePage.tsx
-msgid "Connect a support address"
-msgstr "Conectează o adresă de suport"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Connect a tracker"
@@ -5005,10 +5015,6 @@ msgstr "Connect Slack"
 #: src/features/account/ConnectPage.tsx
 msgid "Connect to {host}"
 msgstr "Conectează-te la {host}"
-
-#: src/features/home/HomePage.tsx
-msgid "Connect your iOS or Android app"
-msgstr "Conectează aplicația iOS sau Android"
 
 #: src/features/settings/SettingsFrame.tsx
 msgid "Connect your servers and bots to Yuva"
@@ -5093,10 +5099,6 @@ msgstr "Conectat la {provider}"
 #: src/features/migrations/ConnectStep.tsx
 msgid "Connected to {storedHost}. Enter the password again only to change it."
 msgstr "Conectat la {storedHost}. Introdu parola din nou doar ca să o schimbi."
-
-#: src/features/home/HomePage.tsx
-msgid "Connecting"
-msgstr "Se conectează"
 
 #: src/features/setup/email/EmailTestStep.tsx
 #: src/features/setup/WaitStep.tsx
@@ -5311,10 +5313,6 @@ msgstr "Conversațiile în care nimeni nu a scris după import sunt șterse. Nim
 msgid "Conversations nobody wrote in after the import are deleted. Nothing changed in {provider}."
 msgstr "Conversațiile în care nimeni nu a scris după import sunt șterse. Nimic nu s-a schimbat în {provider}."
 
-#: src/features/home/HomePage.tsx
-msgid "Conversations show up here as soon as the first customer writes."
-msgstr "Conversațiile apar aici imediat ce scrie primul client."
-
 #: src/features/reports/ReportPages.tsx
 msgid "conversations started"
 msgstr "conversații începute"
@@ -5330,10 +5328,6 @@ msgstr "Conversațiile care au început pe el își păstrează mesajele."
 #: src/features/settings/channels/sections.tsx
 msgid "Conversations that started on this channel keep their messages."
 msgstr "Conversațiile care au început pe acest canal își păstrează mesajele."
-
-#: src/features/home/HomePage.tsx
-msgid "Conversations waiting for an answer, oldest first."
-msgstr "Conversații care așteaptă un răspuns, cea mai veche prima."
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Conversations your team wrote in stay. Nothing changes in {address}."
@@ -5465,17 +5459,9 @@ msgstr "Serverul nu a putut fi contactat. Verifică conexiunea și încearcă di
 msgid "Couldn’t load Home. Your inbox still works."
 msgstr "Pagina principală nu s-a putut încărca. Căsuța de intrare funcționează în continuare."
 
-#: src/features/home/HomePage.tsx
-msgid "Couldn’t refresh since {time}. The figures below may be out of date; your inbox still works."
-msgstr "Nu s-a mai actualizat din {time}. Cifrele de mai jos pot fi învechite; căsuța de intrare funcționează în continuare."
-
 #: src/features/broadcasts/Composer.tsx
 msgid "Count clicks"
 msgstr "Numără clicurile"
-
-#: src/features/home/HomePage.tsx
-msgid "Count visitors on your site"
-msgstr "Numără vizitatorii site-ului"
 
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "counted so far"
@@ -5494,7 +5480,6 @@ msgstr "Țara"
 msgid "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
 msgstr "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
 
-#: src/features/home/HomePage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/DeveloperTabs.tsx
 msgid "Create"
@@ -6315,7 +6300,6 @@ msgstr "Notificările pe desktop sunt blocate pentru acest site în setările br
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/mail/MailPage.tsx
@@ -6411,6 +6395,7 @@ msgstr "A deconectat sistemul de urmărire a problemelor {name} ({provider})"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/home/HomeWork.tsx
 msgid "Discussion"
 msgstr "Discuție"
 
@@ -6705,10 +6690,6 @@ msgstr "Ciorne și aprobări"
 #: src/components/common/text.ts
 msgid "Drafts and timeline events cannot be removed."
 msgstr "Ciornele și evenimentele din cronologie nu pot fi eliminate."
-
-#: src/features/home/HomeSide.tsx
-msgid "Drafts to review"
-msgstr "Ciorne de verificat"
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Drafts waiting"
@@ -7729,12 +7710,8 @@ msgid "Finish now"
 msgstr "Finalizează acum"
 
 #: src/features/home/HomePage.tsx
-msgid "Finish setting up"
-msgstr "Termină configurarea"
-
-#: src/features/home/HomePage.tsx
-msgid "Finish setup"
-msgstr "Termină configurarea"
+msgid "Finish setting up {name}"
+msgstr "Finalizează configurarea {name}"
 
 #: src/features/migrations/parts.tsx
 msgid "Finish the migration?"
@@ -7765,19 +7742,12 @@ msgstr "Primul mesaj"
 msgid "First name"
 msgstr "Prenume"
 
-#: src/features/home/HomePage.tsx
-msgid "First replies"
-msgstr "Primele răspunsuri"
-
-#: src/features/home/HomePage.tsx
-msgid "First replies today took {took} at the median."
-msgstr "Azi primele răspunsuri au durat {took} (mediana)."
-
 #: src/features/contact/ContactDetail.tsx
 msgid "first reply"
 msgstr "primul răspuns"
 
 #: src/features/conversation/SlaPopover.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
@@ -8192,7 +8162,6 @@ msgstr "Obține fișierul"
 msgid "Get the SDK lines"
 msgstr "Obține liniile SDK"
 
-#: src/features/home/HomePage.tsx
 #: src/features/setup/AddChannelStep.tsx
 msgid "Get the snippet"
 msgstr "Obține fragmentul"
@@ -8206,6 +8175,7 @@ msgid "Get the subscribe form"
 msgstr "Obține formularul de abonare"
 
 #: src/app/UserMenu.tsx
+#: src/features/home/HomePage.tsx
 msgid "Getting started"
 msgstr "Primii pași"
 
@@ -8220,10 +8190,6 @@ msgstr "Dai canalului o nouă adresă de redirecționare?"
 #: src/features/status/SettingsTab.tsx
 msgid "Give the page a name."
 msgstr "Dă un nume paginii."
-
-#: src/features/home/HomePage.tsx
-msgid "Give the team a shared mailbox"
-msgstr "Dă echipei o căsuță de e-mail comună"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Gives a conversation without an assignee to a teammate when it arrives or is reopened by the contact. Automation rules run first."
@@ -8520,6 +8486,7 @@ msgstr "Ascuns de echipă"
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/home/HomePage.tsx
 msgid "Hide"
 msgstr "Ascunde"
 
@@ -8822,6 +8789,7 @@ msgstr "Impact"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/broadcasts/ListPage.tsx
+#: src/features/home/HomeWork.tsx
 msgid "Import"
 msgstr "Importă"
 
@@ -8875,10 +8843,6 @@ msgstr "Importat în Yuva pe {date}"
 #: src/features/broadcasts/Import.tsx
 msgid "Importing"
 msgstr "Se importă"
-
-#: src/features/home/HomeSide.tsx
-msgid "Importing {source} history"
-msgstr "Se importă istoricul din {source}"
 
 #: src/features/migrations/ImportBanner.tsx
 msgid "Importing history from {address} · {percent}% · new mail keeps arriving as usual"
@@ -9090,7 +9054,7 @@ msgstr "Căsuțe"
 msgid "Inboxes cut off subjects longer than 80 characters."
 msgstr "Căsuțele taie subiectele mai lungi de 80 de caractere."
 
-#: src/features/home/HomeSide.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Incident"
@@ -9498,10 +9462,6 @@ msgstr "Ține această pagină deschisă. Dacă conexiunea cade, încărcarea co
 msgid "Keep writing"
 msgstr "Continuă să scrii"
 
-#: src/features/home/HomePage.tsx
-msgid "Keeping up"
-msgstr "Ținem pasul"
-
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Keeps everything"
 msgstr "Păstrează tot"
@@ -9664,24 +9624,15 @@ msgstr "Mai mare decât limita acestui server pentru un mesaj"
 msgid "Largest file (MB)"
 msgstr "Cel mai mare fișier (MB)"
 
-#: src/features/home/HomePage.tsx
-msgid "last {shown} days"
-msgstr "ultimele {shown} zile"
-
 #: src/features/reports/TrendsReport.tsx
 msgid "Last 12 months"
 msgstr "Ultimele 12 luni"
-
-#: src/features/home/HomePage.tsx
-msgid "Last 14 days"
-msgstr "Ultimele 14 zile"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "Last 3 months"
 msgstr "Ultimele 3 luni"
 
 #: src/features/broadcasts/Overview.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Last 30 days"
@@ -9691,7 +9642,6 @@ msgstr "Ultimele 30 de zile"
 msgid "Last 6 months"
 msgstr "Ultimele 6 luni"
 
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Last 7 days"
@@ -9701,9 +9651,9 @@ msgstr "Ultimele 7 zile"
 msgid "Last attempt"
 msgstr "Ultima încercare"
 
-#: src/features/home/HomeSide.tsx
-msgid "Last broadcast · {name}"
-msgstr "Ultima trimitere · {name}"
+#: src/features/home/HomeWork.tsx
+msgid "Last broadcast"
+msgstr "Ultima campanie"
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Last check"
@@ -9782,6 +9732,14 @@ msgstr "folosit ultima oară {used}"
 msgid "Last used {used}"
 msgstr "Folosit ultima oară {used}"
 
+#: src/features/home/HomeWork.tsx
+msgid "Late"
+msgstr "Întârziată"
+
+#: src/features/home/HomeWork.tsx
+msgid "Late by {time}"
+msgstr "Întârziată cu {time}"
+
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Latency"
 msgstr "Latență"
@@ -9791,6 +9749,7 @@ msgid "Later"
 msgstr "Mai târziu"
 
 #: src/components/common/SendLater.tsx
+#: src/features/home/HomeSide.tsx
 msgid "Later today"
 msgstr "Mai târziu azi"
 
@@ -10118,7 +10077,6 @@ msgid "Lists"
 msgstr "Liste"
 
 #: src/components/common/text.ts
-#: src/features/home/HomePage.tsx
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Live"
 msgstr "Live"
@@ -10160,10 +10118,6 @@ msgstr "Încarcă mai multe"
 #: src/features/mail/MailThread.tsx
 msgid "Load older messages"
 msgstr "Încarcă mesaje mai vechi"
-
-#: src/features/home/HomePage.tsx
-msgid "Loading your day…"
-msgstr "Se încarcă ziua ta…"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "Loading…"
@@ -10434,7 +10388,6 @@ msgstr "Mails go out {sentence}, once to each person. Pausing stops sending but 
 msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
 msgstr "E-mailurile pleacă între {start} și {end}, ora {city} ({utcStart}–{utcEnd} UTC), și continuă a doua zi."
 
-#: src/features/home/HomeSide.tsx
 #: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
 msgid "Maintenance"
@@ -10670,10 +10623,6 @@ msgstr "mediană {median}"
 msgid "median first reply"
 msgstr "mediana primului răspuns"
 
-#: src/features/home/HomePage.tsx
-msgid "Median first reply"
-msgstr "Primul răspuns, mediană"
-
 #: src/features/reports/ReportPages.tsx
 msgid "median today"
 msgstr "mediană azi"
@@ -10728,7 +10677,6 @@ msgstr "te-a menționat"
 #: src/app/places.tsx
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/home/HomeSide.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -11013,7 +10961,6 @@ msgid "Most active"
 msgstr "Cele mai active"
 
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomeSide.tsx
 msgid "Most asked for"
 msgstr "Cele mai cerute"
 
@@ -11040,10 +10987,6 @@ msgstr "Cele mai multe evaluări, feedback deschis, discuții deschise și post�
 #: src/features/docs/DocsPage.tsx
 msgid "Most votes"
 msgstr "Cele mai multe voturi"
-
-#: src/features/home/HomePage.tsx
-msgid "move"
-msgstr "navighează"
 
 #. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
@@ -11109,10 +11052,6 @@ msgid "Move through the contacts"
 msgstr "Parcurge contactele"
 
 #: src/components/common/ShortcutSheet.tsx
-msgid "Move through the conversations waiting longest"
-msgstr "Navighează prin conversațiile care așteaptă de cel mai mult timp"
-
-#: src/components/common/ShortcutSheet.tsx
 msgid "Move through the designs"
 msgstr "Navighează prin designuri"
 
@@ -11143,6 +11082,10 @@ msgstr "Navighează prin monitoare"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the posts"
 msgstr "Navighează prin postări"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move through the rows"
+msgstr "Deplasare între rânduri"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the sites, goals or funnels"
@@ -11253,6 +11196,10 @@ msgstr "Mutarea ideii în Planificat, În lucru sau Livrat setează asta pentru 
 #: src/features/migrations/SwitchStep.tsx
 msgid "MX change"
 msgstr "Schimbare MX"
+
+#: src/features/home/HomeWork.tsx
+msgid "My conversations"
+msgstr "Conversațiile mele"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "My designs"
@@ -11395,10 +11342,6 @@ msgstr "Necesită atenție"
 msgid "Needs the operator’s approval"
 msgstr "Necesită aprobarea operatorului"
 
-#: src/features/home/HomePage.tsx
-msgid "Needs you"
-msgstr "Te așteaptă"
-
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "never"
 msgstr "niciodată"
@@ -11429,7 +11372,6 @@ msgid "new"
 msgstr "nou"
 
 #: src/features/broadcasts/Growth.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 msgid "New"
 msgstr "Nou"
@@ -11492,19 +11434,10 @@ msgstr "Conversație nouă într-o căsuță live"
 msgid "New conversation in an async inbox"
 msgstr "Conversație nouă într-o căsuță asincronă"
 
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "New conversations"
 msgstr "Conversații noi"
-
-#: src/features/home/HomePage.tsx
-msgid "New conversations against first replies, per day."
-msgstr "Conversații noi față de primele răspunsuri, pe zi."
-
-#: src/features/home/HomePage.tsx
-msgid "New conversations and feedback show up here."
-msgstr "Conversațiile și feedbackul nou apar aici."
 
 #: src/features/reports/ReportPages.tsx
 msgid "New conversations by day"
@@ -11539,10 +11472,6 @@ msgstr "discuții noi"
 #: src/components/common/ShortcutSheet.tsx
 msgid "New entry"
 msgstr "Intrare nouă"
-
-#: src/features/home/HomePage.tsx
-msgid "New feedback"
-msgstr "Feedback nou"
 
 #: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/fields/FieldsPage.tsx
@@ -11758,10 +11687,6 @@ msgstr "Următoarea încercare"
 msgid "next attempt {when}"
 msgstr "următoarea încercare {when}"
 
-#: src/features/home/HomePage.tsx
-msgid "Next broadcast goes out {when}."
-msgstr "Următoarea trimitere pleacă {when}."
-
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Next check {next}."
 msgstr "Următoarea verificare {next}."
@@ -11865,7 +11790,6 @@ msgid "No attempts yet."
 msgstr "Nicio încercare încă."
 
 #: src/features/broadcasts/Overview.tsx
-#: src/features/home/HomePage.tsx
 msgid "No broadcast is scheduled."
 msgstr "Nicio transmisiune nu este programată."
 
@@ -12474,10 +12398,6 @@ msgstr "Nimeni n-a răspuns și n-a închis nimic în această perioadă."
 msgid "Nobody is on the list of recipients yet."
 msgstr "Nimeni nu este încă pe lista destinatarilor."
 
-#: src/features/home/HomeSide.tsx
-msgid "Nobody is online right now."
-msgstr "Nimeni nu e online acum."
-
 #: src/features/broadcasts/Import.tsx
 msgid "Nobody is subscribed yet: each new address gets the list’s confirmation mail, spread over days by the daily sending limit, and joins only after clicking it."
 msgstr "Nimeni nu este încă abonat: fiecare adresă nouă primește mesajul de confirmare al listei, răspândit pe zile de limita zilnică de trimitere, și se alătură doar după ce dă clic pe el."
@@ -12487,7 +12407,6 @@ msgid "Nobody is waiting for a reply."
 msgstr "Nimeni nu așteaptă un răspuns."
 
 #: src/features/broadcasts/TriggeredPage.tsx
-#: src/features/home/HomePage.tsx
 msgid "Nobody is waiting."
 msgstr "Nu așteaptă nimeni."
 
@@ -12891,10 +12810,6 @@ msgstr "Nimic nu este amânat."
 msgid "Nothing is waiting for approval."
 msgstr "Nimic nu așteaptă aprobarea."
 
-#: src/features/home/HomePage.tsx
-msgid "Nothing is waiting."
-msgstr "Nu așteaptă nimic."
-
 #: src/features/status/IncidentsPage.tsx
 msgid "Nothing is wrong right now. Open an incident when something breaks."
 msgstr "Acum totul este în regulă. Deschide un incident când se strică ceva."
@@ -12932,6 +12847,10 @@ msgstr "În această perioadă nu s-a măsurat nimic."
 #: src/features/reports/TrendsReport.tsx
 msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
 msgstr "Aici nu s-a deschis, nu s-a răspuns și nu s-a închis nimic. Încearcă o perioadă mai lungă sau alte filtre."
+
+#: src/features/home/HomeWork.tsx
+msgid "Nothing yet. Once mail or chat is on, new conversations and incidents show up here."
+msgstr "Nimic încă. Când e-mailul sau chatul sunt activate, aici apar conversații noi și incidente."
 
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "Nothing. Replies from this inbox go out without a signature."
@@ -13039,14 +12958,9 @@ msgstr "Oferită în formularele de abonare și pe pagina de preferințe. Listel
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Offline"
 msgstr "Offline"
-
-#: src/features/home/HomePage.tsx
-msgid "Offline · last updated {time}"
-msgstr "Offline · ultima actualizare {time}"
 
 #: src/features/status/MonitorChecks.tsx
 #: src/features/status/ResponseChart.tsx
@@ -13072,14 +12986,6 @@ msgstr "Mai vechi decât intervalul ales"
 #: src/features/contact/ContactVisits.tsx
 msgid "Older visits"
 msgstr "Vizite mai vechi"
-
-#: src/features/home/HomePage.tsx
-msgid "Oldest has waited {waited}."
-msgstr "Cea mai veche așteaptă de {waited}."
-
-#: src/features/home/HomePage.tsx
-msgid "Oldest wait"
-msgstr "Cea mai lungă așteptare"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -13115,7 +13021,6 @@ msgstr "În planurile Team și Enterprise, un proprietar o adaugă o dată în <
 msgid "On the web"
 msgstr "Pe web"
 
-#: src/features/home/HomePage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "On this page"
@@ -13203,7 +13108,6 @@ msgstr "Online"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/Presence.tsx
 #: src/features/conversation/ConversationStatus.tsx
-#: src/features/home/HomeSide.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Online now"
@@ -13388,6 +13292,10 @@ msgstr "doar echipa ta o poate previzualiza"
 msgid "Only your team sees it."
 msgstr "Doar echipa ta o vede."
 
+#: src/features/home/HomeWork.tsx
+msgid "open"
+msgstr "deschisă"
+
 #: src/components/common/text.ts
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -13397,7 +13305,6 @@ msgstr "Doar echipa ta o vede."
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
@@ -13485,16 +13392,13 @@ msgstr "Deschide conversația"
 
 #: src/app/Palette.tsx
 #: src/features/contact/ContactDetail.tsx
+#: src/features/home/HomeWork.tsx
 msgid "Open conversations"
 msgstr "Conversații deschise"
 
 #: src/features/team/TeamPage.tsx
 msgid "Open conversations assigned"
 msgstr "Conversații deschise atribuite"
-
-#: src/features/home/HomePage.tsx
-msgid "Open conversations now, new ones and ratings over the last {shown} days."
-msgstr "Conversații deschise acum, noi și evaluări din ultimele {shown} zile."
 
 #: src/features/status/LinkConversationsDialog.tsx
 msgid "Open conversations of this product that may be about {title}."
@@ -13544,9 +13448,9 @@ msgstr "Deschide ideea"
 msgid "Open in Analytics"
 msgstr "Deschide în Analiză"
 
-#: src/features/home/HomePage.tsx
-msgid "Open inbox"
-msgstr "Deschide căsuța de intrare"
+#: src/features/home/HomeWork.tsx
+msgid "Open in Inbox"
+msgstr "Deschide în Inbox"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Open incident"
@@ -13555,10 +13459,6 @@ msgstr "Deschide incidentul"
 #: src/features/status/StatusPages.tsx
 msgid "Open incidents"
 msgstr "Incidente deschise"
-
-#: src/features/home/HomePage.tsx
-msgid "Open includes conversations waiting on the customer. Rating turns amber below 85% good once a product has 5 ratings."
-msgstr "Deschise include conversațiile care așteaptă clientul. Evaluarea devine portocalie sub 85 % bune după ce un produs are 5 evaluări."
 
 #: src/features/account/ConnectPage.tsx
 msgid "Open it from the sign-in button of a documentation page."
@@ -13741,6 +13641,10 @@ msgstr "deschis, neatribuit"
 #: src/features/reports/TrendsReport.tsx
 msgid "Opened"
 msgstr "Deschise"
+
+#: src/features/home/HomeWork.tsx
+msgid "Opened · closed"
+msgstr "Deschise · închise"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "OpenID Connect"
@@ -14094,10 +13998,6 @@ msgstr "Pune pe pauză sau reia trimiterea"
 msgid "Pause or resume the monitor"
 msgstr "Pune pe pauză sau reia monitorul"
 
-#: src/features/home/HomeSide.tsx
-msgid "paused"
-msgstr "în pauză"
-
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/SlaBadge.tsx
 #: src/components/common/text.ts
@@ -14264,7 +14164,6 @@ msgstr "Pe căsuță"
 msgid "Per month (30 days)"
 msgstr "Pe lună (30 de zile)"
 
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Period"
@@ -14494,10 +14393,6 @@ msgstr "Alege fiecare domeniu de acces singur."
 msgid "Pick mails"
 msgstr "Alege e-mailuri"
 
-#: src/features/home/HomePage.tsx
-msgid "Pick one at the top of the page."
-msgstr "Alege unul din partea de sus a paginii."
-
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
 msgstr "Alege unul mai târziu în setările listei."
@@ -14682,10 +14577,6 @@ msgstr "Postează feedback pentru utilizatorii aplicației tale"
 msgid "Post new conversations and mentions to a Slack channel, and answer from the thread. The <0>guide</0> shows how to set up the Slack app."
 msgstr "Post new conversations and mentions to a Slack channel, and answer from the thread. The <0>guide</0> shows how to set up the Slack app."
 
-#: src/features/home/HomeSide.tsx
-msgid "Post status update"
-msgstr "Postează o actualizare de stare"
-
 #: src/features/status/StatusPages.tsx
 msgid "Post update"
 msgstr "Trimite actualizarea"
@@ -14800,7 +14691,6 @@ msgstr "pro, echipă"
 #: src/components/common/WorkspaceSelector.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
@@ -14844,7 +14734,7 @@ msgstr "Backend de producție"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeSide.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
@@ -14948,7 +14838,6 @@ msgstr "Cheie publică"
 msgid "Public pages that say whether your products work"
 msgstr "Pagini publice care spun dacă produsele tale funcționează"
 
-#: src/features/home/HomeSide.tsx
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Publish"
@@ -15108,12 +14997,11 @@ msgstr "evaluat ca bun"
 
 #: src/features/contact/ContactDetail.tsx
 #: src/features/conversation/rating.tsx
-#: src/features/home/HomePage.tsx
 msgid "Rated good"
 msgstr "Evaluat ca bun"
 
 #: src/features/conversation/Feedback.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/reports/ReportPages.tsx
 msgid "Rating"
 msgstr "Evaluare"
@@ -15334,6 +15222,10 @@ msgstr "doar primește, fără cont SMTP"
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "Receiving"
 msgstr "Primire"
+
+#: src/features/home/HomeSide.tsx
+msgid "Recent"
+msgstr "Recente"
 
 #: src/features/docs/DocsPage.tsx
 msgid "Recent activity"
@@ -15777,7 +15669,6 @@ msgid "Replace the view’s filters, search and order with the ones on screen."
 msgstr "Înlocuiește filtrele, căutarea și ordinea vizualizării cu cele de pe ecran."
 
 #: src/features/broadcasts/Report.tsx
-#: src/features/home/HomeSide.tsx
 msgid "replied"
 msgstr "a răspuns"
 
@@ -15932,6 +15823,10 @@ msgstr "Reply command"
 msgid "Reply held back to protect the customer"
 msgstr "Răspuns reținut pentru a proteja clientul"
 
+#: src/features/home/HomeWork.tsx
+msgid "Reply in {time}"
+msgstr "Răspunde în {time}"
+
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Reply posted"
 msgstr "Răspuns publicat"
@@ -16040,7 +15935,7 @@ msgstr "Eșec raportat"
 #: src/app/nav.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/reports/ReportPages.tsx
 msgid "Reports"
 msgstr "Rapoarte"
@@ -16291,7 +16186,6 @@ msgstr "A revocat cheia API {name}"
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "Imediat după abonare, oamenii primesc un scurt e-mail care o confirmă, cu un link de dezabonare."
 
-#: src/features/home/HomePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Right now"
 msgstr "Chiar acum"
@@ -16301,7 +16195,6 @@ msgstr "Chiar acum"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/feedback/RoadmapCard.tsx
-#: src/features/home/HomeSide.tsx
 msgid "Roadmap"
 msgstr "Foaie de parcurs"
 
@@ -16659,6 +16552,10 @@ msgctxt "mail folder"
 msgid "Scheduled"
 msgstr "Programate"
 
+#: src/features/home/HomeSide.tsx
+msgid "Scheduled broadcast"
+msgstr "Campanie programată"
+
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Scheduled by"
@@ -16877,10 +16774,6 @@ msgstr "Securitate"
 #: src/features/inbox/SidePanels.tsx
 msgid "See all mentions"
 msgstr "Vezi toate mențiunile"
-
-#: src/features/home/HomePage.tsx
-msgid "See paused broadcasts"
-msgstr "Vezi trimiterile în pauză"
 
 #: src/features/contact/ContactCard.tsx
 msgid "Seen {seen}"
@@ -17269,10 +17162,6 @@ msgstr "Orele de trimitere"
 msgid "Sending hours of “{name}”"
 msgstr "Orele de trimitere ale „{name}”"
 
-#: src/features/home/HomePage.tsx
-msgid "Sending is suspended."
-msgstr "Trimiterea este suspendată."
-
 #: src/components/common/Linked.tsx
 msgid "Sending kept failing, so Yuva gave up."
 msgstr "Trimiterea a continuat să eșueze, așa că Yuva a renunțat."
@@ -17363,7 +17252,6 @@ msgid "sends through {0}"
 msgstr "trimite prin {0}"
 
 #: src/features/broadcasts/Report.tsx
-#: src/features/home/HomeSide.tsx
 msgid "sent"
 msgstr "trimis"
 
@@ -17538,6 +17426,7 @@ msgstr "Setează starea"
 msgid "Set up"
 msgstr "Configurează"
 
+#: src/features/home/HomePage.tsx
 #: src/features/status/MonitorToken.tsx
 msgid "Set up {name}"
 msgstr "Configurează {name}"
@@ -17685,10 +17574,6 @@ msgstr "Arată {nRevoked} revocate"
 msgid "Show all authors"
 msgstr "Arată toți autorii"
 
-#: src/features/home/HomePage.tsx
-msgid "Show all products"
-msgstr "Arată toate produsele"
-
 #: src/components/common/ShortcutSheet.tsx
 msgid "Show archived designs"
 msgstr "Arată designurile arhivate"
@@ -17727,10 +17612,6 @@ msgstr "Arată mai mult"
 #: src/features/status/ComponentsTab.tsx
 msgid "Show on the page"
 msgstr "Arată pe pagină"
-
-#: src/features/home/HomePage.tsx
-msgid "Show only {name}"
-msgstr "Arată doar {name}"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Show or hide quoted text"
@@ -17804,14 +17685,6 @@ msgstr "Arată disponibilitatea"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Show who is online"
 msgstr "Arată cine este online"
-
-#: src/features/home/HomePage.tsx
-msgid "Showing {product} only."
-msgstr "Se arată doar {product}."
-
-#: src/features/home/HomePage.tsx
-msgid "Showing every product."
-msgstr "Se arată toate produsele."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "Shown after the subject in most inboxes. Empty uses the design’s own."
@@ -18098,6 +17971,7 @@ msgstr "Secret de semnare"
 msgid "Since"
 msgstr "Din"
 
+#: src/features/home/HomeWork.tsx
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Since {since}"
@@ -18314,6 +18188,10 @@ msgstr "Amână pentru (minute)"
 msgid "Snooze for {time}"
 msgstr "Amână pentru {time}"
 
+#: src/features/home/HomeWork.tsx
+msgid "snoozed"
+msgstr "amânată"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -18324,6 +18202,10 @@ msgstr "Amânat"
 msgctxt "mail folder"
 msgid "Snoozed"
 msgstr "Amânate"
+
+#: src/features/home/HomeSide.tsx
+msgid "Snoozed conversation"
+msgstr "Conversație amânată"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Snoozed until {until}"
@@ -18547,7 +18429,6 @@ msgstr "Start “{name}” on {when}?"
 msgid "Start a discussion"
 msgstr "Începe o discuție"
 
-#: src/features/home/HomePage.tsx
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Start a mailing list"
 msgstr "Începe o listă de corespondență"
@@ -18671,7 +18552,6 @@ msgstr "Stare la cădere"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomeSide.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 #: src/features/migrations/MapStep.tsx
@@ -18684,10 +18564,6 @@ msgstr "Stare la cădere"
 #: src/features/team/TeamPage.tsx
 msgid "Status"
 msgstr "Stare"
-
-#: src/features/home/HomePage.tsx
-msgid "Status and coming up"
-msgstr "Stare și ce urmează"
 
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
@@ -18987,10 +18863,6 @@ msgstr "file"
 msgid "Tags"
 msgstr "Taguri"
 
-#: src/features/home/HomePage.tsx
-msgid "take"
-msgstr "preia"
-
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "Take {name} off the waiting list"
 msgstr "Take {name} off the waiting list"
@@ -19035,7 +18907,6 @@ msgstr "Verificare TCP"
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/conversation/History.tsx
 #: src/features/docs/discussions/parts.tsx
-#: src/features/home/HomeSide.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
@@ -20146,10 +20017,6 @@ msgstr "Operatorul serverului citește asta înainte să lase spațiul de lucru 
 msgid "The server's operator registers the Slack app and sets its credentials. The guide explains how."
 msgstr "The server's operator registers the Slack app and sets its credentials. The guide explains how."
 
-#: src/features/home/HomePage.tsx
-msgid "The server’s operator suspended sending for this workspace. Scheduled broadcasts are paused and new schedules are refused."
-msgstr "Operatorul serverului a suspendat trimiterile pentru acest spațiu de lucru. Trimiterile programate sunt în pauză, iar programările noi sunt refuzate."
-
 #: src/features/settings/audit/sentence.ts
 msgid "The server's operator vouched for the address {address}"
 msgstr "Operatorul serverului a confirmat adresa {address}"
@@ -20895,10 +20762,6 @@ msgstr "Acest server trimite mesajele în masă ale unui spațiu de lucru după 
 msgid "This server sends broadcasts for a workspace once its operator approves it. Tell them about your mail to ask. Until then you can build lists, designs and drafts and send tests."
 msgstr "Acest server trimite mesajele în masă ale unui spațiu de lucru după ce operatorul lui îl aprobă. Spune-le despre e-mailul tău ca să ceri. Până atunci poți construi liste, designuri și ciorne și poți trimite teste."
 
-#: src/features/home/HomePage.tsx
-msgid "This server sends broadcasts only after its operator approves the workspace. Drafts are kept."
-msgstr "Acest server trimite mesaje în masă doar după ce operatorul aprobă spațiul de lucru. Ciornele se păstrează."
-
 #: src/components/common/text.ts
 msgid "This server's limit for migrations is reached. Wait until a running one ends, or ask the server's operator."
 msgstr "Limita de migrări a acestui server a fost atinsă. Așteaptă până se termină una în curs sau întreabă operatorul serverului."
@@ -21084,7 +20947,7 @@ msgstr "Către: {who}"
 #: src/app/places.tsx
 #: src/components/common/FlatList.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -21353,7 +21216,7 @@ msgid "Unassign"
 msgstr "Elimină atribuirea"
 
 #: src/features/conversation/ChatView.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -21746,10 +21609,6 @@ msgstr "Se încarcă…"
 msgid "Uptime"
 msgstr "Disponibilitate"
 
-#: src/features/home/HomeSide.tsx
-msgid "uptime {uptime} over {shown} days"
-msgstr "disponibilitate {uptime} în {shown} zile"
-
 #: src/features/status/ComponentsTab.tsx
 msgid "Uptime is hidden on this page. Turn it on in the settings to see each day here."
 msgstr "Disponibilitatea este ascunsă pe această pagină. Activeaz-o din setări ca să vezi aici fiecare zi."
@@ -22075,10 +21934,6 @@ msgstr "vizitatori"
 msgid "Visitors"
 msgstr "Vizitatori"
 
-#: src/features/home/HomePage.tsx
-msgid "Visitors · 7 days"
-msgstr "Vizitatori · 7 zile"
-
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Visitors can chat without an identity token from your backend."
 msgstr "Vizitatorii pot discuta fără un token de identitate de la backendul tău."
@@ -22086,6 +21941,10 @@ msgstr "Vizitatorii pot discuta fără un token de identitate de la backendul t�
 #: src/features/home/PropertyCard.tsx
 msgid "Visitors in the last seven days: {series}"
 msgstr "Vizitatori în ultimele șapte zile: {series}"
+
+#: src/features/home/HomeWork.tsx
+msgid "Visitors now"
+msgstr "Vizitatori acum"
 
 #: src/features/setup/SetupHub.tsx
 msgid "Visitors of your website or app, without cookies"
@@ -22125,7 +21984,6 @@ msgstr "Confirmată de operatorul serverului la {when}."
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -22213,10 +22071,6 @@ msgstr "Se așteaptă primul rezultat"
 msgid "Waiting for the operator"
 msgstr "Așteaptă operatorul"
 
-#: src/features/home/HomePage.tsx
-msgid "Waiting for the operator."
-msgstr "Se așteaptă operatorul."
-
 #: src/features/migrations/parts.tsx
 msgid "Waiting for the provider's limit; continues at {time}."
 msgstr "Se așteaptă limita furnizorului; continuă {time}."
@@ -22237,17 +22091,21 @@ msgstr "waiting for their time"
 msgid "Waiting for validation"
 msgstr "Se așteaptă validarea"
 
+#: src/features/home/HomeWork.tsx
+msgid "Waiting for you"
+msgstr "Te așteaptă"
+
 #: src/features/inbox/ChatList.tsx
 msgid "Waiting longest"
 msgstr "Așteaptă cel mai mult"
 
-#: src/features/home/HomeSide.tsx
-msgid "Waiting on you"
-msgstr "Te așteaptă"
+#: src/features/home/HomeWork.tsx
+msgid "waiting on the customer"
+msgstr "așteaptă clientul"
 
-#: src/features/home/HomeSide.tsx
-msgid "waits for approval"
-msgstr "așteaptă aprobare"
+#: src/features/home/HomeWork.tsx
+msgid "waiting on you"
+msgstr "te așteaptă"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Warn about the certificate"
@@ -22511,7 +22369,6 @@ msgstr "Pentru ce este Yuva"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/home/HomeSide.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 msgid "What’s new"
 msgstr "Noutăți"
@@ -22973,7 +22830,6 @@ msgstr "Da"
 
 #: src/components/common/FlatList.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/home/HomePage.tsx
 msgid "Yesterday"
 msgstr "Ieri"
 
@@ -23014,14 +22870,6 @@ msgstr "Încă nu ești într-un spațiu de lucru"
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You are the only owner of a workspace. Make someone else an owner there, or delete that workspace, before you delete your account."
 msgstr "Ești singurul proprietar al unui spațiu de lucru. Fă pe altcineva proprietar acolo sau șterge acel spațiu de lucru înainte să îți ștergi contul."
-
-#: src/features/home/HomePage.tsx
-msgid "You asked on {asked} to send broadcasts. Drafts and schedules wait until the operator answers."
-msgstr "Ai cerut pe {asked} să trimiți mesaje în masă. Ciornele și programările așteaptă până răspunde operatorul."
-
-#: src/features/home/HomePage.tsx
-msgid "You asked to send broadcasts. Drafts and schedules wait until the operator answers."
-msgstr "Ai cerut să trimiți mesaje în masă. Ciornele și programările așteaptă până răspunde operatorul."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "You can change the delay, the pace, the sending hours and turn click counting off. Pause it to change the content."
@@ -23234,6 +23082,10 @@ msgstr "Your e-mail address is not in a domain this organisation has claimed in 
 msgid "Your first conversation is here"
 msgstr "Prima ta conversație este aici"
 
+#: src/features/home/HomeWork.tsx
+msgid "Your first reply"
+msgstr "Primul tău răspuns"
+
 #: src/features/migrations/text.ts
 msgid "Your folder"
 msgstr "Dosarul tău"
@@ -23284,6 +23136,10 @@ msgstr "Organizația ta Microsoft 365 lasă doar un administrator să aprobe apl
 msgid "Your name"
 msgstr "Numele tău"
 
+#: src/features/home/HomeWork.tsx
+msgid "Your open conversations"
+msgstr "Conversațiile tale deschise"
+
 #: src/features/auth/SignInForm.tsx
 msgid "Your organisation requires this sign-in for its workspace."
 msgstr "Your organisation requires this sign-in for its workspace."
@@ -23331,6 +23187,10 @@ msgstr "Produsul tău"
 #: src/features/status/SettingsTab.tsx
 msgid "Your product."
 msgstr "Produsul tău."
+
+#: src/features/home/HomeWork.tsx
+msgid "Your rating"
+msgstr "Nota ta"
 
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "Your replies by e-mail end with"

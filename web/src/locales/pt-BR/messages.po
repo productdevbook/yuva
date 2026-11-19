@@ -15,10 +15,31 @@ msgstr "Arquivos .eml em um zip"
 msgid "“{name}” holds a value that does not fit"
 msgstr "“{name}” tem um valor que não se encaixa"
 
+#: src/features/home/HomeSide.tsx
+msgid "“{title}” was closed"
+msgstr "“{title}” foi encerrada"
+
+#: src/features/home/HomeSide.tsx
+msgid "“{title}” was published"
+msgstr "“{title}” foi publicado"
+
+#: src/features/home/HomeSide.tsx
+msgid "“{title}” was rated bad"
+msgstr "“{title}” recebeu avaliação negativa"
+
+#: src/features/home/HomeSide.tsx
+msgid "“{title}” was rated good"
+msgstr "“{title}” recebeu avaliação positiva"
+
+#: src/features/home/HomeSide.tsx
+msgid "“{title}” was sent"
+msgstr "“{title}” foi enviado"
+
 #: src/features/setup/ChannelStep.tsx
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "“Esta página foi útil?”, feedback e discussões na sua documentação"
 
+#: src/features/home/HomeSide.tsx
 #: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailSide.tsx
@@ -86,6 +107,11 @@ msgstr "{0, plural, one {# deles recebe porque o idioma dele não tem versão} o
 msgid "{0, plural, one {# open} other {# open}}"
 msgstr "{0, plural, one {# aberta} other {# abertas}}"
 
+#. placeholder {0}: p.unanswered_threads
+#: src/features/home/HomeWork.tsx
+msgid "{0, plural, one {# question needs a reply} other {# questions need a reply}}"
+msgstr "{0, plural, one {# pergunta precisa de resposta} other {# perguntas precisam de resposta}}"
+
 #. placeholder {0}: d.reply_count
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "{0, plural, one {# reply} other {# replies}}"
@@ -132,9 +158,7 @@ msgstr "{0} fechadas"
 msgid "{0} events"
 msgstr "{0} eventos"
 
-#. placeholder {0}: pct.format(good ?? 0)
 #. placeholder {0}: pct.format(p.share)
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 msgid "{0} good"
 msgstr "{0} boas"
@@ -311,10 +335,6 @@ msgstr "{available} de {total}"
 msgid "{available} of {total} available now"
 msgstr "{available} de {total} disponíveis agora"
 
-#: src/features/home/HomePage.tsx
-msgid "{bad, plural, one {# bad rating} other {# bad ratings}}"
-msgstr "{bad, plural, one {# avaliação ruim} other {# avaliações ruins}}"
-
 #: src/features/contact/ContactDetails.tsx
 msgid "{bad} bad"
 msgstr "{bad} negativas"
@@ -364,10 +384,6 @@ msgstr "{count, plural, one {# condição} other {# condições}}"
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
 msgstr "{count, plural, one {# pasta} other {# pastas}}"
-
-#: src/features/home/HomeSide.tsx
-msgid "{count, plural, one {# issue} other {# issues}}"
-msgstr "{count, plural, one {# problema} other {# problemas}}"
 
 #: src/features/broadcasts/ListsHome.tsx
 msgid "{count, plural, one {# list} other {# lists}}"
@@ -437,14 +453,9 @@ msgstr "{count} mensagens · {size}"
 msgid "{count} settings"
 msgstr "{count} configurações"
 
-#: src/features/home/HomePage.tsx
 #: src/features/migrations/ReviewStep.tsx
 msgid "{created, plural, one {# new} other {# new}}"
 msgstr "{created, plural, one {# nova} other {# novas}}"
-
-#: src/features/home/HomePage.tsx
-msgid "{created} new conversations and {replied} first replies in the period"
-msgstr "{created} conversas novas e {replied} primeiras respostas no período"
 
 #: src/features/broadcasts/Growth.tsx
 #: src/features/docs/Toolbar.tsx
@@ -452,10 +463,6 @@ msgstr "{created} conversas novas e {replied} primeiras respostas no período"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, one {# dia} other {# dias}}"
-
-#: src/features/home/HomePage.tsx
-msgid "{date}: {newCount} new, {replyCount} first replies"
-msgstr "{date}: {newCount} novas, {replyCount} primeiras respostas"
 
 #: src/features/status/StatusPages.tsx
 msgid "{days, plural, one {# day} other {# days}}"
@@ -476,6 +483,10 @@ msgstr "{days, plural, one {Aguardando há # dia} other {Aguardando há # dias}}
 #: src/components/common/BulkReport.tsx
 msgid "{deleted} deleted"
 msgstr "{deleted} excluídas"
+
+#: src/features/home/HomeSide.tsx
+msgid "{done} of {total} copied"
+msgstr "{done} de {total} copiados"
 
 #: src/features/broadcasts/Import.tsx
 msgid "{done} of {total} rows"
@@ -593,13 +604,17 @@ msgstr "{imported} mensagens"
 msgid "{inboxName} has no e-mail channel for {address} yet. History is stored in that channel, so replies after the switch go out from the same address."
 msgstr "{inboxName} ainda não tem um canal de e-mail para {address}. O histórico fica nesse canal, então as respostas depois da troca saem do mesmo endereço."
 
+#: src/features/home/HomeSide.tsx
+msgid "{incidents, plural, one {# incident} other {# incidents}}"
+msgstr "{incidents, plural, one {# incidente} other {# incidentes}}"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "{incoming} received, {outgoing} sent"
 msgstr "{incoming} recebidos, {outgoing} enviados"
 
-#: src/features/home/HomePage.tsx
-msgid "{left, plural, one {# setup step left.} other {# setup steps left.}}"
-msgstr "{left, plural, one {Falta # etapa de configuração.} other {Faltam # etapas de configuração.}}"
+#: src/features/home/HomeWork.tsx
+msgid "{lateText} late"
+msgstr "{lateText} atrasadas"
 
 #: src/features/conversation/SlaPopover.tsx
 msgid "{left} left when it resumes"
@@ -649,6 +664,10 @@ msgstr "{monitorName} voltou a responder normalmente"
 msgid "{mxDomain} has no MX record, so replies to broadcasts cannot arrive. Publish the MX records of your mail service."
 msgstr "{mxDomain} não tem registro MX, então as respostas aos envios não conseguem chegar. Publique os registros MX do seu serviço de e-mail."
 
+#: src/features/home/HomeWork.tsx
+msgid "{n, plural, =0 {no first replies} one {# first reply} other {# first replies}}"
+msgstr "{n, plural, =0 {nenhuma primeira resposta} one {# primeira resposta} other {# primeiras respostas}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# app} other {# apps}}"
 msgstr "{n, plural, one {# app} other {# apps}}"
@@ -656,10 +675,6 @@ msgstr "{n, plural, one {# app} other {# apps}}"
 #: src/features/broadcasts/Trigger.tsx
 msgid "{n, plural, one {# day after someone first signs in to {inbox}} other {# days after someone first signs in to {inbox}}}"
 msgstr "{n, plural, one {# day after someone first signs in to {inbox}} other {# days after someone first signs in to {inbox}}}"
-
-#: src/features/home/HomePage.tsx
-msgid "{n, plural, one {# day ago} other {# days ago}}"
-msgstr "{n, plural, one {há # dia} other {há # dias}}"
 
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# documentation site} other {# documentation sites}}"
@@ -686,12 +701,17 @@ msgid "{n, plural, one {# other conversation} other {# other conversations}}"
 msgstr "{n, plural, one {# outra conversa} other {# outras conversas}}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/home/HomeSide.tsx
 msgid "{n, plural, one {# person} other {# people}}"
 msgstr "{n, plural, one {# pessoa} other {# pessoas}}"
 
 #: src/features/settings/audit/sentence.ts
 msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
 msgstr "{n, plural, one {# destinatário por dia} other {# destinatários por dia}}"
+
+#: src/features/home/HomePage.tsx
+msgid "{n, plural, one {# step} other {# steps}}"
+msgstr "{n, plural, one {# etapa} other {# etapas}}"
 
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# team mailbox} other {# team mailboxes}}"
@@ -772,7 +792,6 @@ msgstr "{n} sem estrela"
 msgid "{name} · {statusText}"
 msgstr "{name} · {statusText}"
 
-#: src/features/home/HomeSide.tsx
 #: src/features/team/TeamPage.tsx
 msgid "{name} (you)"
 msgstr "{name} (você)"
@@ -784,6 +803,10 @@ msgstr "{name} bloqueado. Os e-mails dele são recusados."
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "{name} can reply"
 msgstr "{name} pode responder"
+
+#: src/features/home/HomeSide.tsx
+msgid "{name} comes back"
+msgstr "{name} volta"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "{name} connects from its vendor's cloud, so it needs this server at a public https address. The panel is open at {url}, which it probably cannot reach."
@@ -800,6 +823,10 @@ msgstr "{name} excluído"
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "{name} docs"
 msgstr "Documentação de {name}"
+
+#: src/features/home/HomeSide.tsx
+msgid "{name} goes out"
+msgstr "{name} sai"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{name} is looking"
@@ -859,19 +886,23 @@ msgstr "Site de {name}"
 msgid "{name}, visitors in the last seven days: {series}"
 msgstr "{name}, visitantes dos últimos sete dias: {series}"
 
-#: src/features/home/HomeSide.tsx
-msgid "{names} operational"
-msgstr "{names} operando"
-
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "{names} will be notified"
 msgstr "{names} serão notificados"
 
+#: src/features/home/HomePage.tsx
+msgid "{online} of {total} online"
+msgstr "{online} de {total} online"
+
 #: src/components/common/Linked.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/home/HomeSide.tsx
 msgid "{open, plural, one {# open} other {# open}}"
 msgstr "{open, plural, one {# aberta} other {# abertas}}"
+
+#: src/features/home/HomeSide.tsx
+#: src/features/home/HomeWork.tsx
+msgid "{open} open"
+msgstr "{open} abertas"
 
 #: src/features/broadcasts/Import.tsx
 msgid "{out, plural, one {# row is left out} other {# rows are left out}}"
@@ -901,10 +932,6 @@ msgstr "{people, plural, one {Sua # inscrição e seu registro de consentimento 
 #: src/features/broadcasts/Overview.tsx
 msgid "{people} people"
 msgstr "{people} pessoas"
-
-#: src/features/home/HomeSide.tsx
-msgid "{people} recipients"
-msgstr "{people} destinatários"
 
 #: src/features/migrations/ImportBanner.tsx
 msgid "{percent}%"
@@ -998,10 +1025,6 @@ msgstr "{provider} quer que você entre uma vez no navegador. Entre no seu e-mai
 msgid "{provider}'s tags become Yuva labels on their conversations."
 msgstr "As tags de {provider} viram rótulos do Yuva nas conversas delas."
 
-#: src/features/home/HomePage.tsx
-msgid "{ptsText} pts"
-msgstr "{ptsText} pts"
-
 #: src/features/migrations/CopyStep.tsx
 msgid "{rate} a minute"
 msgstr "{rate} por minuto"
@@ -1019,7 +1042,7 @@ msgstr "{rate} e-mails por segundo"
 msgid "{rate} mails a second · one every {every}"
 msgstr "{rate} e-mails por segundo · um a cada {every}"
 
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeWork.tsx
 msgid "{rated, plural, =0 {no ratings} one {# rating} other {# ratings}}"
 msgstr "{rated, plural, =0 {nenhuma avaliação} one {# avaliação} other {# avaliações}}"
 
@@ -1093,6 +1116,14 @@ msgstr "{shown, plural, one {# conversa} other {# conversas}}"
 msgid "{size} · pick another file"
 msgstr "{size} · escolher outro arquivo"
 
+#: src/features/home/HomeWork.tsx
+msgid "{source} import needs attention"
+msgstr "A importação de {source} precisa de atenção"
+
+#: src/features/home/HomeSide.tsx
+msgid "{source} import should finish"
+msgstr "A importação de {source} deve terminar"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "{spam} marked as spam"
 msgstr "{spam} marcados como spam"
@@ -1116,6 +1147,10 @@ msgstr "{text} em relação ao período anterior"
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "{threads} discussões abertas"
+
+#: src/features/home/HomeWork.tsx
+msgid "{total, plural, one {# conversation nobody has taken} other {# conversations nobody has taken}}"
+msgstr "{total, plural, one {# conversa que ninguém assumiu} other {# conversas que ninguém assumiu}}"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "{total, plural, one {Last 30 days · # broadcast} other {Last 30 days · # broadcasts}}"
@@ -1184,14 +1219,6 @@ msgstr "{votes} votos"
 msgid "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
 msgstr "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
 
-#: src/features/home/HomePage.tsx
-msgid "{waiting, plural, one {# conversation is waiting.} other {# conversations are waiting.}}"
-msgstr "{waiting, plural, one {# conversa aguardando.} other {# conversas aguardando.}}"
-
-#: src/features/home/HomePage.tsx
-msgid "{waiting, plural, one {Open in Inbox} other {All {total} in Inbox}}"
-msgstr "{waiting, plural, one {Abrir na caixa de entrada} other {Todas as {total} na caixa de entrada}}"
-
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "{waiting} waiting"
 msgstr "{waiting} waiting"
@@ -1203,6 +1230,10 @@ msgstr "{watching, plural, one {Monitorada por # monitor} many {Monitorada por #
 #: src/features/reports/ReportPages.tsx
 msgid "{who} · answered by {name}"
 msgstr "{who} · respondida por {name}"
+
+#: src/features/home/HomeSide.tsx
+msgid "{who} closed “{title}”"
+msgstr "{who} encerrou “{title}”"
 
 #: src/app/Header.tsx
 msgid "{who} in {where}"
@@ -1216,9 +1247,21 @@ msgstr "{who} mencionou você em {contact}, {subject}. Abrir a conversa"
 msgid "{who} mentioned you in {contact}. Open the conversation"
 msgstr "{who} mencionou você em {contact}. Abrir a conversa"
 
+#: src/features/home/HomeSide.tsx
+msgid "{who} posted an update on “{title}”"
+msgstr "{who} publicou uma atualização em “{title}”"
+
+#: src/features/home/HomeSide.tsx
+msgid "{who} published “{title}”"
+msgstr "{who} publicou “{title}”"
+
 #: src/features/account/AccountPage.tsx
 msgid "{who} replied in <0>{title}</0>"
 msgstr "{who} respondeu em <0>{title}</0>"
+
+#: src/features/home/HomeSide.tsx
+msgid "{who} sent “{title}”"
+msgstr "{who} enviou “{title}”"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
@@ -1232,14 +1275,6 @@ msgstr "+ Adicionar endereço"
 #: src/features/broadcasts/ListsHome.tsx
 msgid "+{added} this month"
 msgstr "+{added} este mês"
-
-#: src/features/home/HomeSide.tsx
-msgid "+{off} offline"
-msgstr "+{off} offline"
-
-#: src/features/home/HomeSide.tsx
-msgid "+{off} offline · {offOpen} open"
-msgstr "+{off} offline · {offOpen} abertas"
 
 #: src/features/settings/channels/email/Ses.tsx
 msgid "<0>{domain}</0> is not a verified identity in the server’s Amazon SES account. Mail goes out without tenant isolation and broadcasts are blocked. Ask the server’s operator to verify the domain."
@@ -2159,10 +2194,6 @@ msgstr "Adicionar uma nota interna"
 msgid "Add an OAuth client named “Yuva”, as a confidential client, and enter the redirect URL below as its redirect URL."
 msgstr "Adicione um cliente OAuth chamado “Yuva”, como cliente confidencial, e informe a URL de redirecionamento abaixo como URL de redirecionamento dele."
 
-#: src/features/home/HomePage.tsx
-msgid "Add analytics"
-msgstr "Adicionar análise"
-
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Add another"
@@ -2225,10 +2256,6 @@ msgstr "Adicionar a etiqueta {labelName}"
 #: src/features/settings/automation/text.ts
 msgid "Add labels"
 msgstr "Adicionar etiquetas"
-
-#: src/features/home/HomePage.tsx
-msgid "Add live chat to your site"
-msgstr "Adicione o chat ao vivo ao seu site"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Add monitor"
@@ -2531,10 +2558,6 @@ msgstr "Todos os monitores"
 msgid "All of its conversations, messages and attachments are deleted with it. This cannot be undone."
 msgstr "Todas as conversas, mensagens e anexos são excluídos junto. Isso não pode ser desfeito."
 
-#: src/features/home/HomeSide.tsx
-msgid "All operational"
-msgstr "Tudo operando"
-
 #: src/features/migrations/UploadStep.tsx
 msgid "All parts arrived. Reading the file…"
 msgstr "Todas as partes chegaram. Lendo o arquivo…"
@@ -2573,6 +2596,10 @@ msgstr "Todos os escopos"
 #: src/features/docs/Toolbar.tsx
 msgid "All sites"
 msgstr "Todos os sites"
+
+#: src/features/home/HomePage.tsx
+msgid "All steps"
+msgstr "Todas as etapas"
 
 #: src/features/status/StatusPages.tsx
 msgid "All systems operational"
@@ -2914,6 +2941,10 @@ msgstr "Uma meta de SLA foi descumprida"
 msgid "an unknown person"
 msgstr "uma pessoa desconhecida"
 
+#: src/features/home/HomeSide.tsx
+msgid "An update was posted on “{title}”"
+msgstr "Uma atualização foi publicada em “{title}”"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
 msgstr "Um upload foi interrompido: {count} partes, {size}, já estão no servidor."
@@ -2922,7 +2953,6 @@ msgstr "Um upload foi interrompido: {count} partes, {size}, já estão no servid
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/settings/webhooks/events.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Analytics"
@@ -3353,10 +3383,6 @@ msgstr "Peça ao administrador do seu servidor de e-mail para entregar {address}
 msgid "Ask the admin of your mail server to forward {address} to the address below on the server, keeping delivery to the mailbox."
 msgstr "Peça ao administrador do seu servidor de e-mail para encaminhar {address} para o endereço abaixo no servidor, mantendo a entrega na caixa."
 
-#: src/features/home/HomePage.tsx
-msgid "Ask the operator"
-msgstr "Pedir ao operador"
-
 #: src/features/settings/ProductsPage.tsx
 msgid "asked after closing"
 msgstr "perguntado após o fechamento"
@@ -3599,6 +3625,7 @@ msgid "Automation"
 msgstr "Automação"
 
 #: src/app/UserMenu.tsx
+#: src/features/home/HomePage.tsx
 msgid "Available"
 msgstr "Disponível"
 
@@ -3613,6 +3640,7 @@ msgstr "Disponível até {until}"
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Away"
 msgstr "Ausente"
@@ -3625,6 +3653,10 @@ msgstr "Ausente"
 #: src/features/migrations/Wizard.tsx
 msgid "Back"
 msgstr "Voltar"
+
+#: src/features/home/HomeWork.tsx
+msgid "Back {at}"
+msgstr "Volta {at}"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Back to API keys"
@@ -3639,6 +3671,10 @@ msgstr "Voltar às colunas"
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "Back to draft"
 msgstr "Voltar ao rascunho"
+
+#: src/features/setup/BackHome.tsx
+msgid "Back to Home"
+msgstr "Voltar ao início"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Back to setup"
@@ -3942,10 +3978,6 @@ msgstr "Envio em massa"
 msgid "Broadcasts"
 msgstr "Envios"
 
-#: src/features/home/HomePage.tsx
-msgid "Broadcasts are suspended."
-msgstr "Os disparos estão suspensos."
-
 #: src/components/common/text.ts
 msgid "Broadcasts are turned off on this server."
 msgstr "Os envios estão desativados neste servidor."
@@ -3954,17 +3986,9 @@ msgstr "Os envios estão desativados neste servidor."
 msgid "Broadcasts are turned off on this server. Lists and their forms still work, so you can collect subscribers."
 msgstr "Os envios estão desativados neste servidor. As listas e seus formulários continuam funcionando, então você pode coletar inscritos."
 
-#: src/features/home/HomePage.tsx
-msgid "Broadcasts can’t go out yet."
-msgstr "Os disparos ainda não podem sair."
-
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Broadcasts from this channel go out through its SMTP account for replies, or through a separate account. A separate account, ideally on its own subdomain, keeps spam complaints about newsletters away from your support mail."
 msgstr "Os envios deste canal saem pela conta SMTP de respostas dele, ou por uma conta separada. Uma conta separada, de preferência em um subdomínio próprio, mantém reclamações de spam sobre newsletters longe do seu e-mail de suporte."
-
-#: src/features/home/HomePage.tsx
-msgid "Broadcasts wait for the operator’s approval."
-msgstr "Os disparos aguardam a aprovação do operador."
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
@@ -4615,10 +4639,6 @@ msgstr "Contagem de cliques"
 msgid "Click tracking"
 msgstr "Rastreamento de cliques"
 
-#: src/features/home/HomeSide.tsx
-msgid "clicked"
-msgstr "clicou"
-
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 msgid "Clicked"
@@ -4628,9 +4648,9 @@ msgstr "Clicou"
 msgid "clicked a link, roughly"
 msgstr "clicou em um link, aproximadamente"
 
-#: src/features/home/HomeSide.tsx
-msgid "clicks not tracked"
-msgstr "cliques não rastreados"
+#: src/features/home/HomeWork.tsx
+msgid "clicks · replies · {name}"
+msgstr "cliques · respostas · {name}"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Clicks not tracked"
@@ -4770,10 +4790,6 @@ msgstr "Código enviado"
 msgid "Collapse"
 msgstr "Recolher"
 
-#: src/features/home/HomePage.tsx
-msgid "Collect ratings on your docs pages"
-msgstr "Colete avaliações nas suas páginas de documentação"
-
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Collections"
@@ -4805,7 +4821,6 @@ msgstr "Colunas"
 msgid "Coming later"
 msgstr "Em breve"
 
-#: src/features/home/HomeSide.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Coming up"
 msgstr "Em breve"
@@ -4939,7 +4954,6 @@ msgid "confirmed their address in the last {days} days"
 msgstr "confirmaram o endereço nos últimos {days} dias"
 
 #: src/features/account/ConnectPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/migrations/text.ts
 #: src/features/migrations/Wizard.tsx
@@ -4966,10 +4980,6 @@ msgstr "Conectar {provider}"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Connect a provider and verify a domain first."
 msgstr "Connect a provider and verify a domain first."
-
-#: src/features/home/HomePage.tsx
-msgid "Connect a support address"
-msgstr "Conecte um endereço de suporte"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Connect a tracker"
@@ -5005,10 +5015,6 @@ msgstr "Connect Slack"
 #: src/features/account/ConnectPage.tsx
 msgid "Connect to {host}"
 msgstr "Conectar a {host}"
-
-#: src/features/home/HomePage.tsx
-msgid "Connect your iOS or Android app"
-msgstr "Conecte seu app iOS ou Android"
 
 #: src/features/settings/SettingsFrame.tsx
 msgid "Connect your servers and bots to Yuva"
@@ -5093,10 +5099,6 @@ msgstr "Conectado ao {provider}"
 #: src/features/migrations/ConnectStep.tsx
 msgid "Connected to {storedHost}. Enter the password again only to change it."
 msgstr "Conectado a {storedHost}. Informe a senha de novo só para alterá-la."
-
-#: src/features/home/HomePage.tsx
-msgid "Connecting"
-msgstr "Conectando"
 
 #: src/features/setup/email/EmailTestStep.tsx
 #: src/features/setup/WaitStep.tsx
@@ -5311,10 +5313,6 @@ msgstr "As conversas em que ninguém escreveu depois da importação são exclu�
 msgid "Conversations nobody wrote in after the import are deleted. Nothing changed in {provider}."
 msgstr "As conversas em que ninguém escreveu depois da importação são excluídas. Nada mudou no {provider}."
 
-#: src/features/home/HomePage.tsx
-msgid "Conversations show up here as soon as the first customer writes."
-msgstr "As conversas aparecem aqui assim que o primeiro cliente escrever."
-
 #: src/features/reports/ReportPages.tsx
 msgid "conversations started"
 msgstr "conversas iniciadas"
@@ -5330,10 +5328,6 @@ msgstr "As conversas que começaram nele mantêm suas mensagens."
 #: src/features/settings/channels/sections.tsx
 msgid "Conversations that started on this channel keep their messages."
 msgstr "As conversas que começaram neste canal mantêm suas mensagens."
-
-#: src/features/home/HomePage.tsx
-msgid "Conversations waiting for an answer, oldest first."
-msgstr "Conversas aguardando resposta, a mais antiga primeiro."
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Conversations your team wrote in stay. Nothing changes in {address}."
@@ -5465,17 +5459,9 @@ msgstr "Não foi possível alcançar o servidor. Confira sua conexão e tente de
 msgid "Couldn’t load Home. Your inbox still works."
 msgstr "Não foi possível carregar o Início. Sua caixa de entrada continua funcionando."
 
-#: src/features/home/HomePage.tsx
-msgid "Couldn’t refresh since {time}. The figures below may be out of date; your inbox still works."
-msgstr "Sem atualizar desde {time}. Os números abaixo podem estar desatualizados; sua caixa de entrada continua funcionando."
-
 #: src/features/broadcasts/Composer.tsx
 msgid "Count clicks"
 msgstr "Contar cliques"
-
-#: src/features/home/HomePage.tsx
-msgid "Count visitors on your site"
-msgstr "Conte os visitantes do seu site"
 
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "counted so far"
@@ -5494,7 +5480,6 @@ msgstr "País"
 msgid "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
 msgstr "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
 
-#: src/features/home/HomePage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/DeveloperTabs.tsx
 msgid "Create"
@@ -6315,7 +6300,6 @@ msgstr "As notificações na área de trabalho estão bloqueadas para este site 
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/mail/MailPage.tsx
@@ -6411,6 +6395,7 @@ msgstr "Desconectou o rastreador de issues {name} ({provider})"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/home/HomeWork.tsx
 msgid "Discussion"
 msgstr "Discussão"
 
@@ -6705,10 +6690,6 @@ msgstr "Rascunhos e aprovações"
 #: src/components/common/text.ts
 msgid "Drafts and timeline events cannot be removed."
 msgstr "Rascunhos e eventos da linha do tempo não podem ser removidos."
-
-#: src/features/home/HomeSide.tsx
-msgid "Drafts to review"
-msgstr "Rascunhos para revisar"
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Drafts waiting"
@@ -7729,12 +7710,8 @@ msgid "Finish now"
 msgstr "Concluir agora"
 
 #: src/features/home/HomePage.tsx
-msgid "Finish setting up"
-msgstr "Termine a configuração"
-
-#: src/features/home/HomePage.tsx
-msgid "Finish setup"
-msgstr "Concluir a configuração"
+msgid "Finish setting up {name}"
+msgstr "Termine de configurar {name}"
 
 #: src/features/migrations/parts.tsx
 msgid "Finish the migration?"
@@ -7765,19 +7742,12 @@ msgstr "Primeira mensagem"
 msgid "First name"
 msgstr "Nome"
 
-#: src/features/home/HomePage.tsx
-msgid "First replies"
-msgstr "Primeiras respostas"
-
-#: src/features/home/HomePage.tsx
-msgid "First replies today took {took} at the median."
-msgstr "Hoje as primeiras respostas levaram {took} na mediana."
-
 #: src/features/contact/ContactDetail.tsx
 msgid "first reply"
 msgstr "primeira resposta"
 
 #: src/features/conversation/SlaPopover.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
@@ -8192,7 +8162,6 @@ msgstr "Obter o arquivo"
 msgid "Get the SDK lines"
 msgstr "Obter as linhas do SDK"
 
-#: src/features/home/HomePage.tsx
 #: src/features/setup/AddChannelStep.tsx
 msgid "Get the snippet"
 msgstr "Obter o trecho"
@@ -8206,6 +8175,7 @@ msgid "Get the subscribe form"
 msgstr "Obter o formulário de inscrição"
 
 #: src/app/UserMenu.tsx
+#: src/features/home/HomePage.tsx
 msgid "Getting started"
 msgstr "Primeiros passos"
 
@@ -8220,10 +8190,6 @@ msgstr "Dar ao canal um novo endereço de encaminhamento?"
 #: src/features/status/SettingsTab.tsx
 msgid "Give the page a name."
 msgstr "Dê um nome à página."
-
-#: src/features/home/HomePage.tsx
-msgid "Give the team a shared mailbox"
-msgstr "Dê à equipe uma caixa de e-mail compartilhada"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Gives a conversation without an assignee to a teammate when it arrives or is reopened by the contact. Automation rules run first."
@@ -8520,6 +8486,7 @@ msgstr "Oculto pela equipe"
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/home/HomePage.tsx
 msgid "Hide"
 msgstr "Ocultar"
 
@@ -8822,6 +8789,7 @@ msgstr "Impacto"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/broadcasts/ListPage.tsx
+#: src/features/home/HomeWork.tsx
 msgid "Import"
 msgstr "Importar"
 
@@ -8875,10 +8843,6 @@ msgstr "Importado para o Yuva em {date}"
 #: src/features/broadcasts/Import.tsx
 msgid "Importing"
 msgstr "Importando"
-
-#: src/features/home/HomeSide.tsx
-msgid "Importing {source} history"
-msgstr "Importando o histórico de {source}"
 
 #: src/features/migrations/ImportBanner.tsx
 msgid "Importing history from {address} · {percent}% · new mail keeps arriving as usual"
@@ -9090,7 +9054,7 @@ msgstr "Caixas"
 msgid "Inboxes cut off subjects longer than 80 characters."
 msgstr "As caixas de entrada cortam assuntos com mais de 80 caracteres."
 
-#: src/features/home/HomeSide.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Incident"
@@ -9498,10 +9462,6 @@ msgstr "Mantenha esta página aberta. Se a conexão cair, o upload continua quan
 msgid "Keep writing"
 msgstr "Continuar escrevendo"
 
-#: src/features/home/HomePage.tsx
-msgid "Keeping up"
-msgstr "Dando conta"
-
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Keeps everything"
 msgstr "Mantém tudo"
@@ -9664,24 +9624,15 @@ msgstr "Maior que o limite deste servidor para uma mensagem"
 msgid "Largest file (MB)"
 msgstr "Maior arquivo (MB)"
 
-#: src/features/home/HomePage.tsx
-msgid "last {shown} days"
-msgstr "últimos {shown} dias"
-
 #: src/features/reports/TrendsReport.tsx
 msgid "Last 12 months"
 msgstr "Últimos 12 meses"
-
-#: src/features/home/HomePage.tsx
-msgid "Last 14 days"
-msgstr "Últimos 14 dias"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "Last 3 months"
 msgstr "Últimos 3 meses"
 
 #: src/features/broadcasts/Overview.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Last 30 days"
@@ -9691,7 +9642,6 @@ msgstr "Últimos 30 dias"
 msgid "Last 6 months"
 msgstr "Últimos 6 meses"
 
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Last 7 days"
@@ -9701,9 +9651,9 @@ msgstr "Últimos 7 dias"
 msgid "Last attempt"
 msgstr "Última tentativa"
 
-#: src/features/home/HomeSide.tsx
-msgid "Last broadcast · {name}"
-msgstr "Último disparo · {name}"
+#: src/features/home/HomeWork.tsx
+msgid "Last broadcast"
+msgstr "Último envio"
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Last check"
@@ -9782,6 +9732,14 @@ msgstr "último uso {used}"
 msgid "Last used {used}"
 msgstr "Último uso {used}"
 
+#: src/features/home/HomeWork.tsx
+msgid "Late"
+msgstr "Atrasada"
+
+#: src/features/home/HomeWork.tsx
+msgid "Late by {time}"
+msgstr "Atrasada há {time}"
+
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Latency"
 msgstr "Latência"
@@ -9791,6 +9749,7 @@ msgid "Later"
 msgstr "Depois"
 
 #: src/components/common/SendLater.tsx
+#: src/features/home/HomeSide.tsx
 msgid "Later today"
 msgstr "Mais tarde hoje"
 
@@ -10118,7 +10077,6 @@ msgid "Lists"
 msgstr "Listas"
 
 #: src/components/common/text.ts
-#: src/features/home/HomePage.tsx
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Live"
 msgstr "Ao vivo"
@@ -10160,10 +10118,6 @@ msgstr "Carregar mais"
 #: src/features/mail/MailThread.tsx
 msgid "Load older messages"
 msgstr "Carregar mensagens mais antigas"
-
-#: src/features/home/HomePage.tsx
-msgid "Loading your day…"
-msgstr "Carregando seu dia…"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "Loading…"
@@ -10434,7 +10388,6 @@ msgstr "Mails go out {sentence}, once to each person. Pausing stops sending but 
 msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
 msgstr "Os e-mails saem entre {start} e {end}, horário de {city} ({utcStart}–{utcEnd} UTC), e continuam no dia seguinte."
 
-#: src/features/home/HomeSide.tsx
 #: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
 msgid "Maintenance"
@@ -10670,10 +10623,6 @@ msgstr "mediana {median}"
 msgid "median first reply"
 msgstr "mediana da primeira resposta"
 
-#: src/features/home/HomePage.tsx
-msgid "Median first reply"
-msgstr "Primeira resposta, mediana"
-
 #: src/features/reports/ReportPages.tsx
 msgid "median today"
 msgstr "mediana de hoje"
@@ -10728,7 +10677,6 @@ msgstr "mencionou você"
 #: src/app/places.tsx
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/home/HomeSide.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -11013,7 +10961,6 @@ msgid "Most active"
 msgstr "Mais ativos"
 
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomeSide.tsx
 msgid "Most asked for"
 msgstr "Mais pedidos"
 
@@ -11040,10 +10987,6 @@ msgstr "Mais avaliações, feedbacks abertos, discussões abertas e publicaçõe
 #: src/features/docs/DocsPage.tsx
 msgid "Most votes"
 msgstr "Mais votos"
-
-#: src/features/home/HomePage.tsx
-msgid "move"
-msgstr "navegar"
 
 #. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
@@ -11109,10 +11052,6 @@ msgid "Move through the contacts"
 msgstr "Percorrer os contatos"
 
 #: src/components/common/ShortcutSheet.tsx
-msgid "Move through the conversations waiting longest"
-msgstr "Navegar pelas conversas que esperam há mais tempo"
-
-#: src/components/common/ShortcutSheet.tsx
 msgid "Move through the designs"
 msgstr "Percorrer os designs"
 
@@ -11143,6 +11082,10 @@ msgstr "Percorrer os monitores"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the posts"
 msgstr "Percorrer as publicações"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move through the rows"
+msgstr "Percorrer as linhas"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the sites, goals or funnels"
@@ -11253,6 +11196,10 @@ msgstr "Mover a ideia para Planejada, Em andamento ou Lançada define isso nos f
 #: src/features/migrations/SwitchStep.tsx
 msgid "MX change"
 msgstr "Mudança de MX"
+
+#: src/features/home/HomeWork.tsx
+msgid "My conversations"
+msgstr "Minhas conversas"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "My designs"
@@ -11395,10 +11342,6 @@ msgstr "Precisa de atenção"
 msgid "Needs the operator’s approval"
 msgstr "Precisa da aprovação do operador"
 
-#: src/features/home/HomePage.tsx
-msgid "Needs you"
-msgstr "Esperando por você"
-
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "never"
 msgstr "nunca"
@@ -11429,7 +11372,6 @@ msgid "new"
 msgstr "novo"
 
 #: src/features/broadcasts/Growth.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 msgid "New"
 msgstr "Novo"
@@ -11492,19 +11434,10 @@ msgstr "Nova conversa em uma caixa ao vivo"
 msgid "New conversation in an async inbox"
 msgstr "Nova conversa em uma caixa assíncrona"
 
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "New conversations"
 msgstr "Novas conversas"
-
-#: src/features/home/HomePage.tsx
-msgid "New conversations against first replies, per day."
-msgstr "Novas conversas e primeiras respostas, por dia."
-
-#: src/features/home/HomePage.tsx
-msgid "New conversations and feedback show up here."
-msgstr "Novas conversas e feedback aparecem aqui."
 
 #: src/features/reports/ReportPages.tsx
 msgid "New conversations by day"
@@ -11539,10 +11472,6 @@ msgstr "novas discussões"
 #: src/components/common/ShortcutSheet.tsx
 msgid "New entry"
 msgstr "Nova entrada"
-
-#: src/features/home/HomePage.tsx
-msgid "New feedback"
-msgstr "Feedback novo"
 
 #: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/fields/FieldsPage.tsx
@@ -11758,10 +11687,6 @@ msgstr "Próxima tentativa"
 msgid "next attempt {when}"
 msgstr "próxima tentativa {when}"
 
-#: src/features/home/HomePage.tsx
-msgid "Next broadcast goes out {when}."
-msgstr "O próximo disparo sai {when}."
-
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Next check {next}."
 msgstr "Próxima verificação {next}."
@@ -11865,7 +11790,6 @@ msgid "No attempts yet."
 msgstr "Ainda não há tentativas."
 
 #: src/features/broadcasts/Overview.tsx
-#: src/features/home/HomePage.tsx
 msgid "No broadcast is scheduled."
 msgstr "Nenhum envio está agendado."
 
@@ -12474,10 +12398,6 @@ msgstr "Ninguém respondeu nem encerrou nada neste período."
 msgid "Nobody is on the list of recipients yet."
 msgstr "Ninguém está na lista de destinatários ainda."
 
-#: src/features/home/HomeSide.tsx
-msgid "Nobody is online right now."
-msgstr "Ninguém está online agora."
-
 #: src/features/broadcasts/Import.tsx
 msgid "Nobody is subscribed yet: each new address gets the list’s confirmation mail, spread over days by the daily sending limit, and joins only after clicking it."
 msgstr "Ninguém está inscrito ainda: cada novo endereço recebe o e-mail de confirmação da lista, espalhado por dias pelo limite diário de envio, e só entra depois de clicar nele."
@@ -12487,7 +12407,6 @@ msgid "Nobody is waiting for a reply."
 msgstr "Ninguém está esperando uma resposta."
 
 #: src/features/broadcasts/TriggeredPage.tsx
-#: src/features/home/HomePage.tsx
 msgid "Nobody is waiting."
 msgstr "Ninguém está esperando."
 
@@ -12891,10 +12810,6 @@ msgstr "Nada está adiado."
 msgid "Nothing is waiting for approval."
 msgstr "Nada aguarda aprovação."
 
-#: src/features/home/HomePage.tsx
-msgid "Nothing is waiting."
-msgstr "Nada está esperando."
-
 #: src/features/status/IncidentsPage.tsx
 msgid "Nothing is wrong right now. Open an incident when something breaks."
 msgstr "Está tudo bem agora. Abra um incidente quando algo quebrar."
@@ -12932,6 +12847,10 @@ msgstr "Nada foi medido neste período."
 #: src/features/reports/TrendsReport.tsx
 msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
 msgstr "Nada foi aberto, respondido ou fechado aqui. Tente um período maior ou outros filtros."
+
+#: src/features/home/HomeWork.tsx
+msgid "Nothing yet. Once mail or chat is on, new conversations and incidents show up here."
+msgstr "Nada ainda. Quando o e-mail ou o chat estiver ativo, novas conversas e incidentes aparecem aqui."
 
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "Nothing. Replies from this inbox go out without a signature."
@@ -13039,14 +12958,9 @@ msgstr "Oferecida nos formulários de inscrição e na página de preferências.
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Offline"
 msgstr "Offline"
-
-#: src/features/home/HomePage.tsx
-msgid "Offline · last updated {time}"
-msgstr "Offline · última atualização {time}"
 
 #: src/features/status/MonitorChecks.tsx
 #: src/features/status/ResponseChart.tsx
@@ -13072,14 +12986,6 @@ msgstr "Mais antigo que o intervalo escolhido"
 #: src/features/contact/ContactVisits.tsx
 msgid "Older visits"
 msgstr "Visitas mais antigas"
-
-#: src/features/home/HomePage.tsx
-msgid "Oldest has waited {waited}."
-msgstr "A mais antiga espera há {waited}."
-
-#: src/features/home/HomePage.tsx
-msgid "Oldest wait"
-msgstr "Maior espera"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -13115,7 +13021,6 @@ msgstr "Nos planos Team e Enterprise, um proprietário o adiciona uma vez em <0>
 msgid "On the web"
 msgstr "Na web"
 
-#: src/features/home/HomePage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "On this page"
@@ -13203,7 +13108,6 @@ msgstr "Online"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/Presence.tsx
 #: src/features/conversation/ConversationStatus.tsx
-#: src/features/home/HomeSide.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Online now"
@@ -13388,6 +13292,10 @@ msgstr "somente sua equipe pode visualizá-la"
 msgid "Only your team sees it."
 msgstr "Só sua equipe vê."
 
+#: src/features/home/HomeWork.tsx
+msgid "open"
+msgstr "aberta"
+
 #: src/components/common/text.ts
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -13397,7 +13305,6 @@ msgstr "Só sua equipe vê."
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
@@ -13485,16 +13392,13 @@ msgstr "Abrir conversa"
 
 #: src/app/Palette.tsx
 #: src/features/contact/ContactDetail.tsx
+#: src/features/home/HomeWork.tsx
 msgid "Open conversations"
 msgstr "Conversas abertas"
 
 #: src/features/team/TeamPage.tsx
 msgid "Open conversations assigned"
 msgstr "Conversas abertas atribuídas"
-
-#: src/features/home/HomePage.tsx
-msgid "Open conversations now, new ones and ratings over the last {shown} days."
-msgstr "Conversas abertas agora, novas e avaliações dos últimos {shown} dias."
 
 #: src/features/status/LinkConversationsDialog.tsx
 msgid "Open conversations of this product that may be about {title}."
@@ -13544,9 +13448,9 @@ msgstr "Abrir ideia"
 msgid "Open in Analytics"
 msgstr "Abrir no Analytics"
 
-#: src/features/home/HomePage.tsx
-msgid "Open inbox"
-msgstr "Abrir caixa de entrada"
+#: src/features/home/HomeWork.tsx
+msgid "Open in Inbox"
+msgstr "Abrir na caixa de entrada"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Open incident"
@@ -13555,10 +13459,6 @@ msgstr "Abrir incidente"
 #: src/features/status/StatusPages.tsx
 msgid "Open incidents"
 msgstr "Incidentes abertos"
-
-#: src/features/home/HomePage.tsx
-msgid "Open includes conversations waiting on the customer. Rating turns amber below 85% good once a product has 5 ratings."
-msgstr "Abertas inclui conversas que aguardam o cliente. A avaliação fica âmbar abaixo de 85 % boas quando um produto tem 5 avaliações."
 
 #: src/features/account/ConnectPage.tsx
 msgid "Open it from the sign-in button of a documentation page."
@@ -13741,6 +13641,10 @@ msgstr "abertas, sem responsável"
 #: src/features/reports/TrendsReport.tsx
 msgid "Opened"
 msgstr "Abertas"
+
+#: src/features/home/HomeWork.tsx
+msgid "Opened · closed"
+msgstr "Abertas · encerradas"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "OpenID Connect"
@@ -14094,10 +13998,6 @@ msgstr "Pausar ou retomar o envio"
 msgid "Pause or resume the monitor"
 msgstr "Pausar ou retomar o monitor"
 
-#: src/features/home/HomeSide.tsx
-msgid "paused"
-msgstr "pausado"
-
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/SlaBadge.tsx
 #: src/components/common/text.ts
@@ -14264,7 +14164,6 @@ msgstr "Por caixa"
 msgid "Per month (30 days)"
 msgstr "Por mês (30 dias)"
 
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Period"
@@ -14494,10 +14393,6 @@ msgstr "Escolha cada escopo você mesmo."
 msgid "Pick mails"
 msgstr "Escolha e-mails"
 
-#: src/features/home/HomePage.tsx
-msgid "Pick one at the top of the page."
-msgstr "Escolha um no topo da página."
-
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
 msgstr "Escolha uma depois nas configurações da lista."
@@ -14682,10 +14577,6 @@ msgstr "Feedback para os usuários do seu app"
 msgid "Post new conversations and mentions to a Slack channel, and answer from the thread. The <0>guide</0> shows how to set up the Slack app."
 msgstr "Post new conversations and mentions to a Slack channel, and answer from the thread. The <0>guide</0> shows how to set up the Slack app."
 
-#: src/features/home/HomeSide.tsx
-msgid "Post status update"
-msgstr "Publicar atualização de status"
-
 #: src/features/status/StatusPages.tsx
 msgid "Post update"
 msgstr "Publicar atualização"
@@ -14800,7 +14691,6 @@ msgstr "pro, team"
 #: src/components/common/WorkspaceSelector.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
@@ -14844,7 +14734,7 @@ msgstr "Backend de produção"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeSide.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
@@ -14948,7 +14838,6 @@ msgstr "Chave pública"
 msgid "Public pages that say whether your products work"
 msgstr "Páginas públicas que informam se seus produtos estão funcionando"
 
-#: src/features/home/HomeSide.tsx
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Publish"
@@ -15108,12 +14997,11 @@ msgstr "avaliado como bom"
 
 #: src/features/contact/ContactDetail.tsx
 #: src/features/conversation/rating.tsx
-#: src/features/home/HomePage.tsx
 msgid "Rated good"
 msgstr "Avaliado como bom"
 
 #: src/features/conversation/Feedback.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/reports/ReportPages.tsx
 msgid "Rating"
 msgstr "Avaliação"
@@ -15334,6 +15222,10 @@ msgstr "só recebe, sem conta SMTP"
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "Receiving"
 msgstr "Recepção"
+
+#: src/features/home/HomeSide.tsx
+msgid "Recent"
+msgstr "Recentes"
 
 #: src/features/docs/DocsPage.tsx
 msgid "Recent activity"
@@ -15777,7 +15669,6 @@ msgid "Replace the view’s filters, search and order with the ones on screen."
 msgstr "Substitui os filtros, a busca e a ordem da visualização pelos da tela."
 
 #: src/features/broadcasts/Report.tsx
-#: src/features/home/HomeSide.tsx
 msgid "replied"
 msgstr "respondeu"
 
@@ -15932,6 +15823,10 @@ msgstr "Reply command"
 msgid "Reply held back to protect the customer"
 msgstr "Resposta retida para proteger o cliente"
 
+#: src/features/home/HomeWork.tsx
+msgid "Reply in {time}"
+msgstr "Responder em {time}"
+
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Reply posted"
 msgstr "Resposta publicada"
@@ -16040,7 +15935,7 @@ msgstr "Falha reportada"
 #: src/app/nav.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/reports/ReportPages.tsx
 msgid "Reports"
 msgstr "Relatórios"
@@ -16291,7 +16186,6 @@ msgstr "Revogou a chave de API {name}"
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "Logo depois de se inscrever, as pessoas recebem um e-mail curto que confirma, com um link de cancelamento."
 
-#: src/features/home/HomePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Right now"
 msgstr "Agora"
@@ -16301,7 +16195,6 @@ msgstr "Agora"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/feedback/RoadmapCard.tsx
-#: src/features/home/HomeSide.tsx
 msgid "Roadmap"
 msgstr "Roadmap"
 
@@ -16659,6 +16552,10 @@ msgctxt "mail folder"
 msgid "Scheduled"
 msgstr "Agendados"
 
+#: src/features/home/HomeSide.tsx
+msgid "Scheduled broadcast"
+msgstr "Envio agendado"
+
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Scheduled by"
@@ -16877,10 +16774,6 @@ msgstr "Segurança"
 #: src/features/inbox/SidePanels.tsx
 msgid "See all mentions"
 msgstr "Ver todas as menções"
-
-#: src/features/home/HomePage.tsx
-msgid "See paused broadcasts"
-msgstr "Ver disparos pausados"
 
 #: src/features/contact/ContactCard.tsx
 msgid "Seen {seen}"
@@ -17269,10 +17162,6 @@ msgstr "Horário de envio"
 msgid "Sending hours of “{name}”"
 msgstr "Horário de envio de “{name}”"
 
-#: src/features/home/HomePage.tsx
-msgid "Sending is suspended."
-msgstr "O envio está suspenso."
-
 #: src/components/common/Linked.tsx
 msgid "Sending kept failing, so Yuva gave up."
 msgstr "O envio continuou falhando, então o Yuva desistiu."
@@ -17363,7 +17252,6 @@ msgid "sends through {0}"
 msgstr "envia por {0}"
 
 #: src/features/broadcasts/Report.tsx
-#: src/features/home/HomeSide.tsx
 msgid "sent"
 msgstr "enviados"
 
@@ -17538,6 +17426,7 @@ msgstr "Definir o status"
 msgid "Set up"
 msgstr "Configurar"
 
+#: src/features/home/HomePage.tsx
 #: src/features/status/MonitorToken.tsx
 msgid "Set up {name}"
 msgstr "Configurar {name}"
@@ -17685,10 +17574,6 @@ msgstr "Mostrar {nRevoked} revogadas"
 msgid "Show all authors"
 msgstr "Mostrar todos os autores"
 
-#: src/features/home/HomePage.tsx
-msgid "Show all products"
-msgstr "Mostrar todos os produtos"
-
 #: src/components/common/ShortcutSheet.tsx
 msgid "Show archived designs"
 msgstr "Mostrar designs arquivados"
@@ -17727,10 +17612,6 @@ msgstr "Mostrar mais"
 #: src/features/status/ComponentsTab.tsx
 msgid "Show on the page"
 msgstr "Mostrar na página"
-
-#: src/features/home/HomePage.tsx
-msgid "Show only {name}"
-msgstr "Mostrar só {name}"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Show or hide quoted text"
@@ -17804,14 +17685,6 @@ msgstr "Mostrar disponibilidade"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Show who is online"
 msgstr "Mostrar quem está online"
-
-#: src/features/home/HomePage.tsx
-msgid "Showing {product} only."
-msgstr "Mostrando só {product}."
-
-#: src/features/home/HomePage.tsx
-msgid "Showing every product."
-msgstr "Mostrando todos os produtos."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "Shown after the subject in most inboxes. Empty uses the design’s own."
@@ -18098,6 +17971,7 @@ msgstr "Segredo de assinatura"
 msgid "Since"
 msgstr "Desde"
 
+#: src/features/home/HomeWork.tsx
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Since {since}"
@@ -18314,6 +18188,10 @@ msgstr "Adiar por (minutos)"
 msgid "Snooze for {time}"
 msgstr "Adiar por {time}"
 
+#: src/features/home/HomeWork.tsx
+msgid "snoozed"
+msgstr "adiada"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -18324,6 +18202,10 @@ msgstr "Adiada"
 msgctxt "mail folder"
 msgid "Snoozed"
 msgstr "Adiados"
+
+#: src/features/home/HomeSide.tsx
+msgid "Snoozed conversation"
+msgstr "Conversa adiada"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Snoozed until {until}"
@@ -18547,7 +18429,6 @@ msgstr "Start “{name}” on {when}?"
 msgid "Start a discussion"
 msgstr "Iniciar uma discussão"
 
-#: src/features/home/HomePage.tsx
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Start a mailing list"
 msgstr "Criar uma lista de e-mails"
@@ -18671,7 +18552,6 @@ msgstr "Estado ao cair"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomeSide.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 #: src/features/migrations/MapStep.tsx
@@ -18684,10 +18564,6 @@ msgstr "Estado ao cair"
 #: src/features/team/TeamPage.tsx
 msgid "Status"
 msgstr "Status"
-
-#: src/features/home/HomePage.tsx
-msgid "Status and coming up"
-msgstr "Status e próximos"
 
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
@@ -18987,10 +18863,6 @@ msgstr "abas"
 msgid "Tags"
 msgstr "Tags"
 
-#: src/features/home/HomePage.tsx
-msgid "take"
-msgstr "assumir"
-
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "Take {name} off the waiting list"
 msgstr "Take {name} off the waiting list"
@@ -19035,7 +18907,6 @@ msgstr "Verificação TCP"
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/conversation/History.tsx
 #: src/features/docs/discussions/parts.tsx
-#: src/features/home/HomeSide.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
@@ -20146,10 +20017,6 @@ msgstr "O operador do servidor lê isto antes de deixar o espaço de trabalho en
 msgid "The server's operator registers the Slack app and sets its credentials. The guide explains how."
 msgstr "The server's operator registers the Slack app and sets its credentials. The guide explains how."
 
-#: src/features/home/HomePage.tsx
-msgid "The server’s operator suspended sending for this workspace. Scheduled broadcasts are paused and new schedules are refused."
-msgstr "O operador do servidor suspendeu os envios deste workspace. Os disparos agendados estão pausados e novos agendamentos são recusados."
-
 #: src/features/settings/audit/sentence.ts
 msgid "The server's operator vouched for the address {address}"
 msgstr "O operador do servidor atestou o endereço {address}"
@@ -20895,10 +20762,6 @@ msgstr "Este servidor envia envios de um espaço de trabalho depois que o operad
 msgid "This server sends broadcasts for a workspace once its operator approves it. Tell them about your mail to ask. Until then you can build lists, designs and drafts and send tests."
 msgstr "Este servidor envia envios de um espaço de trabalho depois que o operador o aprova. Conte sobre seu e-mail para pedir. Até lá você pode criar listas, designs e rascunhos e enviar testes."
 
-#: src/features/home/HomePage.tsx
-msgid "This server sends broadcasts only after its operator approves the workspace. Drafts are kept."
-msgstr "Este servidor só envia disparos depois que o operador aprova o workspace. Os rascunhos ficam guardados."
-
 #: src/components/common/text.ts
 msgid "This server's limit for migrations is reached. Wait until a running one ends, or ask the server's operator."
 msgstr "O limite de migrações deste servidor foi atingido. Espere uma em andamento terminar ou fale com o operador do servidor."
@@ -21084,7 +20947,7 @@ msgstr "Para: {who}"
 #: src/app/places.tsx
 #: src/components/common/FlatList.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -21353,7 +21216,7 @@ msgid "Unassign"
 msgstr "Remover atribuição"
 
 #: src/features/conversation/ChatView.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeWork.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -21746,10 +21609,6 @@ msgstr "Enviando…"
 msgid "Uptime"
 msgstr "Disponibilidade"
 
-#: src/features/home/HomeSide.tsx
-msgid "uptime {uptime} over {shown} days"
-msgstr "disponibilidade {uptime} em {shown} dias"
-
 #: src/features/status/ComponentsTab.tsx
 msgid "Uptime is hidden on this page. Turn it on in the settings to see each day here."
 msgstr "A disponibilidade está oculta nesta página. Ative-a nas configurações para ver cada dia aqui."
@@ -22075,10 +21934,6 @@ msgstr "visitantes"
 msgid "Visitors"
 msgstr "Visitantes"
 
-#: src/features/home/HomePage.tsx
-msgid "Visitors · 7 days"
-msgstr "Visitantes · 7 dias"
-
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Visitors can chat without an identity token from your backend."
 msgstr "Os visitantes podem conversar sem um token de identidade do seu backend."
@@ -22086,6 +21941,10 @@ msgstr "Os visitantes podem conversar sem um token de identidade do seu backend.
 #: src/features/home/PropertyCard.tsx
 msgid "Visitors in the last seven days: {series}"
 msgstr "Visitantes nos últimos sete dias: {series}"
+
+#: src/features/home/HomeWork.tsx
+msgid "Visitors now"
+msgstr "Visitantes agora"
 
 #: src/features/setup/SetupHub.tsx
 msgid "Visitors of your website or app, without cookies"
@@ -22125,7 +21984,6 @@ msgstr "Atestado pelo operador do servidor em {when}."
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -22213,10 +22071,6 @@ msgstr "Aguardando o primeiro resultado"
 msgid "Waiting for the operator"
 msgstr "Aguardando o operador"
 
-#: src/features/home/HomePage.tsx
-msgid "Waiting for the operator."
-msgstr "Aguardando o operador."
-
 #: src/features/migrations/parts.tsx
 msgid "Waiting for the provider's limit; continues at {time}."
 msgstr "Aguardando o limite do provedor; continua às {time}."
@@ -22237,17 +22091,21 @@ msgstr "waiting for their time"
 msgid "Waiting for validation"
 msgstr "Aguardando validação"
 
+#: src/features/home/HomeWork.tsx
+msgid "Waiting for you"
+msgstr "Esperando por você"
+
 #: src/features/inbox/ChatList.tsx
 msgid "Waiting longest"
 msgstr "Aguardando há mais tempo"
 
-#: src/features/home/HomeSide.tsx
-msgid "Waiting on you"
-msgstr "Aguardando você"
+#: src/features/home/HomeWork.tsx
+msgid "waiting on the customer"
+msgstr "esperando o cliente"
 
-#: src/features/home/HomeSide.tsx
-msgid "waits for approval"
-msgstr "aguarda aprovação"
+#: src/features/home/HomeWork.tsx
+msgid "waiting on you"
+msgstr "esperando por você"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Warn about the certificate"
@@ -22511,7 +22369,6 @@ msgstr "Para que serve o Yuva"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/home/HomeSide.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 msgid "What’s new"
 msgstr "Novidades"
@@ -22973,7 +22830,6 @@ msgstr "Sim"
 
 #: src/components/common/FlatList.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/home/HomePage.tsx
 msgid "Yesterday"
 msgstr "Ontem"
 
@@ -23014,14 +22870,6 @@ msgstr "Você ainda não está em um espaço de trabalho"
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You are the only owner of a workspace. Make someone else an owner there, or delete that workspace, before you delete your account."
 msgstr "Você é o único proprietário de um espaço de trabalho. Faça outra pessoa proprietária lá, ou exclua esse espaço de trabalho, antes de excluir sua conta."
-
-#: src/features/home/HomePage.tsx
-msgid "You asked on {asked} to send broadcasts. Drafts and schedules wait until the operator answers."
-msgstr "Você pediu em {asked} para enviar disparos. Rascunhos e agendamentos aguardam até o operador responder."
-
-#: src/features/home/HomePage.tsx
-msgid "You asked to send broadcasts. Drafts and schedules wait until the operator answers."
-msgstr "Você pediu para enviar disparos. Rascunhos e agendamentos aguardam até o operador responder."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "You can change the delay, the pace, the sending hours and turn click counting off. Pause it to change the content."
@@ -23234,6 +23082,10 @@ msgstr "Your e-mail address is not in a domain this organisation has claimed in 
 msgid "Your first conversation is here"
 msgstr "Sua primeira conversa está aqui"
 
+#: src/features/home/HomeWork.tsx
+msgid "Your first reply"
+msgstr "Sua primeira resposta"
+
 #: src/features/migrations/text.ts
 msgid "Your folder"
 msgstr "Sua pasta"
@@ -23284,6 +23136,10 @@ msgstr "Sua organização do Microsoft 365 só permite que um administrador cons
 msgid "Your name"
 msgstr "Seu nome"
 
+#: src/features/home/HomeWork.tsx
+msgid "Your open conversations"
+msgstr "Suas conversas abertas"
+
 #: src/features/auth/SignInForm.tsx
 msgid "Your organisation requires this sign-in for its workspace."
 msgstr "Your organisation requires this sign-in for its workspace."
@@ -23331,6 +23187,10 @@ msgstr "Seu produto"
 #: src/features/status/SettingsTab.tsx
 msgid "Your product."
 msgstr "Seu produto."
+
+#: src/features/home/HomeWork.tsx
+msgid "Your rating"
+msgstr "Sua avaliação"
 
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "Your replies by e-mail end with"

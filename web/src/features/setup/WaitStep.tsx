@@ -11,6 +11,7 @@ import { hostOfOrigin, setupKind, useChannel } from "@/features/setup/InstallSte
 import { LiveChat, useForgetPreviewVisitor } from "@/features/setup/LiveChat"
 import { DEFAULT_COLOR, DocsMock, FirstConversation, PhoneMock, PreviewCaption } from "@/features/setup/previews"
 import { isTrimmed, stepNumber, type SetupState } from "@/features/setup/setup"
+import { BackHome } from "@/features/setup/BackHome"
 import { SetupLayout } from "@/features/setup/SetupLayout"
 import type { Channel } from "@/lib/api"
 import { useRealtimeStatus } from "@/lib/realtime"
@@ -115,6 +116,7 @@ export function WaitStep({ inboxId, channelId }: { inboxId: string; channelId: s
             <ArrowRightIcon className="rtl:rotate-180" />
           </Button>
           <div className="mt-6 flex flex-wrap gap-2">
+            <BackHome variant="outline" />
             <Button variant="outline" render={<Link to="/settings/members" />} data-testid="setup-invite">
               <UsersIcon />
               <Trans>Invite your team</Trans>

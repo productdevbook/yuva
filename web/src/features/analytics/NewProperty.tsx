@@ -17,6 +17,7 @@ import { useCreateProperty, useProperty, useWaitForFirstEvent } from "@/features
 import { PropertyCard } from "@/features/home/PropertyCard"
 import { ChoiceSelect, Field } from "@/features/settings/ui"
 import { PreviewCaption } from "@/features/setup/previews"
+import { BackHome } from "@/features/setup/BackHome"
 import type { SetupState } from "@/features/setup/setup"
 import { useSession } from "@/lib/session"
 import { useInboxes } from "@/lib/workspace"
@@ -244,6 +245,11 @@ function InstallPropertyStep({ propertyId }: { propertyId: string }) {
           </StepHeader>
           <InstallSnippets property={p} />
           <WaitForFirstEvent propertyId={p.id} />
+          {arrived && (
+            <div>
+              <BackHome variant="outline" />
+            </div>
+          )}
         </div>
       )}
     </WizardFrame>

@@ -1,403 +1,252 @@
-import { Plural, Trans, useLingui } from "@lingui/react/macro"
-import { Link, type To } from "react-router"
+import { plural } from "@lingui/core/macro"
+import { Trans, useLingui } from "@lingui/react/macro"
+import { MegaphoneIcon, MessageSquareIcon, StarIcon } from "lucide-react"
 
-import { byPresence } from "@/app/TeamMenu"
-import { useGo } from "@/app/nav"
-import { InfoSection, KV } from "@/components/common/PageLayout"
-import { useEnumText } from "@/components/common/text"
-import { Button } from "@/components/ui/button"
-import { useBroadcastsStatus } from "@/features/broadcasts/BroadcastParts"
-import { entryLink } from "@/features/changelog/queries"
-import { useInboxFilter } from "@/features/inbox/inboxFilter"
-import { useDrafts, useMentions } from "@/features/inbox/queries"
-import { MigrationBar } from "@/features/migrations/parts"
-import { percentOf, RUNNING, useMigrations, usePresets } from "@/features/migrations/queries"
+import { PersonAvatar, useContactName } from "@/components/common"
+import { Block, Row, useClock } from "@/features/home/HomeBlock"
+import { useOpenView } from "@/features/home/HomeWork"
+import { useActivity } from "@/features/home/queries"
+import { articleLink } from "@/features/help/queries"
+import { useMigrations, usePresets } from "@/features/migrations/queries"
 import { usePresetName } from "@/features/migrations/text"
-import { Face } from "@/features/settings/ui"
 import { incidentLink } from "@/features/status/queries"
 import { useStatusText } from "@/features/status/text"
-import type { Home, HomeUpcoming, StatusComponentStateValue } from "@/lib/api"
+import type { ActivityItem, ConversationListItem, Home, StatusComponentStateValue } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
-import { useInboxes, useMembers } from "@/lib/workspace"
+import { isSupport, useInboxes } from "@/lib/workspace"
 
-export const cardClass = "rounded-[10px] border bg-background"
-export const eyebrowClass = "m-0 text-small font-semibold tracking-[0.04em] text-muted-foreground uppercase"
-const titleClass = "m-0 text-body font-medium"
+type Later = { key: string; at: number; node: React.ReactNode }
 
-export function Arrow() {
-  return (
-    <span aria-hidden className="inline-block rtl:-scale-x-100">
-      →
-    </span>
-  )
+function Time({ children }: { children: React.ReactNode }) {
+  return <span className="min-w-12 shrink-0 text-small font-semibold whitespace-nowrap tabular-nums">{children}</span>
 }
 
-export function TextLink({ to, children, testId }: { to: To; children: React.ReactNode; testId?: string }) {
-  return (
-    <Link
-      to={to}
-      className="shrink-0 text-small font-medium whitespace-nowrap text-muted-foreground transition-colors hover:text-foreground hover:underline"
-      data-testid={testId}
-    >
-      {children} <Arrow />
-    </Link>
-  )
+export function useLaterRows(h: Home, mine: ConversationListItem[], inboxId: string): Later[] {
+  const { t, i18n } = useLingui()
+  const { canManage } = useSession()
+  const clock = useClock()
+  const contactName = useContactName()
+  const byInbox = new Map((useInboxes().data ?? []).map((i) => [i.id, i.name]))
+  const migrations = useMigrations().data?.pages.flatMap((p) => p.items) ?? []
+  const presets = usePresets().data ?? []
+  const presetName = usePresetName()
+  const fmt = new Intl.NumberFormat(i18n.locale)
+  const time = new Intl.DateTimeFormat(i18n.locale, { hour: "numeric", minute: "2-digit" })
+  const soon = (at: number) => at >= clock.now - 60_000 && at <= clock.endOfDay
+  const rows: Later[] = []
+  for (const c of mine) {
+    if (c.status !== "snoozed" || !c.snooze_until) continue
+    const at = Date.parse(c.snooze_until)
+    if (!soon(at)) continue
+    const name = contactName(c, undefined, c.contact.name, c.contact.email)
+    rows.push({
+      key: c.id,
+      at,
+      node: (
+        <Row
+          key={c.id}
+          to={`/conversations/${c.id}`}
+          media={<Time>{time.format(at)}</Time>}
+          title={t`${name} comes back`}
+          description={[t`Snoozed conversation`, byInbox.get(c.inbox_id)].filter(Boolean).join(" · ")}
+          testId={`home-later-${c.id}`}
+        />
+      ),
+    })
+  }
+  if (canManage) {
+    for (const u of h.upcoming) {
+      if (u.kind !== "broadcast") continue
+      const at = Date.parse(u.at)
+      if (!soon(at)) continue
+      const name = u.title || "–"
+      const n = u.recipients ?? 0
+      rows.push({
+        key: u.id,
+        at,
+        node: (
+          <Row
+            key={u.id}
+            to={`/broadcasts/${u.id}`}
+            media={<Time>{time.format(at)}</Time>}
+            title={t`${name} goes out`}
+            description={[t`Scheduled broadcast`, plural(n, { one: "# person", other: "# people" })].join(" · ")}
+            testId={`home-later-${u.id}`}
+          />
+        ),
+      })
+    }
+    for (const m of migrations) {
+      if (inboxId && m.inbox_id !== inboxId) continue
+      const at =
+        m.state === "copying" && m.seconds_left !== undefined
+          ? clock.now + m.seconds_left * 1000
+          : m.state === "syncing" && m.sync_until
+            ? Date.parse(m.sync_until)
+            : undefined
+      if (at === undefined || !soon(at)) continue
+      const source = presetName(m.preset, presets.find((p) => p.id === m.preset)?.name ?? m.preset)
+      const done = fmt.format(m.counts.imported)
+      const total = fmt.format(m.counts.total)
+      const when = time.format(at)
+      rows.push({
+        key: m.id,
+        at,
+        node: (
+          <Row
+            key={m.id}
+            to={`/migrations/${m.id}`}
+            media={<Time>{`~${when}`}</Time>}
+            title={t`${source} import should finish`}
+            description={m.counts.total > 0 ? t`${done} of ${total} copied` : m.source_address}
+            testId={`home-later-${m.id}`}
+          />
+        ),
+      })
+    }
+  }
+  return rows.sort((a, b) => a.at - b.at)
 }
 
-export function NeedsYou() {
-  const { t } = useLingui()
-  const go = useGo()
-  const [inboxId] = useInboxFilter()
-  const mentions = (useMentions().data?.pages[0]?.items ?? []).filter(
-    (m) => !m.seen && (!inboxId || m.conversation.inbox_id === inboxId)
-  ).length
-  const botDrafts = Number(useDrafts({ author: "bot" }).data?.pages[0]?.total ?? 0)
-  const assistantDrafts = Number(useDrafts({ author: "assistant" }).data?.pages[0]?.total ?? 0)
-  const drafts = botDrafts + assistantDrafts
-  if (mentions + drafts === 0) return null
+export function LaterToday({ rows }: { rows: Later[] }) {
   return (
-    <InfoSection title={t`Waiting on you`} testId="home-approvals">
-      {mentions > 0 && <KV to="/mentions" label={t`Mentions`} value={mentions} tone="brand" testId="home-mention" />}
-      {drafts > 0 && (
-        <button
-          type="button"
-          onClick={() => go("assistants")}
-          className="flex w-full justify-between gap-3 rounded-sm py-[3px] text-start text-small leading-5 outline-none hover:[&>span:first-child]:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-          data-testid="home-drafts"
-        >
-          <span className="shrink-0 text-muted-foreground">
-            <Trans>Drafts to review</Trans>
-          </span>
-          <span className="text-end">{drafts}</span>
-        </button>
-      )}
-    </InfoSection>
+    <Block id="home-later-title" title={<Trans>Later today</Trans>} testId="home-later">
+      {rows.map((r) => r.node)}
+    </Block>
   )
 }
 
 const stateTone: Record<StatusComponentStateValue, string> = {
-  operational: "var(--success)",
-  degraded: "var(--warning)",
-  partial_outage: "var(--warning)",
-  major_outage: "var(--destructive)",
-  maintenance: "#2563eb",
+  operational: "text-ok",
+  degraded: "text-note-ink",
+  partial_outage: "text-note-ink",
+  major_outage: "text-destructive",
+  maintenance: "text-muted-foreground",
 }
 
-type Day = { date: string; state: StatusComponentStateValue }
+export function useProductRows(h: Home) {
+  const inboxes = (useInboxes().data ?? []).filter(isSupport)
+  const byId = new Map(inboxes.map((i) => [i.id, i]))
+  return h.products
+    .flatMap((p) => {
+      const inbox = byId.get(p.inbox_id)
+      return inbox ? [{ p, inbox }] : []
+    })
+    .sort((a, b) => b.p.open - a.p.open)
+}
 
-function Strip({ days, length }: { days: Day[]; length: number }) {
-  const slots = [...days].sort((a, b) => a.date.localeCompare(b.date)).slice(-length)
+export function Products({ h, rows }: { h: Home; rows: ReturnType<typeof useProductRows> }) {
+  const { t, i18n } = useLingui()
+  const statusText = useStatusText()
+  const view = useOpenView()
+  const fmt = new Intl.NumberFormat(i18n.locale)
+  const pages = new Map(h.status_pages.map((p) => [p.inbox_id, p]))
   return (
-    <span aria-hidden className="grid gap-0.5" style={{ gridTemplateColumns: `repeat(${length}, minmax(0, 1fr))` }}>
-      {Array.from({ length }, (_, i) => {
-        const s = slots[i - (length - slots.length)]
-        const last = i === length - 1
+    <Block id="home-products-title" title={<Trans>Products</Trans>} testId="home-products">
+      {rows.map(({ p, inbox }) => {
+        const page = pages.get(inbox.id)
+        const incidents = h.upcoming.filter((u) => u.kind === "incident" && u.inbox_id === inbox.id).length
+        const open = fmt.format(p.open)
         return (
-          <span
-            key={i}
-            className={cn("h-3.5 rounded-[2px]", !s && "bg-muted")}
-            style={s ? { backgroundColor: stateTone[s.state], opacity: last ? 1 : 0.6 } : undefined}
+          <Row
+            key={inbox.id}
+            {...view("waiting", inbox.id)}
+            media={
+              <span
+                aria-hidden
+                className="grid size-7 place-items-center rounded-md bg-muted2 text-small font-semibold text-white"
+                style={inbox.branding.color ? { backgroundColor: inbox.branding.color } : undefined}
+              >
+                {inbox.name.trim().charAt(0).toUpperCase()}
+              </span>
+            }
+            title={inbox.name}
+            description={[
+              t`${open} open`,
+              incidents > 0 ? plural(incidents, { one: "# incident", other: "# incidents" }) : "",
+            ]
+              .filter(Boolean)
+              .join(" · ")}
+            end={
+              page ? (
+                <span
+                  className={cn(
+                    "block max-w-28 text-end leading-4 font-medium whitespace-normal",
+                    stateTone[page.state]
+                  )}
+                >
+                  {statusText.component[page.state]}
+                </span>
+              ) : undefined
+            }
+            testId={`home-product-${inbox.id}`}
           />
         )
       })}
+    </Block>
+  )
+}
+
+function activityLink(a: ActivityItem) {
+  const { type, id, parent_id } = a.target
+  if (type === "conversation") return `/conversations/${id}`
+  if (type === "incident") return incidentLink(parent_id ?? "", id)
+  if (type === "article") return articleLink(parent_id ?? "", id, a.detail?.locale)
+  return `/broadcasts/${id}`
+}
+
+function useActivityText() {
+  const { t } = useLingui()
+  return (a: ActivityItem) => {
+    const title = a.target.title || t`(no subject)`
+    const who = a.actor?.name ?? ""
+    switch (a.kind) {
+      case "conversation.closed":
+        return who ? t`${who} closed “${title}”` : t`“${title}” was closed`
+      case "conversation.rated":
+        return a.detail?.rating === "bad" ? t`“${title}” was rated bad` : t`“${title}” was rated good`
+      case "incident.updated":
+        return who ? t`${who} posted an update on “${title}”` : t`An update was posted on “${title}”`
+      case "article.published":
+        return who ? t`${who} published “${title}”` : t`“${title}” was published`
+      default:
+        return who ? t`${who} sent “${title}”` : t`“${title}” was sent`
+    }
+  }
+}
+
+function ActivityMedia({ a }: { a: ActivityItem }) {
+  if (a.actor) return <PersonAvatar name={a.actor.name} className="size-7 text-[11px] font-semibold" />
+  const Icon =
+    a.kind === "conversation.rated" ? StarIcon : a.kind === "broadcast.sent" ? MegaphoneIcon : MessageSquareIcon
+  return (
+    <span aria-hidden className="grid size-7 place-items-center rounded-full bg-muted text-muted-foreground">
+      <Icon className="size-3.5" />
     </span>
   )
 }
 
-export function Status({ h, className }: { h: Home; className?: string }) {
-  const { t, i18n } = useLingui()
-  const statusText = useStatusText()
-  const [inboxId] = useInboxFilter()
-  const pages = inboxId ? h.status_pages.filter((p) => p.inbox_id === inboxId) : h.status_pages
-  const issues = pages.flatMap((p) => p.components.filter((c) => c.state !== "operational").map((c) => ({ p, c })))
-  const scoped = inboxId ? pages[0] : undefined
-  const count = issues.length
-  if (issues.length === 0 && !scoped) return null
-  const length = h.period.days
-  const fine = pages.flatMap((p) => p.components.filter((c) => c.state === "operational").map((c) => c.name))
-  const names = new Intl.ListFormat(i18n.locale, { type: "conjunction" }).format(fine)
-  const uptimes = pages.flatMap((p) => p.days.flatMap((d) => (d.uptime === undefined ? [] : [d.uptime])))
-  const uptime =
-    uptimes.length > 0
-      ? new Intl.NumberFormat(i18n.locale, { style: "percent", maximumFractionDigits: 1 }).format(
-          uptimes.reduce((a, b) => a + b, 0) / uptimes.length / 100
-        )
-      : ""
-  const shown = new Intl.NumberFormat(i18n.locale).format(length)
-  const rest = [fine.length > 0 ? t`${names} operational` : "", uptime ? t`uptime ${uptime} over ${shown} days` : ""]
-    .filter(Boolean)
-    .join(" · ")
+export function useRecent(inboxId: string) {
+  return useActivity(inboxId).data?.items ?? []
+}
+
+export function Recent({ items }: { items: ActivityItem[] }) {
+  const clock = useClock()
+  const text = useActivityText()
   return (
-    <section
-      aria-label={t`Status`}
-      className={cn(cardClass, "flex flex-col gap-2.5 px-[18px] py-4", className)}
-      data-testid="home-status"
-      data-home-box
-    >
-      <div className="flex items-baseline justify-between gap-2">
-        <h2 className={titleClass}>
-          <Trans>Status</Trans>
-        </h2>
-        <span className={cn("text-caption font-semibold", issues.length > 0 ? "text-note-ink" : "text-success")}>
-          {issues.length > 0 ? <Plural value={count} one="# issue" other="# issues" /> : <Trans>All operational</Trans>}
-        </span>
-      </div>
-      {issues.map(({ p, c }, i) => (
-        <div key={c.id} className="flex flex-col gap-2 rounded-[10px] bg-note px-3 py-2.5">
-          <span className="flex justify-between gap-2 text-small">
-            <span className="min-w-0 truncate font-semibold">
-              {pages.length > 1 ? `${p.name} · ${c.name}` : c.name}
-            </span>
-            <span className="shrink-0 font-semibold text-note-ink">{statusText.component[c.state]}</span>
-          </span>
-          <Strip days={c.days} length={length} />
-          <span className="flex flex-wrap items-center gap-2">
-            <Button
-              size="sm"
-              className="h-[34px] rounded-lg bg-brand-solid px-3 font-semibold text-white hover:bg-brand-solid/90"
-              render={<Link to="/incidents" />}
-              data-testid={i === 0 ? "home-status-update" : undefined}
-            >
-              <Trans>Post status update</Trans>
-            </Button>
-          </span>
-        </div>
+    <Block id="home-recent-title" title={<Trans>Recent</Trans>} testId="home-recent">
+      {items.map((a) => (
+        <Row
+          key={a.id}
+          to={activityLink(a)}
+          media={<ActivityMedia a={a} />}
+          title={text(a)}
+          wrap
+          description={clock.ago(a.at)}
+          testId="home-recent-item"
+        />
       ))}
-      {rest && <span className="text-caption text-faint">{rest}</span>}
-    </section>
-  )
-}
-
-function upcomingLink(u: HomeUpcoming) {
-  if (u.kind === "broadcast") return `/broadcasts/${u.id}`
-  if (u.kind === "whats_new") return entryLink(u.changelog_id ?? "", u.id, u.locale)
-  return incidentLink(u.status_page_id ?? "", u.id)
-}
-
-export function ComingUp({ h, mailOnly, className }: { h: Home; mailOnly: boolean; className?: string }) {
-  const { t, i18n } = useLingui()
-  const [inboxId] = useInboxFilter()
-  const inboxes = useInboxes().data ?? []
-  const byId = new Map(inboxes.map((i) => [i.id, i.name]))
-  const many = inboxes.length > 1 && !inboxId
-  const s = useBroadcastsStatus()
-  const presets = usePresets().data ?? []
-  const presetName = usePresetName()
-  const running = (useMigrations().data?.pages.flatMap((p) => p.items) ?? []).filter(
-    (m) => RUNNING.includes(m.state) && (!inboxId || m.inbox_id === inboxId)
-  )
-  const upcoming = (mailOnly ? h.upcoming.filter((u) => u.kind === "broadcast") : h.upcoming).slice(0, 3)
-  if (running.length === 0 && upcoming.length === 0) return null
-  const mon = new Intl.DateTimeFormat(i18n.locale, { month: "short" })
-  const day = new Intl.DateTimeFormat(i18n.locale, { day: "2-digit" })
-  const time = new Intl.DateTimeFormat(i18n.locale, { hour: "2-digit", minute: "2-digit" })
-  const fmt = new Intl.NumberFormat(i18n.locale)
-  const held = !s || s.status === "allowed" ? "" : s.status === "suspended" ? t`paused` : t`waits for approval`
-  const meta = (u: HomeUpcoming) => {
-    const when = time.format(new Date(u.at))
-    const product = many ? byId.get(u.inbox_id) : undefined
-    if (u.kind === "broadcast") {
-      const people = fmt.format(u.recipients ?? 0)
-      return [product, t`${people} recipients`, when, held].filter(Boolean).join(" · ")
-    }
-    const label = u.kind === "maintenance" ? t`Maintenance` : u.kind === "incident" ? t`Incident` : t`What’s new`
-    return [product, label, when].filter(Boolean).join(" · ")
-  }
-  return (
-    <section
-      aria-label={t`Coming up`}
-      className={cn(cardClass, "flex flex-col gap-3 px-[18px] py-4", className)}
-      data-testid="home-upcoming"
-      data-home-box
-    >
-      <h2 className={titleClass}>
-        <Trans>Coming up</Trans>
-      </h2>
-      {running.map((m) => {
-        const source = presetName(m.preset, presets.find((p) => p.id === m.preset)?.name ?? m.preset)
-        const percent = percentOf(m)
-        return (
-          <Link
-            key={m.id}
-            to={`/migrations/${m.id}`}
-            className="flex flex-col gap-1.5 border-b pb-3 outline-none hover:underline-offset-2 focus-visible:underline"
-            data-testid={`home-migration-${m.id}`}
-          >
-            <span className="flex justify-between gap-2">
-              <span className="min-w-0 truncate font-medium">{t`Importing ${source} history`}</span>
-              {m.counts.total > 0 && (
-                <span className="shrink-0 font-mono text-caption text-faint">{`${percent}%`}</span>
-              )}
-            </span>
-            <MigrationBar m={m} thin />
-            <span className="truncate text-caption text-faint" dir="auto">
-              {m.source_address}
-            </span>
-          </Link>
-        )
-      })}
-      {upcoming.map((u) => {
-        const at = new Date(u.at)
-        return (
-          <Link
-            key={u.id}
-            to={upcomingLink(u)}
-            className="grid grid-cols-[44px_minmax(0,1fr)] items-center gap-3 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            data-testid={`home-upcoming-${u.id}`}
-          >
-            <span className="flex flex-col items-center rounded-lg bg-muted py-[3px] leading-[1.15]">
-              <span className="text-[10px] tracking-[0.06em] text-faint uppercase">{mon.format(at)}</span>
-              <span className="font-semibold tabular-nums">{day.format(at)}</span>
-            </span>
-            <span className="flex min-w-0 flex-col">
-              <span className="truncate font-medium">{u.title || "–"}</span>
-              <span className="truncate text-caption text-faint">{meta(u)}</span>
-            </span>
-          </Link>
-        )
-      })}
-    </section>
-  )
-}
-
-export function Publish({ h, mailOnly, className }: { h: Home; mailOnly: boolean; className?: string }) {
-  const { t, i18n } = useLingui()
-  const text = useEnumText()
-  const inboxes = useInboxes().data ?? []
-  const byId = new Map(inboxes.map((i) => [i.id, i.name]))
-  const b = h.broadcasts?.last_sent
-  const ideas = mailOnly ? [] : (h.ideas ?? []).slice(0, 3)
-  if (!b && ideas.length === 0) return null
-  const fmt = new Intl.NumberFormat(i18n.locale)
-  const sentOn = b
-    ? new Intl.DateTimeFormat(i18n.locale, { weekday: "short", day: "numeric", month: "short" }).format(
-        new Date(b.sent_at)
-      )
-    : ""
-  const name = b ? b.name || b.subject : ""
-  return (
-    <section
-      aria-label={t`Publish`}
-      className={cn(cardClass, "flex flex-col gap-3 px-[18px] py-4", className)}
-      data-testid="home-publish"
-      data-home-box
-    >
-      <h2 className={titleClass}>
-        <Trans>Publish</Trans>
-      </h2>
-      {b && (
-        <Link
-          to={`/broadcasts/${b.id}`}
-          className="flex flex-col gap-2 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          data-testid="home-broadcast"
-        >
-          <span className="flex items-baseline justify-between gap-2 text-small">
-            <span className="min-w-0 truncate text-muted-foreground">
-              <Trans>Last broadcast · {name}</Trans>
-            </span>
-            <span className="shrink-0 text-caption text-faint">{sentOn}</span>
-          </span>
-          <span className="grid grid-cols-3 gap-2">
-            {(
-              [
-                [fmt.format(b.sent), t`sent`],
-                [b.click_tracking ? fmt.format(b.clicked) : "–", b.click_tracking ? t`clicked` : t`clicks not tracked`],
-                [fmt.format(b.replied), t`replied`],
-              ] as const
-            ).map(([value, label]) => (
-              <span key={label} className="flex min-w-0 flex-col">
-                <b className="font-mono font-medium">{value}</b>
-                <span className="truncate text-caption text-faint">{label}</span>
-              </span>
-            ))}
-          </span>
-        </Link>
-      )}
-      {ideas.length > 0 && (
-        <div className={cn("flex flex-col gap-2.5", b && "border-t pt-3")} data-testid="home-asks">
-          <span className="flex items-baseline justify-between text-small">
-            <span className="text-muted-foreground">
-              <Trans>Most asked for</Trans>
-            </span>
-            <Link
-              to="/board"
-              className="text-caption font-medium text-muted-foreground hover:text-foreground hover:underline"
-            >
-              <Trans>Roadmap</Trans> <Arrow />
-            </Link>
-          </span>
-          {ideas.map((idea) => {
-            const meta = [inboxes.length > 1 ? byId.get(idea.inbox_id) : undefined, text.stage[idea.stage]]
-              .filter(Boolean)
-              .join(" · ")
-            const votes = fmt.format(idea.votes)
-            return (
-              <div key={idea.id} className="grid grid-cols-[44px_minmax(0,1fr)] items-center gap-3">
-                <span className="rounded-lg bg-muted py-[3px] text-center font-mono text-small">{`▲${votes}`}</span>
-                <span className="flex min-w-0 flex-col">
-                  <span className="truncate font-medium">{idea.title}</span>
-                  <span className="truncate text-caption text-faint">{meta}</span>
-                </span>
-              </div>
-            )
-          })}
-        </div>
-      )}
-    </section>
-  )
-}
-
-export function OnlineNow({ h }: { h: Home }) {
-  const { t, i18n } = useLingui()
-  const { membership } = useSession()
-  const members = useMembers().data ?? []
-  const load = new Map(h.team.members.map((m) => [m.member_id, m.open]))
-  const online = members.filter((m) => m.online).sort(byPresence)
-  const away = members.filter((m) => !m.online)
-  const awayOpen = away.reduce((n, m) => n + (load.get(m.id) ?? 0), 0)
-  const fmt = new Intl.NumberFormat(i18n.locale)
-  const off = fmt.format(away.length)
-  const offOpen = fmt.format(awayOpen)
-  return (
-    <InfoSection
-      title={t`Online now`}
-      testId="home-team"
-      action={
-        <Link
-          to="/team"
-          className="shrink-0 rounded-sm font-normal text-fg2 underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          {away.length === 0 ? t`Team` : awayOpen > 0 ? t`+${off} offline · ${offOpen} open` : t`+${off} offline`}
-        </Link>
-      }
-    >
-      {online.length === 0 ? (
-        <p className="m-0 text-small text-muted-foreground">
-          <Trans>Nobody is online right now.</Trans>
-        </p>
-      ) : (
-        online.slice(0, 6).map((m) => {
-          const name = m.name || m.email
-          const open = load.get(m.id) ?? 0
-          return (
-            <Link
-              key={m.id}
-              to={`/team/${m.id}`}
-              className="flex items-center gap-2 rounded-sm py-[3px] text-small leading-5 outline-none hover:[&>span:nth-child(2)]:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-              data-testid={`home-member-${m.id}`}
-            >
-              <Face id={m.id} name={name} online={m.online} away={m.availability === "away"} className="size-5" />
-              <span className="min-w-0 flex-1 truncate text-fg2">
-                {m.id === membership.member_id ? t`${name} (you)` : name}
-              </span>
-              <span className="shrink-0 font-mono text-caption text-muted-foreground">
-                <Plural value={open} one="# open" other="# open" />
-              </span>
-            </Link>
-          )
-        })
-      )}
-    </InfoSection>
+    </Block>
   )
 }

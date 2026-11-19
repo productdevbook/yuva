@@ -45,10 +45,11 @@ export function useGo() {
   const navigate = useNavigate()
   const { pathname, search } = useLocation()
   const section = useSection()
-  const { apart, homePath } = useSession()
+  const { apart, homePath, canManage } = useSession()
   return (key: Section) => {
     if (key === "home") {
-      if (pathname !== homePath) navigate(homePath)
+      const home = canManage ? homePath : "/home"
+      if (pathname !== home) navigate(home)
     } else if (key === "mentions" || key === "assistants") {
       setRailView(key)
       if (pathname !== `/${key}`) navigate(`/${key}`)
@@ -125,7 +126,7 @@ export function usePageGroups(): PageGroup[] {
     open: () => go(section),
   })
   const work: PageEntry[] = [
-    ...(canManage ? [entry("home", t`Home`, SHORTCUTS.home, "home")] : []),
+    entry("home", t`Home`, SHORTCUTS.home, "home"),
     {
       ...entry("inbox", t`Inbox`, SHORTCUTS.conversations, "conversations"),
       count: unread,

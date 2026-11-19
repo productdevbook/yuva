@@ -21,6 +21,7 @@ import type {
   MigrationFolder,
   MigrationForwardingConfirmationData,
   MigrationProgress,
+  MigrationState,
   RealtimeMessage,
   StatusNotice,
 } from "@/lib/api"
@@ -526,12 +527,21 @@ export function setMigration(qc: QueryClient, ws: string, m: Migration) {
   if (current && current.updated_at > m.updated_at) return
   qc.setQueryData(keys.migration(ws, m.id), m)
   patchMigration(qc, ws, m.id, () => m)
+  refreshAttention(qc, ws, m.id, m.state)
   void qc.invalidateQueries({ queryKey: keys.migrationFolders(ws, m.id) })
+}
+
+function refreshAttention(qc: QueryClient, ws: string, id: string, state: MigrationState) {
+  const listed = qc.getQueryData<Migration[]>(keys.migrationAttention(ws))
+  if (!listed) return
+  if (listed.some((m) => m.id === id) !== (state === "needs_attention"))
+    void qc.invalidateQueries({ queryKey: keys.migrationAttention(ws) })
 }
 
 function applyMigrationProgress(qc: QueryClient, ws: string, p: MigrationProgress) {
   const current = qc.getQueryData<Migration>(keys.migration(ws, p.id))
   if (current && current.state !== p.state) void qc.invalidateQueries({ queryKey: keys.migration(ws, p.id) })
+  refreshAttention(qc, ws, p.id, p.state)
   patchMigration(qc, ws, p.id, (m) => ({
     ...m,
     state: p.state,
