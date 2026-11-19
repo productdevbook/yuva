@@ -16,12 +16,6 @@ msgstr "(tidak ditetapkan)"
 msgid "{0, plural, one {# row} other {# rows}}"
 msgstr "{0, plural, other {# baris}}"
 
-#. placeholder {0}: p.visitors_today
-#: src/features/analytics/AnalyticsColumn.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
-msgid "{0, plural, one {visitor today} other {visitors today}}"
-msgstr "{0, plural, other {pelawat hari ini}}"
-
 #. placeholder {0}: share1.format(conversations / visitors)
 #: src/features/analytics/Overview.tsx
 msgid "{0} of visitors"
@@ -239,10 +233,6 @@ msgstr "Paparan skrin pelawat tanpa jurang 30 minit, dalam satu hari. Setiap pel
 msgid "Active"
 msgstr "Aktif"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "Add"
-msgstr "Tambah"
-
 #: src/features/analytics/Annotations.tsx
 msgid "Add a note to the chart"
 msgstr "Tambah nota pada carta"
@@ -255,16 +245,16 @@ msgstr "Tambah peraturan"
 msgid "Add a step"
 msgstr "Tambah langkah"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Add a website"
 msgstr "Tambah tapak web"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "Add a website to count its visitors, pages and sources, without cookies."
-msgstr "Tambah tapak web untuk mengira pelawat, halaman dan sumbernya, tanpa kuki."
+#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Add a website or app"
+msgstr "Tambah laman web atau aplikasi"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Add and install"
 msgstr "Tambah dan pasang"
@@ -302,6 +292,10 @@ msgstr "Ejen peti masuk kemudian boleh melihat angka properti ini juga."
 msgid "Agents of this inbox can see the numbers."
 msgstr "Ejen peti masuk ini boleh melihat angka."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Agents of this product can see the numbers."
+msgstr "Ejen produk ini boleh melihat angkanya."
+
 #: src/features/analytics/text.ts
 msgid "AI assistants"
 msgstr "Pembantu AI"
@@ -323,8 +317,8 @@ msgid "All goals"
 msgstr "Semua matlamat"
 
 #: src/features/analytics/AnalyticsFrame.tsx
-msgid "All sites"
-msgstr "Semua tapak"
+msgid "All sites and apps"
+msgstr "Semua laman dan aplikasi"
 
 #: src/features/analytics/Support.tsx
 msgid "An owner or admin can link one in the property’s settings."
@@ -334,19 +328,18 @@ msgstr "Pemilik atau pentadbir boleh memaut satu dalam tetapan properti."
 msgid "An owner or admin can turn on the persistent id in the consent features."
 msgstr "Pemilik atau pentadbir boleh menghidupkan id berterusan dalam ciri persetujuan."
 
-#: src/features/analytics/AnalyticsColumn.tsx
 #: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Analytics"
 msgstr "Analitik"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "Analytics properties"
-msgstr "Properti analitik"
-
 #: src/features/analytics/NewProperty.tsx
 msgid "Analytics steps"
 msgstr "Langkah analitik"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Android app"
+msgstr "Aplikasi Android"
 
 #: src/features/analytics/Sharing.tsx
 msgid "Anyone with the link sees the views you pick, read-only, without signing in."
@@ -493,12 +486,10 @@ msgstr "Kohort"
 
 #. placeholder {0}: formatDate(`${c.from}T12:00:00Z`, i18n.locale)
 #. placeholder {1}: formatDate(`${c.to}T12:00:00Z`, i18n.locale)
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with {0} – {1}"
 msgstr "Bandingkan dengan {0} – {1}"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with a year earlier"
 msgstr "Bandingkan dengan setahun sebelumnya"
@@ -515,7 +506,6 @@ msgstr "Bandingkan dengan hari lain…"
 msgid "Compare with the days"
 msgstr "Bandingkan dengan hari"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with the period before"
 msgstr "Bandingkan dengan tempoh sebelumnya"
@@ -524,7 +514,6 @@ msgstr "Bandingkan dengan tempoh sebelumnya"
 msgid "Compared days"
 msgstr "Hari yang dibandingkan"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Comparison"
 msgstr "Perbandingan"
@@ -610,6 +599,7 @@ msgstr "Salin sekarang; ia tidak ditunjukkan lagi. Pautan yang hilang hanya bole
 msgid "Count my visits again"
 msgstr "Kira lawatan saya semula"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Count visitors, pages, sources, places and devices without cookies and without storing IP addresses."
 msgstr "Kira pelawat, halaman, sumber, tempat dan peranti tanpa kuki dan tanpa menyimpan alamat IP."
@@ -690,7 +680,6 @@ msgstr "Hari demi hari"
 msgid "Days"
 msgstr "Hari"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/SharePage.tsx
 msgid "Days are counted in this time zone"
 msgstr "Hari dikira dalam zon waktu ini"
@@ -847,7 +836,7 @@ msgstr "Jangan kira lawatan saya"
 msgid "does not contain"
 msgstr "tidak mengandungi"
 
-#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Domains"
@@ -1048,7 +1037,6 @@ msgstr "Fail dibuat di latar belakang dan dipadam tujuh hari kemudian."
 msgid "Filter by this"
 msgstr "Tapis mengikut ini"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Filters"
@@ -1086,6 +1074,11 @@ msgstr "Minggu pertama"
 msgid "Five reports an hour at most. Try again later."
 msgstr "Paling banyak lima laporan sejam. Cuba lagi nanti."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "For example Fieldnote for iPhone"
+msgstr "Contohnya Fieldnote untuk iPhone"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "For example Fieldnote website"
 msgstr "Contohnya tapak web Fieldnote"
@@ -1240,6 +1233,10 @@ msgstr "Tidak sah"
 msgid "Investors"
 msgstr "Pelabur"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "iOS app"
+msgstr "Aplikasi iOS"
+
 #: src/features/analytics/text.ts
 msgid "is"
 msgstr "ialah"
@@ -1308,6 +1305,7 @@ msgstr "7 hari lepas"
 msgid "Last 90 days"
 msgstr "90 hari lepas"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Last event"
 msgstr "Peristiwa terakhir"
@@ -1434,6 +1432,10 @@ msgstr "Had bulanan"
 msgid "Months"
 msgstr "Bulan"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "move"
+msgstr "gerak"
+
 #: src/features/analytics/Funnels.tsx
 msgid "Move down"
 msgstr "Alih ke bawah"
@@ -1442,6 +1444,7 @@ msgstr "Alih ke bawah"
 msgid "Move up"
 msgstr "Alih ke atas"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Funnels.tsx
 #: src/features/analytics/Goals.tsx
@@ -1520,7 +1523,6 @@ msgstr "Pautan kongsi baharu"
 msgid "No alerts yet."
 msgstr "Belum ada amaran."
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "No comparison"
 msgstr "Tiada perbandingan"
@@ -1549,12 +1551,6 @@ msgstr "Tiada penukaran dalam julat ini."
 msgid "No event yet."
 msgstr "Belum ada peristiwa."
 
-#: src/features/analytics/AnalyticsColumn.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
-msgid "No events in the last 24 hours"
-msgstr "Tiada peristiwa dalam 24 jam lepas"
-
-#: src/features/analytics/AnalyticsColumn.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events yet"
 msgstr "Belum ada peristiwa"
@@ -1570,10 +1566,6 @@ msgstr "Belum ada corong"
 #: src/features/analytics/Goals.tsx
 msgid "No goals yet"
 msgstr "Belum ada matlamat"
-
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "No properties yet"
-msgstr "Belum ada properti"
 
 #: src/features/analytics/Settings.tsx
 msgid "No props are tracked."
@@ -1615,6 +1607,7 @@ msgstr "Belum ada"
 msgid "None, every visit counts."
 msgstr "Tiada, setiap lawatan dikira."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "None, owners and admins only"
@@ -1726,6 +1719,11 @@ msgstr "Hanya dengan persetujuan"
 #: src/features/analytics/Goals.tsx
 msgid "Only with prop"
 msgstr "Hanya dengan prop"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "buka"
 
 #: src/features/analytics/NewProperty.tsx
 msgid "Open a page of your site with the snippet in place. This turns green as soon as the server has stored the first page view. Browsers with Do Not Track or Global Privacy Control send nothing, so use another one to test."
@@ -1853,7 +1851,6 @@ msgstr "Halaman yang sepadan dengan corak dikira di bawah satu laluan, jadi seti
 msgid "Pages viewed."
 msgstr "Halaman yang dilihat."
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Pages, sources, places and devices, without cookies, without storing IP addresses and without a consent banner where the law allows it."
 msgstr "Halaman, sumber, tempat dan peranti, tanpa kuki, tanpa menyimpan alamat IP dan tanpa sepanduk persetujuan di mana undang-undang membenarkan."
@@ -1923,10 +1920,6 @@ msgstr "sejam"
 msgid "per week"
 msgstr "seminggu"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-msgid "Period"
-msgstr "Tempoh"
-
 #: src/features/analytics/Settings.tsx
 msgid "Persistent id"
 msgstr "Id berterusan"
@@ -1959,6 +1952,7 @@ msgstr "Pilih sekurang-kurangnya satu paparan."
 msgid "Pick how the site is built and copy the snippet. The key is public, like a chat key: it only works on the property’s domains."
 msgstr "Pilih bagaimana tapak dibina dan salin coretan. Kunci adalah awam, seperti kunci sembang: ia hanya berfungsi pada domain properti."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/text.ts
 msgid "Platform"
 msgstr "Platform"
@@ -1967,11 +1961,7 @@ msgstr "Platform"
 msgid "Platforms"
 msgstr "Platform"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-msgid "Privacy"
-msgstr "Privasi"
-
-#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Product"
 msgstr "Produk"
 
@@ -2024,7 +2014,6 @@ msgstr "Letakkan skrip dalam head setiap halaman. Ia mengira paparan halaman, ju
 msgid "Put these links on your privacy page. Opting out is the only thing the script stores on the visitor’s device, and only when they ask for it. Visitors with Do Not Track or Global Privacy Control are never counted."
 msgstr "Letakkan pautan ini pada halaman privasi anda. Menarik diri ialah satu-satunya perkara yang disimpan skrip pada peranti pelawat, dan hanya apabila mereka memintanya. Pelawat dengan Do Not Track atau Global Privacy Control tidak pernah dikira."
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Range"
@@ -2158,10 +2147,6 @@ msgstr "Batalkan {name}?"
 msgid "Revoked"
 msgstr "Dibatalkan"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-msgid "Right now"
-msgstr "Sekarang"
-
 #: src/features/analytics/Exports.tsx
 msgid "Rows"
 msgstr "Baris"
@@ -2262,6 +2247,10 @@ msgstr "Hantar satu kepada saya sekarang"
 #: src/features/analytics/Goals.tsx
 msgid "Sends an event"
 msgstr "Menghantar peristiwa"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Separate several with spaces. *.example.com covers every subdomain."
+msgstr "Asingkan beberapa dengan ruang. *.example.com meliputi semua subdomain."
 
 #: src/features/analytics/text.ts
 msgid "Server"
@@ -2392,6 +2381,10 @@ msgstr "Peristiwa ujian"
 msgid "That password is not right."
 msgstr "Kata laluan itu tidak betul."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "The app’s own website. Events from the app are not checked against it."
+msgstr "Laman web aplikasi itu sendiri. Peristiwa daripada aplikasi tidak disemak terhadapnya."
+
 #: src/features/analytics/Funnels.tsx
 msgid "The consented counts follow visitors with a persistent id from one visit and day to the next, so a step reached on a later day still counts."
 msgstr "Kiraan yang bersetuju mengikuti pelawat dengan id berterusan dari satu lawatan dan hari ke yang seterusnya, jadi langkah yang dicapai pada hari kemudian masih dikira."
@@ -2459,10 +2452,6 @@ msgstr "Nama yang diberikan kepada track(), atau outbound_click, file_download, 
 #: src/features/analytics/Settings.tsx
 msgid "The previous key keeps working until {at}. Update every page and app before then."
 msgstr "Kunci sebelumnya terus berfungsi sehingga {at}. Kemas kini setiap halaman dan apl sebelum itu."
-
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "The properties of your inboxes show up here once an owner or admin adds them."
-msgstr "Properti peti masuk anda muncul di sini setelah pemilik atau pentadbir menambahnya."
 
 #: src/features/analytics/Exports.tsx
 msgid "The query could not be run."
@@ -2560,7 +2549,6 @@ msgstr "Masa pada halaman"
 msgid "Time the page was visible and in focus, per view."
 msgstr "Masa halaman kelihatan dan difokuskan, setiap paparan."
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Time zone"
@@ -2742,10 +2730,13 @@ msgstr "Pelawat"
 msgid "Visitors in the last 30 minutes"
 msgstr "Pelawat dalam 30 minit lepas"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Visitors now"
 msgstr "Pelawat sekarang"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Visitors today"
+msgstr "Pelawat hari ini"
 
 #: src/features/analytics/Retention.tsx
 msgid "Visitors who came back"
@@ -2764,7 +2755,6 @@ msgid "Visits"
 msgstr "Lawatan"
 
 #: src/features/analytics/AnalyticsFrame.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Visits and events that count as success"
 msgstr "Lawatan dan peristiwa yang dikira sebagai kejayaan"
 
@@ -2804,6 +2794,12 @@ msgstr "Tonton secara langsung"
 msgid "Web"
 msgstr "Web"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Website"
+msgstr "Laman web"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Website or app"
 msgstr "Tapak web atau apl"
@@ -2853,7 +2849,6 @@ msgid "Where the property’s day starts and ends."
 msgstr "Di mana hari properti bermula dan berakhir."
 
 #: src/features/analytics/AnalyticsFrame.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Which pages people visit, and which lead to questions"
 msgstr "Halaman mana yang dilawati orang, dan mana yang membawa kepada soalan"
 

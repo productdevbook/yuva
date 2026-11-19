@@ -53,10 +53,25 @@ msgstr "(senza oggetto)"
 msgid "{0, plural, one {{name} · # waiting} other {{name} · # waiting}}"
 msgstr "{0, plural, one {{name} · # in attesa} other {{name} · # in attesa}}"
 
+#. placeholder {0}: rows.length
+#: src/features/broadcasts/Overview.tsx
+msgid "{0, plural, one {{shown} broadcast} other {{shown} broadcasts}}"
+msgstr "{0, plural, one {{shown} invio} other {{shown} invii}}"
+
+#. placeholder {0}: items.length
+#: src/features/broadcasts/ListsHome.tsx
+msgid "{0, plural, one {{shown} list} other {{shown} lists}}"
+msgstr "{0, plural, one {{shown} lista} other {{shown} liste}}"
+
 #. placeholder {0}: items.length
 #: src/features/contact/ContactsPage.tsx
 msgid "{0, plural, one {{shown} person} other {{shown} people}}"
 msgstr "{0, plural, one {{shown} persona} other {{shown} persone}}"
+
+#. placeholder {0}: rows.length
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "{0, plural, one {{shown} triggered e-mail} other {{shown} triggered e-mails}}"
+msgstr "{0, plural, one {{shown} e-mail automatica} other {{shown} e-mail automatiche}}"
 
 #. placeholder {0}: msg.attachments
 #: src/features/migrations/ReviewStep.tsx
@@ -376,10 +391,6 @@ msgstr "{count, plural, =0 {Nessuna conversazione} one {# conversazione} other {
 msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, one {# brand} other {# brand}}"
 
-#: src/features/broadcasts/Overview.tsx
-msgid "{count, plural, one {# broadcast} other {# broadcasts}}"
-msgstr "{count, plural, one {# invio} other {# invii}}"
-
 #: src/features/settings/sla/SlaPage.tsx
 msgid "{count, plural, one {# condition} other {# conditions}}"
 msgstr "{count, plural, one {# condizione} other {# condizioni}}"
@@ -388,10 +399,6 @@ msgstr "{count, plural, one {# condizione} other {# condizioni}}"
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
 msgstr "{count, plural, one {# cartella} other {# cartelle}}"
-
-#: src/features/broadcasts/ListsHome.tsx
-msgid "{count, plural, one {# list} other {# lists}}"
-msgstr "{count, plural, one {# lista} other {# liste}}"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "{count, plural, one {# mailbox} other {# mailboxes}}"
@@ -416,10 +423,6 @@ msgstr "{count, plural, one {# segnalazione} other {# segnalazioni}}"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "{count, plural, one {# scope} other {# scopes}}"
 msgstr "{count, plural, one {# permesso} other {# permessi}}"
-
-#: src/features/broadcasts/TriggeredHome.tsx
-msgid "{count, plural, one {# triggered e-mail} other {# triggered e-mails}}"
-msgstr "{count, plural, one {# triggered e-mail} other {# triggered e-mails}}"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
@@ -745,10 +748,6 @@ msgstr "{n} assegnate a te"
 msgid "{n} attempts"
 msgstr "{n} tentativi"
 
-#: src/features/broadcasts/Overview.tsx
-msgid "{n} broadcasts"
-msgstr "{n} invii"
-
 #: src/features/inbox/ChatList.tsx
 msgid "{n} closed"
 msgstr "{n} chiuse"
@@ -761,10 +760,6 @@ msgstr "{n} conversazioni"
 #: src/features/broadcasts/Pace.tsx
 msgid "{n} in 30 days"
 msgstr "{n} in 30 giorni"
-
-#: src/features/broadcasts/ListsHome.tsx
-msgid "{n} lists"
-msgstr "{n} liste"
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -792,10 +787,6 @@ msgstr "{n} posticipati, tornano {when}"
 #: src/features/mail/queries.ts
 msgid "{n} starred"
 msgstr "{n} speciali"
-
-#: src/features/broadcasts/TriggeredHome.tsx
-msgid "{n} triggered e-mails"
-msgstr "{n} triggered e-mails"
 
 #: src/features/mail/queries.ts
 msgid "{n} unstarred"
@@ -925,10 +916,6 @@ msgstr "{out, plural, one {# riga è esclusa} other {# righe sono escluse}}"
 msgid "{pending} posts waiting for approval"
 msgstr "{pending} post in attesa di approvazione"
 
-#: src/features/broadcasts/ListsHome.tsx
-msgid "{pending} waiting · {unsubscribed} unsubscribed"
-msgstr "{pending} in attesa · {unsubscribed} disiscritti"
-
 #: src/features/docs/discussions/parts.tsx
 msgid "{pending} waiting for approval"
 msgstr "{pending} in attesa di approvazione"
@@ -938,7 +925,6 @@ msgid "{people, plural, one {Its # subscription and its consent record are delet
 msgstr "{people, plural, one {Il suo # abbonamento e la sua prova di consenso vengono eliminati.} other {I suoi # abbonamenti e le loro prove di consenso vengono eliminati.}}"
 
 #: src/features/broadcasts/Composer.tsx
-#: src/features/broadcasts/Overview.tsx
 msgid "{people} people"
 msgstr "{people} persone"
 
@@ -1097,10 +1083,6 @@ msgstr "{satisfied} soddisfatti"
 msgid "{sent} of {all} done"
 msgstr "{sent} di {all} completati"
 
-#: src/features/broadcasts/TriggeredHome.tsx
-msgid "{sent} sent"
-msgstr "{sent} sent"
-
 #: src/features/broadcasts/Report.tsx
 msgid "{sentTo, plural, one {# recipient} other {# recipients}} · {failed} refused by the mail server · {left} skipped · {autoCount, plural, one {# automatic reply, only counted} other {# automatic replies, only counted}}"
 msgstr "{sentTo, plural, one {# destinatario} other {# destinatari}} · {failed} rifiutati dal server di posta · {left} saltati · {autoCount, plural, one {# risposta automatica, solo contata} other {# risposte automatiche, solo contate}}"
@@ -1129,10 +1111,6 @@ msgstr "L’importazione da {source} richiede attenzione"
 msgid "{source} import should finish"
 msgstr "L’importazione da {source} dovrebbe finire"
 
-#: src/features/broadcasts/Overview.tsx
-msgid "{spam} marked as spam"
-msgstr "{spam} segnalati come spam"
-
 #: src/features/mail/MailThread.tsx
 msgid "{stackCount, plural, one {Show # earlier message} other {Show # earlier messages}}"
 msgstr "{stackCount, plural, one {Mostra # messaggio precedente} other {Mostra # messaggi precedenti}}"
@@ -1144,6 +1122,10 @@ msgstr "{state} da {since}"
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "{subscribed} subscribed"
 msgstr "{subscribed} iscritti"
+
+#: src/features/broadcasts/ListsHome.tsx
+msgid "{subscribers} subscribed, each with a consent record"
+msgstr "{subscribers} iscritti, ognuno con una registrazione del consenso"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "{text} vs previous period"
@@ -1157,10 +1139,6 @@ msgstr "{threads} discussioni aperte"
 msgid "{total, plural, one {# conversation nobody has taken} other {# conversations nobody has taken}}"
 msgstr "{total, plural, one {# conversazione che nessuno ha preso} other {# conversazioni che nessuno ha preso}}"
 
-#: src/features/broadcasts/Overview.tsx
-msgid "{total, plural, one {Last 30 days · # broadcast} other {Last 30 days · # broadcasts}}"
-msgstr "{total, plural, one {Ultimi 30 giorni · # invio} many {Ultimi 30 giorni · # di invii} other {Ultimi 30 giorni · # invii}}"
-
 #: src/features/reports/ReportPages.tsx
 msgid "{total} in total"
 msgstr "{total} in totale"
@@ -1173,14 +1151,6 @@ msgstr "{unreadText} da leggere"
 #: src/features/inbox/SidePanels.tsx
 msgid "{unseenText} unread of {totalText}"
 msgstr "{unseenText} da leggere su {totalText}"
-
-#: src/features/broadcasts/ListsHome.tsx
-msgid "{unsubscribed} unsubscribed"
-msgstr "{unsubscribed} disiscritti"
-
-#: src/features/broadcasts/Overview.tsx
-msgid "{unsubscribedShare} of sent"
-msgstr "{unsubscribedShare} degli inviati"
 
 #: src/features/status/StatusPages.tsx
 msgid "{up, plural, one {# up} other {# up}}"
@@ -1223,10 +1193,6 @@ msgstr "{votes} voti"
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
 msgstr "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
-
-#: src/features/broadcasts/TriggeredHome.tsx
-msgid "{waiting} waiting"
-msgstr "{waiting} waiting"
 
 #: src/features/status/StatusPages.tsx
 msgid "{watching, plural, one {Watched by # monitor} other {Watched by # monitors}}"
@@ -1659,10 +1625,6 @@ msgstr "Una riga che spinga ad aprirla"
 #: src/components/common/text.ts
 msgid "A linked GitHub or Linear issue changed"
 msgstr "A linked GitHub or Linear issue changed"
-
-#: src/features/broadcasts/ListsHome.tsx
-msgid "A list is who agreed to hear from you. Every subscriber keeps a consent record you can export."
-msgstr "Una lista raccoglie le persone che hanno accettato di ricevere vostre notizie. Ogni iscritto ha una prova del consenso che potete esportare."
 
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
@@ -2164,6 +2126,10 @@ msgstr "Aggiungi un iscritto a {listName}"
 msgid "Add a website chat in the inbox settings"
 msgstr "Aggiungi una chat del sito nelle impostazioni della casella"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Add a website or app"
+msgstr "Aggiungi un sito o un’app"
+
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Add an action"
 msgstr "Aggiungi un'azione"
@@ -2480,11 +2446,8 @@ msgstr "Avvisami mentre la scheda è in secondo piano"
 msgid "Alertmanager"
 msgstr "Alertmanager"
 
-#: src/features/broadcasts/BroadcastsFrame.tsx
-#: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
-#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/feedback/FeedbackList.tsx
@@ -2503,6 +2466,11 @@ msgstr "Tutti"
 #: src/features/inbox/AssistantsPage.tsx
 msgid "All assistants"
 msgstr "Tutti gli assistenti"
+
+#: src/features/broadcasts/BroadcastsFrame.tsx
+msgctxt "broadcasts place"
+msgid "All broadcasts"
+msgstr "Tutti gli invii"
 
 #: src/features/settings/ProductsPage.tsx
 msgid "All channels"
@@ -2578,7 +2546,6 @@ msgid "all products"
 msgstr "tutti i prodotti"
 
 #: src/components/common/WorkspaceSelector.tsx
-#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
@@ -2612,6 +2579,10 @@ msgstr "Tutti i sistemi sono operativi"
 #: src/features/status/StatusPages.tsx
 msgid "all up"
 msgstr "tutto attivo"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "All, drafts, scheduled or sent"
+msgstr "Tutti, bozze, programmati o inviati"
 
 #: src/features/oauth/ConsentPage.tsx
 msgid "Allow"
@@ -3134,6 +3105,8 @@ msgstr "Qualsiasi piano"
 msgid "Any state"
 msgstr "Qualsiasi stato"
 
+#: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Any status"
@@ -3927,7 +3900,6 @@ msgid "bounced"
 msgstr "rimbalzato"
 
 #: src/components/common/text.ts
-#: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 msgid "Bounced"
 msgstr "Rimbalzato"
@@ -3992,10 +3964,7 @@ msgstr "Invio di massa"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
-#: src/features/broadcasts/Composer.tsx
-#: src/features/broadcasts/Overview.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Broadcasts"
 msgstr "Invii"
@@ -4075,8 +4044,6 @@ msgstr "Nome della campagna"
 #: src/components/common/Wizard.tsx
 #: src/features/account/ConnectPage.tsx
 #: src/features/broadcasts/Import.tsx
-#: src/features/broadcasts/ListsHome.tsx
-#: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/broadcasts/SendTime.tsx
@@ -4458,6 +4425,10 @@ msgstr "Controlla ogni"
 msgid "Check now"
 msgstr "Controlla ora"
 
+#: src/features/broadcasts/BroadcastsFrame.tsx
+msgid "Check SPF, DKIM and DMARC"
+msgstr "Controlla SPF, DKIM e DMARC"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Check that forwarding is turned on and, for Gmail, confirmed with the code."
 msgstr "Controlla che l’inoltro sia attivo e, per Gmail, confermato con il codice."
@@ -4614,6 +4585,9 @@ msgstr "claude.ai e Claude Desktop"
 msgid "Clear"
 msgstr "Cancella"
 
+#: src/features/broadcasts/ListsHome.tsx
+#: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Clear filters"
 msgstr "Cancella filtri"
@@ -4626,6 +4600,7 @@ msgstr "Cancella ricerca e filtri"
 msgid "Clear the answer"
 msgstr "Cancella la risposta"
 
+#: src/components/common/ListBox.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -5561,7 +5536,7 @@ msgstr "Creane un’altra"
 msgid "Create channel"
 msgstr "Crea canale"
 
-#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 msgid "Create draft"
 msgstr "Crea bozza"
 
@@ -5598,6 +5573,7 @@ msgstr "Crealo, poi copia il token, che Front mostra una sola volta, e incollalo
 msgid "Create key"
 msgstr "Crea chiave"
 
+#: src/features/broadcasts/ListsHome.tsx
 #: src/features/setup/NewsletterStep.tsx
 msgid "Create list"
 msgstr "Crea lista"
@@ -5816,7 +5792,6 @@ msgid "Database upgrade"
 msgstr "Aggiornamento del database"
 
 #: src/components/common/SendLater.tsx
-#: src/features/broadcasts/Overview.tsx
 #: src/features/fields/value.ts
 msgid "Date"
 msgstr "Data"
@@ -6077,6 +6052,18 @@ msgid "Delete the selected block"
 msgstr "Elimina il blocco selezionato"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected broadcasts"
+msgstr "Elimina gli invii selezionati"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected broadcasts ({n})?"
+msgstr "Eliminare gli invii selezionati ({n})?"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected broadcasts (Del)"
+msgstr "Elimina gli invii selezionati (Canc)"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected contacts"
 msgstr "Elimina i contatti selezionati"
 
@@ -6099,10 +6086,6 @@ msgstr "Elimina definitivamente le conversazioni selezionate, nel cestino"
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Delete the selected discussions ({n})?"
 msgstr "Eliminare le discussioni selezionate ({n})?"
-
-#: src/features/broadcasts/BroadcastBulk.tsx
-msgid "Delete the selected drafts ({n})?"
-msgstr "Eliminare le bozze selezionate ({n})?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected mails for good, in the Trash"
@@ -6312,7 +6295,11 @@ msgstr "Design: {title}"
 
 #: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
+msgid "Designs"
+msgstr "Design"
+
 #: src/features/broadcasts/BroadcastsFrame.tsx
+msgctxt "broadcasts place"
 msgid "Designs"
 msgstr "Design"
 
@@ -6706,8 +6693,6 @@ msgstr "Testo della bozza"
 msgid "Draft:"
 msgstr "Bozza:"
 
-#: src/features/broadcasts/BroadcastsFrame.tsx
-#: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/mail/MailDrafts.tsx
 #: src/features/migrations/parts.tsx
@@ -6720,7 +6705,8 @@ msgctxt "mail folder"
 msgid "Drafts"
 msgstr "Bozze"
 
-#: src/app/places.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
+msgctxt "broadcasts place"
 msgid "Drafts and approvals"
 msgstr "Bozze e approvazioni"
 
@@ -6931,7 +6917,6 @@ msgid "Each with all its messages and notes"
 msgstr "Ognuna con tutti i suoi messaggi e note"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
@@ -7320,14 +7305,12 @@ msgstr "Ogni discussione aperta ha una risposta."
 msgid "Every other browser and device is signed out. This one stays signed in."
 msgstr "Tutti gli altri browser e dispositivi vengono disconnessi. Questo resta connesso."
 
-#: src/features/broadcasts/ListsHome.tsx
-#: src/features/broadcasts/Overview.tsx
-#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
 msgstr "tutti i prodotti"
 
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
 msgstr "Ogni prodotto"
@@ -7351,6 +7334,10 @@ msgstr "Ogni sito"
 #: src/features/migrations/ConnectStep.tsx
 msgid "Every step passed."
 msgstr "Ogni passaggio superato."
+
+#: src/features/broadcasts/ListsHome.tsx
+msgid "Every subscriber keeps a consent record you can export."
+msgstr "Ogni iscritto ha una registrazione del consenso che puoi esportare."
 
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SourceFilter.tsx
@@ -7682,12 +7669,19 @@ msgstr "Filtra per etichetta"
 msgid "Filter by plan"
 msgstr "Filtra per piano"
 
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "Filtra per prodotto"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Filter by state"
+msgstr "Filtra per stato"
+
+#: src/features/broadcasts/ListsHome.tsx
+#: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "Filter by status"
 msgstr "Filtra per stato"
 
 #: src/features/inbox/ChatList.tsx
@@ -8074,10 +8068,6 @@ msgstr "Da"
 msgid "From (optional)"
 msgstr "Da (facoltativo)"
 
-#: src/features/broadcasts/Overview.tsx
-msgid "from {from}"
-msgstr "da {from}"
-
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
@@ -8273,10 +8263,6 @@ msgstr "Obiettivi"
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Goes out through {via}"
 msgstr "Parte da {via}"
-
-#: src/features/broadcasts/Overview.tsx
-msgid "Going out now"
-msgstr "In uscita ora"
 
 #: src/features/reports/ReportPages.tsx
 msgid "good"
@@ -8834,10 +8820,6 @@ msgstr "Impatto"
 msgid "Import"
 msgstr "Importa"
 
-#: src/features/broadcasts/ListsHome.tsx
-msgid "Import a CSV file"
-msgstr "Importa un file CSV"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Import another file"
 msgstr "Importa un altro file"
@@ -9025,6 +9007,10 @@ msgstr "In questa scheda del browser"
 msgid "In this thread"
 msgstr "In questa conversazione"
 
+#: src/features/broadcasts/ListsHome.tsx
+msgid "In use"
+msgstr "In uso"
+
 #: src/components/common/BulkReport.tsx
 msgid "In use by {names}"
 msgstr "Usata da {names}"
@@ -9048,7 +9034,7 @@ msgstr "In Zoho Mail, apri Impostazioni › Account di posta › Accesso IMAP e 
 #: src/components/common/FocusChoice.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
-#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/docs/InstallDialog.tsx
 #: src/features/migrations/MapStep.tsx
@@ -9352,11 +9338,11 @@ msgstr "Invia tramite {address}."
 msgid "It shows up here as soon as it reaches Yuva."
 msgstr "Compare qui appena arriva a Yuva."
 
-#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 msgid "It stays a draft until you send or schedule it. Replies come to the inbox you pick."
 msgstr "Resta una bozza finché non la invii o la pianifichi. Le risposte arrivano alla casella che scegli."
 
-#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 msgid "It stays a draft until you start it. Replies come to the inbox you pick."
 msgstr "It stays a draft until you start it. Replies come to the inbox you pick."
 
@@ -9665,7 +9651,7 @@ msgstr "Ultimi 12 mesi"
 msgid "Last 3 months"
 msgstr "Ultimi 3 mesi"
 
-#: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/ListsHome.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Last 30 days"
@@ -10057,7 +10043,6 @@ msgstr "I link punteranno al dominio dei link di questo server invece che al tuo
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
-#: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Trigger.tsx
 #: src/features/setup/NewsletterStep.tsx
 msgid "List"
@@ -10101,10 +10086,7 @@ msgstr "Elenco dei ticket…"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
-#: src/features/broadcasts/ListPage.tsx
-#: src/features/broadcasts/ListsHome.tsx
-#: src/features/broadcasts/NewBroadcastDialog.tsx
-#: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Lists"
 msgstr "Liste"
@@ -10316,10 +10298,6 @@ msgstr "La posta va nel canale e-mail «{channelName}», che riceve {address}."
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "La posta non è firmata con una chiave del dominio del mittente, come invece richiedono Gmail e Yahoo."
 
-#: src/features/broadcasts/Overview.tsx
-msgid "Mail leaves at each broadcast’s pace, so providers accept it."
-msgstr "La posta parte al ritmo di ogni invio, così i provider la accettano."
-
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "mail made"
 msgstr "mail made"
@@ -10401,9 +10379,6 @@ msgid "Mailing list (List-Id)"
 msgstr "Mailing list (List-Id)"
 
 #: src/app/Palette.tsx
-#: src/features/broadcasts/BroadcastsFrame.tsx
-#: src/features/broadcasts/ListsHome.tsx
-#: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactDetail.tsx
 msgid "Mailing lists"
 msgstr "Mailing list"
@@ -11031,6 +11006,9 @@ msgstr "Visti più di recente prima"
 msgid "Most votes"
 msgstr "Più voti"
 
+#: src/features/broadcasts/ListsHome.tsx
+#: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -11273,7 +11251,7 @@ msgstr "Le mie viste"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListSettings.tsx
-#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -11438,7 +11416,7 @@ msgid "New article"
 msgstr "Nuovo articolo"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 #: src/features/broadcasts/Overview.tsx
 msgid "New broadcast"
 msgstr "Nuovo invio"
@@ -11660,7 +11638,7 @@ msgid "New team"
 msgstr "Nuovo team"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "New triggered e-mail"
 msgstr "New triggered e-mail"
@@ -11840,8 +11818,8 @@ msgid "No broadcast is scheduled."
 msgstr "Nessun invio è programmato."
 
 #: src/features/broadcasts/Overview.tsx
-msgid "No broadcasts for {scope} yet."
-msgstr "Ancora nessun invio per {scope}."
+msgid "No broadcast matches “{q}”."
+msgstr "Nessun invio corrisponde a «{q}»."
 
 #: src/features/broadcasts/Overview.tsx
 msgid "No broadcasts have gone out yet."
@@ -12130,8 +12108,8 @@ msgid "No limit"
 msgstr "Nessun limite"
 
 #: src/features/broadcasts/ListsHome.tsx
-msgid "No lists for {scope} yet"
-msgstr "Ancora nessuna lista per {scope}"
+msgid "No list matches “{q}”."
+msgstr "Nessuna lista corrisponde a «{q}»."
 
 #: src/features/docs/DiscussionsTab.tsx
 msgid "No locked discussions."
@@ -12944,7 +12922,7 @@ msgstr "Numero"
 msgid "Objected to all mail"
 msgstr "Si è opposto a tutta la posta"
 
-#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 msgid "October newsletter"
 msgstr "Newsletter di ottobre"
 
@@ -13250,7 +13228,7 @@ msgstr "Solo i proprietari possono eliminare lo spazio di lavoro."
 msgid "Only pages on these addresses can open the chat. Enter scheme and host, without a path."
 msgstr "Solo le pagine a questi indirizzi possono aprire la chat. Inserisci schema e host, senza percorso."
 
-#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 msgid "Only people subscribed to one of these lists get the mail. Fixed after the draft."
 msgstr "Only people subscribed to one of these lists get the mail. Fixed after the draft."
 
@@ -13327,7 +13305,7 @@ msgstr "Solo mentre il pannello è aperto in questo browser. Da assente, vieni a
 msgid "only your team can preview it"
 msgstr "solo il tuo team può vederne l’anteprima"
 
-#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 msgid "Only your team sees it."
 msgstr "La vede solo il tuo team."
 
@@ -13335,6 +13313,9 @@ msgstr "La vede solo il tuo team."
 msgid "open"
 msgstr "aperta"
 
+#: src/features/broadcasts/ListsHome.tsx
+#: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -13345,7 +13326,6 @@ msgstr "apri"
 
 #: src/components/common/text.ts
 #: src/features/account/AccountPage.tsx
-#: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackList.tsx
@@ -14105,6 +14085,7 @@ msgstr "Le consegne in sospeso vengono scartate con esso."
 
 #: src/app/nav.tsx
 #: src/app/places.tsx
+#: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "People"
@@ -14117,6 +14098,10 @@ msgstr "Persone invitate che non hanno ancora effettuato l’accesso"
 #: src/features/setup/NewsletterStep.tsx
 msgid "People join it on a subscribe form or are added with their consent. Broadcasts go to lists."
 msgstr "Vi si iscrivono con un modulo di iscrizione o vengono aggiunte con il loro consenso. Gli invii vanno alle liste."
+
+#: src/features/broadcasts/ListsHome.tsx
+msgid "People join it on your forms, by import or through the API. Each keeps a consent record."
+msgstr "Le persone si iscrivono dai tuoi moduli, per importazione o tramite l’API. Il consenso di ognuno viene registrato."
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "People of your verified domains work in this workspace only after signing in through your provider. Owners are exempt, so a broken provider never locks you out. Sessions that exist now stop working here, so covered members have to sign in again, and their connected apps need approving again."
@@ -15743,10 +15728,6 @@ msgstr "Le risposte non possono partire finché non aggiungi un account per le r
 msgid "Replies go out through your own SMTP account. Leave the host empty to only receive mail."
 msgstr "Le risposte partono dal tuo account SMTP. Lascia vuoto l’host per ricevere soltanto posta."
 
-#: src/features/broadcasts/Overview.tsx
-msgid "Replies land in the inbox"
-msgstr "Le risposte arrivano nella posta in arrivo"
-
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Replies the assistant writes are drafts: you or a teammate review them in the conversation and send them. It shows as you, via the assistant."
 msgstr "Le risposte che scrive l’assistente sono bozze: tu o un collega le rivedete nella conversazione e le inviate. Compaiono a tuo nome, tramite l’assistente."
@@ -16544,13 +16525,16 @@ msgstr "Pianifica la voce"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/text.ts
-#: src/features/broadcasts/BroadcastsFrame.tsx
-#: src/features/broadcasts/Overview.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/StatusFrame.tsx
 #: src/features/status/text.tsx
 msgid "Scheduled"
 msgstr "Pianificato"
+
+#: src/features/broadcasts/BroadcastsFrame.tsx
+msgctxt "broadcasts place"
+msgid "Scheduled"
+msgstr "Programmati"
 
 #: src/features/mail/folders.ts
 msgctxt "mail folder"
@@ -16628,21 +16612,31 @@ msgstr "Screenshot allegati"
 msgid "SDK"
 msgstr "SDK"
 
+#: src/features/broadcasts/ListsHome.tsx
+#: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "search"
 msgstr "cerca"
 
 #: src/app/Palette.tsx
-#: src/features/broadcasts/Overview.tsx
-#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 msgid "Search"
 msgstr "Cerca"
 
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/Overview.tsx
+msgid "Search broadcasts"
+msgstr "Cerca invii"
+
 #: src/features/contact/ContactSearch.tsx
 msgid "Search by name, e-mail or external id"
 msgstr "Cerca per nome, e-mail o ID esterno"
+
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "Search by name…"
+msgstr "Cerca per nome…"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactSearch.tsx
@@ -16707,9 +16701,22 @@ msgstr "Cerca incidenti"
 msgid "Search languages or type a tag"
 msgstr "Cerca lingue o scrivi un codice"
 
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/ListsHome.tsx
+msgid "Search lists"
+msgstr "Cerca liste"
+
+#: src/features/broadcasts/ListsHome.tsx
+msgid "Search lists…"
+msgstr "Cerca liste…"
+
 #: src/features/mail/MailList.tsx
 msgid "Search mail"
 msgstr "Cerca nella posta"
+
+#: src/features/broadcasts/Overview.tsx
+msgid "Search name or subject…"
+msgstr "Cerca nome o oggetto…"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Search name, e-mail or id…"
@@ -16751,6 +16758,11 @@ msgstr "Cerca negli articoli"
 msgid "Search time zones"
 msgstr "Cerca fusi orari"
 
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "Search triggered e-mails"
+msgstr "Cerca e-mail automatiche"
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from Codex. It acts as you, with the access you allow."
 msgstr "Cerca, smista e prepara risposte da Codex. Agisce come te, con l’accesso che consenti."
@@ -16791,6 +16803,7 @@ msgstr "Visto {seen}"
 msgid "Seen by the monitor"
 msgstr "Visto dal monitor"
 
+#: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -16811,6 +16824,10 @@ msgstr "Seleziona {name}"
 #: src/components/common/Selection.tsx
 msgid "Select all"
 msgstr "Seleziona tutto"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the broadcast under the cursor"
+msgstr "Seleziona l’invio sotto il cursore"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the contact under the cursor"
@@ -16906,7 +16923,6 @@ msgstr "Invia un nuovo codice"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Composer.tsx
-#: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TestSend.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "Send a test"
@@ -17149,6 +17165,10 @@ msgstr "Invio non riuscito: {reason}"
 msgid "Sending failed."
 msgstr "Invio non riuscito."
 
+#: src/features/broadcasts/BroadcastsFrame.tsx
+msgid "Sending from <0>{address}</0>"
+msgstr "Invio da <0>{address}</0>"
+
 #: src/components/common/text.ts
 msgid "Sending has already started. Pause or cancel it instead."
 msgstr "L’invio è già iniziato. Mettilo in pausa o annullalo."
@@ -17210,18 +17230,9 @@ msgstr "Invio…"
 msgid "Sends"
 msgstr "Sends"
 
-#: src/features/broadcasts/Overview.tsx
-msgid "Sends {when}"
-msgstr "Invio {when}"
-
-#: src/features/broadcasts/Overview.tsx
-msgid "Sends {when} to {to}"
-msgstr "Invio {when} a {to}"
-
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
-#: src/features/broadcasts/Overview.tsx
 msgid "Sends from"
 msgstr "Invia da"
 
@@ -17257,8 +17268,6 @@ msgstr "inviati"
 
 #: src/components/common/Linked.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/broadcasts/BroadcastsFrame.tsx
-#: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
@@ -17272,6 +17281,11 @@ msgstr "Inviato"
 msgctxt "broadcast state"
 msgid "Sent"
 msgstr "Inviato"
+
+#: src/features/broadcasts/BroadcastsFrame.tsx
+msgctxt "broadcasts place"
+msgid "Sent"
+msgstr "Inviati"
 
 #: src/components/common/text.ts
 msgctxt "delivery state"
@@ -18353,6 +18367,14 @@ msgstr "SPF viene superato per {spfDomain}, non per il dominio di invio {from}, 
 msgid "SPF passes for {spfDomain}."
 msgstr "SPF viene superato per {spfDomain}."
 
+#: src/features/broadcasts/BroadcastsFrame.tsx
+msgid "SPF, DKIM and DMARC pass"
+msgstr "SPF, DKIM e DMARC superati"
+
+#: src/features/broadcasts/BroadcastsFrame.tsx
+msgid "SPF, DKIM or DMARC needs a look"
+msgstr "SPF, DKIM o DMARC da controllare"
+
 #: src/features/reports/TrendsReport.tsx
 msgid "Split by"
 msgstr "Suddividi per"
@@ -18633,7 +18655,6 @@ msgstr "Stop the triggered e-mail"
 
 #: src/components/common/SlaBadge.tsx
 #: src/features/broadcasts/BroadcastParts.tsx
-#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "Stopped"
 msgstr "Interrotto"
@@ -18712,13 +18733,17 @@ msgstr "iscritti adesso"
 msgid "Subscribed to the list now"
 msgstr "Iscritto alla lista adesso"
 
-#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
+msgid "Subscribers"
+msgstr "Iscritti"
+
+#: src/features/broadcasts/BroadcastsFrame.tsx
+msgctxt "broadcasts place"
 msgid "Subscribers"
 msgstr "Iscritti"
 
@@ -18729,10 +18754,6 @@ msgstr "Iscritti aggiunti"
 #: src/features/status/SettingsTab.tsx
 msgid "Subscribers confirm their address by mail before they get notices."
 msgstr "Gli iscritti confermano il proprio indirizzo via e-mail prima di ricevere gli avvisi."
-
-#: src/features/broadcasts/ListsHome.tsx
-msgid "Subscribers over the last 30 days"
-msgstr "Iscritti negli ultimi 30 giorni"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Subscription deleted"
@@ -21049,11 +21070,9 @@ msgid "Trigger"
 msgstr "Trigger"
 
 #: src/features/broadcasts/BroadcastsFrame.tsx
-#: src/features/broadcasts/Composer.tsx
-#: src/features/broadcasts/TriggeredHome.tsx
-#: src/features/broadcasts/TriggeredPage.tsx
+msgctxt "broadcasts place"
 msgid "Triggered"
-msgstr "Triggered"
+msgstr "Automatiche"
 
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
@@ -21456,7 +21475,6 @@ msgstr "cancellati"
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/Growth.tsx
 #: src/features/broadcasts/ListsHome.tsx
-#: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribed"
@@ -22026,7 +22044,6 @@ msgstr "in attesa di conferma"
 
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
-#: src/features/broadcasts/ListsHome.tsx
 msgid "Waiting for confirmation"
 msgstr "In attesa di conferma"
 
@@ -22215,7 +22232,7 @@ msgstr "Mercoledì"
 msgid "Weeks"
 msgstr "Settimane"
 
-#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 msgid "Welcome mail"
 msgstr "Welcome mail"
 
@@ -22610,7 +22627,7 @@ msgstr "Chi supporti: nome, orari, team, mittente"
 msgid "Why they get it"
 msgstr "Why they get it"
 
-#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/broadcasts/Trigger.tsx
 msgid "Why they get this mail"
@@ -23267,7 +23284,6 @@ msgid "Yuva could not read the provider's discovery document. Check the issuer U
 msgstr "Yuva could not read the provider's discovery document. Check the issuer URL."
 
 #: src/features/broadcasts/Overview.tsx
-#: src/features/broadcasts/TriggeredHome.tsx
 msgid "Yuva counts clicks and replies. It does not track opens."
 msgstr "Yuva conta clic e risposte. Non traccia le aperture."
 

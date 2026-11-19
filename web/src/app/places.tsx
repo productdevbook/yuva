@@ -363,7 +363,7 @@ function useBroadcastPlaces(): SectionPlaces {
         title: t`Broadcasts`,
         items: [
           item("all", names.all, viewLink("all"), "broadcasts-filter-all"),
-          item("drafts", t`Drafts and approvals`, viewLink("drafts"), "broadcasts-filter-drafts"),
+          item("drafts", names.drafts, viewLink("drafts"), "broadcasts-filter-drafts"),
           item("scheduled", names.scheduled, viewLink("scheduled"), "broadcasts-filter-scheduled"),
           item("sent", names.sent, viewLink("sent"), "broadcasts-filter-sent"),
           item("triggered", names.triggered, "/broadcasts/triggered", "broadcasts-nav-triggered"),
@@ -372,7 +372,7 @@ function useBroadcastPlaces(): SectionPlaces {
       {
         key: "audience",
         title: t`Audience`,
-        items: [item("lists", t`Subscribers`, "/broadcasts/lists", "broadcasts-nav-lists")],
+        items: [item("lists", names.lists, "/broadcasts/lists", "broadcasts-nav-lists")],
       },
       ...(canManage
         ? [

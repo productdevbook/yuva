@@ -21,7 +21,6 @@ import {
   keyHint,
   progressOf,
   ProgressBar,
-  StateBadge,
   useNumber,
   PaceLine,
   WaitingLine,
@@ -34,9 +33,7 @@ import {
   DetailFrame,
   backOf,
   DetailHeading,
-  DetailTrail,
   rememberedList,
-  TopTrail,
   useViewNames,
   viewLink,
   viewOf,
@@ -48,7 +45,7 @@ import { SendTimeDialog } from "@/features/broadcasts/SendTime"
 import { useTriggerSentence } from "@/features/broadcasts/Trigger"
 import { designLink } from "@/features/designs/queries"
 import { Card, Section } from "@/features/settings/ui"
-import { FrameButton, FrameTabs, ProductTag } from "@/features/status/PageFrame"
+import { FrameButton, FrameTabs } from "@/features/status/PageFrame"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import type { Broadcast } from "@/lib/api"
 import { useSession } from "@/lib/session"
@@ -472,13 +469,7 @@ export function BroadcastPage() {
         testId="broadcast-loading"
 
         back={{ to: viewLink(back), label: views[back] }}
-        bar={{
-          back: "/broadcasts",
-          label: t`Broadcasts`,
-          content: broadcast.isPending ? <Skeleton className="h-7 w-60" /> : <ErrorLine error={broadcast.error} />,
-        }}
         heading={broadcast.isPending ? <Skeleton className="h-8 w-2/3" /> : <ErrorLine error={broadcast.error} />}
-        eyebrow={<TopTrail place={back} />}
       >
         {broadcast.isPending && <Skeleton className="h-40 w-full rounded-2xl" />}
       </DetailFrame>
@@ -513,27 +504,7 @@ export function BroadcastPage() {
 
       wide
       back={backOf(place, views)}
-      bar={{
-        back: "/broadcasts",
-        label: t`Broadcasts`,
-        content: (
-          <>
-            <div className="flex min-w-48 flex-1 basis-64 flex-col leading-snug">
-              <span className="flex min-w-0 flex-wrap items-center gap-x-2.5 gap-y-1">
-                <h1 className="min-w-0 truncate text-[17px] font-semibold" data-testid="broadcast-name-heading">
-                  {b.name}
-                </h1>
-                <StateBadge state={b.state} />
-                {inbox && <ProductTag name={inbox.name} color={inbox.branding.color} />}
-              </span>
-              {b.subject && <span className="truncate text-small text-muted-foreground">{b.subject}</span>}
-            </div>
-            {actions && <div className="flex min-w-0 max-w-full flex-wrap items-center gap-2">{actions}</div>}
-          </>
-        ),
-      }}
       heading={<DetailHeading b={b} />}
-      eyebrow={<DetailTrail b={b} />}
       actions={actions}
       aside={
         <>

@@ -53,10 +53,25 @@ msgstr "(χωρίς θέμα)"
 msgid "{0, plural, one {{name} · # waiting} other {{name} · # waiting}}"
 msgstr "{0, plural, one {{name} · # σε αναμονή} other {{name} · # σε αναμονή}}"
 
+#. placeholder {0}: rows.length
+#: src/features/broadcasts/Overview.tsx
+msgid "{0, plural, one {{shown} broadcast} other {{shown} broadcasts}}"
+msgstr "{0, plural, one {{shown} αποστολή} other {{shown} αποστολές}}"
+
+#. placeholder {0}: items.length
+#: src/features/broadcasts/ListsHome.tsx
+msgid "{0, plural, one {{shown} list} other {{shown} lists}}"
+msgstr "{0, plural, one {{shown} λίστα} other {{shown} λίστες}}"
+
 #. placeholder {0}: items.length
 #: src/features/contact/ContactsPage.tsx
 msgid "{0, plural, one {{shown} person} other {{shown} people}}"
 msgstr "{0, plural, one {{shown} άτομο} other {{shown} άτομα}}"
+
+#. placeholder {0}: rows.length
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "{0, plural, one {{shown} triggered e-mail} other {{shown} triggered e-mails}}"
+msgstr "{0, plural, one {{shown} αυτόματο email} other {{shown} αυτόματα email}}"
 
 #. placeholder {0}: msg.attachments
 #: src/features/migrations/ReviewStep.tsx
@@ -376,10 +391,6 @@ msgstr "{count, plural, =0 {Καμία συνομιλία} one {# συνομιλ
 msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, one {# επωνυμία} other {# επωνυμίες}}"
 
-#: src/features/broadcasts/Overview.tsx
-msgid "{count, plural, one {# broadcast} other {# broadcasts}}"
-msgstr "{count, plural, one {# μαζική αποστολή} other {# μαζικές αποστολές}}"
-
 #: src/features/settings/sla/SlaPage.tsx
 msgid "{count, plural, one {# condition} other {# conditions}}"
 msgstr "{count, plural, one {# συνθήκη} other {# συνθήκες}}"
@@ -388,10 +399,6 @@ msgstr "{count, plural, one {# συνθήκη} other {# συνθήκες}}"
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
 msgstr "{count, plural, one {# φάκελος} other {# φάκελοι}}"
-
-#: src/features/broadcasts/ListsHome.tsx
-msgid "{count, plural, one {# list} other {# lists}}"
-msgstr "{count, plural, one {# λίστα} other {# λίστες}}"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "{count, plural, one {# mailbox} other {# mailboxes}}"
@@ -416,10 +423,6 @@ msgstr "{count, plural, one {# αναφορά} other {# αναφορές}}"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "{count, plural, one {# scope} other {# scopes}}"
 msgstr "{count, plural, one {# δικαίωμα} other {# δικαιώματα}}"
-
-#: src/features/broadcasts/TriggeredHome.tsx
-msgid "{count, plural, one {# triggered e-mail} other {# triggered e-mails}}"
-msgstr "{count, plural, one {# triggered e-mail} other {# triggered e-mails}}"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
@@ -745,10 +748,6 @@ msgstr "{n} ανατέθηκαν σε εσάς"
 msgid "{n} attempts"
 msgstr "Προσπάθειες: {n}"
 
-#: src/features/broadcasts/Overview.tsx
-msgid "{n} broadcasts"
-msgstr "{n} μαζικές αποστολές"
-
 #: src/features/inbox/ChatList.tsx
 msgid "{n} closed"
 msgstr "{n} έκλεισαν"
@@ -761,10 +760,6 @@ msgstr "{n} συνομιλίες"
 #: src/features/broadcasts/Pace.tsx
 msgid "{n} in 30 days"
 msgstr "{n} σε 30 ημέρες"
-
-#: src/features/broadcasts/ListsHome.tsx
-msgid "{n} lists"
-msgstr "{n} λίστες"
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -792,10 +787,6 @@ msgstr "Σε αναβολή: {n}, επιστρέφουν {when}"
 #: src/features/mail/queries.ts
 msgid "{n} starred"
 msgstr "Με αστέρι: {n}"
-
-#: src/features/broadcasts/TriggeredHome.tsx
-msgid "{n} triggered e-mails"
-msgstr "{n} triggered e-mails"
 
 #: src/features/mail/queries.ts
 msgid "{n} unstarred"
@@ -925,10 +916,6 @@ msgstr "{out, plural, one {# γραμμή παραλείπεται} other {# γ�
 msgid "{pending} posts waiting for approval"
 msgstr "Αναρτήσεις σε αναμονή έγκρισης: {pending}"
 
-#: src/features/broadcasts/ListsHome.tsx
-msgid "{pending} waiting · {unsubscribed} unsubscribed"
-msgstr "{pending} σε αναμονή · {unsubscribed} απεγγραφές"
-
 #: src/features/docs/discussions/parts.tsx
 msgid "{pending} waiting for approval"
 msgstr "Σε αναμονή έγκρισης: {pending}"
@@ -938,7 +925,6 @@ msgid "{people, plural, one {Its # subscription and its consent record are delet
 msgstr "{people, plural, one {Η # συνδρομή του και η καταγραφή συναίνεσης διαγράφονται.} other {Οι # συνδρομές του και οι καταγραφές συναίνεσης διαγράφονται.}}"
 
 #: src/features/broadcasts/Composer.tsx
-#: src/features/broadcasts/Overview.tsx
 msgid "{people} people"
 msgstr "{people} άτομα"
 
@@ -1097,10 +1083,6 @@ msgstr "ικανοποιημένοι: {satisfied}"
 msgid "{sent} of {all} done"
 msgstr "{sent} από {all} ολοκληρώθηκαν"
 
-#: src/features/broadcasts/TriggeredHome.tsx
-msgid "{sent} sent"
-msgstr "{sent} sent"
-
 #: src/features/broadcasts/Report.tsx
 msgid "{sentTo, plural, one {# recipient} other {# recipients}} · {failed} refused by the mail server · {left} skipped · {autoCount, plural, one {# automatic reply, only counted} other {# automatic replies, only counted}}"
 msgstr "{sentTo, plural, other {Παραλήπτες: #}} · απορρίφθηκαν από τον διακομιστή αλληλογραφίας: {failed} · παραλείφθηκαν: {left} · {autoCount, plural, other {αυτόματες απαντήσεις: #, μόνο καταμέτρηση}}"
@@ -1129,10 +1111,6 @@ msgstr "Η εισαγωγή από {source} χρειάζεται προσοχή"
 msgid "{source} import should finish"
 msgstr "Η εισαγωγή από {source} αναμένεται να ολοκληρωθεί"
 
-#: src/features/broadcasts/Overview.tsx
-msgid "{spam} marked as spam"
-msgstr "{spam} επισημάνθηκαν ως ανεπιθύμητα"
-
 #: src/features/mail/MailThread.tsx
 msgid "{stackCount, plural, one {Show # earlier message} other {Show # earlier messages}}"
 msgstr "{stackCount, plural, one {Εμφάνιση # παλαιότερου μηνύματος} other {Εμφάνιση # παλαιότερων μηνυμάτων}}"
@@ -1144,6 +1122,10 @@ msgstr "{state} από {since}"
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "{subscribed} subscribed"
 msgstr "συνδρομητές: {subscribed}"
+
+#: src/features/broadcasts/ListsHome.tsx
+msgid "{subscribers} subscribed, each with a consent record"
+msgstr "{subscribers} εγγεγραμμένοι, ο καθένας με καταγραφή συναίνεσης"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "{text} vs previous period"
@@ -1157,10 +1139,6 @@ msgstr "Ανοιχτές συζητήσεις: {threads}"
 msgid "{total, plural, one {# conversation nobody has taken} other {# conversations nobody has taken}}"
 msgstr "{total, plural, one {# συνομιλία που δεν ανέλαβε κανείς} other {# συνομιλίες που δεν ανέλαβε κανείς}}"
 
-#: src/features/broadcasts/Overview.tsx
-msgid "{total, plural, one {Last 30 days · # broadcast} other {Last 30 days · # broadcasts}}"
-msgstr "{total, plural, one {Τελευταίες 30 ημέρες · # μαζική αποστολή} other {Τελευταίες 30 ημέρες · # μαζικές αποστολές}}"
-
 #: src/features/reports/ReportPages.tsx
 msgid "{total} in total"
 msgstr "{total} συνολικά"
@@ -1173,14 +1151,6 @@ msgstr "{unreadText} μη αναγνωσμένα"
 #: src/features/inbox/SidePanels.tsx
 msgid "{unseenText} unread of {totalText}"
 msgstr "{unseenText} αδιάβαστες από {totalText}"
-
-#: src/features/broadcasts/ListsHome.tsx
-msgid "{unsubscribed} unsubscribed"
-msgstr "{unsubscribed} απεγγραφές"
-
-#: src/features/broadcasts/Overview.tsx
-msgid "{unsubscribedShare} of sent"
-msgstr "{unsubscribedShare} των απεσταλμένων"
 
 #: src/features/status/StatusPages.tsx
 msgid "{up, plural, one {# up} other {# up}}"
@@ -1223,10 +1193,6 @@ msgstr "Ψήφοι: {votes}"
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
 msgstr "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
-
-#: src/features/broadcasts/TriggeredHome.tsx
-msgid "{waiting} waiting"
-msgstr "{waiting} waiting"
 
 #: src/features/status/StatusPages.tsx
 msgid "{watching, plural, one {Watched by # monitor} other {Watched by # monitors}}"
@@ -1659,10 +1625,6 @@ msgstr "Μια γραμμή που κάνει τον κόσμο να το ανο
 #: src/components/common/text.ts
 msgid "A linked GitHub or Linear issue changed"
 msgstr "A linked GitHub or Linear issue changed"
-
-#: src/features/broadcasts/ListsHome.tsx
-msgid "A list is who agreed to hear from you. Every subscriber keeps a consent record you can export."
-msgstr "Μια λίστα είναι όσοι συμφώνησαν να ακούν νέα σας. Κάθε συνδρομητής έχει καταγραφή συναίνεσης που μπορείτε να εξαγάγετε."
 
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
@@ -2164,6 +2126,10 @@ msgstr "Προσθήκη συνδρομητή στη λίστα {listName}"
 msgid "Add a website chat in the inbox settings"
 msgstr "Προσθέστε συνομιλία ιστότοπου στις ρυθμίσεις των εισερχομένων"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Add a website or app"
+msgstr "Προσθήκη ιστότοπου ή εφαρμογής"
+
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Add an action"
 msgstr "Προσθήκη ενέργειας"
@@ -2480,11 +2446,8 @@ msgstr "Ειδοποίησέ με όσο η καρτέλα είναι στο π�
 msgid "Alertmanager"
 msgstr "Alertmanager"
 
-#: src/features/broadcasts/BroadcastsFrame.tsx
-#: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
-#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/feedback/FeedbackList.tsx
@@ -2503,6 +2466,11 @@ msgstr "Όλα"
 #: src/features/inbox/AssistantsPage.tsx
 msgid "All assistants"
 msgstr "Όλοι οι βοηθοί"
+
+#: src/features/broadcasts/BroadcastsFrame.tsx
+msgctxt "broadcasts place"
+msgid "All broadcasts"
+msgstr "Όλες οι αποστολές"
 
 #: src/features/settings/ProductsPage.tsx
 msgid "All channels"
@@ -2578,7 +2546,6 @@ msgid "all products"
 msgstr "όλα τα προϊόντα"
 
 #: src/components/common/WorkspaceSelector.tsx
-#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
@@ -2612,6 +2579,10 @@ msgstr "Όλα τα συστήματα λειτουργούν"
 #: src/features/status/StatusPages.tsx
 msgid "all up"
 msgstr "όλα σε λειτουργία"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "All, drafts, scheduled or sent"
+msgstr "Όλες, πρόχειρα, προγραμματισμένες ή σταλμένες"
 
 #: src/features/oauth/ConsentPage.tsx
 msgid "Allow"
@@ -3134,6 +3105,8 @@ msgstr "Οποιοδήποτε πρόγραμμα"
 msgid "Any state"
 msgstr "Οποιαδήποτε κατάσταση"
 
+#: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Any status"
@@ -3927,7 +3900,6 @@ msgid "bounced"
 msgstr "επέστρεψε"
 
 #: src/components/common/text.ts
-#: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 msgid "Bounced"
 msgstr "Επιστράφηκε"
@@ -3992,10 +3964,7 @@ msgstr "Αποστολή μαζικών αποστολών"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
-#: src/features/broadcasts/Composer.tsx
-#: src/features/broadcasts/Overview.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Broadcasts"
 msgstr "Μαζικές αποστολές"
@@ -4075,8 +4044,6 @@ msgstr "Όνομα καμπάνιας"
 #: src/components/common/Wizard.tsx
 #: src/features/account/ConnectPage.tsx
 #: src/features/broadcasts/Import.tsx
-#: src/features/broadcasts/ListsHome.tsx
-#: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/broadcasts/SendTime.tsx
@@ -4458,6 +4425,10 @@ msgstr "Έλεγχος κάθε"
 msgid "Check now"
 msgstr "Έλεγχος τώρα"
 
+#: src/features/broadcasts/BroadcastsFrame.tsx
+msgid "Check SPF, DKIM and DMARC"
+msgstr "Έλεγχος SPF, DKIM και DMARC"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Check that forwarding is turned on and, for Gmail, confirmed with the code."
 msgstr "Ελέγξτε ότι η προώθηση είναι ενεργή και, για το Gmail, επιβεβαιωμένη με τον κωδικό."
@@ -4614,6 +4585,9 @@ msgstr "claude.ai και Claude Desktop"
 msgid "Clear"
 msgstr "Εκκαθάριση"
 
+#: src/features/broadcasts/ListsHome.tsx
+#: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Clear filters"
 msgstr "Εκκαθάριση φίλτρων"
@@ -4626,6 +4600,7 @@ msgstr "Εκκαθάριση αναζήτησης και φίλτρων"
 msgid "Clear the answer"
 msgstr "Διαγραφή της απάντησης"
 
+#: src/components/common/ListBox.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -5561,7 +5536,7 @@ msgstr "Δημιουργία άλλου"
 msgid "Create channel"
 msgstr "Δημιουργία καναλιού"
 
-#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 msgid "Create draft"
 msgstr "Δημιουργία πρόχειρου"
 
@@ -5598,6 +5573,7 @@ msgstr "Δημιουργήστε το, αντιγράψτε το διακριτ�
 msgid "Create key"
 msgstr "Δημιουργία κλειδιού"
 
+#: src/features/broadcasts/ListsHome.tsx
 #: src/features/setup/NewsletterStep.tsx
 msgid "Create list"
 msgstr "Δημιουργία λίστας"
@@ -5816,7 +5792,6 @@ msgid "Database upgrade"
 msgstr "Αναβάθμιση βάσης δεδομένων"
 
 #: src/components/common/SendLater.tsx
-#: src/features/broadcasts/Overview.tsx
 #: src/features/fields/value.ts
 msgid "Date"
 msgstr "Ημερομηνία"
@@ -6077,6 +6052,18 @@ msgid "Delete the selected block"
 msgstr "Διαγραφή του επιλεγμένου μπλοκ"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected broadcasts"
+msgstr "Διαγραφή των επιλεγμένων αποστολών"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected broadcasts ({n})?"
+msgstr "Διαγραφή των επιλεγμένων αποστολών ({n});"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected broadcasts (Del)"
+msgstr "Διαγραφή των επιλεγμένων αποστολών (Del)"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected contacts"
 msgstr "Διαγραφή των επιλεγμένων επαφών"
 
@@ -6099,10 +6086,6 @@ msgstr "Οριστική διαγραφή των επιλεγμένων συνο
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Delete the selected discussions ({n})?"
 msgstr "Διαγραφή των επιλεγμένων συζητήσεων ({n});"
-
-#: src/features/broadcasts/BroadcastBulk.tsx
-msgid "Delete the selected drafts ({n})?"
-msgstr "Διαγραφή των επιλεγμένων πρόχειρων ({n});"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected mails for good, in the Trash"
@@ -6312,7 +6295,11 @@ msgstr "Σχέδιο: {title}"
 
 #: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
+msgid "Designs"
+msgstr "Σχέδια"
+
 #: src/features/broadcasts/BroadcastsFrame.tsx
+msgctxt "broadcasts place"
 msgid "Designs"
 msgstr "Σχέδια"
 
@@ -6706,8 +6693,6 @@ msgstr "Κείμενο πρόχειρου"
 msgid "Draft:"
 msgstr "Πρόχειρο:"
 
-#: src/features/broadcasts/BroadcastsFrame.tsx
-#: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/mail/MailDrafts.tsx
 #: src/features/migrations/parts.tsx
@@ -6720,7 +6705,8 @@ msgctxt "mail folder"
 msgid "Drafts"
 msgstr "Πρόχειρα"
 
-#: src/app/places.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
+msgctxt "broadcasts place"
 msgid "Drafts and approvals"
 msgstr "Πρόχειρα και εγκρίσεις"
 
@@ -6931,7 +6917,6 @@ msgid "Each with all its messages and notes"
 msgstr "Καθεμία με όλα της τα μηνύματα και τις σημειώσεις"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
@@ -7320,14 +7305,12 @@ msgstr "Κάθε ανοιχτή συζήτηση έχει απάντηση."
 msgid "Every other browser and device is signed out. This one stays signed in."
 msgstr "Όλα τα άλλα προγράμματα περιήγησης και οι άλλες συσκευές αποσυνδέονται. Αυτή παραμένει συνδεδεμένη."
 
-#: src/features/broadcasts/ListsHome.tsx
-#: src/features/broadcasts/Overview.tsx
-#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
 msgstr "όλα τα προϊόντα"
 
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
 msgstr "Κάθε προϊόν"
@@ -7351,6 +7334,10 @@ msgstr "Κάθε ιστότοπος"
 #: src/features/migrations/ConnectStep.tsx
 msgid "Every step passed."
 msgstr "Κάθε βήμα πέρασε."
+
+#: src/features/broadcasts/ListsHome.tsx
+msgid "Every subscriber keeps a consent record you can export."
+msgstr "Κάθε συνδρομητής έχει καταγραφή συναίνεσης που μπορείτε να εξαγάγετε."
 
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SourceFilter.tsx
@@ -7682,12 +7669,19 @@ msgstr "Φίλτρο ανά ετικέτα"
 msgid "Filter by plan"
 msgstr "Φιλτράρισμα κατά πρόγραμμα"
 
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "Φίλτρο ανά προϊόν"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Filter by state"
+msgstr "Φιλτράρισμα κατά κατάσταση"
+
+#: src/features/broadcasts/ListsHome.tsx
+#: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "Filter by status"
 msgstr "Φιλτράρισμα κατά κατάσταση"
 
 #: src/features/inbox/ChatList.tsx
@@ -8074,10 +8068,6 @@ msgstr "Από"
 msgid "From (optional)"
 msgstr "Από (προαιρετικά)"
 
-#: src/features/broadcasts/Overview.tsx
-msgid "from {from}"
-msgstr "από {from}"
-
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
@@ -8273,10 +8263,6 @@ msgstr "Στόχοι"
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Goes out through {via}"
 msgstr "Φεύγει μέσω {via}"
-
-#: src/features/broadcasts/Overview.tsx
-msgid "Going out now"
-msgstr "Αποστέλλεται τώρα"
 
 #: src/features/reports/ReportPages.tsx
 msgid "good"
@@ -8834,10 +8820,6 @@ msgstr "Επίπτωση"
 msgid "Import"
 msgstr "Εισαγωγή"
 
-#: src/features/broadcasts/ListsHome.tsx
-msgid "Import a CSV file"
-msgstr "Εισαγωγή αρχείου CSV"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Import another file"
 msgstr "Εισαγωγή άλλου αρχείου"
@@ -9025,6 +9007,10 @@ msgstr "Σε αυτή την καρτέλα του προγράμματος πε
 msgid "In this thread"
 msgstr "Σε αυτό το νήμα"
 
+#: src/features/broadcasts/ListsHome.tsx
+msgid "In use"
+msgstr "Σε χρήση"
+
 #: src/components/common/BulkReport.tsx
 msgid "In use by {names}"
 msgstr "Χρησιμοποιείται από: {names}"
@@ -9048,7 +9034,7 @@ msgstr "Στο Zoho Mail, ανοίξτε Ρυθμίσεις › Λογαριασ
 #: src/components/common/FocusChoice.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
-#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/docs/InstallDialog.tsx
 #: src/features/migrations/MapStep.tsx
@@ -9352,11 +9338,11 @@ msgstr "Στέλνει μέσω του {address}."
 msgid "It shows up here as soon as it reaches Yuva."
 msgstr "Εμφανίζεται εδώ μόλις φτάσει στο Yuva."
 
-#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 msgid "It stays a draft until you send or schedule it. Replies come to the inbox you pick."
 msgstr "Παραμένει πρόχειρο μέχρι να το στείλετε ή να το προγραμματίσετε. Οι απαντήσεις έρχονται στα εισερχόμενα που επιλέγετε."
 
-#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 msgid "It stays a draft until you start it. Replies come to the inbox you pick."
 msgstr "It stays a draft until you start it. Replies come to the inbox you pick."
 
@@ -9665,7 +9651,7 @@ msgstr "Τελευταίοι 12 μήνες"
 msgid "Last 3 months"
 msgstr "Τελευταίοι 3 μήνες"
 
-#: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/ListsHome.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Last 30 days"
@@ -10057,7 +10043,6 @@ msgstr "Οι σύνδεσμοι θα δείχνουν στον τομέα συν
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
-#: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Trigger.tsx
 #: src/features/setup/NewsletterStep.tsx
 msgid "List"
@@ -10101,10 +10086,7 @@ msgstr "Λήψη της λίστας των tickets…"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
-#: src/features/broadcasts/ListPage.tsx
-#: src/features/broadcasts/ListsHome.tsx
-#: src/features/broadcasts/NewBroadcastDialog.tsx
-#: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Lists"
 msgstr "Λίστες"
@@ -10316,10 +10298,6 @@ msgstr "Η αλληλογραφία μπαίνει στο κανάλι e-mail «
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "Η αλληλογραφία δεν είναι υπογεγραμμένη με κλειδί του δικού τους τομέα του αποστολέα, κάτι που αναμένουν το Gmail και το Yahoo."
 
-#: src/features/broadcasts/Overview.tsx
-msgid "Mail leaves at each broadcast’s pace, so providers accept it."
-msgstr "Η αλληλογραφία φεύγει με τον ρυθμό κάθε αποστολής, ώστε να γίνεται δεκτή από τους παρόχους."
-
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "mail made"
 msgstr "mail made"
@@ -10401,9 +10379,6 @@ msgid "Mailing list (List-Id)"
 msgstr "Λίστα αλληλογραφίας (List-Id)"
 
 #: src/app/Palette.tsx
-#: src/features/broadcasts/BroadcastsFrame.tsx
-#: src/features/broadcasts/ListsHome.tsx
-#: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactDetail.tsx
 msgid "Mailing lists"
 msgstr "Λίστες αλληλογραφίας"
@@ -11031,6 +11006,9 @@ msgstr "Πρώτα όσοι εμφανίστηκαν πιο πρόσφατα"
 msgid "Most votes"
 msgstr "Περισσότερες ψήφοι"
 
+#: src/features/broadcasts/ListsHome.tsx
+#: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -11273,7 +11251,7 @@ msgstr "Οι προβολές μου"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListSettings.tsx
-#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -11438,7 +11416,7 @@ msgid "New article"
 msgstr "Νέο άρθρο"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 #: src/features/broadcasts/Overview.tsx
 msgid "New broadcast"
 msgstr "Νέα μαζική αποστολή"
@@ -11660,7 +11638,7 @@ msgid "New team"
 msgstr "Νέα ομάδα"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "New triggered e-mail"
 msgstr "New triggered e-mail"
@@ -11840,8 +11818,8 @@ msgid "No broadcast is scheduled."
 msgstr "Καμία αποστολή δεν είναι προγραμματισμένη."
 
 #: src/features/broadcasts/Overview.tsx
-msgid "No broadcasts for {scope} yet."
-msgstr "Δεν υπάρχουν ακόμη αποστολές για {scope}."
+msgid "No broadcast matches “{q}”."
+msgstr "Καμία αποστολή δεν ταιριάζει με «{q}»."
 
 #: src/features/broadcasts/Overview.tsx
 msgid "No broadcasts have gone out yet."
@@ -12130,8 +12108,8 @@ msgid "No limit"
 msgstr "Χωρίς όριο"
 
 #: src/features/broadcasts/ListsHome.tsx
-msgid "No lists for {scope} yet"
-msgstr "Δεν υπάρχουν ακόμη λίστες για {scope}"
+msgid "No list matches “{q}”."
+msgstr "Καμία λίστα δεν ταιριάζει με «{q}»."
 
 #: src/features/docs/DiscussionsTab.tsx
 msgid "No locked discussions."
@@ -12944,7 +12922,7 @@ msgstr "Αριθμός"
 msgid "Objected to all mail"
 msgstr "Αντιτάχθηκε σε κάθε αλληλογραφία"
 
-#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 msgid "October newsletter"
 msgstr "Ενημερωτικό δελτίο Οκτωβρίου"
 
@@ -13250,7 +13228,7 @@ msgstr "Μόνο οι ιδιοκτήτες μπορούν να διαγράψο�
 msgid "Only pages on these addresses can open the chat. Enter scheme and host, without a path."
 msgstr "Μόνο σελίδες σε αυτές τις διευθύνσεις μπορούν να ανοίξουν τη συνομιλία. Εισαγάγετε σχήμα και υπολογιστή-διακομιστή, χωρίς διαδρομή."
 
-#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 msgid "Only people subscribed to one of these lists get the mail. Fixed after the draft."
 msgstr "Only people subscribed to one of these lists get the mail. Fixed after the draft."
 
@@ -13327,7 +13305,7 @@ msgstr "Μόνο όσο ο πίνακας είναι ανοιχτός σε αυ�
 msgid "only your team can preview it"
 msgstr "μόνο η ομάδα σας μπορεί να την κάνει προεπισκόπηση"
 
-#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 msgid "Only your team sees it."
 msgstr "Το βλέπει μόνο η ομάδα σας."
 
@@ -13335,6 +13313,9 @@ msgstr "Το βλέπει μόνο η ομάδα σας."
 msgid "open"
 msgstr "ανοιχτή"
 
+#: src/features/broadcasts/ListsHome.tsx
+#: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -13345,7 +13326,6 @@ msgstr "άνοιγμα"
 
 #: src/components/common/text.ts
 #: src/features/account/AccountPage.tsx
-#: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackList.tsx
@@ -14105,6 +14085,7 @@ msgstr "Οι εκκρεμείς παραδόσεις διαγράφονται μ
 
 #: src/app/nav.tsx
 #: src/app/places.tsx
+#: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "People"
@@ -14117,6 +14098,10 @@ msgstr "Άτομα που προσκλήθηκαν και δεν έχουν συ
 #: src/features/setup/NewsletterStep.tsx
 msgid "People join it on a subscribe form or are added with their consent. Broadcasts go to lists."
 msgstr "Τα άτομα μπαίνουν σε αυτή με φόρμα εγγραφής ή προστίθενται με τη συναίνεσή τους. Οι μαζικές αποστολές πηγαίνουν σε λίστες."
+
+#: src/features/broadcasts/ListsHome.tsx
+msgid "People join it on your forms, by import or through the API. Each keeps a consent record."
+msgstr "Οι άνθρωποι εγγράφονται από τις φόρμες σας, με εισαγωγή ή μέσω του API. Η συναίνεση του καθενός καταγράφεται."
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "People of your verified domains work in this workspace only after signing in through your provider. Owners are exempt, so a broken provider never locks you out. Sessions that exist now stop working here, so covered members have to sign in again, and their connected apps need approving again."
@@ -15743,10 +15728,6 @@ msgstr "Οι απαντήσεις δεν μπορούν να φύγουν μέχ
 msgid "Replies go out through your own SMTP account. Leave the host empty to only receive mail."
 msgstr "Οι απαντήσεις φεύγουν μέσω του δικού σας λογαριασμού SMTP. Αφήστε τον διακομιστή κενό για να λαμβάνετε μόνο αλληλογραφία."
 
-#: src/features/broadcasts/Overview.tsx
-msgid "Replies land in the inbox"
-msgstr "Οι απαντήσεις φτάνουν στα εισερχόμενα"
-
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Replies the assistant writes are drafts: you or a teammate review them in the conversation and send them. It shows as you, via the assistant."
 msgstr "Οι απαντήσεις που γράφει ο βοηθός είναι πρόχειρα: εσείς ή ένας συνάδελφος τις ελέγχετε στη συνομιλία και τις στέλνετε. Εμφανίζονται ως εσείς, μέσω του βοηθού."
@@ -16544,13 +16525,16 @@ msgstr "Προγραμματισμός της καταχώρισης"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/text.ts
-#: src/features/broadcasts/BroadcastsFrame.tsx
-#: src/features/broadcasts/Overview.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/StatusFrame.tsx
 #: src/features/status/text.tsx
 msgid "Scheduled"
 msgstr "Προγραμματισμένη"
+
+#: src/features/broadcasts/BroadcastsFrame.tsx
+msgctxt "broadcasts place"
+msgid "Scheduled"
+msgstr "Προγραμματισμένες"
 
 #: src/features/mail/folders.ts
 msgctxt "mail folder"
@@ -16628,21 +16612,31 @@ msgstr "Συνημμένα στιγμιότυπα οθόνης"
 msgid "SDK"
 msgstr "SDK"
 
+#: src/features/broadcasts/ListsHome.tsx
+#: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "search"
 msgstr "αναζήτηση"
 
 #: src/app/Palette.tsx
-#: src/features/broadcasts/Overview.tsx
-#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 msgid "Search"
 msgstr "Αναζήτηση"
 
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/Overview.tsx
+msgid "Search broadcasts"
+msgstr "Αναζήτηση αποστολών"
+
 #: src/features/contact/ContactSearch.tsx
 msgid "Search by name, e-mail or external id"
 msgstr "Αναζήτηση με όνομα, e-mail ή εξωτερικό αναγνωριστικό"
+
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "Search by name…"
+msgstr "Αναζήτηση κατά όνομα…"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactSearch.tsx
@@ -16707,9 +16701,22 @@ msgstr "Αναζήτηση περιστατικών"
 msgid "Search languages or type a tag"
 msgstr "Αναζητήστε γλώσσες ή πληκτρολογήστε κωδικό"
 
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/ListsHome.tsx
+msgid "Search lists"
+msgstr "Αναζήτηση λιστών"
+
+#: src/features/broadcasts/ListsHome.tsx
+msgid "Search lists…"
+msgstr "Αναζήτηση λιστών…"
+
 #: src/features/mail/MailList.tsx
 msgid "Search mail"
 msgstr "Αναζήτηση στην αλληλογραφία"
+
+#: src/features/broadcasts/Overview.tsx
+msgid "Search name or subject…"
+msgstr "Αναζήτηση ονόματος ή θέματος…"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Search name, e-mail or id…"
@@ -16751,6 +16758,11 @@ msgstr "Αναζήτηση στα άρθρα"
 msgid "Search time zones"
 msgstr "Αναζήτηση ζωνών ώρας"
 
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "Search triggered e-mails"
+msgstr "Αναζήτηση αυτόματων email"
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from Codex. It acts as you, with the access you allow."
 msgstr "Αναζητήστε, διαχωρίστε και συντάξτε πρόχειρες απαντήσεις από το Codex. Ενεργεί εξ ονόματός σας, με την πρόσβαση που επιτρέπετε."
@@ -16791,6 +16803,7 @@ msgstr "Εμφανίστηκε {seen}"
 msgid "Seen by the monitor"
 msgstr "Εμφανίστηκε στην παρακολούθηση"
 
+#: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -16811,6 +16824,10 @@ msgstr "Επιλογή: {name}"
 #: src/components/common/Selection.tsx
 msgid "Select all"
 msgstr "Επιλογή όλων"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the broadcast under the cursor"
+msgstr "Επιλογή της αποστολής κάτω από τον δρομέα"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the contact under the cursor"
@@ -16906,7 +16923,6 @@ msgstr "Αποστολή νέου κωδικού"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Composer.tsx
-#: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TestSend.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "Send a test"
@@ -17149,6 +17165,10 @@ msgstr "Η αποστολή απέτυχε: {reason}"
 msgid "Sending failed."
 msgstr "Η αποστολή απέτυχε."
 
+#: src/features/broadcasts/BroadcastsFrame.tsx
+msgid "Sending from <0>{address}</0>"
+msgstr "Αποστολή από <0>{address}</0>"
+
 #: src/components/common/text.ts
 msgid "Sending has already started. Pause or cancel it instead."
 msgstr "Η αποστολή έχει ήδη ξεκινήσει. Κάντε αντί γι' αυτό παύση ή ακύρωση."
@@ -17210,18 +17230,9 @@ msgstr "Αποστολή…"
 msgid "Sends"
 msgstr "Sends"
 
-#: src/features/broadcasts/Overview.tsx
-msgid "Sends {when}"
-msgstr "Αποστέλλεται {when}"
-
-#: src/features/broadcasts/Overview.tsx
-msgid "Sends {when} to {to}"
-msgstr "Αποστέλλεται {when} στο {to}"
-
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
-#: src/features/broadcasts/Overview.tsx
 msgid "Sends from"
 msgstr "Στέλνει από"
 
@@ -17257,8 +17268,6 @@ msgstr "στάλθηκε"
 
 #: src/components/common/Linked.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/broadcasts/BroadcastsFrame.tsx
-#: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
@@ -17272,6 +17281,11 @@ msgstr "Στάλθηκε"
 msgctxt "broadcast state"
 msgid "Sent"
 msgstr "Στάλθηκε"
+
+#: src/features/broadcasts/BroadcastsFrame.tsx
+msgctxt "broadcasts place"
+msgid "Sent"
+msgstr "Σταλμένες"
 
 #: src/components/common/text.ts
 msgctxt "delivery state"
@@ -18353,6 +18367,14 @@ msgstr "Το SPF περνά για το {spfDomain}, όχι για τον τομ
 msgid "SPF passes for {spfDomain}."
 msgstr "Το SPF περνά για το {spfDomain}."
 
+#: src/features/broadcasts/BroadcastsFrame.tsx
+msgid "SPF, DKIM and DMARC pass"
+msgstr "SPF, DKIM και DMARC εντάξει"
+
+#: src/features/broadcasts/BroadcastsFrame.tsx
+msgid "SPF, DKIM or DMARC needs a look"
+msgstr "Το SPF, DKIM ή DMARC θέλει έλεγχο"
+
 #: src/features/reports/TrendsReport.tsx
 msgid "Split by"
 msgstr "Διαχωρισμός ανά"
@@ -18633,7 +18655,6 @@ msgstr "Stop the triggered e-mail"
 
 #: src/components/common/SlaBadge.tsx
 #: src/features/broadcasts/BroadcastParts.tsx
-#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "Stopped"
 msgstr "Διακόπηκε"
@@ -18712,13 +18733,17 @@ msgstr "εγγράφηκαν τώρα"
 msgid "Subscribed to the list now"
 msgstr "Εγγράφηκε στη λίστα τώρα"
 
-#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
+msgid "Subscribers"
+msgstr "Συνδρομητές"
+
+#: src/features/broadcasts/BroadcastsFrame.tsx
+msgctxt "broadcasts place"
 msgid "Subscribers"
 msgstr "Συνδρομητές"
 
@@ -18729,10 +18754,6 @@ msgstr "Συνδρομητές που προστέθηκαν"
 #: src/features/status/SettingsTab.tsx
 msgid "Subscribers confirm their address by mail before they get notices."
 msgstr "Οι συνδρομητές επιβεβαιώνουν τη διεύθυνσή τους μέσω e-mail πριν λάβουν ειδοποιήσεις."
-
-#: src/features/broadcasts/ListsHome.tsx
-msgid "Subscribers over the last 30 days"
-msgstr "Συνδρομητές τις τελευταίες 30 ημέρες"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Subscription deleted"
@@ -21049,11 +21070,9 @@ msgid "Trigger"
 msgstr "Σκανδάλη"
 
 #: src/features/broadcasts/BroadcastsFrame.tsx
-#: src/features/broadcasts/Composer.tsx
-#: src/features/broadcasts/TriggeredHome.tsx
-#: src/features/broadcasts/TriggeredPage.tsx
+msgctxt "broadcasts place"
 msgid "Triggered"
-msgstr "Triggered"
+msgstr "Αυτόματα"
 
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
@@ -21456,7 +21475,6 @@ msgstr "διέγραψαν τη συνδρομή τους"
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/Growth.tsx
 #: src/features/broadcasts/ListsHome.tsx
-#: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribed"
@@ -22026,7 +22044,6 @@ msgstr "περιμένουν επιβεβαίωση"
 
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
-#: src/features/broadcasts/ListsHome.tsx
 msgid "Waiting for confirmation"
 msgstr "Σε αναμονή επιβεβαίωσης"
 
@@ -22215,7 +22232,7 @@ msgstr "Τετάρτη"
 msgid "Weeks"
 msgstr "Εβδομάδες"
 
-#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 msgid "Welcome mail"
 msgstr "Welcome mail"
 
@@ -22610,7 +22627,7 @@ msgstr "Ποιον υποστηρίζετε: όνομα, ωράριο, ομάδ�
 msgid "Why they get it"
 msgstr "Why they get it"
 
-#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/NewBroadcastForm.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/broadcasts/Trigger.tsx
 msgid "Why they get this mail"
@@ -23267,7 +23284,6 @@ msgid "Yuva could not read the provider's discovery document. Check the issuer U
 msgstr "Yuva could not read the provider's discovery document. Check the issuer URL."
 
 #: src/features/broadcasts/Overview.tsx
-#: src/features/broadcasts/TriggeredHome.tsx
 msgid "Yuva counts clicks and replies. It does not track opens."
 msgstr "Το Yuva μετρά κλικ και απαντήσεις. Δεν καταγράφει ανοίγματα."
 

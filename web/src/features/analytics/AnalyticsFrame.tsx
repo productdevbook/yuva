@@ -1,16 +1,26 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { useParams, useSearchParams } from "react-router"
+import { ChartLineIcon, CheckIcon, ChevronDownIcon, PlusIcon } from "lucide-react"
+import { useNavigate, useParams, useSearchParams } from "react-router"
 
-import { InfoSection, KV, NavGroup, SectionPage, TopSep, type NavItem } from "@/components/common"
-import { formatDate } from "@/components/common/text"
-import { filterLabel } from "@/features/analytics/Controls"
+import { Dot, PageLayout } from "@/components/common"
+import { filterButton } from "@/components/common/ListBox"
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { useAnalyticsProperties } from "@/features/analytics/properties"
-import { useRealtime } from "@/features/analytics/queries"
-import { useView, useViewSearch } from "@/features/analytics/state"
+import { useViewSearch } from "@/features/analytics/state"
 import { useAnalyticsText } from "@/features/analytics/text"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import type { AnalyticsProperty } from "@/lib/api"
 import { useSession } from "@/lib/session"
+import { cn } from "@/lib/utils"
 import { useInboxes } from "@/lib/workspace"
 
 export const VIEWS = [
@@ -77,149 +87,77 @@ export function useScopedProperties() {
   return { list, items }
 }
 
-function AnalyticsNav({ property, current }: { property?: AnalyticsProperty; current?: ViewKey }) {
+export function PropertyPicker({ property, current }: { property?: AnalyticsProperty; current: ViewKey }) {
   const { t } = useLingui()
+  const navigate = useNavigate()
   const { canManage } = useSession()
   const search = useViewSearch(true)
   const { items } = useScopedProperties()
-  const sites: NavItem[] = [
-    ...(items.length > 1
-      ? [{ key: "all", label: t`All sites`, to: "/analytics", current: !property, testId: "analytics-nav-all" }]
-      : []),
-    ...items.map((p): NavItem => ({
-      key: p.id,
-      label: p.name,
-      to: viewLink(p.id, current ?? "overview", p.id === property?.id ? search : ""),
-      count: p.visitors_today,
-      current: p.id === property?.id,
-      testId: "analytics-nav-property",
-    })),
-    ...(canManage
-      ? [{ key: "add", label: t`Add a website`, to: "/analytics/new", testId: "analytics-add" } satisfies NavItem]
-      : []),
-  ]
-  return <NavGroup title={t`Sites and apps`} items={sites} menu />
-}
-
-function useRangeText() {
-  const { t, i18n } = useLingui()
-  const text = useAnalyticsText()
-  const { view } = useView()
-  const r = view.range
-  const range = r.period
-    ? text.period[r.period]
-    : `${formatDate(`${r.from}T12:00:00Z`, i18n.locale)} – ${formatDate(`${r.to}T12:00:00Z`, i18n.locale)}`
-  const c = view.compare
-  const compare = !c
-    ? t`No comparison`
-    : c.with === "previous"
-      ? t`Compare with the period before`
-      : c.with === "year"
-        ? t`Compare with a year earlier`
-        : t`Compare with ${formatDate(`${c.from}T12:00:00Z`, i18n.locale)} – ${formatDate(`${c.to}T12:00:00Z`, i18n.locale)}`
-  return { range, compare }
-}
-
-function AnalyticsAside({ property }: { property?: AnalyticsProperty }) {
-  const { i18n } = useLingui()
-  const text = useAnalyticsText()
-  const { view } = useView()
-  const search = useViewSearch(true)
-  const live = useRealtime(property?.id ?? "", !!property)
-  const inbox = (useInboxes().data ?? []).find((i) => i.id === property?.inbox_id)
-  const { range, compare } = useRangeText()
-  const fmt = new Intl.NumberFormat(i18n.locale)
-  const privacy = (
-    <InfoSection title={<Trans>Privacy</Trans>}>
-      <p className="m-0 text-small text-fg2">
-        <Trans>
-          Pages, sources, places and devices, without cookies, without storing IP addresses and without a consent banner
-          where the law allows it.
-        </Trans>
-      </p>
-    </InfoSection>
-  )
-  if (!property) return privacy
+  const inboxes = useInboxes().data ?? []
+  const colors = new Map(inboxes.map((i) => [i.id, i.branding.color]))
   return (
-    <>
-      <InfoSection title={<Trans>Right now</Trans>} testId="analytics-aside-live">
-        <KV
-          label={<Trans>Visitors now</Trans>}
-          value={live.data ? fmt.format(live.data.visitors) : "–"}
-          tone={live.data?.visitors ? "ok" : undefined}
-          to={viewLink(property.id, "realtime", search)}
-        />
-      </InfoSection>
-      <InfoSection title={<Trans>Period</Trans>} testId="analytics-aside-period">
-        <KV label={<Trans>Range</Trans>} value={range} />
-        <KV label={<Trans>Comparison</Trans>} value={compare} />
-      </InfoSection>
-      {view.filters.length > 0 && (
-        <InfoSection title={<Trans>Filters</Trans>} testId="analytics-aside-filters">
-          <ul className="m-0 flex list-none flex-col gap-1 p-0 text-small leading-5 text-fg2">
-            {view.filters.map((f, i) => (
-              <li key={`${f.dimension}${i}`} className="[overflow-wrap:anywhere]" dir="auto">
-                {filterLabel(text, f, i18n.locale)}
-              </li>
-            ))}
-          </ul>
-        </InfoSection>
-      )}
-      <InfoSection title={property.name}>
-        <KV label={<Trans>Domains</Trans>} value={<span dir="ltr">{property.domains.join(", ") || "–"}</span>} />
-        <KV label={<Trans>Time zone</Trans>} value={property.timezone} />
-        {inbox && <KV label={<Trans>Product</Trans>} value={inbox.name} />}
-      </InfoSection>
-      {privacy}
-    </>
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        render={<Button variant="outline" className={cn(filterButton, "max-w-64 bg-card")} />}
+        aria-label={t`Website or app`}
+        data-testid="analytics-property-picker"
+      >
+        <ChartLineIcon className="text-muted-foreground" />
+        <span className="truncate font-medium" data-testid="analytics-property-name">
+          {property?.name ?? t`All sites and apps`}
+        </span>
+        <ChevronDownIcon className="text-faint" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="w-64">
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>
+            <Trans>Sites and apps</Trans>
+          </DropdownMenuLabel>
+          {items.length > 1 && (
+            <DropdownMenuItem onClick={() => navigate("/analytics")} data-testid="analytics-nav-all">
+              <Trans>All sites and apps</Trans>
+            </DropdownMenuItem>
+          )}
+          {items.map((o) => (
+            <DropdownMenuItem
+              key={o.id}
+              onClick={() =>
+                navigate(
+                  viewLink(o.id, current === "settings" ? "overview" : current, o.id === property?.id ? search : "")
+                )
+              }
+              aria-current={o.id === property?.id ? "page" : undefined}
+              className="aria-[current=page]:font-medium"
+              data-testid="analytics-nav-property"
+            >
+              {inboxes.length > 1 && o.inbox_id && (
+                <Dot color={colors.get(o.inbox_id)} className="size-[7px] shrink-0 rounded-[2px]" />
+              )}
+              <span className="min-w-0 flex-1 truncate">{o.name}</span>
+              {o.id === property?.id && <CheckIcon className="text-brand" />}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuGroup>
+        {canManage && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => navigate("/analytics/new")} data-testid="analytics-add">
+              <PlusIcon />
+              <Trans>Add a website or app</Trans>
+            </DropdownMenuItem>
+          </>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
 
-export function AnalyticsTrail({ property, current }: { property?: AnalyticsProperty; current?: ViewKey }) {
-  const { t } = useLingui()
-  const names = useViewNames()
-  return (
-    <>
-      <span className="font-medium text-foreground">{t`Analytics`}</span>
-      {current && (
-        <>
-          <TopSep />
-          <span className="truncate">{names[current]}</span>
-        </>
-      )}
-      {property && (
-        <>
-          <TopSep />
-          <span className="truncate normal-case" data-testid="analytics-property-name">
-            {property.name}
-          </span>
-        </>
-      )}
-    </>
-  )
-}
-
-export function AnalyticsLayout({
-  property,
-  current,
-  testId,
-  children,
-}: {
-  property?: AnalyticsProperty
-  current?: ViewKey
-  testId?: string
-  children: React.ReactNode
-}) {
+export function AnalyticsLayout({ testId, children }: { testId?: string; children: React.ReactNode }) {
   const { t } = useLingui()
   return (
-    <SectionPage
-      title={t`Analytics`}
-      nav={<AnalyticsNav property={property} current={current} />}
-      aside={<AnalyticsAside property={property} />}
-      testId={testId}
-    >
+    <PageLayout label={t`Analytics`} testId={testId}>
       {children}
-    </SectionPage>
+    </PageLayout>
   )
 }
 

@@ -15,9 +15,8 @@ import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 
 const HelpColumn = lazy(() => import("@/features/help/HelpColumn"))
-const AnalyticsColumn = lazy(() => import("@/features/analytics/AnalyticsColumn"))
 
-const COLUMNS: Section[] = ["mentions", "assistants", "feedback", "knowledge", "analytics"]
+const COLUMNS: Section[] = ["mentions", "assistants", "feedback", "knowledge"]
 
 function PhoneColumn({ section }: { section: Section }) {
   const navigate = useNavigate()
@@ -28,7 +27,7 @@ function PhoneColumn({ section }: { section: Section }) {
   if (section === "assistants") return <AssistantsPanel />
   return (
     <Suspense fallback={<div className="flex-1 bg-background" />}>
-      {section === "knowledge" ? <HelpColumn /> : <AnalyticsColumn />}
+      <HelpColumn />
     </Suspense>
   )
 }
@@ -44,6 +43,8 @@ function useMentionsView(pathname: string, manager: boolean) {
 function isPhoneDetail(pathname: string) {
   return (
     /^\/(conversations|feedback|contacts)\/[^/]+/.test(pathname) ||
+    /^\/broadcasts\/(?!(lists|designs|triggered)$)[^/]+$/.test(pathname) ||
+    /^\/broadcasts\/lists\/[^/]+/.test(pathname) ||
     (pathname.startsWith("/mail/") && pathname.split("/").length > 4)
   )
 }

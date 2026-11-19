@@ -1,23 +1,23 @@
 import "@/features/designs/i18n"
 
 import { Trans, useLingui } from "@lingui/react/macro"
-import { ArchiveIcon, LanguagesIcon, LayoutTemplateIcon, PlusIcon, SearchIcon, TriangleAlertIcon } from "lucide-react"
+import { ArchiveIcon, LanguagesIcon, LayoutTemplateIcon, PlusIcon, TriangleAlertIcon } from "lucide-react"
 import { useRef, useState } from "react"
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router"
 
-import { ErrorLine, Notice, PageHeading, PageTop, Segmented, toast } from "@/components/common"
+import { ErrorLine, Notice, Segmented, toast } from "@/components/common"
 import { PaneEmpty } from "@/components/common/Column"
 import { MailFrame } from "@/components/common/MailFrame"
+import { FilterMenu, FilterRow, FilterSearch, PageTitle } from "@/components/common/ListBox"
 import { DESIGN_KEYS } from "@/components/common/ShortcutSheet"
 import { formatShort } from "@/components/common/text"
 import { RowCheck, SelectToggle } from "@/components/common/Selection"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Switch } from "@/components/ui/switch"
 import { keyHint } from "@/features/broadcasts/BroadcastParts"
-import { BroadcastsLayout, TopTrail, useFlat } from "@/features/broadcasts/BroadcastsFrame"
+import { BroadcastsLayout } from "@/features/broadcasts/BroadcastsFrame"
 import { DesignBulkBar } from "@/features/designs/Bulk"
 import { NewDesignDialog, type NewDesign } from "@/features/designs/NewDesignDialog"
 import {
@@ -32,7 +32,7 @@ import {
 import { useCategory, useTemplateLocales } from "@/features/designs/text"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { look } from "@/features/inbox/PageFrame"
-import { FrameButton, FrameTabs, framePad, PageFrame } from "@/features/status/PageFrame"
+import { FrameButton } from "@/features/status/PageFrame"
 import { useDebounced } from "@/hooks/use-debounced"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useSelection, type Selection } from "@/hooks/use-selection"
@@ -182,7 +182,7 @@ function DesignCard({ d, selection }: { d: EmailDesignSummary; selection: Select
   )
 }
 
-function Mine({ onNew }: { onNew: () => void }) {
+function Mine({ onNew, switcher }: { onNew: () => void; switcher: React.ReactNode }) {
   const { t } = useLingui()
   const [inboxId] = useInboxFilter()
   const [archived, setArchived] = useShowArchivedDesigns()
@@ -209,32 +209,27 @@ function Mine({ onNew }: { onNew: () => void }) {
   })
   return (
     <>
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <div className="relative min-w-0 flex-1 basis-60 sm:max-w-[300px] sm:flex-none">
-          <SearchIcon className="pointer-events-none absolute top-1/2 start-3 size-4 -translate-y-1/2 text-faint" />
-          <Input
-            ref={search}
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            onKeyDown={(e) => e.key === "Escape" && search.current?.blur()}
-            placeholder={t`Search designs`}
-            aria-label={t`Search designs`}
-            title={keyHint(t`Search designs`, DESIGN_KEYS.search)}
-            className="ps-9"
-            data-testid="designs-search"
-          />
-        </div>
+      <FilterRow testId="designs-filters">
+        {switcher}
+        <FilterSearch
+          inputRef={search}
+          value={q}
+          onChange={setQ}
+          placeholder={t`Search designs`}
+          label={t`Search designs`}
+          testId="designs-search"
+        />
         <div className="ms-auto flex items-center gap-3">
           {items.some((d) => !d.archived_at) && !selection.selecting && <SelectToggle selection={selection} />}
           <Label
-            className="gap-3 font-normal text-muted-foreground"
+            className="gap-2 text-small font-normal text-muted-foreground"
             title={keyHint(t`Show archived designs`, DESIGN_KEYS.archived)}
           >
-            <Trans>Show archived designs</Trans>
             <Switch checked={archived} onCheckedChange={setArchived} data-testid="designs-archived" />
+            <Trans>Show archived</Trans>
           </Label>
         </div>
-      </div>
+      </FilterRow>
       <DesignBulkBar items={items} selection={selection} />
       <ErrorLine error={error} />
       {pending ? (
@@ -295,7 +290,17 @@ function Mine({ onNew }: { onNew: () => void }) {
   )
 }
 
-function Gallery({ locale, onUse }: { locale: EmailTemplateLocale; onUse: (tpl: EmailTemplate) => void }) {
+function Gallery({
+  locale,
+  onUse,
+  switcher,
+  localePicker,
+}: {
+  locale: EmailTemplateLocale
+  onUse: (tpl: EmailTemplate) => void
+  switcher: React.ReactNode
+  localePicker: React.ReactNode
+}) {
   const { t } = useLingui()
   const category = useCategory()
   const templates = useTemplates(locale)
@@ -309,26 +314,26 @@ function Gallery({ locale, onUse }: { locale: EmailTemplateLocale; onUse: (tpl: 
   const english = shown.some((x) => !x.locales.includes(locale))
   return (
     <>
-      <div className="flex flex-wrap items-center gap-2" role="group" aria-label={t`Kind`}>
-        {["all", ...kinds].map((k) => (
-          <button
-            key={k}
-            type="button"
-            aria-pressed={kind === k}
-            onClick={() => setKind(k)}
-            className={kind === k ? look.chipOn : look.chip}
-            data-testid={`template-kind-${k}`}
-          >
-            {k === "all" ? <Trans>All</Trans> : category(k)}
-          </button>
-        ))}
+      <FilterRow testId="templates-filters">
+        {switcher}
+        {localePicker}
+        {kinds.length > 1 && (
+          <FilterMenu
+            value={kind === "all" ? "" : kind}
+            onChange={(v) => setKind(v || "all")}
+            options={kinds.map((k) => ({ value: k, label: category(k) }))}
+            anyLabel={t`Every kind`}
+            label={t`Kind`}
+            testId="template-kind"
+          />
+        )}
         {english && (
           <span className="ms-auto inline-flex items-center gap-1.5 text-small text-faint">
             <LanguagesIcon className="size-3.5" />
             <Trans>Text in English</Trans>
           </span>
         )}
-      </div>
+      </FilterRow>
       <ErrorLine error={templates.error} />
       {!templates.isPending && shown.length === 0 && !templates.error ? (
         <div
@@ -377,7 +382,6 @@ export default function GalleryPage() {
   const asked = slug ? templates.data?.find((x) => x.slug === slug) : undefined
   const unknown = !!slug && !!templates.data && !asked
   const gallery = useLocation().pathname.endsWith("/new")
-  const flat = useFlat()
   useHotkeys(
     {
       [DESIGN_KEYS.create]: () => setChoice("choose"),
@@ -392,17 +396,29 @@ export default function GalleryPage() {
         <Trans>Owners and admins make e-mail designs and send broadcasts.</Trans>
       </PaneEmpty>
     )
-    return flat ? <BroadcastsLayout>{empty}</BroadcastsLayout> : empty
+    return <BroadcastsLayout>{empty}</BroadcastsLayout>
   }
   const open: NewDesign | null = choice ?? (asked ? { use: asked } : null)
   const close = () => {
     setChoice(null)
     if (slug) setParams({}, { replace: true })
   }
-  const tabs = [
-    { key: "mine", to: "/broadcasts/designs", label: t`Mine`, testId: "designs-tab-mine" },
-    { key: "gallery", to: "/broadcasts/designs/new", label: t`Gallery`, testId: "designs-tab-gallery" },
-  ]
+  const switcher = (
+    <Segmented
+      value={gallery ? "gallery" : "mine"}
+      onChange={(v) => navigate(v === "gallery" ? "/broadcasts/designs/new" : "/broadcasts/designs")}
+      label={t`Designs`}
+      items={[
+        { value: "mine", label: t`Mine`, testId: "designs-tab-mine", title: keyHint(t`Mine`, DESIGN_KEYS.mine) },
+        {
+          value: "gallery",
+          label: t`Gallery`,
+          testId: "designs-tab-gallery",
+          title: keyHint(t`Gallery`, DESIGN_KEYS.gallery),
+        },
+      ]}
+    />
+  )
   const localePicker = gallery && (
     <Segmented
       value={locale}
@@ -421,77 +437,39 @@ export default function GalleryPage() {
         </Notice>
       )}
       {gallery ? (
-        <Gallery locale={locale} onUse={(tpl) => setChoice({ use: tpl })} />
+        <Gallery
+          locale={locale}
+          onUse={(tpl) => setChoice({ use: tpl })}
+          switcher={switcher}
+          localePicker={localePicker}
+        />
       ) : (
-        <Mine onNew={() => setChoice("choose")} />
+        <Mine onNew={() => setChoice("choose")} switcher={switcher} />
       )}
     </>
   )
   const dialog = open && (
     <NewDesignDialog key={open === "choose" ? "choose" : open.use.slug} mode={open} locale={locale} onClose={close} />
   )
-  if (flat)
-    return (
-      <BroadcastsLayout
-        testId="design-gallery"
-        sub={tabs.map((x) => ({
-          key: x.key,
-          label: x.label,
-          to: x.to,
-          current: x.key === (gallery ? "gallery" : "mine"),
-          testId: x.testId,
-        }))}
-      >
-        <PageTop
-          actions={
-            <>
-              {localePicker}
-              <Button
-                className="h-8 rounded-[9px] bg-foreground px-3.5 font-semibold text-background hover:bg-foreground/90"
-                onClick={() => setChoice("choose")}
-                title={keyHint(t`New design`, DESIGN_KEYS.create)}
-                data-testid="designs-home-new"
-              >
-                <PlusIcon className="size-3.5" aria-hidden />
-                <Trans>New design</Trans>
-              </Button>
-            </>
-          }
-        >
-          <TopTrail place="designs" />
-        </PageTop>
-        <section className="flex max-w-[980px] flex-col gap-5">
-          <PageHeading
-            title={gallery ? `${t`Designs`} · ${t`Gallery`}` : t`Designs`}
-            lede={<Trans>E-mail layouts you reuse across broadcasts</Trans>}
-          />
-          {body}
-        </section>
-        {dialog}
-      </BroadcastsLayout>
-    )
   return (
-    <PageFrame
-      testId="design-gallery"
-      title={<Trans>Designs</Trans>}
-      description={<Trans>E-mail layouts you reuse across broadcasts</Trans>}
-      actions={
-        <>
-          {localePicker}
-          <FrameButton
-            ink
+    <BroadcastsLayout testId="design-gallery">
+      <PageTitle
+        title={t`Designs`}
+        sub={<Trans>E-mail layouts you reuse across broadcasts</Trans>}
+        actions={
+          <Button
             onClick={() => setChoice("choose")}
             title={keyHint(t`New design`, DESIGN_KEYS.create)}
             data-testid="designs-home-new"
           >
+            <PlusIcon />
             <Trans>New design</Trans>
-          </FrameButton>
-        </>
-      }
-      tabs={<FrameTabs label={t`Designs`} items={tabs} current={gallery ? "gallery" : "mine"} />}
-    >
-      <div className={framePad}>{body}</div>
+          </Button>
+        }
+        testId="designs-head"
+      />
+      <section className="flex flex-col gap-5">{body}</section>
       {dialog}
-    </PageFrame>
+    </BroadcastsLayout>
   )
 }

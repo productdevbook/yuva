@@ -8,6 +8,7 @@ import { keyLabel } from "@/components/common/ShortcutSheet"
 import type { Broadcast, BroadcastKind, BroadcastState, Channel, WorkspaceBroadcasts } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { clock, utcLine, zoneCity } from "@/lib/zones"
+import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 
 export function keyHint(label: string, key: string) {
@@ -56,12 +57,9 @@ export function StateBadge({
   const { t } = useLingui()
   const text = useEnumText()
   return (
-    <span
-      className={cn(
-        "inline-flex shrink-0 items-center gap-1 rounded-full border px-2 py-px text-caption font-medium",
-        tones[state],
-        className
-      )}
+    <Badge
+      variant="outline"
+      className={cn("bg-transparent", tones[state], className)}
       data-testid="broadcast-state"
       data-state={state}
     >
@@ -69,7 +67,7 @@ export function StateBadge({
         <span className="size-1.5 animate-pulse rounded-full bg-current" aria-hidden />
       )}
       {kind === "triggered" && state === "cancelled" ? t`Stopped` : text.broadcastState[state]}
-    </span>
+    </Badge>
   )
 }
 

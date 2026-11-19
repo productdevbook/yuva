@@ -128,6 +128,10 @@ export const BROADCAST_KEYS = {
   hours: "h",
 } as const
 
+export const ANALYTICS_KEYS = {
+  add: "c",
+} as const
+
 export const TRIGGERED_KEYS = {
   create: "c",
   waiting: "w",
@@ -441,6 +445,10 @@ export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenCha
         [["↑", "↓", k(SHORTCUTS.next)[0], k(SHORTCUTS.previous)[0]], t`Move through the broadcasts`],
         [["↵", "o"], t`Open the broadcast`],
         [["Esc"], t`Back to the list`],
+        [["1", "2", "3", "4"], t`All, drafts, scheduled or sent`],
+        [[SHORTCUTS.search], t`Search broadcasts`],
+        [k(SHORTCUTS.select), t`Select the broadcast under the cursor`],
+        [["Del"], t`Delete the selected broadcasts`],
         [k(BROADCAST_KEYS.create), t`New broadcast`],
         [k(BROADCAST_KEYS.design), t`Edit the design`],
         [k(BROADCAST_KEYS.test), t`Send a test`],
@@ -461,6 +469,7 @@ export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenCha
         [["↑", "↓", k(SHORTCUTS.next)[0], k(SHORTCUTS.previous)[0]], t`Move through the triggered e-mails`],
         [["↵", "o"], t`Open the triggered e-mail`],
         [["Esc"], t`Back to the list`],
+        [[SHORTCUTS.search], t`Search triggered e-mails`],
         [k(TRIGGERED_KEYS.create), t`New triggered e-mail`],
         [k(BROADCAST_KEYS.test), t`Send a test`],
         [k(BROADCAST_KEYS.send), t`Review, then start or schedule`],
@@ -491,6 +500,7 @@ export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenCha
         [["↑", "↓", k(SHORTCUTS.next)[0], k(SHORTCUTS.previous)[0]], t`Move through the lists`],
         [["↵", "o"], t`Open the list`],
         [["Esc"], t`Back to the list`],
+        [[SHORTCUTS.search], t`Search lists`],
         [k(LIST_KEYS.create), t`New list`],
         [k(LIST_KEYS.import), t`Import CSV`],
         [k(LIST_KEYS.lists), t`Lists`],
@@ -640,6 +650,7 @@ export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenCha
         [["↑", "↓", k(SHORTCUTS.next)[0], k(SHORTCUTS.previous)[0]], t`Move through the sites, goals or funnels`],
         [["↵"], t`Open the site, goal or funnel`],
         [["Esc"], t`Back to the goals or funnels`],
+        [k(ANALYTICS_KEYS.add), t`Add a website or app`],
       ],
     },
     {

@@ -17,8 +17,8 @@ import {
 } from "@/features/broadcasts/broadcastQueries"
 import { ApprovalSection, AudienceSection, SenderSection } from "@/features/broadcasts/BroadcastAside"
 import { Summary } from "@/features/broadcasts/BroadcastPage"
-import { backOf, DetailFrame, DetailHeading, DetailTrail, useViewNames } from "@/features/broadcasts/BroadcastsFrame"
-import { keyHint, PaceLine, StateBadge, useNumber, WaitingLine, WindowLine } from "@/features/broadcasts/BroadcastParts"
+import { backOf, DetailFrame, DetailHeading, useViewNames } from "@/features/broadcasts/BroadcastsFrame"
+import { keyHint, PaceLine, useNumber, WaitingLine, WindowLine } from "@/features/broadcasts/BroadcastParts"
 import { Composer } from "@/features/broadcasts/Composer"
 import { useItemText } from "@/features/broadcasts/ReviewPanel"
 import { Deliveries, Report, ReportStats } from "@/features/broadcasts/Report"
@@ -26,13 +26,12 @@ import { TestSendDialog, useTestSend } from "@/features/broadcasts/TestSend"
 import { sentenceCase, useTriggerSentence } from "@/features/broadcasts/Trigger"
 import { designLink } from "@/features/designs/queries"
 import { Card, EmptyRow, Row, Rows, Section } from "@/features/settings/ui"
-import { FrameButton, FrameTabs, ProductTag } from "@/features/status/PageFrame"
+import { FrameButton, FrameTabs } from "@/features/status/PageFrame"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useNow } from "@/hooks/use-now"
 import type { Broadcast } from "@/lib/api"
 import { useSession } from "@/lib/session"
-import { useInboxes } from "@/lib/workspace"
 import { utcLine, zoneLabel, zonedDateTime } from "@/lib/zones"
 
 const TABS = ["report", "waiting", "sent", "settings"] as const
@@ -272,7 +271,6 @@ export function TriggeredPage({ b }: { b: Broadcast }) {
   const navigate = useNavigate()
   const [params, setParams] = useSearchParams()
   const { canManage } = useSession()
-  const inbox = (useInboxes().data ?? []).find((i) => i.id === b.inbox_id)
   const action = useBroadcastAction(b.id)
   const remove = useDeleteBroadcast()
   const [confirm, confirmDialog] = useConfirm()
@@ -440,29 +438,7 @@ export function TriggeredPage({ b }: { b: Broadcast }) {
 
       wide
       back={backOf("triggered", views)}
-      bar={{
-        back: "/broadcasts/triggered",
-        label: t`Triggered`,
-        content: (
-          <>
-            <div className="flex min-w-48 flex-1 basis-64 flex-col leading-snug">
-              <span className="flex min-w-0 flex-wrap items-center gap-x-2.5 gap-y-1">
-                <h1 className="min-w-0 truncate text-[17px] font-semibold" data-testid="broadcast-name-heading">
-                  {b.name}
-                </h1>
-                <StateBadge state={b.state} kind={b.kind} />
-                {inbox && <ProductTag name={inbox.name} color={inbox.branding.color} />}
-              </span>
-              <span className="truncate text-small text-muted-foreground" data-testid="triggered-sentence">
-                {sentence}
-              </span>
-            </div>
-            {actions && <div className="flex min-w-0 max-w-full flex-wrap items-center gap-2">{actions}</div>}
-          </>
-        ),
-      }}
       heading={<DetailHeading b={b} sub={<span data-testid="triggered-sentence">{sentence}</span>} />}
-      eyebrow={<DetailTrail b={b} />}
       actions={actions}
       aside={
         <>

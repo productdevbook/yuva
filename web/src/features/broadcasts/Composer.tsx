@@ -21,7 +21,7 @@ import {
 } from "@/features/broadcasts/broadcastQueries"
 import { keyHint, senderState, StatusNotice, useNumber, useSenderText } from "@/features/broadcasts/BroadcastParts"
 import { ApprovalSection, AudienceSection, SenderSection } from "@/features/broadcasts/BroadcastAside"
-import { backOf, DetailFrame, DetailTrail, useFlat, useViewNames, viewOf } from "@/features/broadcasts/BroadcastsFrame"
+import { backOf, DetailFrame, useViewNames, viewOf } from "@/features/broadcasts/BroadcastsFrame"
 import { DesignPicker } from "@/features/broadcasts/DesignPicker"
 import {
   BasisChoice,
@@ -553,7 +553,6 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
   const navigate = useNavigate()
   const triggered = b.kind === "triggered"
   const draft = b.state === "draft"
-  const flat = useFlat()
   const views = useViewNames()
   const open = openFields(b)
   const ro = (f: Field) => readOnly || !open(f)
@@ -704,11 +703,7 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
       maxLength={200}
       disabled={ro("name")}
       onChange={(e) => set({ name: e.target.value }, e.target.value.trim() ? { name: e.target.value.trim() } : {})}
-      className={
-        flat
-          ? "h-auto w-full border-transparent bg-transparent px-0 py-0.5 text-page leading-[34px] font-semibold shadow-none hover:border-input focus-visible:border-ring md:text-page"
-          : "h-[34px] w-80 max-w-full border-transparent bg-transparent text-[15px] font-semibold hover:border-input focus-visible:border-ring"
-      }
+      className="h-auto w-full border-transparent bg-transparent px-0 py-0.5 text-page leading-[34px] font-semibold shadow-none hover:border-input focus-visible:border-ring md:text-page"
       data-testid="broadcast-name"
     />
   )
@@ -754,16 +749,16 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
   )
   const preview = (
     <InboxPreview
-      flat={flat}
+      flat
       sender={channel?.email?.display_name || channel?.name || ""}
       address={from}
       subject={shownSubject}
       preheader={shownPreheader}
     />
   )
-  const rail = (railFlat: boolean) => (
+  const rail = (
     <Rail
-      flat={railFlat}
+      flat
       b={b}
       review={review.data}
       sender={from}
@@ -791,29 +786,16 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
       testId="broadcast-page"
 
       back={triggered && !draft ? { to: broadcastLink(b.id), label: b.name } : backOf(place, views)}
-      bar={{
-        back: triggered ? (draft ? "/broadcasts/triggered" : broadcastLink(b.id)) : "/broadcasts",
-        label: triggered ? (draft ? t`Triggered` : b.name) : t`Broadcasts`,
-        content: (
-          <>
-            {nameInput}
-            {saveState}
-            <span className="flex-1" />
-            {buttons}
-          </>
-        ),
-      }}
       heading={
         <div className="flex flex-col items-start gap-1">
           {nameInput}
           {saveState}
         </div>
       }
-      eyebrow={<DetailTrail b={b} />}
       actions={buttons}
       aside={
         <>
-          {rail(true)}
+          {rail}
           <AudienceSection b={b} />
           <SenderSection inboxId={b.inbox_id} channelId={d.channel_id} />
           <ApprovalSection b={b} />
@@ -842,23 +824,16 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
           </p>
         </Notice>
       )}
-      {flat && preview}
-      <div
-        className={
-          flat
-            ? "flex flex-col gap-6"
-            : "grid grid-cols-[minmax(0,1fr)] items-start gap-6 @4xl:grid-cols-[minmax(0,1fr)_21rem]"
-        }
-        data-testid="broadcast-composer"
-      >
+      {preview}
+      <div className="flex flex-col gap-6" data-testid="broadcast-composer">
         <div className="flex min-w-0 flex-col gap-6">
           {triggered && (
-            <Block flat={flat} title={<Trans>Trigger</Trans>} id="broadcast-trigger">
+            <Block flat title={<Trans>Trigger</Trans>} id="broadcast-trigger">
               <TriggerEvent trigger={d.trigger} inboxId={b.inbox_id} disabled={ro("event")} onChange={setTrigger} />
               <DelayFields value={d.delay} onChange={setDelay} disabled={ro("delay")} />
             </Block>
           )}
-          <Block flat={flat} title={<Trans>Sender</Trans>} id="broadcast-sender">
+          <Block flat title={<Trans>Sender</Trans>} id="broadcast-sender">
             <SenderPicker
               b={b}
               value={d.channel_id}
@@ -866,11 +841,7 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
               onChange={(id) => set({ channel_id: id ?? "" }, { channel_id: id }, 0)}
             />
           </Block>
-          <Block
-            flat={flat}
-            title={triggered ? <Trans>Who gets it</Trans> : <Trans>Audience</Trans>}
-            id="broadcast-audience"
-          >
+          <Block flat title={triggered ? <Trans>Who gets it</Trans> : <Trans>Audience</Trans>} id="broadcast-audience">
             {triggered && (
               <BasisChoice
                 value={d.basis}
@@ -906,7 +877,7 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
               />
             )}
           </Block>
-          <Block flat={flat} title={<Trans>Content</Trans>} id="broadcast-content">
+          <Block flat title={<Trans>Content</Trans>} id="broadcast-content">
             <DesignPicker
               inboxId={b.inbox_id}
               value={d.design_id}
@@ -978,7 +949,7 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
               />
             </Field>
           </Block>
-          <Block flat={flat} title={<Trans>Options</Trans>} id="broadcast-options">
+          <Block flat title={<Trans>Options</Trans>} id="broadcast-options">
             <ToggleRow
               title={<Trans>Count clicks</Trans>}
               hint={
@@ -1104,7 +1075,6 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
             </div>
           </Block>
         </div>
-        {!flat && <div className="@4xl:sticky @4xl:top-28 @4xl:self-start">{rail(false)}</div>}
       </div>
       {testing && draft && <TestSendDialog b={b} state={test} disabled={readOnly} onClose={() => setTesting(false)} />}
       {reviewing && (

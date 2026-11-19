@@ -9,6 +9,7 @@ import { FormCard, FormGrid } from "@/components/common/FormCard"
 import {
   filterButton,
   filterButtonOn,
+  FilterMenu,
   FilterRow,
   KeyHints,
   ListBox,
@@ -26,8 +27,6 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuGroup,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Field, FieldLabel } from "@/components/ui/field"
@@ -140,48 +139,6 @@ export function useDuplicatePairs(dismissed: string[] = readDismissed()) {
   const all = useMemo(() => everyone.data?.pages.flatMap((p) => p.items) ?? [], [everyone.data])
   const pairs = useDuplicates(all, dismissed)
   return { everyone, pairs, complete: !!everyone.data && !everyone.hasNextPage }
-}
-
-function FilterMenu({
-  value,
-  onChange,
-  options,
-  anyLabel,
-  label,
-  testId,
-}: {
-  value: string
-  onChange: (v: string) => void
-  options: { value: string; label: string }[]
-  anyLabel: string
-  label: string
-  testId: string
-}) {
-  const current = options.find((o) => o.value === value)
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        render={
-          <Button variant="outline" size="sm" className={cn(filterButton, "max-w-52", current && filterButtonOn)} />
-        }
-        aria-label={label}
-        data-testid={testId}
-      >
-        <span className="truncate">{current?.label ?? anyLabel}</span>
-        <ChevronDownIcon className="text-muted-foreground" />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="max-h-[60svh] min-w-44">
-        <DropdownMenuRadioGroup value={value} onValueChange={(v) => onChange(String(v))}>
-          <DropdownMenuRadioItem value="">{anyLabel}</DropdownMenuRadioItem>
-          {options.map((o) => (
-            <DropdownMenuRadioItem key={o.value} value={o.value}>
-              <span className="truncate">{o.label}</span>
-            </DropdownMenuRadioItem>
-          ))}
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
 }
 
 function Tag({ tone, children }: { tone: "danger" | "warn"; children: React.ReactNode }) {

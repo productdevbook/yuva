@@ -3,6 +3,7 @@ import { createContext, useContext } from "react"
 
 import { useAnalyticsProperties } from "@/features/analytics/properties"
 import {
+  type AnalyticsPlatform,
   api,
   ApiError,
   unwrap,
@@ -256,8 +257,13 @@ function useStore() {
 export function useCreateProperty() {
   const store = useStore()
   return useMutation({
-    mutationFn: (body: { name: string; domains: string[]; inbox_id?: string; timezone: string }) =>
-      unwrap(api.POST("/v1/analytics/properties", { body: { currency: "EUR", ...body } })),
+    mutationFn: (body: {
+      name: string
+      domains: string[]
+      platforms?: AnalyticsPlatform[]
+      inbox_id?: string
+      timezone: string
+    }) => unwrap(api.POST("/v1/analytics/properties", { body: { currency: "EUR", ...body } })),
     onSuccess: store.put,
   })
 }

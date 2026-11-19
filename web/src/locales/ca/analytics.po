@@ -16,12 +16,6 @@ msgstr "(sense definir)"
 msgid "{0, plural, one {# row} other {# rows}}"
 msgstr "{0, plural, one {# fila} other {# files}}"
 
-#. placeholder {0}: p.visitors_today
-#: src/features/analytics/AnalyticsColumn.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
-msgid "{0, plural, one {visitor today} other {visitors today}}"
-msgstr "{0, plural, one {visitant avui} other {visitants avui}}"
-
 #. placeholder {0}: share1.format(conversations / visitors)
 #: src/features/analytics/Overview.tsx
 msgid "{0} of visitors"
@@ -239,10 +233,6 @@ msgstr "Les visualitzacions de pantalla d'un visitant sense una pausa de 30 minu
 msgid "Active"
 msgstr "Actiu"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "Add"
-msgstr "Afegeix"
-
 #: src/features/analytics/Annotations.tsx
 msgid "Add a note to the chart"
 msgstr "Afegeix una nota al gràfic"
@@ -255,16 +245,16 @@ msgstr "Afegeix una regla"
 msgid "Add a step"
 msgstr "Afegeix un pas"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Add a website"
 msgstr "Afegeix un lloc web"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "Add a website to count its visitors, pages and sources, without cookies."
-msgstr "Afegeix un lloc web per comptar-ne els visitants, pàgines i fonts, sense galetes."
+#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Add a website or app"
+msgstr "Afegeix un lloc web o una app"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Add and install"
 msgstr "Afegeix i instal·la"
@@ -302,6 +292,10 @@ msgstr "Els agents de la safata també poden veure les xifres d'aquesta propieta
 msgid "Agents of this inbox can see the numbers."
 msgstr "Els agents d'aquesta safata poden veure les xifres."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Agents of this product can see the numbers."
+msgstr "Els agents d’aquest producte poden veure les xifres."
+
 #: src/features/analytics/text.ts
 msgid "AI assistants"
 msgstr "Assistents d'IA"
@@ -323,8 +317,8 @@ msgid "All goals"
 msgstr "Tots els objectius"
 
 #: src/features/analytics/AnalyticsFrame.tsx
-msgid "All sites"
-msgstr "Tots els llocs"
+msgid "All sites and apps"
+msgstr "Tots els llocs i apps"
 
 #: src/features/analytics/Support.tsx
 msgid "An owner or admin can link one in the property’s settings."
@@ -334,19 +328,18 @@ msgstr "Un propietari o administrador n'hi pot enllaçar una a la configuració 
 msgid "An owner or admin can turn on the persistent id in the consent features."
 msgstr "Un propietari o administrador pot activar l'ID persistent a les funcions de consentiment."
 
-#: src/features/analytics/AnalyticsColumn.tsx
 #: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Analytics"
 msgstr "Analítica"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "Analytics properties"
-msgstr "Propietats d'analítica"
-
 #: src/features/analytics/NewProperty.tsx
 msgid "Analytics steps"
 msgstr "Passos d'analítica"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Android app"
+msgstr "App d’Android"
 
 #: src/features/analytics/Sharing.tsx
 msgid "Anyone with the link sees the views you pick, read-only, without signing in."
@@ -493,12 +486,10 @@ msgstr "Recollida"
 
 #. placeholder {0}: formatDate(`${c.from}T12:00:00Z`, i18n.locale)
 #. placeholder {1}: formatDate(`${c.to}T12:00:00Z`, i18n.locale)
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with {0} – {1}"
 msgstr "Compara amb {0} – {1}"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with a year earlier"
 msgstr "Compara amb un any abans"
@@ -515,7 +506,6 @@ msgstr "Compara amb altres dies…"
 msgid "Compare with the days"
 msgstr "Compara amb els dies"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with the period before"
 msgstr "Compara amb el període anterior"
@@ -524,7 +514,6 @@ msgstr "Compara amb el període anterior"
 msgid "Compared days"
 msgstr "Dies comparats"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Comparison"
 msgstr "Comparació"
@@ -610,6 +599,7 @@ msgstr "Copia'l ara; no es torna a mostrar. Els enllaços perduts només es pode
 msgid "Count my visits again"
 msgstr "Torna a comptar les meves visites"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Count visitors, pages, sources, places and devices without cookies and without storing IP addresses."
 msgstr "Compta visitants, pàgines, fonts, llocs i dispositius sense galetes i sense desar adreces IP."
@@ -690,7 +680,6 @@ msgstr "Dia a dia"
 msgid "Days"
 msgstr "Dies"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/SharePage.tsx
 msgid "Days are counted in this time zone"
 msgstr "Els dies es compten en aquesta zona horària"
@@ -847,7 +836,7 @@ msgstr "No comptis les meves visites"
 msgid "does not contain"
 msgstr "no conté"
 
-#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Domains"
@@ -1048,7 +1037,6 @@ msgstr "Els fitxers es fan en segon pla i s'eliminen set dies després."
 msgid "Filter by this"
 msgstr "Filtra per això"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Filters"
@@ -1086,6 +1074,11 @@ msgstr "Primera setmana"
 msgid "Five reports an hour at most. Try again later."
 msgstr "Com a màxim cinc informes per hora. Torna-ho a provar més tard."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "For example Fieldnote for iPhone"
+msgstr "Per exemple Fieldnote per a iPhone"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "For example Fieldnote website"
 msgstr "Per exemple lloc web de Fieldnote"
@@ -1240,6 +1233,10 @@ msgstr "No vàlid"
 msgid "Investors"
 msgstr "Inversors"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "iOS app"
+msgstr "App d’iOS"
+
 #: src/features/analytics/text.ts
 msgid "is"
 msgstr "és"
@@ -1308,6 +1305,7 @@ msgstr "Últims 7 dies"
 msgid "Last 90 days"
 msgstr "Últims 90 dies"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Last event"
 msgstr "Últim esdeveniment"
@@ -1434,6 +1432,10 @@ msgstr "Límit mensual"
 msgid "Months"
 msgstr "Mesos"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "move"
+msgstr "mou-te"
+
 #: src/features/analytics/Funnels.tsx
 msgid "Move down"
 msgstr "Mou avall"
@@ -1442,6 +1444,7 @@ msgstr "Mou avall"
 msgid "Move up"
 msgstr "Mou amunt"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Funnels.tsx
 #: src/features/analytics/Goals.tsx
@@ -1520,7 +1523,6 @@ msgstr "Enllaç per compartir nou"
 msgid "No alerts yet."
 msgstr "Encara no hi ha alertes."
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "No comparison"
 msgstr "Sense comparació"
@@ -1549,12 +1551,6 @@ msgstr "Cap conversió en aquest interval."
 msgid "No event yet."
 msgstr "Encara cap esdeveniment."
 
-#: src/features/analytics/AnalyticsColumn.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
-msgid "No events in the last 24 hours"
-msgstr "Cap esdeveniment en les últimes 24 hores"
-
-#: src/features/analytics/AnalyticsColumn.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events yet"
 msgstr "Encara cap esdeveniment"
@@ -1570,10 +1566,6 @@ msgstr "Encara cap embut"
 #: src/features/analytics/Goals.tsx
 msgid "No goals yet"
 msgstr "Encara cap objectiu"
-
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "No properties yet"
-msgstr "Encara cap propietat"
 
 #: src/features/analytics/Settings.tsx
 msgid "No props are tracked."
@@ -1615,6 +1607,7 @@ msgstr "Encara cap"
 msgid "None, every visit counts."
 msgstr "Cap, cada visita compta."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "None, owners and admins only"
@@ -1726,6 +1719,11 @@ msgstr "Només amb consentiment"
 #: src/features/analytics/Goals.tsx
 msgid "Only with prop"
 msgstr "Només amb propietat"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "obre"
 
 #: src/features/analytics/NewProperty.tsx
 msgid "Open a page of your site with the snippet in place. This turns green as soon as the server has stored the first page view. Browsers with Do Not Track or Global Privacy Control send nothing, so use another one to test."
@@ -1853,7 +1851,6 @@ msgstr "Les pàgines que coincideixen amb un patró es compten sota un sol camí
 msgid "Pages viewed."
 msgstr "Pàgines vistes."
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Pages, sources, places and devices, without cookies, without storing IP addresses and without a consent banner where the law allows it."
 msgstr "Pàgines, fonts, llocs i dispositius, sense galetes, sense desar adreces IP i sense bàner de consentiment allà on la llei ho permet."
@@ -1923,10 +1920,6 @@ msgstr "per hora"
 msgid "per week"
 msgstr "per setmana"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-msgid "Period"
-msgstr "Període"
-
 #: src/features/analytics/Settings.tsx
 msgid "Persistent id"
 msgstr "ID persistent"
@@ -1959,6 +1952,7 @@ msgstr "Tria almenys una vista."
 msgid "Pick how the site is built and copy the snippet. The key is public, like a chat key: it only works on the property’s domains."
 msgstr "Tria com està construït el lloc i copia el fragment. La clau és pública, com una clau de xat: només funciona als dominis de la propietat."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/text.ts
 msgid "Platform"
 msgstr "Plataforma"
@@ -1967,11 +1961,7 @@ msgstr "Plataforma"
 msgid "Platforms"
 msgstr "Plataformes"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-msgid "Privacy"
-msgstr "Privadesa"
-
-#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Product"
 msgstr "Producte"
 
@@ -2024,7 +2014,6 @@ msgstr "Posa l'script al head de cada pàgina. Compta les visualitzacions de pà
 msgid "Put these links on your privacy page. Opting out is the only thing the script stores on the visitor’s device, and only when they ask for it. Visitors with Do Not Track or Global Privacy Control are never counted."
 msgstr "Posa aquests enllaços a la teva pàgina de privacitat. Renunciar és l'únic que l'script desa al dispositiu del visitant, i només quan ho demana. Els visitants amb Do Not Track o Global Privacy Control no es compten mai."
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Range"
@@ -2158,10 +2147,6 @@ msgstr "Revoques {name}?"
 msgid "Revoked"
 msgstr "Revocat"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-msgid "Right now"
-msgstr "Ara mateix"
-
 #: src/features/analytics/Exports.tsx
 msgid "Rows"
 msgstr "Files"
@@ -2262,6 +2247,10 @@ msgstr "Envia'm-ne un ara"
 #: src/features/analytics/Goals.tsx
 msgid "Sends an event"
 msgstr "Envia un esdeveniment"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Separate several with spaces. *.example.com covers every subdomain."
+msgstr "Separa’n diversos amb espais. *.example.com cobreix tots els subdominis."
 
 #: src/features/analytics/text.ts
 msgid "Server"
@@ -2392,6 +2381,10 @@ msgstr "Esdeveniments de prova"
 msgid "That password is not right."
 msgstr "Aquesta contrasenya no és correcta."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "The app’s own website. Events from the app are not checked against it."
+msgstr "El lloc web de l’app. Els esdeveniments de l’app no s’hi comproven."
+
 #: src/features/analytics/Funnels.tsx
 msgid "The consented counts follow visitors with a persistent id from one visit and day to the next, so a step reached on a later day still counts."
 msgstr "Els recomptes dels que han acceptat segueixen els visitants amb ID persistent d'una visita i dia al següent, de manera que un pas assolit un dia posterior es compta igualment."
@@ -2459,10 +2452,6 @@ msgstr "El nom donat a track(), o outbound_click, file_download, not_found, chat
 #: src/features/analytics/Settings.tsx
 msgid "The previous key keeps working until {at}. Update every page and app before then."
 msgstr "La clau anterior continua funcionant fins al {at}. Actualitza cada pàgina i aplicació abans d'això."
-
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "The properties of your inboxes show up here once an owner or admin adds them."
-msgstr "Les propietats de les teves safates apareixen aquí quan un propietari o administrador les afegeix."
 
 #: src/features/analytics/Exports.tsx
 msgid "The query could not be run."
@@ -2560,7 +2549,6 @@ msgstr "Temps a la pàgina"
 msgid "Time the page was visible and in focus, per view."
 msgstr "Temps que la pàgina ha estat visible i en primer pla, per visualització."
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Time zone"
@@ -2742,10 +2730,13 @@ msgstr "Visitants"
 msgid "Visitors in the last 30 minutes"
 msgstr "Visitants en els últims 30 minuts"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Visitors now"
 msgstr "Visitants ara"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Visitors today"
+msgstr "Visitants avui"
 
 #: src/features/analytics/Retention.tsx
 msgid "Visitors who came back"
@@ -2764,7 +2755,6 @@ msgid "Visits"
 msgstr "Visites"
 
 #: src/features/analytics/AnalyticsFrame.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Visits and events that count as success"
 msgstr "Visites i esdeveniments que compten com a èxit"
 
@@ -2804,6 +2794,12 @@ msgstr "Mira-ho en directe"
 msgid "Web"
 msgstr "Web"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Website"
+msgstr "Lloc web"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Website or app"
 msgstr "Lloc web o aplicació"
@@ -2853,7 +2849,6 @@ msgid "Where the property’s day starts and ends."
 msgstr "On comença i acaba el dia de la propietat."
 
 #: src/features/analytics/AnalyticsFrame.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Which pages people visit, and which lead to questions"
 msgstr "Quines pàgines visita la gent i quines porten a preguntes"
 

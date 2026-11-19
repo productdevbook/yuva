@@ -16,12 +16,6 @@ msgstr "(belirtilmemiş)"
 msgid "{0, plural, one {# row} other {# rows}}"
 msgstr "{0, plural, one {# satır} other {# satır}}"
 
-#. placeholder {0}: p.visitors_today
-#: src/features/analytics/AnalyticsColumn.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
-msgid "{0, plural, one {visitor today} other {visitors today}}"
-msgstr "{0, plural, one {bugünkü ziyaretçi} other {bugünkü ziyaretçi}}"
-
 #. placeholder {0}: share1.format(conversations / visitors)
 #: src/features/analytics/Overview.tsx
 msgid "{0} of visitors"
@@ -239,10 +233,6 @@ msgstr "Bir ziyaretçinin aynı gün içinde, aralarında 30 dakikadan uzun boş
 msgid "Active"
 msgstr "Etkin"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "Add"
-msgstr "Ekle"
-
 #: src/features/analytics/Annotations.tsx
 msgid "Add a note to the chart"
 msgstr "Grafiğe not ekle"
@@ -255,16 +245,16 @@ msgstr "Kural ekle"
 msgid "Add a step"
 msgstr "Adım ekle"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Add a website"
 msgstr "Web sitesi ekle"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "Add a website to count its visitors, pages and sources, without cookies."
-msgstr "Ziyaretçilerini, sayfalarını ve kaynaklarını çerezsiz saymak için bir web sitesi ekleyin."
+#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Add a website or app"
+msgstr "Web sitesi ya da uygulama ekle"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Add and install"
 msgstr "Ekle ve kur"
@@ -302,6 +292,10 @@ msgstr "Ardından gelen kutusunun temsilcileri de bu mülkün rakamlarını gör
 msgid "Agents of this inbox can see the numbers."
 msgstr "Bu gelen kutusunun temsilcileri rakamları görebilir."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Agents of this product can see the numbers."
+msgstr "Bu ürünün temsilcileri rakamları görebilir."
+
 #: src/features/analytics/text.ts
 msgid "AI assistants"
 msgstr "Yapay zekâ asistanları"
@@ -323,8 +317,8 @@ msgid "All goals"
 msgstr "Tüm hedefler"
 
 #: src/features/analytics/AnalyticsFrame.tsx
-msgid "All sites"
-msgstr "Tüm siteler"
+msgid "All sites and apps"
+msgstr "Tüm siteler ve uygulamalar"
 
 #: src/features/analytics/Support.tsx
 msgid "An owner or admin can link one in the property’s settings."
@@ -334,19 +328,18 @@ msgstr "Bir sahip veya yönetici, mülkün ayarlarından bir gelen kutusu bağla
 msgid "An owner or admin can turn on the persistent id in the consent features."
 msgstr "Bir sahip ya da yönetici, izin özelliklerinden kalıcı kimliği açabilir."
 
-#: src/features/analytics/AnalyticsColumn.tsx
 #: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Analytics"
 msgstr "Analitik"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "Analytics properties"
-msgstr "Analitik mülkleri"
-
 #: src/features/analytics/NewProperty.tsx
 msgid "Analytics steps"
 msgstr "Analitik adımları"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Android app"
+msgstr "Android"
 
 #: src/features/analytics/Sharing.tsx
 msgid "Anyone with the link sees the views you pick, read-only, without signing in."
@@ -493,12 +486,10 @@ msgstr "Toplama"
 
 #. placeholder {0}: formatDate(`${c.from}T12:00:00Z`, i18n.locale)
 #. placeholder {1}: formatDate(`${c.to}T12:00:00Z`, i18n.locale)
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with {0} – {1}"
 msgstr "{0} – {1} ile karşılaştır"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with a year earlier"
 msgstr "Bir yıl öncesiyle karşılaştır"
@@ -515,7 +506,6 @@ msgstr "Başka günlerle karşılaştır…"
 msgid "Compare with the days"
 msgstr "Karşılaştırılacak günler"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with the period before"
 msgstr "Önceki dönemle karşılaştır"
@@ -524,7 +514,6 @@ msgstr "Önceki dönemle karşılaştır"
 msgid "Compared days"
 msgstr "Karşılaştırılan günler"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Comparison"
 msgstr "Karşılaştırma"
@@ -610,6 +599,7 @@ msgstr "Şimdi kopyalayın; bir daha gösterilmez. Kaybolan bir bağlantı ancak
 msgid "Count my visits again"
 msgstr "Ziyaretlerimi yeniden say"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Count visitors, pages, sources, places and devices without cookies and without storing IP addresses."
 msgstr "Ziyaretçileri, sayfaları, kaynakları, konumları ve cihazları çerez kullanmadan ve IP adresi saklamadan sayın."
@@ -690,7 +680,6 @@ msgstr "Gün gün"
 msgid "Days"
 msgstr "Günler"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/SharePage.tsx
 msgid "Days are counted in this time zone"
 msgstr "Günler bu saat dilimine göre sayılır"
@@ -847,7 +836,7 @@ msgstr "Ziyaretlerimi sayma"
 msgid "does not contain"
 msgstr "içermez"
 
-#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Domains"
@@ -1048,7 +1037,6 @@ msgstr "Dosyalar arka planda hazırlanır ve yedi gün sonra silinir."
 msgid "Filter by this"
 msgstr "Buna göre filtrele"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Filters"
@@ -1086,6 +1074,11 @@ msgstr "İlk hafta"
 msgid "Five reports an hour at most. Try again later."
 msgstr "Saatte en fazla beş rapor. Daha sonra yeniden deneyin."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "For example Fieldnote for iPhone"
+msgstr "Örneğin iPhone için Fieldnote"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "For example Fieldnote website"
 msgstr "Örneğin Fieldnote web sitesi"
@@ -1240,6 +1233,10 @@ msgstr "Geçersiz"
 msgid "Investors"
 msgstr "Yatırımcılar"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "iOS app"
+msgstr "iOS"
+
 #: src/features/analytics/text.ts
 msgid "is"
 msgstr "eşittir"
@@ -1308,6 +1305,7 @@ msgstr "Son 7 gün"
 msgid "Last 90 days"
 msgstr "Son 90 gün"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Last event"
 msgstr "Son olay"
@@ -1434,6 +1432,10 @@ msgstr "Aylık sınır"
 msgid "Months"
 msgstr "Aylar"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "move"
+msgstr "gezin"
+
 #: src/features/analytics/Funnels.tsx
 msgid "Move down"
 msgstr "Aşağı taşı"
@@ -1442,6 +1444,7 @@ msgstr "Aşağı taşı"
 msgid "Move up"
 msgstr "Yukarı taşı"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Funnels.tsx
 #: src/features/analytics/Goals.tsx
@@ -1520,7 +1523,6 @@ msgstr "Yeni paylaşım bağlantısı"
 msgid "No alerts yet."
 msgstr "Henüz uyarı yok."
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "No comparison"
 msgstr "Karşılaştırma yok"
@@ -1549,12 +1551,6 @@ msgstr "Bu aralıkta dönüşüm yok."
 msgid "No event yet."
 msgstr "Henüz olay yok."
 
-#: src/features/analytics/AnalyticsColumn.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
-msgid "No events in the last 24 hours"
-msgstr "Son 24 saatte olay yok"
-
-#: src/features/analytics/AnalyticsColumn.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events yet"
 msgstr "Henüz olay yok"
@@ -1570,10 +1566,6 @@ msgstr "Henüz huni yok"
 #: src/features/analytics/Goals.tsx
 msgid "No goals yet"
 msgstr "Henüz hedef yok"
-
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "No properties yet"
-msgstr "Henüz mülk yok"
 
 #: src/features/analytics/Settings.tsx
 msgid "No props are tracked."
@@ -1615,6 +1607,7 @@ msgstr "Henüz yok"
 msgid "None, every visit counts."
 msgstr "Yok, her ziyaret sayılır."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "None, owners and admins only"
@@ -1726,6 +1719,11 @@ msgstr "Yalnızca izinle"
 #: src/features/analytics/Goals.tsx
 msgid "Only with prop"
 msgstr "Yalnızca şu özellik"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "aç"
 
 #: src/features/analytics/NewProperty.tsx
 msgid "Open a page of your site with the snippet in place. This turns green as soon as the server has stored the first page view. Browsers with Do Not Track or Global Privacy Control send nothing, so use another one to test."
@@ -1853,7 +1851,6 @@ msgstr "Bir kalıba uyan sayfalar tek bir yol altında sayılır; böylece büt�
 msgid "Pages viewed."
 msgstr "Görüntülenen sayfalar."
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Pages, sources, places and devices, without cookies, without storing IP addresses and without a consent banner where the law allows it."
 msgstr "Sayfalar, kaynaklar, konumlar ve cihazlar; çerezsiz, IP adresi saklamadan ve yasanın izin verdiği yerlerde izin bandı olmadan."
@@ -1923,10 +1920,6 @@ msgstr "saatlik"
 msgid "per week"
 msgstr "haftalık"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-msgid "Period"
-msgstr "Dönem"
-
 #: src/features/analytics/Settings.tsx
 msgid "Persistent id"
 msgstr "Kalıcı kimlik"
@@ -1959,6 +1952,7 @@ msgstr "En az bir görünüm seçin."
 msgid "Pick how the site is built and copy the snippet. The key is public, like a chat key: it only works on the property’s domains."
 msgstr "Sitenin nasıl yapıldığını seçip kod parçasını kopyalayın. Anahtar, sohbet anahtarı gibi herkese açıktır: yalnızca mülkün alan adlarında çalışır."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/text.ts
 msgid "Platform"
 msgstr "Platform"
@@ -1967,11 +1961,7 @@ msgstr "Platform"
 msgid "Platforms"
 msgstr "Platformlar"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-msgid "Privacy"
-msgstr "Gizlilik"
-
-#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Product"
 msgstr "Ürün"
 
@@ -2024,7 +2014,6 @@ msgstr "Betiği her sayfanın head bölümüne koyun. Tek sayfalı bir uygulama 
 msgid "Put these links on your privacy page. Opting out is the only thing the script stores on the visitor’s device, and only when they ask for it. Visitors with Do Not Track or Global Privacy Control are never counted."
 msgstr "Bu bağlantıları gizlilik sayfanıza koyun. Betiğin ziyaretçinin cihazına yazdığı tek şey vazgeçme tercihidir ve yalnızca ziyaretçi isterse yazılır. Do Not Track ya da Global Privacy Control kullanan ziyaretçiler hiç sayılmaz."
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Range"
@@ -2158,10 +2147,6 @@ msgstr "{name} iptal edilsin mi?"
 msgid "Revoked"
 msgstr "İptal edildi"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-msgid "Right now"
-msgstr "Şu an"
-
 #: src/features/analytics/Exports.tsx
 msgid "Rows"
 msgstr "Satırlar"
@@ -2262,6 +2247,10 @@ msgstr "Şimdi bir tane gönder"
 #: src/features/analytics/Goals.tsx
 msgid "Sends an event"
 msgstr "Olay gönderir"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Separate several with spaces. *.example.com covers every subdomain."
+msgstr "Birden çoksa boşlukla ayırın. *.example.com tüm alt alan adlarını kapsar."
 
 #: src/features/analytics/text.ts
 msgid "Server"
@@ -2392,6 +2381,10 @@ msgstr "Test olayları"
 msgid "That password is not right."
 msgstr "Parola yanlış."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "The app’s own website. Events from the app are not checked against it."
+msgstr "Uygulamanın kendi web sitesi. Uygulamadan gelen olaylar buna göre denetlenmez."
+
 #: src/features/analytics/Funnels.tsx
 msgid "The consented counts follow visitors with a persistent id from one visit and day to the next, so a step reached on a later day still counts."
 msgstr "İzin verenlerin sayıları, kalıcı kimliği olan ziyaretçileri ziyaretten ziyarete ve günden güne izler; daha sonraki bir gün ulaşılan adım da sayılır."
@@ -2459,10 +2452,6 @@ msgstr "track() çağrısına verilen ad ya da outbound_click, file_download, no
 #: src/features/analytics/Settings.tsx
 msgid "The previous key keeps working until {at}. Update every page and app before then."
 msgstr "Önceki anahtar {at} tarihine kadar çalışır. Her sayfayı ve uygulamayı bundan önce güncelleyin."
-
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "The properties of your inboxes show up here once an owner or admin adds them."
-msgstr "Gelen kutularınızın mülkleri, bir sahip ya da yönetici eklediğinde burada görünür."
 
 #: src/features/analytics/Exports.tsx
 msgid "The query could not be run."
@@ -2560,7 +2549,6 @@ msgstr "Sayfada geçen süre"
 msgid "Time the page was visible and in focus, per view."
 msgstr "Görüntüleme başına sayfanın görünür ve odakta kaldığı süre."
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Time zone"
@@ -2742,10 +2730,13 @@ msgstr "Ziyaretçiler"
 msgid "Visitors in the last 30 minutes"
 msgstr "Son 30 dakikadaki ziyaretçiler"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Visitors now"
 msgstr "Şu an ziyaretçiler"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Visitors today"
+msgstr "Bugünkü ziyaretçiler"
 
 #: src/features/analytics/Retention.tsx
 msgid "Visitors who came back"
@@ -2764,7 +2755,6 @@ msgid "Visits"
 msgstr "Ziyaretler"
 
 #: src/features/analytics/AnalyticsFrame.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Visits and events that count as success"
 msgstr "Başarı sayılan ziyaretler ve olaylar"
 
@@ -2804,6 +2794,12 @@ msgstr "Canlı izle"
 msgid "Web"
 msgstr "Web"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Website"
+msgstr "Web sitesi"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Website or app"
 msgstr "Web sitesi ya da uygulama"
@@ -2853,7 +2849,6 @@ msgid "Where the property’s day starts and ends."
 msgstr "Mülkün gününün başladığı ve bittiği yer."
 
 #: src/features/analytics/AnalyticsFrame.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Which pages people visit, and which lead to questions"
 msgstr "İnsanların hangi sayfaları ziyaret ettiği ve hangilerinin soruya yol açtığı"
 

@@ -1,9 +1,18 @@
 import { Trans, useLingui } from "@lingui/react/macro"
+import { ChevronDownIcon, SearchIcon, XIcon } from "lucide-react"
 
 import { Kbd } from "@/components/common/Kbd"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group"
 import { Empty, EmptyContent, EmptyDescription } from "@/components/ui/empty"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
@@ -40,6 +49,99 @@ export function FilterRow({ children, testId }: { children: React.ReactNode; tes
 
 export const filterButton = "h-8 gap-1.5 px-2.5 font-normal"
 export const filterButtonOn = "border-brand/40 bg-brand-wash font-medium text-brand hover:border-brand/60"
+
+export function FilterMenu({
+  value,
+  onChange,
+  options,
+  anyLabel,
+  label,
+  testId,
+}: {
+  value: string
+  onChange: (v: string) => void
+  options: { value: string; label: string }[]
+  anyLabel: string
+  label: string
+  testId: string
+}) {
+  const current = options.find((o) => o.value === value)
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        render={
+          <Button variant="outline" size="sm" className={cn(filterButton, "max-w-52", current && filterButtonOn)} />
+        }
+        aria-label={label}
+        data-testid={testId}
+      >
+        <span className="truncate">{current?.label ?? anyLabel}</span>
+        <ChevronDownIcon className="text-muted-foreground" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="max-h-[60svh] min-w-44">
+        <DropdownMenuRadioGroup value={value} onValueChange={(v) => onChange(String(v))}>
+          <DropdownMenuRadioItem value="">{anyLabel}</DropdownMenuRadioItem>
+          {options.map((o) => (
+            <DropdownMenuRadioItem key={o.value} value={o.value}>
+              <span className="truncate">{o.label}</span>
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
+export function FilterSearch({
+  value,
+  onChange,
+  placeholder,
+  label,
+  inputRef,
+  onKeyDown,
+  testId,
+}: {
+  value: string
+  onChange: (v: string) => void
+  placeholder: string
+  label: string
+  inputRef?: React.Ref<HTMLInputElement>
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void
+  testId?: string
+}) {
+  const { t } = useLingui()
+  return (
+    <InputGroup className="h-8 min-w-48 flex-[1_1_240px] rounded-md border-input bg-card shadow-none focus-within:border-faint">
+      <InputGroupAddon>
+        <SearchIcon className="size-[15px] text-faint" />
+      </InputGroupAddon>
+      <InputGroupInput
+        ref={inputRef}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Escape") {
+            if (value) onChange("")
+            else e.currentTarget.blur()
+          }
+          onKeyDown?.(e)
+        }}
+        placeholder={placeholder}
+        aria-label={label}
+        data-testid={testId}
+      />
+      <InputGroupAddon align="inline-end">
+        {value ? (
+          <InputGroupButton size="icon-xs" onClick={() => onChange("")} aria-label={t`Clear the search`}>
+            <XIcon />
+          </InputGroupButton>
+        ) : (
+          <Kbd className="phone:hidden">/</Kbd>
+        )}
+      </InputGroupAddon>
+    </InputGroup>
+  )
+}
 
 export function ListBox({
   bar,

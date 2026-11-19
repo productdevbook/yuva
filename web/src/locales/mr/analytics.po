@@ -16,12 +16,6 @@ msgstr "(सेट नाही)"
 msgid "{0, plural, one {# row} other {# rows}}"
 msgstr "{0, plural, one {# पंक्ती} other {# पंक्ती}}"
 
-#. placeholder {0}: p.visitors_today
-#: src/features/analytics/AnalyticsColumn.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
-msgid "{0, plural, one {visitor today} other {visitors today}}"
-msgstr "{0, plural, one {आजचा व्हिझिटर} other {आजचे व्हिझिटर्स}}"
-
 #. placeholder {0}: share1.format(conversations / visitors)
 #: src/features/analytics/Overview.tsx
 msgid "{0} of visitors"
@@ -239,10 +233,6 @@ msgstr "एका व्हिझिटरचे स्क्रीन व्ह
 msgid "Active"
 msgstr "सक्रिय"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "Add"
-msgstr "जोडा"
-
 #: src/features/analytics/Annotations.tsx
 msgid "Add a note to the chart"
 msgstr "चार्टमध्ये नोट जोडा"
@@ -255,16 +245,16 @@ msgstr "नियम जोडा"
 msgid "Add a step"
 msgstr "पायरी जोडा"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Add a website"
 msgstr "वेबसाइट जोडा"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "Add a website to count its visitors, pages and sources, without cookies."
-msgstr "वेबसाइटचे व्हिझिटर्स, पेजेस आणि स्रोत कुकीशिवाय मोजण्यासाठी ती जोडा."
+#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Add a website or app"
+msgstr "वेबसाइट किंवा ॲप जोडा"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Add and install"
 msgstr "जोडा आणि इन्स्टॉल करा"
@@ -302,6 +292,10 @@ msgstr "इनबॉक्सचे एजंट मग या प्रॉप�
 msgid "Agents of this inbox can see the numbers."
 msgstr "या इनबॉक्सचे एजंट आकडे पाहू शकतात."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Agents of this product can see the numbers."
+msgstr "या प्रॉडक्टचे एजंट आकडे पाहू शकतात."
+
 #: src/features/analytics/text.ts
 msgid "AI assistants"
 msgstr "AI असिस्टंट"
@@ -323,8 +317,8 @@ msgid "All goals"
 msgstr "सर्व गोल"
 
 #: src/features/analytics/AnalyticsFrame.tsx
-msgid "All sites"
-msgstr "सर्व साइट्स"
+msgid "All sites and apps"
+msgstr "सर्व साइट आणि ॲप"
 
 #: src/features/analytics/Support.tsx
 msgid "An owner or admin can link one in the property’s settings."
@@ -334,19 +328,18 @@ msgstr "ओनर किंवा ॲडमिन प्रॉपर्टीच
 msgid "An owner or admin can turn on the persistent id in the consent features."
 msgstr "ओनर किंवा ॲडमिन संमती फीचरमध्ये कायम id चालू करू शकतो."
 
-#: src/features/analytics/AnalyticsColumn.tsx
 #: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Analytics"
 msgstr "ॲनालिटिक्स"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "Analytics properties"
-msgstr "ॲनालिटिक्स प्रॉपर्टी"
-
 #: src/features/analytics/NewProperty.tsx
 msgid "Analytics steps"
 msgstr "ॲनालिटिक्सच्या पायऱ्या"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Android app"
+msgstr "Android ॲप"
 
 #: src/features/analytics/Sharing.tsx
 msgid "Anyone with the link sees the views you pick, read-only, without signing in."
@@ -493,12 +486,10 @@ msgstr "संग्रह"
 
 #. placeholder {0}: formatDate(`${c.from}T12:00:00Z`, i18n.locale)
 #. placeholder {1}: formatDate(`${c.to}T12:00:00Z`, i18n.locale)
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with {0} – {1}"
 msgstr "{0} – {1} शी तुलना करा"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with a year earlier"
 msgstr "एक वर्षापूर्वीशी तुलना करा"
@@ -515,7 +506,6 @@ msgstr "इतर दिवसांशी तुलना करा…"
 msgid "Compare with the days"
 msgstr "या दिवसांशी तुलना करा"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with the period before"
 msgstr "आधीच्या कालावधीशी तुलना करा"
@@ -524,7 +514,6 @@ msgstr "आधीच्या कालावधीशी तुलना कर
 msgid "Compared days"
 msgstr "तुलनेचे दिवस"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Comparison"
 msgstr "तुलना"
@@ -610,6 +599,7 @@ msgstr "ते आता कॉपी करा; ते पुन्हा द�
 msgid "Count my visits again"
 msgstr "माझ्या भेटी पुन्हा मोजा"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Count visitors, pages, sources, places and devices without cookies and without storing IP addresses."
 msgstr "कुकीशिवाय आणि IP पत्ते साठवल्याशिवाय व्हिझिटर्स, पेजेस, स्रोत, ठिकाणे आणि डिव्हाइस मोजा."
@@ -690,7 +680,6 @@ msgstr "दिवसागणिक"
 msgid "Days"
 msgstr "दिवस"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/SharePage.tsx
 msgid "Days are counted in this time zone"
 msgstr "दिवस या टाइम झोनमध्ये मोजले जातात"
@@ -847,7 +836,7 @@ msgstr "माझ्या भेटी मोजू नका"
 msgid "does not contain"
 msgstr "यात नाही"
 
-#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Domains"
@@ -1048,7 +1037,6 @@ msgstr "फाइल्स बॅकग्राउंडमध्ये तय�
 msgid "Filter by this"
 msgstr "यानुसार फिल्टर करा"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Filters"
@@ -1086,6 +1074,11 @@ msgstr "पहिला आठवडा"
 msgid "Five reports an hour at most. Try again later."
 msgstr "तासाला जास्तीत जास्त पाच रिपोर्ट. नंतर पुन्हा प्रयत्न करा."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "For example Fieldnote for iPhone"
+msgstr "उदा. iPhone साठी Fieldnote"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "For example Fieldnote website"
 msgstr "उदा. Fieldnote वेबसाइट"
@@ -1240,6 +1233,10 @@ msgstr "अवैध"
 msgid "Investors"
 msgstr "गुंतवणूकदार"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "iOS app"
+msgstr "iOS ॲप"
+
 #: src/features/analytics/text.ts
 msgid "is"
 msgstr "आहे"
@@ -1308,6 +1305,7 @@ msgstr "गेले 7 दिवस"
 msgid "Last 90 days"
 msgstr "गेले 90 दिवस"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Last event"
 msgstr "शेवटचा इव्हेंट"
@@ -1434,6 +1432,10 @@ msgstr "मासिक मर्यादा"
 msgid "Months"
 msgstr "महिने"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "move"
+msgstr "हलवा"
+
 #: src/features/analytics/Funnels.tsx
 msgid "Move down"
 msgstr "खाली हलवा"
@@ -1442,6 +1444,7 @@ msgstr "खाली हलवा"
 msgid "Move up"
 msgstr "वर हलवा"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Funnels.tsx
 #: src/features/analytics/Goals.tsx
@@ -1520,7 +1523,6 @@ msgstr "नवीन शेअर लिंक"
 msgid "No alerts yet."
 msgstr "अजून अलर्ट नाहीत."
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "No comparison"
 msgstr "तुलना नाही"
@@ -1549,12 +1551,6 @@ msgstr "या रेंजमध्ये कन्व्हर्जन ना
 msgid "No event yet."
 msgstr "अजून इव्हेंट नाही."
 
-#: src/features/analytics/AnalyticsColumn.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
-msgid "No events in the last 24 hours"
-msgstr "गेल्या 24 तासांत इव्हेंट नाहीत"
-
-#: src/features/analytics/AnalyticsColumn.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events yet"
 msgstr "अजून इव्हेंट नाहीत"
@@ -1570,10 +1566,6 @@ msgstr "अजून फनेल नाहीत"
 #: src/features/analytics/Goals.tsx
 msgid "No goals yet"
 msgstr "अजून गोल नाहीत"
-
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "No properties yet"
-msgstr "अजून प्रॉपर्टी नाहीत"
 
 #: src/features/analytics/Settings.tsx
 msgid "No props are tracked."
@@ -1615,6 +1607,7 @@ msgstr "अजून काहीही नाही"
 msgid "None, every visit counts."
 msgstr "काहीही नाही, प्रत्येक भेट मोजली जाते."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "None, owners and admins only"
@@ -1726,6 +1719,11 @@ msgstr "फक्त संमतीसह"
 #: src/features/analytics/Goals.tsx
 msgid "Only with prop"
 msgstr "फक्त प्रॉपसह"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "उघडा"
 
 #: src/features/analytics/NewProperty.tsx
 msgid "Open a page of your site with the snippet in place. This turns green as soon as the server has stored the first page view. Browsers with Do Not Track or Global Privacy Control send nothing, so use another one to test."
@@ -1853,7 +1851,6 @@ msgstr "पॅटर्नशी जुळणारी पेजेस एका
 msgid "Pages viewed."
 msgstr "पाहिलेली पेजेस."
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Pages, sources, places and devices, without cookies, without storing IP addresses and without a consent banner where the law allows it."
 msgstr "पेजेस, स्रोत, ठिकाणे आणि डिव्हाइस, कुकीशिवाय, IP पत्ते साठवल्याशिवाय आणि कायदा परवानगी देतो तिथे संमती बॅनरशिवाय."
@@ -1923,10 +1920,6 @@ msgstr "दर तासाला"
 msgid "per week"
 msgstr "दर आठवड्याला"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-msgid "Period"
-msgstr "कालावधी"
-
 #: src/features/analytics/Settings.tsx
 msgid "Persistent id"
 msgstr "कायम id"
@@ -1959,6 +1952,7 @@ msgstr "किमान एक व्ह्यू निवडा."
 msgid "Pick how the site is built and copy the snippet. The key is public, like a chat key: it only works on the property’s domains."
 msgstr "साइट कशी बनली आहे ते निवडा आणि स्निपेट कॉपी करा. की सार्वजनिक आहे, चॅट कीसारखी: ती फक्त प्रॉपर्टीच्या डोमेनवर चालते."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/text.ts
 msgid "Platform"
 msgstr "प्लॅटफॉर्म"
@@ -1967,11 +1961,7 @@ msgstr "प्लॅटफॉर्म"
 msgid "Platforms"
 msgstr "प्लॅटफॉर्म"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-msgid "Privacy"
-msgstr "गोपनीयता"
-
-#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Product"
 msgstr "उत्पादन"
 
@@ -2024,7 +2014,6 @@ msgstr "स्क्रिप्ट प्रत्येक पेजच्य�
 msgid "Put these links on your privacy page. Opting out is the only thing the script stores on the visitor’s device, and only when they ask for it. Visitors with Do Not Track or Global Privacy Control are never counted."
 msgstr "या लिंक तुमच्या प्रायव्हसी पेजवर ठेवा. ऑप्ट-आउट करणे हीच एकमेव गोष्ट आहे जी स्क्रिप्ट व्हिझिटरच्या डिव्हाइसवर साठवते, आणि फक्त त्यांनी मागितल्यावर. Do Not Track किंवा Global Privacy Control असलेले व्हिझिटर्स कधीही मोजले जात नाहीत."
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Range"
@@ -2158,10 +2147,6 @@ msgstr "{name} रद्द करायचे?"
 msgid "Revoked"
 msgstr "रद्द केले"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-msgid "Right now"
-msgstr "आत्ता"
-
 #: src/features/analytics/Exports.tsx
 msgid "Rows"
 msgstr "पंक्ती"
@@ -2262,6 +2247,10 @@ msgstr "आता मला एक पाठवा"
 #: src/features/analytics/Goals.tsx
 msgid "Sends an event"
 msgstr "इव्हेंट पाठवते"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Separate several with spaces. *.example.com covers every subdomain."
+msgstr "एकापेक्षा जास्त असल्यास स्पेसने वेगळे करा. *.example.com मध्ये सर्व सबडोमेन येतात."
 
 #: src/features/analytics/text.ts
 msgid "Server"
@@ -2392,6 +2381,10 @@ msgstr "टेस्ट इव्हेंट"
 msgid "That password is not right."
 msgstr "तो पासवर्ड बरोबर नाही."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "The app’s own website. Events from the app are not checked against it."
+msgstr "ॲपची स्वतःची वेबसाइट. ॲपमधील इव्हेंट तिच्याशी तपासले जात नाहीत."
+
 #: src/features/analytics/Funnels.tsx
 msgid "The consented counts follow visitors with a persistent id from one visit and day to the next, so a step reached on a later day still counts."
 msgstr "संमती दिलेल्यांची मोजणी कायम id असलेल्या व्हिझिटर्सना एका भेटीपासून आणि दिवसापासून पुढच्यापर्यंत फॉलो करते, म्हणून नंतरच्या दिवशी गाठलेली पायरीही मोजली जाते."
@@ -2459,10 +2452,6 @@ msgstr "track() ला दिलेले नाव, किंवा outbound_cl
 #: src/features/analytics/Settings.tsx
 msgid "The previous key keeps working until {at}. Update every page and app before then."
 msgstr "मागची की {at} पर्यंत काम करत राहते. त्याआधी प्रत्येक पेज आणि ॲप अपडेट करा."
-
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "The properties of your inboxes show up here once an owner or admin adds them."
-msgstr "तुमच्या इनबॉक्सच्या प्रॉपर्टी इथे दिसतात जेव्हा ओनर किंवा ॲडमिन त्या जोडतो."
 
 #: src/features/analytics/Exports.tsx
 msgid "The query could not be run."
@@ -2560,7 +2549,6 @@ msgstr "पेजवरील वेळ"
 msgid "Time the page was visible and in focus, per view."
 msgstr "पेज दिसत होते आणि फोकसमध्ये होते तो वेळ, प्रति व्ह्यू."
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Time zone"
@@ -2742,10 +2730,13 @@ msgstr "व्हिझिटर्स"
 msgid "Visitors in the last 30 minutes"
 msgstr "गेल्या 30 मिनिटांत व्हिझिटर्स"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Visitors now"
 msgstr "सध्याचे अभ्यागत"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Visitors today"
+msgstr "आजचे अभ्यागत"
 
 #: src/features/analytics/Retention.tsx
 msgid "Visitors who came back"
@@ -2764,7 +2755,6 @@ msgid "Visits"
 msgstr "भेटी"
 
 #: src/features/analytics/AnalyticsFrame.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Visits and events that count as success"
 msgstr "यश म्हणून गणले जाणारे भेटी आणि इव्हेंट"
 
@@ -2804,6 +2794,12 @@ msgstr "ते लाइव्ह पाहा"
 msgid "Web"
 msgstr "वेब"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Website"
+msgstr "वेबसाइट"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Website or app"
 msgstr "वेबसाइट किंवा ॲप"
@@ -2853,7 +2849,6 @@ msgid "Where the property’s day starts and ends."
 msgstr "जिथे प्रॉपर्टीचा दिवस सुरू आणि संपतो."
 
 #: src/features/analytics/AnalyticsFrame.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Which pages people visit, and which lead to questions"
 msgstr "लोक कोणती पेज पाहतात आणि कोणती प्रश्नांकडे नेतात"
 

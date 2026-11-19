@@ -16,12 +16,6 @@ msgstr "(nesetat)"
 msgid "{0, plural, one {# row} other {# rows}}"
 msgstr "{0, plural, one {# rând} few {# rânduri} other {# de rânduri}}"
 
-#. placeholder {0}: p.visitors_today
-#: src/features/analytics/AnalyticsColumn.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
-msgid "{0, plural, one {visitor today} other {visitors today}}"
-msgstr "{0, plural, one {vizitator azi} few {vizitatori azi} other {de vizitatori azi}}"
-
 #. placeholder {0}: share1.format(conversations / visitors)
 #: src/features/analytics/Overview.tsx
 msgid "{0} of visitors"
@@ -239,10 +233,6 @@ msgstr "Vizualizările de ecrane ale unui vizitator, fără pauză de 30 de minu
 msgid "Active"
 msgstr "Activ"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "Add"
-msgstr "Adaugă"
-
 #: src/features/analytics/Annotations.tsx
 msgid "Add a note to the chart"
 msgstr "Adaugă o notă pe grafic"
@@ -255,16 +245,16 @@ msgstr "Adaugă o regulă"
 msgid "Add a step"
 msgstr "Adaugă un pas"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Add a website"
 msgstr "Adaugă un site"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "Add a website to count its visitors, pages and sources, without cookies."
-msgstr "Adaugă un site ca să îi numeri vizitatorii, paginile și sursele, fără cookieuri."
+#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Add a website or app"
+msgstr "Adaugă un site sau o aplicație"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Add and install"
 msgstr "Adaugă și instalează"
@@ -302,6 +292,10 @@ msgstr "Agenții căsuței pot vedea atunci și cifrele acestei proprietăți."
 msgid "Agents of this inbox can see the numbers."
 msgstr "Agenții acestei căsuțe pot vedea cifrele."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Agents of this product can see the numbers."
+msgstr "Agenții acestui produs pot vedea cifrele."
+
 #: src/features/analytics/text.ts
 msgid "AI assistants"
 msgstr "Asistenți AI"
@@ -323,8 +317,8 @@ msgid "All goals"
 msgstr "Toate obiectivele"
 
 #: src/features/analytics/AnalyticsFrame.tsx
-msgid "All sites"
-msgstr "Toate site-urile"
+msgid "All sites and apps"
+msgstr "Toate site-urile și aplicațiile"
 
 #: src/features/analytics/Support.tsx
 msgid "An owner or admin can link one in the property’s settings."
@@ -334,19 +328,18 @@ msgstr "Un proprietar sau administrator poate lega una în setările proprietă�
 msgid "An owner or admin can turn on the persistent id in the consent features."
 msgstr "Un proprietar sau administrator poate activa id-ul persistent în funcțiile de consimțământ."
 
-#: src/features/analytics/AnalyticsColumn.tsx
 #: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Analytics"
 msgstr "Analiză"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "Analytics properties"
-msgstr "Proprietăți de analiză"
-
 #: src/features/analytics/NewProperty.tsx
 msgid "Analytics steps"
 msgstr "Pași de analiză"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Android app"
+msgstr "Aplicație Android"
 
 #: src/features/analytics/Sharing.tsx
 msgid "Anyone with the link sees the views you pick, read-only, without signing in."
@@ -493,12 +486,10 @@ msgstr "Colecție"
 
 #. placeholder {0}: formatDate(`${c.from}T12:00:00Z`, i18n.locale)
 #. placeholder {1}: formatDate(`${c.to}T12:00:00Z`, i18n.locale)
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with {0} – {1}"
 msgstr "Compară cu {0} – {1}"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with a year earlier"
 msgstr "Compară cu un an mai devreme"
@@ -515,7 +506,6 @@ msgstr "Compară cu alte zile…"
 msgid "Compare with the days"
 msgstr "Compară cu zilele"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with the period before"
 msgstr "Compară cu perioada dinainte"
@@ -524,7 +514,6 @@ msgstr "Compară cu perioada dinainte"
 msgid "Compared days"
 msgstr "Zile comparate"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Comparison"
 msgstr "Comparație"
@@ -610,6 +599,7 @@ msgstr "Copiază-l acum; nu mai este afișat. Linkurile pierdute pot fi doar rev
 msgid "Count my visits again"
 msgstr "Numără din nou vizitele mele"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Count visitors, pages, sources, places and devices without cookies and without storing IP addresses."
 msgstr "Numără vizitatori, pagini, surse, locuri și dispozitive fără cookieuri și fără a stoca adrese IP."
@@ -690,7 +680,6 @@ msgstr "Zi cu zi"
 msgid "Days"
 msgstr "Zile"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/SharePage.tsx
 msgid "Days are counted in this time zone"
 msgstr "Zilele sunt numărate în acest fus orar"
@@ -847,7 +836,7 @@ msgstr "Nu număra vizitele mele"
 msgid "does not contain"
 msgstr "nu conține"
 
-#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Domains"
@@ -1048,7 +1037,6 @@ msgstr "Fișierele se creează în fundal și se șterg după șapte zile."
 msgid "Filter by this"
 msgstr "Filtrează după aceasta"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Filters"
@@ -1086,6 +1074,11 @@ msgstr "Prima săptămână"
 msgid "Five reports an hour at most. Try again later."
 msgstr "Cel mult cinci rapoarte pe oră. Încearcă mai târziu."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "For example Fieldnote for iPhone"
+msgstr "De exemplu Fieldnote pentru iPhone"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "For example Fieldnote website"
 msgstr "De exemplu site-ul Fieldnote"
@@ -1240,6 +1233,10 @@ msgstr "Invalid"
 msgid "Investors"
 msgstr "Investitori"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "iOS app"
+msgstr "Aplicație iOS"
+
 #: src/features/analytics/text.ts
 msgid "is"
 msgstr "este"
@@ -1308,6 +1305,7 @@ msgstr "Ultimele 7 zile"
 msgid "Last 90 days"
 msgstr "Ultimele 90 de zile"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Last event"
 msgstr "Ultimul eveniment"
@@ -1434,6 +1432,10 @@ msgstr "Limită lunară"
 msgid "Months"
 msgstr "Luni"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "move"
+msgstr "deplasare"
+
 #: src/features/analytics/Funnels.tsx
 msgid "Move down"
 msgstr "Mută în jos"
@@ -1442,6 +1444,7 @@ msgstr "Mută în jos"
 msgid "Move up"
 msgstr "Mută în sus"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Funnels.tsx
 #: src/features/analytics/Goals.tsx
@@ -1520,7 +1523,6 @@ msgstr "Link nou de partajare"
 msgid "No alerts yet."
 msgstr "Încă nu există alerte."
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "No comparison"
 msgstr "Fără comparație"
@@ -1549,12 +1551,6 @@ msgstr "Nicio conversie în acest interval."
 msgid "No event yet."
 msgstr "Încă niciun eveniment."
 
-#: src/features/analytics/AnalyticsColumn.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
-msgid "No events in the last 24 hours"
-msgstr "Niciun eveniment în ultimele 24 de ore"
-
-#: src/features/analytics/AnalyticsColumn.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events yet"
 msgstr "Încă niciun eveniment"
@@ -1570,10 +1566,6 @@ msgstr "Încă nicio pâlnie"
 #: src/features/analytics/Goals.tsx
 msgid "No goals yet"
 msgstr "Încă niciun obiectiv"
-
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "No properties yet"
-msgstr "Încă nicio proprietate"
 
 #: src/features/analytics/Settings.tsx
 msgid "No props are tracked."
@@ -1615,6 +1607,7 @@ msgstr "Încă niciunul"
 msgid "None, every visit counts."
 msgstr "Niciunul, fiecare vizită contează."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "None, owners and admins only"
@@ -1726,6 +1719,11 @@ msgstr "Doar cu consimțământ"
 #: src/features/analytics/Goals.tsx
 msgid "Only with prop"
 msgstr "Doar cu proprietatea"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "deschide"
 
 #: src/features/analytics/NewProperty.tsx
 msgid "Open a page of your site with the snippet in place. This turns green as soon as the server has stored the first page view. Browsers with Do Not Track or Global Privacy Control send nothing, so use another one to test."
@@ -1853,7 +1851,6 @@ msgstr "Paginile care se potrivesc cu un model sunt numărate sub o singură cal
 msgid "Pages viewed."
 msgstr "Pagini vizualizate."
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Pages, sources, places and devices, without cookies, without storing IP addresses and without a consent banner where the law allows it."
 msgstr "Pagini, surse, locuri și dispozitive, fără cookieuri, fără stocarea adreselor IP și fără banner de consimțământ acolo unde legea permite."
@@ -1923,10 +1920,6 @@ msgstr "pe oră"
 msgid "per week"
 msgstr "pe săptămână"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-msgid "Period"
-msgstr "Perioadă"
-
 #: src/features/analytics/Settings.tsx
 msgid "Persistent id"
 msgstr "Id persistent"
@@ -1959,6 +1952,7 @@ msgstr "Alege cel puțin o vizualizare."
 msgid "Pick how the site is built and copy the snippet. The key is public, like a chat key: it only works on the property’s domains."
 msgstr "Alege cum este construit site-ul și copiază fragmentul. Cheia este publică, precum o cheie de chat: funcționează doar pe domeniile proprietății."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/text.ts
 msgid "Platform"
 msgstr "Platformă"
@@ -1967,11 +1961,7 @@ msgstr "Platformă"
 msgid "Platforms"
 msgstr "Platforme"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-msgid "Privacy"
-msgstr "Confidențialitate"
-
-#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Product"
 msgstr "Produs"
 
@@ -2024,7 +2014,6 @@ msgstr "Pune scriptul în head-ul fiecărei pagini. Numără vizualizările de p
 msgid "Put these links on your privacy page. Opting out is the only thing the script stores on the visitor’s device, and only when they ask for it. Visitors with Do Not Track or Global Privacy Control are never counted."
 msgstr "Pune aceste linkuri pe pagina ta de confidențialitate. Renunțarea este singurul lucru pe care scriptul îl stochează pe dispozitivul vizitatorului, și doar când acesta o cere. Vizitatorii cu Do Not Track sau Global Privacy Control nu sunt niciodată numărați."
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Range"
@@ -2158,10 +2147,6 @@ msgstr "Revoci {name}?"
 msgid "Revoked"
 msgstr "Revocat"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-msgid "Right now"
-msgstr "Chiar acum"
-
 #: src/features/analytics/Exports.tsx
 msgid "Rows"
 msgstr "Rânduri"
@@ -2262,6 +2247,10 @@ msgstr "Trimite-mi unul acum"
 #: src/features/analytics/Goals.tsx
 msgid "Sends an event"
 msgstr "Trimite un eveniment"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Separate several with spaces. *.example.com covers every subdomain."
+msgstr "Separă mai multe prin spații. *.example.com acoperă toate subdomeniile."
 
 #: src/features/analytics/text.ts
 msgid "Server"
@@ -2392,6 +2381,10 @@ msgstr "Evenimente de test"
 msgid "That password is not right."
 msgstr "Parola nu este corectă."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "The app’s own website. Events from the app are not checked against it."
+msgstr "Site-ul propriu al aplicației. Evenimentele din aplicație nu sunt verificate față de el."
+
 #: src/features/analytics/Funnels.tsx
 msgid "The consented counts follow visitors with a persistent id from one visit and day to the next, so a step reached on a later day still counts."
 msgstr "Numerele celor care au consimțit urmăresc vizitatorii cu id persistent de la o vizită și o zi la următoarea, deci un pas atins într-o zi ulterioară se numără în continuare."
@@ -2459,10 +2452,6 @@ msgstr "Numele dat lui track(), sau outbound_click, file_download, not_found, ch
 #: src/features/analytics/Settings.tsx
 msgid "The previous key keeps working until {at}. Update every page and app before then."
 msgstr "Cheia anterioară continuă să funcționeze până la {at}. Actualizează fiecare pagină și aplicație până atunci."
-
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "The properties of your inboxes show up here once an owner or admin adds them."
-msgstr "Proprietățile căsuțelor tale apar aici după ce un proprietar sau administrator le adaugă."
 
 #: src/features/analytics/Exports.tsx
 msgid "The query could not be run."
@@ -2560,7 +2549,6 @@ msgstr "Timp pe pagină"
 msgid "Time the page was visible and in focus, per view."
 msgstr "Timpul în care pagina a fost vizibilă și activă, pe vizualizare."
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Time zone"
@@ -2742,10 +2730,13 @@ msgstr "Vizitatori"
 msgid "Visitors in the last 30 minutes"
 msgstr "Vizitatori în ultimele 30 de minute"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Visitors now"
 msgstr "Vizitatori acum"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Visitors today"
+msgstr "Vizitatori azi"
 
 #: src/features/analytics/Retention.tsx
 msgid "Visitors who came back"
@@ -2764,7 +2755,6 @@ msgid "Visits"
 msgstr "Vizite"
 
 #: src/features/analytics/AnalyticsFrame.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Visits and events that count as success"
 msgstr "Vizite și evenimente care contează ca succes"
 
@@ -2804,6 +2794,12 @@ msgstr "Urmărește live"
 msgid "Web"
 msgstr "Web"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Website"
+msgstr "Site web"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Website or app"
 msgstr "Site sau aplicație"
@@ -2853,7 +2849,6 @@ msgid "Where the property’s day starts and ends."
 msgstr "Unde începe și se termină ziua proprietății."
 
 #: src/features/analytics/AnalyticsFrame.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Which pages people visit, and which lead to questions"
 msgstr "Ce pagini vizitează oamenii și care duc la întrebări"
 

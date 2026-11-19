@@ -16,12 +16,6 @@ msgstr "(سیٹ نہیں)"
 msgid "{0, plural, one {# row} other {# rows}}"
 msgstr "{0, plural, one {# قطار} other {# قطاریں}}"
 
-#. placeholder {0}: p.visitors_today
-#: src/features/analytics/AnalyticsColumn.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
-msgid "{0, plural, one {visitor today} other {visitors today}}"
-msgstr "{0, plural, one {آج کا وزیٹر} other {آج کے وزیٹرز}}"
-
 #. placeholder {0}: share1.format(conversations / visitors)
 #: src/features/analytics/Overview.tsx
 msgid "{0} of visitors"
@@ -239,10 +233,6 @@ msgstr "وزیٹر کے اسکرین ویوز بغیر 30 منٹ کے وقفے �
 msgid "Active"
 msgstr "فعال"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "Add"
-msgstr "شامل کریں"
-
 #: src/features/analytics/Annotations.tsx
 msgid "Add a note to the chart"
 msgstr "چارٹ میں نوٹ شامل کریں"
@@ -255,16 +245,16 @@ msgstr "اصول شامل کریں"
 msgid "Add a step"
 msgstr "مرحلہ شامل کریں"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Add a website"
 msgstr "ویب سائٹ شامل کریں"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "Add a website to count its visitors, pages and sources, without cookies."
-msgstr "ویب سائٹ شامل کریں تاکہ اس کے وزیٹرز، صفحات اور ماخذ بغیر کوکیز کے گنے جائیں۔"
+#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Add a website or app"
+msgstr "ویب سائٹ یا ایپ شامل کریں"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Add and install"
 msgstr "شامل کریں اور انسٹال کریں"
@@ -302,6 +292,10 @@ msgstr "ان باکس کے ایجنٹس پھر اس پراپرٹی کے اعدا
 msgid "Agents of this inbox can see the numbers."
 msgstr "اس ان باکس کے ایجنٹس اعداد دیکھ سکتے ہیں۔"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Agents of this product can see the numbers."
+msgstr "اس پروڈکٹ کے ایجنٹ اعداد دیکھ سکتے ہیں۔"
+
 #: src/features/analytics/text.ts
 msgid "AI assistants"
 msgstr "AI اسسٹنٹس"
@@ -323,8 +317,8 @@ msgid "All goals"
 msgstr "تمام اہداف"
 
 #: src/features/analytics/AnalyticsFrame.tsx
-msgid "All sites"
-msgstr "تمام سائٹس"
+msgid "All sites and apps"
+msgstr "تمام سائٹس اور ایپس"
 
 #: src/features/analytics/Support.tsx
 msgid "An owner or admin can link one in the property’s settings."
@@ -334,19 +328,18 @@ msgstr "مالک یا ایڈمن پراپرٹی کی ترتیبات میں ای�
 msgid "An owner or admin can turn on the persistent id in the consent features."
 msgstr "مالک یا ایڈمن رضامندی کی خصوصیات میں مستقل ID آن کر سکتا ہے۔"
 
-#: src/features/analytics/AnalyticsColumn.tsx
 #: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Analytics"
 msgstr "اینالیٹکس"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "Analytics properties"
-msgstr "اینالیٹکس پراپرٹیز"
-
 #: src/features/analytics/NewProperty.tsx
 msgid "Analytics steps"
 msgstr "اینالیٹکس کے مراحل"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Android app"
+msgstr "Android ایپ"
 
 #: src/features/analytics/Sharing.tsx
 msgid "Anyone with the link sees the views you pick, read-only, without signing in."
@@ -493,12 +486,10 @@ msgstr "کوہورٹ"
 
 #. placeholder {0}: formatDate(`${c.from}T12:00:00Z`, i18n.locale)
 #. placeholder {1}: formatDate(`${c.to}T12:00:00Z`, i18n.locale)
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with {0} – {1}"
 msgstr "{0} – {1} سے موازنہ کریں"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with a year earlier"
 msgstr "ایک سال پہلے سے موازنہ کریں"
@@ -515,7 +506,6 @@ msgstr "دوسرے دنوں سے موازنہ کریں…"
 msgid "Compare with the days"
 msgstr "دنوں سے موازنہ کریں"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with the period before"
 msgstr "پچھلی مدت سے موازنہ کریں"
@@ -524,7 +514,6 @@ msgstr "پچھلی مدت سے موازنہ کریں"
 msgid "Compared days"
 msgstr "موازنہ کیے گئے دن"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Comparison"
 msgstr "موازنہ"
@@ -610,6 +599,7 @@ msgstr "اسے ابھی کاپی کریں؛ یہ دوبارہ نہیں دکھا�
 msgid "Count my visits again"
 msgstr "میرے وزٹس دوبارہ گنیں"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Count visitors, pages, sources, places and devices without cookies and without storing IP addresses."
 msgstr "وزیٹرز، صفحات، ماخذ، مقامات اور ڈیوائسز کو بغیر کوکیز اور IP پتے محفوظ کیے بغیر گنیں۔"
@@ -690,7 +680,6 @@ msgstr "دن بہ دن"
 msgid "Days"
 msgstr "دن"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/SharePage.tsx
 msgid "Days are counted in this time zone"
 msgstr "دن اس ٹائم زون میں گنے جاتے ہیں"
@@ -847,7 +836,7 @@ msgstr "میرے وزٹس نہ گنیں"
 msgid "does not contain"
 msgstr "پر مشتمل نہیں"
 
-#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Domains"
@@ -1048,7 +1037,6 @@ msgstr "فائلیں پس منظر میں بنتی ہیں اور سات دن ب�
 msgid "Filter by this"
 msgstr "اس سے فلٹر کریں"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Filters"
@@ -1086,6 +1074,11 @@ msgstr "پہلا ہفتہ"
 msgid "Five reports an hour at most. Try again later."
 msgstr "فی گھنٹہ زیادہ سے زیادہ پانچ رپورٹس۔ بعد میں دوبارہ کوشش کریں۔"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "For example Fieldnote for iPhone"
+msgstr "مثلاً iPhone کے لیے Fieldnote"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "For example Fieldnote website"
 msgstr "مثلاً Fieldnote ویب سائٹ"
@@ -1240,6 +1233,10 @@ msgstr "غلط"
 msgid "Investors"
 msgstr "سرمایہ کار"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "iOS app"
+msgstr "iOS ایپ"
+
 #: src/features/analytics/text.ts
 msgid "is"
 msgstr "ہے"
@@ -1308,6 +1305,7 @@ msgstr "پچھلے 7 دن"
 msgid "Last 90 days"
 msgstr "پچھلے 90 دن"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Last event"
 msgstr "آخری واقعہ"
@@ -1434,6 +1432,10 @@ msgstr "ماہانہ حد"
 msgid "Months"
 msgstr "مہینے"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "move"
+msgstr "حرکت"
+
 #: src/features/analytics/Funnels.tsx
 msgid "Move down"
 msgstr "نیچے لے جائیں"
@@ -1442,6 +1444,7 @@ msgstr "نیچے لے جائیں"
 msgid "Move up"
 msgstr "اوپر لے جائیں"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Funnels.tsx
 #: src/features/analytics/Goals.tsx
@@ -1520,7 +1523,6 @@ msgstr "نیا شیئر لنک"
 msgid "No alerts yet."
 msgstr "ابھی کوئی الرٹ نہیں۔"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "No comparison"
 msgstr "کوئی موازنہ نہیں"
@@ -1549,12 +1551,6 @@ msgstr "اس مدت میں کوئی کنورژن نہیں۔"
 msgid "No event yet."
 msgstr "ابھی کوئی واقعہ نہیں۔"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
-msgid "No events in the last 24 hours"
-msgstr "پچھلے 24 گھنٹے میں کوئی واقعہ نہیں"
-
-#: src/features/analytics/AnalyticsColumn.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events yet"
 msgstr "ابھی کوئی واقعہ نہیں"
@@ -1570,10 +1566,6 @@ msgstr "ابھی کوئی فنل نہیں"
 #: src/features/analytics/Goals.tsx
 msgid "No goals yet"
 msgstr "ابھی کوئی ہدف نہیں"
-
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "No properties yet"
-msgstr "ابھی کوئی پراپرٹی نہیں"
 
 #: src/features/analytics/Settings.tsx
 msgid "No props are tracked."
@@ -1615,6 +1607,7 @@ msgstr "ابھی کوئی نہیں"
 msgid "None, every visit counts."
 msgstr "کوئی نہیں، ہر وزٹ گنا جاتا ہے۔"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "None, owners and admins only"
@@ -1726,6 +1719,11 @@ msgstr "صرف رضامندی کے ساتھ"
 #: src/features/analytics/Goals.tsx
 msgid "Only with prop"
 msgstr "صرف پراپ کے ساتھ"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "کھولیں"
 
 #: src/features/analytics/NewProperty.tsx
 msgid "Open a page of your site with the snippet in place. This turns green as soon as the server has stored the first page view. Browsers with Do Not Track or Global Privacy Control send nothing, so use another one to test."
@@ -1853,7 +1851,6 @@ msgstr "جو صفحات کسی پیٹرن سے میل کھاتے ہیں وہ ا�
 msgid "Pages viewed."
 msgstr "دیکھے گئے صفحات۔"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Pages, sources, places and devices, without cookies, without storing IP addresses and without a consent banner where the law allows it."
 msgstr "صفحات، ماخذ، مقامات اور ڈیوائسز، بغیر کوکیز کے، IP پتے محفوظ کیے بغیر اور جہاں قانون اجازت دے وہاں رضامندی کے بینر کے بغیر۔"
@@ -1923,10 +1920,6 @@ msgstr "فی گھنٹہ"
 msgid "per week"
 msgstr "ہفتہ وار"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-msgid "Period"
-msgstr "مدت"
-
 #: src/features/analytics/Settings.tsx
 msgid "Persistent id"
 msgstr "مستقل ID"
@@ -1959,6 +1952,7 @@ msgstr "کم از کم ایک ویو چنیں۔"
 msgid "Pick how the site is built and copy the snippet. The key is public, like a chat key: it only works on the property’s domains."
 msgstr "چنیں کہ سائٹ کیسے بنی ہے اور اسنیپٹ کاپی کریں۔ کلید عوامی ہے، چیٹ کلید کی طرح: یہ صرف پراپرٹی کے ڈومینز پر کام کرتی ہے۔"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/text.ts
 msgid "Platform"
 msgstr "پلیٹ فارم"
@@ -1967,11 +1961,7 @@ msgstr "پلیٹ فارم"
 msgid "Platforms"
 msgstr "پلیٹ فارمز"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-msgid "Privacy"
-msgstr "رازداری"
-
-#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Product"
 msgstr "پروڈکٹ"
 
@@ -2024,7 +2014,6 @@ msgstr "اسکرپٹ ہر صفحے کے head میں رکھیں۔ یہ صفحہ �
 msgid "Put these links on your privacy page. Opting out is the only thing the script stores on the visitor’s device, and only when they ask for it. Visitors with Do Not Track or Global Privacy Control are never counted."
 msgstr "یہ لنکس اپنے پرائیویسی صفحے پر رکھیں۔ آپٹ آؤٹ وہ واحد چیز ہے جو اسکرپٹ وزیٹر کی ڈیوائس پر محفوظ کرتا ہے، اور صرف جب وہ مانگیں۔ Do Not Track یا Global Privacy Control والے وزیٹرز کبھی نہیں گنے جاتے۔"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Range"
@@ -2158,10 +2147,6 @@ msgstr "{name} منسوخ کریں؟"
 msgid "Revoked"
 msgstr "منسوخ شدہ"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-msgid "Right now"
-msgstr "اس وقت"
-
 #: src/features/analytics/Exports.tsx
 msgid "Rows"
 msgstr "قطاریں"
@@ -2262,6 +2247,10 @@ msgstr "مجھے ابھی ایک بھیجیں"
 #: src/features/analytics/Goals.tsx
 msgid "Sends an event"
 msgstr "واقعہ بھیجتا ہے"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Separate several with spaces. *.example.com covers every subdomain."
+msgstr "کئی ہوں تو اسپیس سے الگ کریں۔ ‎*.example.com ہر سب ڈومین کو شامل کرتا ہے۔"
 
 #: src/features/analytics/text.ts
 msgid "Server"
@@ -2392,6 +2381,10 @@ msgstr "ٹیسٹ واقعات"
 msgid "That password is not right."
 msgstr "وہ پاس ورڈ درست نہیں۔"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "The app’s own website. Events from the app are not checked against it."
+msgstr "ایپ کی اپنی ویب سائٹ۔ ایپ سے آنے والے ایونٹ اس سے نہیں جانچے جاتے۔"
+
 #: src/features/analytics/Funnels.tsx
 msgid "The consented counts follow visitors with a persistent id from one visit and day to the next, so a step reached on a later day still counts."
 msgstr "رضامند اعداد مستقل ID والے وزیٹرز کو ایک وزٹ اور دن سے اگلے تک فالو کرتے ہیں، اس لیے بعد کے دن پہنچا ہوا مرحلہ بھی گنا جاتا ہے۔"
@@ -2459,10 +2452,6 @@ msgstr "track() کو دیا گیا نام، یا outbound_click، file_download�
 #: src/features/analytics/Settings.tsx
 msgid "The previous key keeps working until {at}. Update every page and app before then."
 msgstr "پچھلی کلید {at} تک کام کرتی رہتی ہے۔ اس سے پہلے ہر صفحہ اور ایپ اپ ڈیٹ کریں۔"
-
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "The properties of your inboxes show up here once an owner or admin adds them."
-msgstr "آپ کے ان باکسز کی پراپرٹیز یہاں تب دکھائی دیتی ہیں جب مالک یا ایڈمن انہیں شامل کرے۔"
 
 #: src/features/analytics/Exports.tsx
 msgid "The query could not be run."
@@ -2560,7 +2549,6 @@ msgstr "صفحے پر وقت"
 msgid "Time the page was visible and in focus, per view."
 msgstr "وہ وقت جب صفحہ نظر آ رہا اور فوکس میں تھا، فی ویو۔"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Time zone"
@@ -2742,10 +2730,13 @@ msgstr "وزیٹرز"
 msgid "Visitors in the last 30 minutes"
 msgstr "پچھلے 30 منٹ میں وزیٹرز"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Visitors now"
 msgstr "اس وقت کے وزیٹرز"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Visitors today"
+msgstr "آج کے وزیٹر"
 
 #: src/features/analytics/Retention.tsx
 msgid "Visitors who came back"
@@ -2764,7 +2755,6 @@ msgid "Visits"
 msgstr "وزٹس"
 
 #: src/features/analytics/AnalyticsFrame.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Visits and events that count as success"
 msgstr "کامیابی کے طور پر شمار ہونے والے دورے اور ایونٹس"
 
@@ -2804,6 +2794,12 @@ msgstr "اسے لائیو دیکھیں"
 msgid "Web"
 msgstr "ویب"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Website"
+msgstr "ویب سائٹ"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Website or app"
 msgstr "ویب سائٹ یا ایپ"
@@ -2853,7 +2849,6 @@ msgid "Where the property’s day starts and ends."
 msgstr "پراپرٹی کا دن کہاں شروع اور ختم ہوتا ہے۔"
 
 #: src/features/analytics/AnalyticsFrame.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Which pages people visit, and which lead to questions"
 msgstr "لوگ کون سے صفحات دیکھتے ہیں اور کون سے سوالات تک لے جاتے ہیں"
 

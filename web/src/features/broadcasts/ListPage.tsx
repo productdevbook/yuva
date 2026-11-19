@@ -3,14 +3,14 @@ import { MailWarningIcon } from "lucide-react"
 import { useState } from "react"
 import { Link, useNavigate, useParams, useSearchParams } from "react-router"
 
-import { Dot, ErrorLine, InboxMark, InfoSection, KV, Notice, toast } from "@/components/common"
+import { Dot, ErrorLine, InfoSection, KV, Notice, toast } from "@/components/common"
 import { formatShort } from "@/components/common/text"
 import { LIST_KEYS } from "@/components/common/ShortcutSheet"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Skeleton } from "@/components/ui/skeleton"
 import { keyHint } from "@/features/broadcasts/BroadcastParts"
-import { backOf, DetailFrame, TopTrail, useFlat, useViewNames } from "@/features/broadcasts/BroadcastsFrame"
+import { backOf, DetailFrame, useViewNames } from "@/features/broadcasts/BroadcastsFrame"
 import { FormSnippets } from "@/features/broadcasts/FormSnippets"
 import { Growth } from "@/features/broadcasts/Growth"
 import { ListImports } from "@/features/broadcasts/Import"
@@ -83,7 +83,6 @@ function ListInfo({ list, from }: { list: MailingList; from?: string }) {
 export function ListPage() {
   const { t } = useLingui()
   const views = useViewNames()
-  const flat = useFlat()
   const navigate = useNavigate()
   const { listId = "" } = useParams()
   const [params] = useSearchParams()
@@ -121,13 +120,7 @@ export function ListPage() {
         testId="list-loading"
 
         back={backOf("lists", views)}
-        bar={{
-          back: "/broadcasts/lists",
-          label: t`Lists`,
-          content: list.isPending ? <Skeleton className="h-7 w-60" /> : <ErrorLine error={list.error} />,
-        }}
         heading={list.isPending ? <Skeleton className="h-8 w-2/3" /> : <ErrorLine error={list.error} />}
-        eyebrow={<TopTrail place="lists" />}
       >
         {list.isPending && <Skeleton className="h-24 w-full rounded-2xl" />}
       </DetailFrame>
@@ -178,25 +171,6 @@ export function ListPage() {
 
       wide
       back={backOf("lists", views)}
-      bar={{
-        back: "/broadcasts/lists",
-        label: t`Lists`,
-        content: (
-          <>
-            {inbox && <InboxMark name={inbox.name} color={inbox.branding.color} className="size-7 text-small" />}
-            <div className="flex min-w-48 flex-1 basis-64 flex-col leading-snug">
-              <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
-                <h1 className="min-w-0 truncate text-[17px] font-semibold" data-testid="list-name-heading">
-                  {l.name}
-                </h1>
-                {chips}
-              </span>
-              <span className="truncate text-small text-muted-foreground">{senderLine}</span>
-            </div>
-            {exportButton}
-          </>
-        ),
-      }}
       heading={
         <header className="flex flex-col">
           <div className="flex min-w-0 flex-wrap items-center gap-2 text-small text-muted-foreground">
@@ -218,7 +192,6 @@ export function ListPage() {
           <p className="m-0 mt-1.5 text-reading text-muted-foreground">{senderLine}</p>
         </header>
       }
-      eyebrow={<TopTrail place="lists" />}
       actions={exportButton}
       aside={<ListInfo list={l} from={from} />}
     >
@@ -258,7 +231,7 @@ export function ListPage() {
           )}
         </Notice>
       )}
-      <Tiles list={l} flat={flat} />
+      <Tiles list={l} flat />
       <div className="border-b">
         <FrameTabs label={t`List`} items={tabs} current={tab} />
       </div>

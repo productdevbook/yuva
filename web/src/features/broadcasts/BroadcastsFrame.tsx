@@ -1,18 +1,17 @@
-import { useLingui } from "@lingui/react/macro"
-import { useNavigate, type To } from "react-router"
+import { Trans, useLingui } from "@lingui/react/macro"
+import { Link, useNavigate, useSearchParams, type To } from "react-router"
 
-import { InfoColumn, NavGroup, NavList, PageLayout, PageTop, Dot, TopSep, type NavItem } from "@/components/common"
-import { useEnumText } from "@/components/common/text"
-import { PageBar } from "@/components/common/PageBar"
+import { Dot, InfoColumn, PageLayout, PageTop } from "@/components/common"
+import { FilterMenu } from "@/components/common/ListBox"
 import { FINISHED, isActive, useBroadcasts } from "@/features/broadcasts/broadcastQueries"
-import { StateBadge } from "@/features/broadcasts/BroadcastParts"
-import { useLists, useSender } from "@/features/broadcasts/queries"
+import { senderState, StateBadge } from "@/features/broadcasts/BroadcastParts"
+import { useInboxChannels, useLists } from "@/features/broadcasts/queries"
 import { useDesigns } from "@/features/designs/queries"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
-import { framePad } from "@/features/status/PageFrame"
+import { channelLink, useDeliverability } from "@/features/settings/channels/email/deliverability"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useIsPhone } from "@/hooks/use-media-query"
-import type { Broadcast } from "@/lib/api"
+import type { Broadcast, DeliverabilityCheck } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { useInboxes } from "@/lib/workspace"
@@ -50,13 +49,13 @@ export function useFlat() {
 export function useViewNames(): Record<BroadcastsPlace, string> {
   const { t } = useLingui()
   return {
-    all: t`All`,
-    drafts: t`Drafts`,
-    scheduled: t`Scheduled`,
-    sent: t`Sent`,
-    triggered: t`Triggered`,
-    lists: t`Mailing lists`,
-    designs: t`Designs`,
+    all: t({ message: "All broadcasts", context: "broadcasts place" }),
+    drafts: t({ message: "Drafts and approvals", context: "broadcasts place" }),
+    scheduled: t({ message: "Scheduled", context: "broadcasts place" }),
+    sent: t({ message: "Sent", context: "broadcasts place" }),
+    triggered: t({ message: "Triggered", context: "broadcasts place" }),
+    lists: t({ message: "Subscribers", context: "broadcasts place" }),
+    designs: t({ message: "Designs", context: "broadcasts place" }),
   }
 }
 
@@ -97,18 +96,104 @@ export function useBroadcastCounts(): Record<BroadcastsPlace, number | undefined
     scheduled: of("scheduled"),
     sent: of("sent"),
     triggered: sized(triggered),
-    lists: sized(lists),
+    lists:
+      lists.data && !lists.hasNextPage
+        ? lists.data.pages.flatMap((p) => p.items).reduce((n, l) => n + l.counts.subscribed, 0)
+        : undefined,
     designs: canManage ? sized(designs) : undefined,
   }
 }
 
+export function useProductScope() {
+  const [params, setParams] = useSearchParams()
+  const [global] = useInboxFilter()
+  const inboxes = useInboxes().data
+  const picked = params.get("inbox") ?? ""
+  const chosen = inboxes?.some((i) => i.id === picked) ? picked : ""
+  const set = (key: string, value: string) =>
+    setParams(
+      (prev) => {
+        const next = new URLSearchParams(prev)
+        if (value) next.set(key, value)
+        else next.delete(key)
+        return next
+      },
+      { replace: true }
+    )
+  return { chosen, inboxId: chosen || global, global, params, set }
+}
+
+export function ProductFilter({
+  value,
+  onChange,
+  testId,
+}: {
+  value: string
+  onChange: (id: string) => void
+  testId: string
+}) {
+  const { t } = useLingui()
+  const [global] = useInboxFilter()
+  const inboxes = useInboxes().data ?? []
+  if (global || inboxes.length < 2) return null
+  return (
+    <FilterMenu
+      value={value}
+      onChange={onChange}
+      options={inboxes.map((i) => ({ value: i.id, label: i.name }))}
+      anyLabel={t`Every product`}
+      label={t`Filter by product`}
+      testId={testId}
+    />
+  )
+}
+
+export function SenderLine({ inboxId, channelId }: { inboxId?: string; channelId?: string }) {
+  const channels = useInboxChannels(inboxId ?? "").data
+  const channel =
+    channels?.find((c) => c.id === channelId) ?? channels?.find((c) => c.kind === "email" && senderState(c) === "ready")
+  const check = useDeliverability(channel?.email?.smtp ? channel.id : undefined).data
+  if (!inboxId || !channel?.email) return null
+  const address = channel.email.from_address || channel.email.address
+  return (
+    <span className="inline-flex min-w-0 flex-wrap items-center gap-x-1.5" data-testid="broadcasts-sender">
+      <span
+        aria-hidden
+        className={cn("size-[7px] shrink-0 rounded-full", check && senderOk(check) ? "bg-success" : "bg-warning")}
+      />
+      <Trans>
+        Sending from{" "}
+        <span className="font-medium text-foreground" dir="ltr">
+          {address}
+        </span>
+      </Trans>
+      <span aria-hidden>·</span>
+      {check === undefined ? null : check && senderOk(check) ? (
+        <span>
+          <Trans>SPF, DKIM and DMARC pass</Trans>
+        </span>
+      ) : (
+        <Link
+          to={channelLink(inboxId, channel.id, "deliverability")}
+          className="text-warning underline-offset-4 hover:underline"
+          data-testid="broadcasts-sender-check"
+        >
+          {check ? <Trans>SPF, DKIM or DMARC needs a look</Trans> : <Trans>Check SPF, DKIM and DMARC</Trans>}
+        </Link>
+      )}
+    </span>
+  )
+}
+
+function senderOk(c: DeliverabilityCheck) {
+  return c.state === "received" && c.spf.status === "pass" && c.dkim.status === "pass" && c.dmarc.status === "pass"
+}
+
 export function BroadcastsLayout({
-  sub,
   aside,
   testId,
   children,
 }: {
-  sub?: NavItem[]
   aside?: React.ReactNode
   testId?: string
   children: React.ReactNode
@@ -118,43 +203,17 @@ export function BroadcastsLayout({
     <PageLayout
       testId={testId}
       label={t`Broadcasts`}
-      nav={
-        sub &&
-        sub.length > 0 && (
-          <NavList label={t`Broadcasts`}>
-            <NavGroup items={sub} />
-          </NavList>
-        )
-      }
-      aside={<InfoColumn label={t`Details`}>{aside}</InfoColumn>}
+      aside={aside && <InfoColumn label={t`Details`}>{aside}</InfoColumn>}
     >
       {children}
     </PageLayout>
   )
 }
 
-export function TopTrail({ place }: { place: BroadcastsPlace }) {
-  const { t } = useLingui()
-  const names = useViewNames()
-  const [inboxId] = useInboxFilter()
-  const product = useInboxes().data?.find((i) => i.id === inboxId)?.name
-  return (
-    <>
-      <span className="font-medium text-foreground">{t`Broadcasts`}</span>
-      <TopSep />
-      <span className="truncate">{names[place]}</span>
-      <TopSep />
-      <span className="truncate">{product ?? t`All products`}</span>
-    </>
-  )
-}
-
 export function DetailFrame({
   testId,
   back,
-  bar,
   heading,
-  eyebrow,
   actions,
   aside,
   wide,
@@ -162,55 +221,7 @@ export function DetailFrame({
 }: {
   testId: string
   back: { to: To & string; label: string }
-  bar: { back: string; label: string; content: React.ReactNode }
   heading: React.ReactNode
-  eyebrow: React.ReactNode
-  actions?: React.ReactNode
-  aside?: React.ReactNode
-  wide?: boolean
-  children: React.ReactNode
-}) {
-  const flat = useFlat()
-  if (!flat)
-    return (
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col bg-background" data-testid={testId}>
-        <PageBar back={bar.back} label={bar.label}>
-          {bar.content}
-        </PageBar>
-        <div className="@container min-h-0 flex-1 in-data-frame:overflow-y-auto">
-          <div className={cn(framePad, "max-w-[1200px]")}>{children}</div>
-        </div>
-      </div>
-    )
-  return (
-    <FlatDetail
-      testId={testId}
-      back={back}
-      heading={heading}
-      eyebrow={eyebrow}
-      actions={actions}
-      aside={aside}
-      wide={wide}
-    >
-      {children}
-    </FlatDetail>
-  )
-}
-
-function FlatDetail({
-  testId,
-  back,
-  heading,
-  eyebrow,
-  actions,
-  aside,
-  wide,
-  children,
-}: {
-  testId: string
-  back: { to: string; label: string }
-  heading: React.ReactNode
-  eyebrow: React.ReactNode
   actions?: React.ReactNode
   aside?: React.ReactNode
   wide?: boolean
@@ -223,11 +234,9 @@ function FlatDetail({
       <PageTop
         back={{ label: back.label, to: back.to }}
         actions={actions && <div className="flex flex-wrap items-center gap-1.5">{actions}</div>}
-      >
-        {eyebrow}
-      </PageTop>
+      />
       <div className={cn("@container flex flex-col gap-4", wide ? "max-w-[980px]" : "max-w-[760px]")}>
-        <div className="mt-3">{heading}</div>
+        <div className="mt-1">{heading}</div>
         {children}
       </div>
     </BroadcastsLayout>
@@ -260,29 +269,5 @@ export function DetailHeading({ b, sub }: { b: Broadcast; sub?: React.ReactNode 
         </p>
       )}
     </header>
-  )
-}
-
-export function DetailTrail({ b }: { b: Broadcast }) {
-  const { t } = useLingui()
-  const text = useEnumText()
-  const inbox = (useInboxes().data ?? []).find((i) => i.id === b.inbox_id)
-  const from = useSender(b.inbox_id, b.channel_id)
-  return (
-    <>
-      <span className="font-medium text-foreground">{inbox?.name ?? t`Broadcasts`}</span>
-      {from && (
-        <>
-          <TopSep />
-          <span className="truncate normal-case" dir="ltr">
-            {from}
-          </span>
-        </>
-      )}
-      <TopSep />
-      <span className="truncate">
-        {b.kind === "triggered" && b.state === "cancelled" ? t`Stopped` : text.broadcastState[b.state]}
-      </span>
-    </>
   )
 }

@@ -16,12 +16,6 @@ msgstr "(ไม่ได้ตั้งค่า)"
 msgid "{0, plural, one {# row} other {# rows}}"
 msgstr "{0, plural, other {# แถว}}"
 
-#. placeholder {0}: p.visitors_today
-#: src/features/analytics/AnalyticsColumn.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
-msgid "{0, plural, one {visitor today} other {visitors today}}"
-msgstr "{0, plural, other {ผู้เข้าชมวันนี้}}"
-
 #. placeholder {0}: share1.format(conversations / visitors)
 #: src/features/analytics/Overview.tsx
 msgid "{0} of visitors"
@@ -239,10 +233,6 @@ msgstr "การดูหน้าจอของผู้เข้าชมโ
 msgid "Active"
 msgstr "ใช้งานอยู่"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "Add"
-msgstr "เพิ่ม"
-
 #: src/features/analytics/Annotations.tsx
 msgid "Add a note to the chart"
 msgstr "เพิ่มบันทึกในแผนภูมิ"
@@ -255,16 +245,16 @@ msgstr "เพิ่มกฎ"
 msgid "Add a step"
 msgstr "เพิ่มขั้นตอน"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Add a website"
 msgstr "เพิ่มเว็บไซต์"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "Add a website to count its visitors, pages and sources, without cookies."
-msgstr "เพิ่มเว็บไซต์เพื่อนับผู้เข้าชม หน้า และแหล่งที่มา โดยไม่ใช้คุกกี้"
+#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Add a website or app"
+msgstr "เพิ่มเว็บไซต์หรือแอป"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Add and install"
 msgstr "เพิ่มและติดตั้ง"
@@ -302,6 +292,10 @@ msgstr "เอเจนต์ของกล่องข้อความจะ
 msgid "Agents of this inbox can see the numbers."
 msgstr "เอเจนต์ของกล่องข้อความนี้เห็นตัวเลข"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Agents of this product can see the numbers."
+msgstr "เจ้าหน้าที่ของผลิตภัณฑ์นี้ดูตัวเลขได้"
+
 #: src/features/analytics/text.ts
 msgid "AI assistants"
 msgstr "ผู้ช่วย AI"
@@ -323,8 +317,8 @@ msgid "All goals"
 msgstr "เป้าหมายทั้งหมด"
 
 #: src/features/analytics/AnalyticsFrame.tsx
-msgid "All sites"
-msgstr "ทุกไซต์"
+msgid "All sites and apps"
+msgstr "เว็บไซต์และแอปทั้งหมด"
 
 #: src/features/analytics/Support.tsx
 msgid "An owner or admin can link one in the property’s settings."
@@ -334,19 +328,18 @@ msgstr "เจ้าของหรือผู้ดูแลเชื่อม
 msgid "An owner or admin can turn on the persistent id in the consent features."
 msgstr "เจ้าของหรือผู้ดูแลเปิดรหัสถาวรได้ในคุณลักษณะความยินยอม"
 
-#: src/features/analytics/AnalyticsColumn.tsx
 #: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Analytics"
 msgstr "การวิเคราะห์"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "Analytics properties"
-msgstr "พร็อพเพอร์ตีการวิเคราะห์"
-
 #: src/features/analytics/NewProperty.tsx
 msgid "Analytics steps"
 msgstr "ขั้นตอนการวิเคราะห์"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Android app"
+msgstr "แอป Android"
 
 #: src/features/analytics/Sharing.tsx
 msgid "Anyone with the link sees the views you pick, read-only, without signing in."
@@ -493,12 +486,10 @@ msgstr "คอลเลกชัน"
 
 #. placeholder {0}: formatDate(`${c.from}T12:00:00Z`, i18n.locale)
 #. placeholder {1}: formatDate(`${c.to}T12:00:00Z`, i18n.locale)
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with {0} – {1}"
 msgstr "เปรียบเทียบกับ {0} – {1}"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with a year earlier"
 msgstr "เปรียบเทียบกับปีก่อน"
@@ -515,7 +506,6 @@ msgstr "เปรียบเทียบกับวันอื่น…"
 msgid "Compare with the days"
 msgstr "เปรียบเทียบกับวัน"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with the period before"
 msgstr "เปรียบเทียบกับช่วงก่อนหน้า"
@@ -524,7 +514,6 @@ msgstr "เปรียบเทียบกับช่วงก่อนหน
 msgid "Compared days"
 msgstr "วันที่เปรียบเทียบ"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Comparison"
 msgstr "การเปรียบเทียบ"
@@ -610,6 +599,7 @@ msgstr "คัดลอกตอนนี้ จะไม่แสดงอี�
 msgid "Count my visits again"
 msgstr "นับการเข้าชมของฉันอีกครั้ง"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Count visitors, pages, sources, places and devices without cookies and without storing IP addresses."
 msgstr "นับผู้เข้าชม หน้า แหล่งที่มา สถานที่ และอุปกรณ์ โดยไม่ใช้คุกกี้และไม่เก็บที่อยู่ IP"
@@ -690,7 +680,6 @@ msgstr "ทีละวัน"
 msgid "Days"
 msgstr "วัน"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/SharePage.tsx
 msgid "Days are counted in this time zone"
 msgstr "นับวันตามเขตเวลานี้"
@@ -847,7 +836,7 @@ msgstr "ไม่นับการเข้าชมของฉัน"
 msgid "does not contain"
 msgstr "ไม่มีคำว่า"
 
-#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Domains"
@@ -1048,7 +1037,6 @@ msgstr "ไฟล์ถูกสร้างเบื้องหลังแล
 msgid "Filter by this"
 msgstr "กรองด้วยสิ่งนี้"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Filters"
@@ -1086,6 +1074,11 @@ msgstr "สัปดาห์แรก"
 msgid "Five reports an hour at most. Try again later."
 msgstr "ได้สูงสุดห้ารายงานต่อชั่วโมง ลองอีกครั้งภายหลัง"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "For example Fieldnote for iPhone"
+msgstr "เช่น Fieldnote สำหรับ iPhone"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "For example Fieldnote website"
 msgstr "เช่น เว็บไซต์ Fieldnote"
@@ -1240,6 +1233,10 @@ msgstr "ไม่ถูกต้อง"
 msgid "Investors"
 msgstr "นักลงทุน"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "iOS app"
+msgstr "แอป iOS"
+
 #: src/features/analytics/text.ts
 msgid "is"
 msgstr "คือ"
@@ -1308,6 +1305,7 @@ msgstr "7 วันที่ผ่านมา"
 msgid "Last 90 days"
 msgstr "90 วันที่ผ่านมา"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Last event"
 msgstr "เหตุการณ์ล่าสุด"
@@ -1434,6 +1432,10 @@ msgstr "ขีดจำกัดรายเดือน"
 msgid "Months"
 msgstr "เดือน"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "move"
+msgstr "เลื่อน"
+
 #: src/features/analytics/Funnels.tsx
 msgid "Move down"
 msgstr "เลื่อนลง"
@@ -1442,6 +1444,7 @@ msgstr "เลื่อนลง"
 msgid "Move up"
 msgstr "เลื่อนขึ้น"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Funnels.tsx
 #: src/features/analytics/Goals.tsx
@@ -1520,7 +1523,6 @@ msgstr "ลิงก์แชร์ใหม่"
 msgid "No alerts yet."
 msgstr "ยังไม่มีการแจ้งเตือน"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "No comparison"
 msgstr "ไม่เปรียบเทียบ"
@@ -1549,12 +1551,6 @@ msgstr "ไม่มีคอนเวอร์ชันในช่วงนี
 msgid "No event yet."
 msgstr "ยังไม่มีเหตุการณ์"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
-msgid "No events in the last 24 hours"
-msgstr "ไม่มีเหตุการณ์ใน 24 ชั่วโมงที่ผ่านมา"
-
-#: src/features/analytics/AnalyticsColumn.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events yet"
 msgstr "ยังไม่มีเหตุการณ์"
@@ -1570,10 +1566,6 @@ msgstr "ยังไม่มีฟันเนล"
 #: src/features/analytics/Goals.tsx
 msgid "No goals yet"
 msgstr "ยังไม่มีเป้าหมาย"
-
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "No properties yet"
-msgstr "ยังไม่มีพร็อพเพอร์ตี"
 
 #: src/features/analytics/Settings.tsx
 msgid "No props are tracked."
@@ -1615,6 +1607,7 @@ msgstr "ยังไม่มี"
 msgid "None, every visit counts."
 msgstr "ไม่มี ทุกการเข้าชมถูกนับ"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "None, owners and admins only"
@@ -1726,6 +1719,11 @@ msgstr "เฉพาะเมื่อมีความยินยอม"
 #: src/features/analytics/Goals.tsx
 msgid "Only with prop"
 msgstr "เฉพาะที่มี prop"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "เปิด"
 
 #: src/features/analytics/NewProperty.tsx
 msgid "Open a page of your site with the snippet in place. This turns green as soon as the server has stored the first page view. Browsers with Do Not Track or Global Privacy Control send nothing, so use another one to test."
@@ -1853,7 +1851,6 @@ msgstr "หน้าที่ตรงกับรูปแบบถูกนั
 msgid "Pages viewed."
 msgstr "หน้าที่ดู"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Pages, sources, places and devices, without cookies, without storing IP addresses and without a consent banner where the law allows it."
 msgstr "หน้า แหล่งที่มา สถานที่ และอุปกรณ์ โดยไม่ใช้คุกกี้ ไม่เก็บที่อยู่ IP และไม่มีแบนเนอร์ความยินยอมในที่ที่กฎหมายอนุญาต"
@@ -1923,10 +1920,6 @@ msgstr "ต่อชั่วโมง"
 msgid "per week"
 msgstr "ต่อสัปดาห์"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-msgid "Period"
-msgstr "ช่วงเวลา"
-
 #: src/features/analytics/Settings.tsx
 msgid "Persistent id"
 msgstr "รหัสถาวร"
@@ -1959,6 +1952,7 @@ msgstr "เลือกอย่างน้อยหนึ่งมุมมอ
 msgid "Pick how the site is built and copy the snippet. The key is public, like a chat key: it only works on the property’s domains."
 msgstr "เลือกวิธีสร้างไซต์และคัดลอกโค้ด คีย์เป็นสาธารณะ เหมือนคีย์แชต: ใช้ได้เฉพาะบนโดเมนของพร็อพเพอร์ตี"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/text.ts
 msgid "Platform"
 msgstr "แพลตฟอร์ม"
@@ -1967,11 +1961,7 @@ msgstr "แพลตฟอร์ม"
 msgid "Platforms"
 msgstr "แพลตฟอร์ม"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-msgid "Privacy"
-msgstr "ความเป็นส่วนตัว"
-
-#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Product"
 msgstr "ผลิตภัณฑ์"
 
@@ -2024,7 +2014,6 @@ msgstr "ใส่สคริปต์ใน head ของทุกหน้า
 msgid "Put these links on your privacy page. Opting out is the only thing the script stores on the visitor’s device, and only when they ask for it. Visitors with Do Not Track or Global Privacy Control are never counted."
 msgstr "ใส่ลิงก์เหล่านี้ในหน้านโยบายความเป็นส่วนตัวของคุณ การไม่ร่วมเป็นสิ่งเดียวที่สคริปต์เก็บบนอุปกรณ์ของผู้เข้าชม และเฉพาะเมื่อพวกเขาขอ ผู้เข้าชมที่มี Do Not Track หรือ Global Privacy Control ไม่เคยถูกนับ"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Range"
@@ -2158,10 +2147,6 @@ msgstr "เพิกถอน {name} ไหม"
 msgid "Revoked"
 msgstr "เพิกถอนแล้ว"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-msgid "Right now"
-msgstr "ขณะนี้"
-
 #: src/features/analytics/Exports.tsx
 msgid "Rows"
 msgstr "แถว"
@@ -2262,6 +2247,10 @@ msgstr "ส่งให้ฉันหนึ่งรายการตอนน
 #: src/features/analytics/Goals.tsx
 msgid "Sends an event"
 msgstr "ส่งเหตุการณ์"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Separate several with spaces. *.example.com covers every subdomain."
+msgstr "คั่นหลายรายการด้วยช่องว่าง *.example.com ครอบคลุมโดเมนย่อยทั้งหมด"
 
 #: src/features/analytics/text.ts
 msgid "Server"
@@ -2392,6 +2381,10 @@ msgstr "เหตุการณ์ทดสอบ"
 msgid "That password is not right."
 msgstr "รหัสผ่านนั้นไม่ถูกต้อง"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "The app’s own website. Events from the app are not checked against it."
+msgstr "เว็บไซต์ของแอปเอง เหตุการณ์จากแอปจะไม่ถูกตรวจกับเว็บไซต์นี้"
+
 #: src/features/analytics/Funnels.tsx
 msgid "The consented counts follow visitors with a persistent id from one visit and day to the next, so a step reached on a later day still counts."
 msgstr "ยอดที่ยินยอมติดตามผู้เข้าชมที่มีรหัสถาวรจากการเข้าชมและวันหนึ่งไปอีกวัน ขั้นตอนที่ถึงในวันถัดมาจึงยังนับ"
@@ -2459,10 +2452,6 @@ msgstr "ชื่อที่ส่งให้ track() หรือ outbound_cl
 #: src/features/analytics/Settings.tsx
 msgid "The previous key keeps working until {at}. Update every page and app before then."
 msgstr "คีย์ก่อนหน้ายังใช้ได้จนถึง {at} อัปเดตทุกหน้าและแอปก่อนถึงตอนนั้น"
-
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "The properties of your inboxes show up here once an owner or admin adds them."
-msgstr "พร็อพเพอร์ตีของกล่องข้อความของคุณจะแสดงที่นี่เมื่อเจ้าของหรือผู้ดูแลเพิ่ม"
 
 #: src/features/analytics/Exports.tsx
 msgid "The query could not be run."
@@ -2560,7 +2549,6 @@ msgstr "เวลาบนหน้า"
 msgid "Time the page was visible and in focus, per view."
 msgstr "เวลาที่หน้าแสดงและอยู่ในโฟกัส ต่อการดู"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Time zone"
@@ -2742,10 +2730,13 @@ msgstr "ผู้เข้าชม"
 msgid "Visitors in the last 30 minutes"
 msgstr "ผู้เข้าชมใน 30 นาทีที่ผ่านมา"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Visitors now"
 msgstr "ผู้เข้าชมตอนนี้"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Visitors today"
+msgstr "ผู้เข้าชมวันนี้"
 
 #: src/features/analytics/Retention.tsx
 msgid "Visitors who came back"
@@ -2764,7 +2755,6 @@ msgid "Visits"
 msgstr "การเข้าชม"
 
 #: src/features/analytics/AnalyticsFrame.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Visits and events that count as success"
 msgstr "การเข้าชมและเหตุการณ์ที่นับเป็นความสำเร็จ"
 
@@ -2804,6 +2794,12 @@ msgstr "ดูแบบสด"
 msgid "Web"
 msgstr "เว็บ"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Website"
+msgstr "เว็บไซต์"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Website or app"
 msgstr "เว็บไซต์หรือแอป"
@@ -2853,7 +2849,6 @@ msgid "Where the property’s day starts and ends."
 msgstr "ที่ที่วันของพร็อพเพอร์ตีเริ่มและสิ้นสุด"
 
 #: src/features/analytics/AnalyticsFrame.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Which pages people visit, and which lead to questions"
 msgstr "ผู้คนเข้าชมหน้าไหน และหน้าไหนนำไปสู่คำถาม"
 

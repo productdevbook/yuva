@@ -16,12 +16,6 @@ msgstr "(δεν έχει οριστεί)"
 msgid "{0, plural, one {# row} other {# rows}}"
 msgstr "{0, plural, one {# γραμμή} other {# γραμμές}}"
 
-#. placeholder {0}: p.visitors_today
-#: src/features/analytics/AnalyticsColumn.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
-msgid "{0, plural, one {visitor today} other {visitors today}}"
-msgstr "{0, plural, one {επισκέπτης σήμερα} other {επισκέπτες σήμερα}}"
-
 #. placeholder {0}: share1.format(conversations / visitors)
 #: src/features/analytics/Overview.tsx
 msgid "{0} of visitors"
@@ -239,10 +233,6 @@ msgstr "Οι προβολές οθονών ενός επισκέπτη χωρί�
 msgid "Active"
 msgstr "Ενεργά"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "Add"
-msgstr "Προσθήκη"
-
 #: src/features/analytics/Annotations.tsx
 msgid "Add a note to the chart"
 msgstr "Προσθήκη σημείωσης στο γράφημα"
@@ -255,16 +245,16 @@ msgstr "Προσθήκη κανόνα"
 msgid "Add a step"
 msgstr "Προσθήκη βήματος"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Add a website"
 msgstr "Προσθήκη ιστότοπου"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "Add a website to count its visitors, pages and sources, without cookies."
-msgstr "Προσθέστε έναν ιστότοπο για να μετράτε τους επισκέπτες, τις σελίδες και τις πηγές του, χωρίς cookies."
+#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Add a website or app"
+msgstr "Προσθήκη ιστότοπου ή εφαρμογής"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Add and install"
 msgstr "Προσθήκη και εγκατάσταση"
@@ -302,6 +292,10 @@ msgstr "Οι πράκτορες των εισερχομένων μπορούν �
 msgid "Agents of this inbox can see the numbers."
 msgstr "Οι πράκτορες αυτών των εισερχομένων μπορούν να βλέπουν τους αριθμούς."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Agents of this product can see the numbers."
+msgstr "Οι εκπρόσωποι αυτού του προϊόντος βλέπουν τους αριθμούς."
+
 #: src/features/analytics/text.ts
 msgid "AI assistants"
 msgstr "Βοηθοί AI"
@@ -323,8 +317,8 @@ msgid "All goals"
 msgstr "Όλοι οι στόχοι"
 
 #: src/features/analytics/AnalyticsFrame.tsx
-msgid "All sites"
-msgstr "Όλοι οι ιστότοποι"
+msgid "All sites and apps"
+msgstr "Όλοι οι ιστότοποι και οι εφαρμογές"
 
 #: src/features/analytics/Support.tsx
 msgid "An owner or admin can link one in the property’s settings."
@@ -334,19 +328,18 @@ msgstr "Ένας ιδιοκτήτης ή διαχειριστής μπορεί �
 msgid "An owner or admin can turn on the persistent id in the consent features."
 msgstr "Ένας ιδιοκτήτης ή διαχειριστής μπορεί να ενεργοποιήσει το μόνιμο αναγνωριστικό στις λειτουργίες συναίνεσης."
 
-#: src/features/analytics/AnalyticsColumn.tsx
 #: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Analytics"
 msgstr "Αναλυτικά στοιχεία"
 
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "Analytics properties"
-msgstr "Ιδιότητες αναλυτικών στοιχείων"
-
 #: src/features/analytics/NewProperty.tsx
 msgid "Analytics steps"
 msgstr "Βήματα αναλυτικών στοιχείων"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Android app"
+msgstr "Εφαρμογή Android"
 
 #: src/features/analytics/Sharing.tsx
 msgid "Anyone with the link sees the views you pick, read-only, without signing in."
@@ -493,12 +486,10 @@ msgstr "Συλλογή"
 
 #. placeholder {0}: formatDate(`${c.from}T12:00:00Z`, i18n.locale)
 #. placeholder {1}: formatDate(`${c.to}T12:00:00Z`, i18n.locale)
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with {0} – {1}"
 msgstr "Σύγκριση με {0} – {1}"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with a year earlier"
 msgstr "Σύγκριση με ένα έτος πριν"
@@ -515,7 +506,6 @@ msgstr "Σύγκριση με άλλες ημέρες…"
 msgid "Compare with the days"
 msgstr "Σύγκριση με τις ημέρες"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with the period before"
 msgstr "Σύγκριση με την προηγούμενη περίοδο"
@@ -524,7 +514,6 @@ msgstr "Σύγκριση με την προηγούμενη περίοδο"
 msgid "Compared days"
 msgstr "Συγκρινόμενες ημέρες"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Comparison"
 msgstr "Σύγκριση"
@@ -610,6 +599,7 @@ msgstr "Αντιγράψτε το τώρα· δεν εμφανίζεται ξα�
 msgid "Count my visits again"
 msgstr "Μέτρηση ξανά των επισκέψεών μου"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Count visitors, pages, sources, places and devices without cookies and without storing IP addresses."
 msgstr "Μετρήστε επισκέπτες, σελίδες, πηγές, τοποθεσίες και συσκευές χωρίς cookies και χωρίς αποθήκευση διευθύνσεων IP."
@@ -690,7 +680,6 @@ msgstr "Ημέρα προς ημέρα"
 msgid "Days"
 msgstr "Ημέρες"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/SharePage.tsx
 msgid "Days are counted in this time zone"
 msgstr "Οι ημέρες μετριούνται σε αυτή τη ζώνη ώρας"
@@ -847,7 +836,7 @@ msgstr "Να μη μετρώνται οι επισκέψεις μου"
 msgid "does not contain"
 msgstr "δεν περιέχει"
 
-#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Domains"
@@ -1048,7 +1037,6 @@ msgstr "Τα αρχεία φτιάχνονται στο παρασκήνιο κ�
 msgid "Filter by this"
 msgstr "Φιλτράρισμα με αυτό"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Filters"
@@ -1086,6 +1074,11 @@ msgstr "Πρώτη εβδομάδα"
 msgid "Five reports an hour at most. Try again later."
 msgstr "Το πολύ πέντε αναφορές την ώρα. Δοκιμάστε ξανά αργότερα."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "For example Fieldnote for iPhone"
+msgstr "Για παράδειγμα Fieldnote για iPhone"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "For example Fieldnote website"
 msgstr "Για παράδειγμα ιστότοπος Fieldnote"
@@ -1240,6 +1233,10 @@ msgstr "Μη έγκυρο"
 msgid "Investors"
 msgstr "Επενδυτές"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "iOS app"
+msgstr "Εφαρμογή iOS"
+
 #: src/features/analytics/text.ts
 msgid "is"
 msgstr "είναι"
@@ -1308,6 +1305,7 @@ msgstr "Τελευταίες 7 ημέρες"
 msgid "Last 90 days"
 msgstr "Τελευταίες 90 ημέρες"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Last event"
 msgstr "Τελευταίο συμβάν"
@@ -1434,6 +1432,10 @@ msgstr "Μηνιαίο όριο"
 msgid "Months"
 msgstr "Μήνες"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "move"
+msgstr "μετακίνηση"
+
 #: src/features/analytics/Funnels.tsx
 msgid "Move down"
 msgstr "Μετακίνηση κάτω"
@@ -1442,6 +1444,7 @@ msgstr "Μετακίνηση κάτω"
 msgid "Move up"
 msgstr "Μετακίνηση πάνω"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Funnels.tsx
 #: src/features/analytics/Goals.tsx
@@ -1520,7 +1523,6 @@ msgstr "Νέος σύνδεσμος κοινής χρήσης"
 msgid "No alerts yet."
 msgstr "Καμία ειδοποίηση ακόμη."
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "No comparison"
 msgstr "Χωρίς σύγκριση"
@@ -1549,12 +1551,6 @@ msgstr "Καμία μετατροπή σε αυτό το διάστημα."
 msgid "No event yet."
 msgstr "Κανένα συμβάν ακόμη."
 
-#: src/features/analytics/AnalyticsColumn.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
-msgid "No events in the last 24 hours"
-msgstr "Κανένα συμβάν τις τελευταίες 24 ώρες"
-
-#: src/features/analytics/AnalyticsColumn.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events yet"
 msgstr "Κανένα συμβάν ακόμη"
@@ -1570,10 +1566,6 @@ msgstr "Καμία χοάνη ακόμη"
 #: src/features/analytics/Goals.tsx
 msgid "No goals yet"
 msgstr "Κανένας στόχος ακόμη"
-
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "No properties yet"
-msgstr "Καμία ιδιότητα ακόμη"
 
 #: src/features/analytics/Settings.tsx
 msgid "No props are tracked."
@@ -1615,6 +1607,7 @@ msgstr "Κανένα ακόμη"
 msgid "None, every visit counts."
 msgstr "Κανένα, μετράει κάθε επίσκεψη."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "None, owners and admins only"
@@ -1726,6 +1719,11 @@ msgstr "Μόνο με συναίνεση"
 #: src/features/analytics/Goals.tsx
 msgid "Only with prop"
 msgstr "Μόνο με παράμετρο"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "άνοιγμα"
 
 #: src/features/analytics/NewProperty.tsx
 msgid "Open a page of your site with the snippet in place. This turns green as soon as the server has stored the first page view. Browsers with Do Not Track or Global Privacy Control send nothing, so use another one to test."
@@ -1853,7 +1851,6 @@ msgstr "Οι σελίδες που ταιριάζουν με ένα μοτίβο
 msgid "Pages viewed."
 msgstr "Σελίδες που προβλήθηκαν."
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Pages, sources, places and devices, without cookies, without storing IP addresses and without a consent banner where the law allows it."
 msgstr "Σελίδες, πηγές, τοποθεσίες και συσκευές, χωρίς cookies, χωρίς αποθήκευση διευθύνσεων IP και χωρίς banner συναίνεσης όπου το επιτρέπει ο νόμος."
@@ -1923,10 +1920,6 @@ msgstr "ανά ώρα"
 msgid "per week"
 msgstr "ανά εβδομάδα"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-msgid "Period"
-msgstr "Περίοδος"
-
 #: src/features/analytics/Settings.tsx
 msgid "Persistent id"
 msgstr "Μόνιμο αναγνωριστικό"
@@ -1959,6 +1952,7 @@ msgstr "Επιλέξτε τουλάχιστον μία προβολή."
 msgid "Pick how the site is built and copy the snippet. The key is public, like a chat key: it only works on the property’s domains."
 msgstr "Επιλέξτε πώς είναι χτισμένος ο ιστότοπος και αντιγράψτε το απόσπασμα. Το κλειδί είναι δημόσιο, όπως ένα κλειδί συνομιλίας: λειτουργεί μόνο στους τομείς της ιδιότητας."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/text.ts
 msgid "Platform"
 msgstr "Πλατφόρμα"
@@ -1967,11 +1961,7 @@ msgstr "Πλατφόρμα"
 msgid "Platforms"
 msgstr "Πλατφόρμες"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-msgid "Privacy"
-msgstr "Απόρρητο"
-
-#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Product"
 msgstr "Προϊόν"
 
@@ -2024,7 +2014,6 @@ msgstr "Βάλτε το script στο head κάθε σελίδας. Μετρά �
 msgid "Put these links on your privacy page. Opting out is the only thing the script stores on the visitor’s device, and only when they ask for it. Visitors with Do Not Track or Global Privacy Control are never counted."
 msgstr "Βάλτε αυτούς τους συνδέσμους στη σελίδα απορρήτου σας. Η εξαίρεση είναι το μόνο που αποθηκεύει το script στη συσκευή του επισκέπτη, και μόνο όταν το ζητήσει. Οι επισκέπτες με Do Not Track ή Global Privacy Control δεν μετρώνται ποτέ."
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Range"
@@ -2158,10 +2147,6 @@ msgstr "Ανάκληση του {name};"
 msgid "Revoked"
 msgstr "Ανακλήθηκε"
 
-#: src/features/analytics/AnalyticsFrame.tsx
-msgid "Right now"
-msgstr "Αυτή τη στιγμή"
-
 #: src/features/analytics/Exports.tsx
 msgid "Rows"
 msgstr "Γραμμές"
@@ -2262,6 +2247,10 @@ msgstr "Στείλτε μου ένα τώρα"
 #: src/features/analytics/Goals.tsx
 msgid "Sends an event"
 msgstr "Στέλνει ένα συμβάν"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Separate several with spaces. *.example.com covers every subdomain."
+msgstr "Χωρίστε πολλά με κενά. Το *.example.com καλύπτει κάθε υποτομέα."
 
 #: src/features/analytics/text.ts
 msgid "Server"
@@ -2392,6 +2381,10 @@ msgstr "Δοκιμαστικά συμβάντα"
 msgid "That password is not right."
 msgstr "Αυτός ο κωδικός δεν είναι σωστός."
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "The app’s own website. Events from the app are not checked against it."
+msgstr "Ο ιστότοπος της εφαρμογής. Τα συμβάντα από την εφαρμογή δεν ελέγχονται με αυτόν."
+
 #: src/features/analytics/Funnels.tsx
 msgid "The consented counts follow visitors with a persistent id from one visit and day to the next, so a step reached on a later day still counts."
 msgstr "Οι μετρήσεις όσων συναίνεσαν παρακολουθούν επισκέπτες με μόνιμο αναγνωριστικό από μια επίσκεψη και ημέρα στην επόμενη, οπότε ένα βήμα που επιτεύχθηκε σε μεταγενέστερη ημέρα μετράται κι αυτό."
@@ -2459,10 +2452,6 @@ msgstr "Το όνομα που δόθηκε στο track(), ή outbound_click, f
 #: src/features/analytics/Settings.tsx
 msgid "The previous key keeps working until {at}. Update every page and app before then."
 msgstr "Το προηγούμενο κλειδί συνεχίζει να λειτουργεί μέχρι {at}. Ενημερώστε κάθε σελίδα και εφαρμογή πριν από τότε."
-
-#: src/features/analytics/AnalyticsColumn.tsx
-msgid "The properties of your inboxes show up here once an owner or admin adds them."
-msgstr "Οι ιδιότητες των εισερχομένων σας εμφανίζονται εδώ μόλις τις προσθέσει ιδιοκτήτης ή διαχειριστής."
 
 #: src/features/analytics/Exports.tsx
 msgid "The query could not be run."
@@ -2560,7 +2549,6 @@ msgstr "Χρόνος στη σελίδα"
 msgid "Time the page was visible and in focus, per view."
 msgstr "Ο χρόνος που η σελίδα ήταν ορατή και στο προσκήνιο, ανά προβολή."
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Time zone"
@@ -2742,10 +2730,13 @@ msgstr "Επισκέπτες"
 msgid "Visitors in the last 30 minutes"
 msgstr "Επισκέπτες τα τελευταία 30 λεπτά"
 
-#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Visitors now"
 msgstr "Επισκέπτες τώρα"
+
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Visitors today"
+msgstr "Επισκέπτες σήμερα"
 
 #: src/features/analytics/Retention.tsx
 msgid "Visitors who came back"
@@ -2764,7 +2755,6 @@ msgid "Visits"
 msgstr "Επισκέψεις"
 
 #: src/features/analytics/AnalyticsFrame.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Visits and events that count as success"
 msgstr "Επισκέψεις και συμβάντα που μετρούν ως επιτυχία"
 
@@ -2804,6 +2794,12 @@ msgstr "Δείτε το ζωντανά"
 msgid "Web"
 msgstr "Web"
 
+#: src/features/analytics/AnalyticsRoutes.tsx
+msgid "Website"
+msgstr "Ιστότοπος"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Website or app"
 msgstr "Ιστότοπος ή εφαρμογή"
@@ -2853,7 +2849,6 @@ msgid "Where the property’s day starts and ends."
 msgstr "Πού αρχίζει και τελειώνει η ημέρα της ιδιότητας."
 
 #: src/features/analytics/AnalyticsFrame.tsx
-#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Which pages people visit, and which lead to questions"
 msgstr "Ποιες σελίδες επισκέπτονται οι άνθρωποι και ποιες οδηγούν σε ερωτήσεις"
 
