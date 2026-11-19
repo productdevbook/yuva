@@ -1,13 +1,11 @@
-import { Trans, useLingui } from "@lingui/react/macro"
+import { useLingui } from "@lingui/react/macro"
 
 import { Dot, InfoSection, KV, sourceOf, TopSep, useSourceText } from "@/components/common"
-import { formatDateTime, formatDuration, useEnumText } from "@/components/common/text"
-import { ContactAside } from "@/features/contact/ContactCard"
+import { formatDuration, useEnumText } from "@/components/common/text"
 import { useConversation } from "@/features/conversation/queries"
 import { isWaiting, useChipLabels, type Chip } from "@/features/inbox/ChatList"
-import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { useCounts, useLoadedCount, useStats } from "@/features/inbox/queries"
-import { useChannelMap, useInboxes, useMemberMap } from "@/lib/workspace"
+import { useChannelMap, useInboxes } from "@/lib/workspace"
 
 export function useChipCounts(inboxId: string) {
   const counts = useCounts(["conversation"]).data
@@ -96,71 +94,6 @@ export function ConversationEyebrow({ id }: { id: string }) {
         </>
       )}
       <span className="truncate">{text.statusOf(c.status, c.kind)}</span>
-    </>
-  )
-}
-
-export function ConversationInfo({
-  id,
-  panel,
-  onPanel,
-}: {
-  id: string
-  panel: boolean
-  onPanel: (open: boolean) => void
-}) {
-  const { t, i18n } = useLingui()
-  const text = useEnumText()
-  const sourceText = useSourceText()
-  const members = useMemberMap()
-  const [inboxId] = useInboxFilter()
-  const c = useConversation(id).data
-  const inbox = useInboxes().data?.find((i) => i.id === c?.inbox_id)
-  const channel = useChannelMap().get(c?.channel_id ?? "")
-  if (!c) return null
-  const assignee = c.assignee_id ? members.get(c.assignee_id) : undefined
-  const source = sourceOf(c, channel)
-  return (
-    <>
-      {panel && (
-        <div
-          className="mb-3 border-b border-line-soft [&>div]:overflow-visible [&>div>div]:px-0 [&>div>header]:ps-0 [&>div>header]:pt-0 [&>div>section]:px-0 [&>div>section:last-of-type]:border-b-0"
-          data-testid="contact-panel"
-        >
-          <ContactAside
-            key={c.contact_id}
-            contactId={c.contact_id}
-            conversationId={c.id}
-            onClose={() => onPanel(false)}
-          />
-        </div>
-      )}
-      <InfoSection
-        title={t`Conversation`}
-        action={
-          !panel && (
-            <button
-              type="button"
-              onClick={() => onPanel(true)}
-              className="rounded-sm text-caption font-normal text-fg2 underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"
-              data-testid="show-contact"
-            >
-              <Trans>Contact</Trans>
-            </button>
-          )
-        }
-        testId="conversation-info"
-      >
-        <KV label={t`Status`} value={text.statusOf(c.status, c.kind)} />
-        <KV
-          label={t`Assignee`}
-          value={assignee ? assignee.name || assignee.email : t`Unassigned`}
-          tone={assignee ? undefined : "warn"}
-        />
-        {inbox && !inboxId && <KV label={t`Product`} value={inbox.name} />}
-        {source && <KV label={t`Channel`} value={sourceText[source]} />}
-        <KV label={t`Started`} value={formatDateTime(c.created_at, i18n.locale)} />
-      </InfoSection>
     </>
   )
 }

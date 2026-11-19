@@ -357,12 +357,12 @@ msgstr "{attention, plural, one {# kanal ilgi bekliyor} other {# kanal ilgi bekl
 msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistants} member {No drafts by members} other {No drafts by this author}}"
 msgstr "{author, select, bot {Botlardan taslak yok} assistant {Asistanlardan taslak yok} member {Üyelerden taslak yok} other {Bu yazardan taslak yok}}"
 
-#: src/features/mail/MailThread.tsx
+#: src/features/conversation/messages/MailRow.tsx
 msgid "{author} on behalf of {ownerName}"
 msgstr "{author}, {ownerName} adına"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
 msgstr "{author}, gönderen: {by}"
 
@@ -579,6 +579,7 @@ msgstr "{from} alan adının SPF kaydı yok. SMTP sağlayıcınızı içeren bir
 msgid "{good} good"
 msgstr "{good} iyi"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/migrations/ReviewStep.tsx
 msgid "{hidden, plural, one {# earlier message} other {# earlier messages}}"
 msgstr "{hidden, plural, one {# önceki mesaj} other {# önceki mesaj}}"
@@ -791,6 +792,10 @@ msgstr "{n} konuşma okunmadı olarak işaretlendi"
 msgid "{n} moved to the Inbox"
 msgstr "{n} e-posta Gelen kutusuna taşındı"
 
+#: src/components/common/ListPager.tsx
+msgid "{n} of {of} in {place}"
+msgstr "{place} içinde {n}/{of}"
+
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "{n} snoozed, back {when}"
@@ -864,6 +869,18 @@ msgstr "{name} da şu an yanıt yazıyor."
 #: src/features/conversation/messages/Thread.tsx
 msgid "{name} is typing…"
 msgstr "{name} yazıyor…"
+
+#: src/features/conversation/LiveLine.tsx
+msgid "{name} left the chat · {time} · no e-mail address known, replies wait until they come back"
+msgstr "{name} sohbetten ayrıldı · {time} · bilinen bir e-posta adresi yok, yanıtlar geri dönmesini bekler"
+
+#: src/features/conversation/LiveLine.tsx
+msgid "{name} left the chat · {time} · replies now go by e-mail to {to}"
+msgstr "{name} sohbetten ayrıldı · {time} · yanıtlar artık e-postayla {to} adresine gider"
+
+#: src/features/conversation/LiveLine.tsx
+msgid "{name} left the chat · {time} · replies wait until they come back"
+msgstr "{name} sohbetten ayrıldı · {time} · yanıtlar geri dönmesini bekler"
 
 #: src/features/setup/SetupHub.tsx
 msgid "{name} news"
@@ -1122,10 +1139,6 @@ msgstr "{source} içe aktarması ilgi bekliyor"
 #: src/features/home/HomeSide.tsx
 msgid "{source} import should finish"
 msgstr "{source} içe aktarması bitmek üzere"
-
-#: src/features/mail/MailThread.tsx
-msgid "{stackCount, plural, one {Show # earlier message} other {Show # earlier messages}}"
-msgstr "{stackCount, plural, one {Önceki # iletiyi göster} other {Önceki # iletiyi göster}}"
 
 #: src/features/status/StatusPages.tsx
 msgid "{state} since {since}"
@@ -2185,6 +2198,10 @@ msgstr "Bir tane daha ekle"
 #: src/features/setup/AddChannelStep.tsx
 msgid "Add at least one origin."
 msgstr "En az bir kaynak ekleyin."
+
+#: src/features/mail/Compose.tsx
+msgid "Add Cc or Bcc"
+msgstr "Cc veya Bcc ekle"
 
 #: src/features/settings/ProductsPage.tsx
 msgid "Add channel"
@@ -3417,7 +3434,6 @@ msgstr "Bir üyeye ata"
 msgid "Assign to a team"
 msgstr "Bir ekibe ata"
 
-#: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Assign to me"
@@ -3450,7 +3466,7 @@ msgstr "Atanan: {assignee} (yalnızca adıyla)"
 msgid "Assigned to you"
 msgstr "Size atandı"
 
-#: src/features/inbox/InboxSide.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroForm.tsx
 msgid "Assignee"
@@ -3534,6 +3550,8 @@ msgstr "Bu hızla gönderim yaklaşık {paceDays} gün sürerdi. Bir bülten en 
 msgid "Attach files"
 msgstr "Dosya ekle"
 
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/channels/Attachments.tsx
 msgid "Attachments"
@@ -3644,6 +3662,7 @@ msgstr "Uzakta"
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/MergeContactDialog.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/migrations/Wizard.tsx
 msgid "Back"
 msgstr "Geri"
@@ -3714,9 +3733,9 @@ msgid "Bad only"
 msgstr "Yalnızca kötü"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "Bcc"
 
@@ -3741,7 +3760,6 @@ msgid "Beats only when the job succeeded."
 msgstr "Yalnızca iş başarılı olduğunda sinyal gönderir."
 
 #: src/features/contact/ContactCard.tsx
-#: src/features/mail/MailSide.tsx
 msgid "Before"
 msgstr "Öncesi"
 
@@ -3789,6 +3807,7 @@ msgstr "Kişiyi engelle"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Blocked"
 msgstr "Engelli"
@@ -4002,6 +4021,7 @@ msgstr "Gruba göre"
 msgid "By language"
 msgstr "Dile göre"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "by rule {rule}"
 msgstr "{rule} kuralıyla"
@@ -4137,10 +4157,19 @@ msgstr "Hazır yanıtlar"
 msgid "Canned replies and macros, in the reply box"
 msgstr "Hazır yanıtlar ve makrolar, yanıt kutusunda"
 
-#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Canned reply"
 msgstr "Hazır yanıt"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Canned reply, macro or help article"
+msgstr "Hazır yanıt, makro veya yardım makalesi"
+
+#. placeholder {0}: SHORTCUTS.insert
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Canned reply, macro or help article ({0})"
+msgstr "Hazır yanıt, makro veya yardım makalesi ({0})"
 
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Catch-all without a From address"
@@ -4156,9 +4185,9 @@ msgid "Cause found"
 msgstr "Neden bulundu"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "Cc"
 
@@ -4292,8 +4321,8 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "Gönderim alan adını değiştirmek, yeni alan adı için yeniden açana kadar DKIM imzalamayı kapatır."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/inbox/ChatList.tsx
-#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelForm.tsx
@@ -4630,7 +4659,6 @@ msgstr "Saatler {date} tarihinde değişiyor; gönderim saatleri yerel saatle {s
 #: src/features/contact/ContactSheet.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/Compose.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -4723,6 +4751,10 @@ msgstr "Kapatılan konuşmalar"
 msgid "closed today"
 msgstr "bugün biten"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Closed. A reply opens it again."
+msgstr "Kapalı. Yanıt verirseniz yeniden açılır."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Closes"
 msgstr "Kapanış"
@@ -4749,7 +4781,7 @@ msgstr "Slack'ten gelen kod"
 msgid "Code sent"
 msgstr "Kod gönderildi"
 
-#: src/features/mail/MailThread.tsx
+#: src/features/conversation/messages/MailRow.tsx
 msgid "Collapse"
 msgstr "Daralt"
 
@@ -5096,7 +5128,6 @@ msgstr "İzin kaydı"
 
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
-#: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Contact"
@@ -5198,7 +5229,6 @@ msgstr "Yeni e-postalarla devam edin"
 msgid "Continue with your organisation's sign-in"
 msgstr "Kuruluşunuzun girişiyle devam edin"
 
-#: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
 msgid "Conversation"
 msgstr "Konuşma"
@@ -6141,8 +6171,8 @@ msgid "Deleted inbox"
 msgstr "Silinmiş gelen kutusu"
 
 #: src/components/common/DiscussionAuthor.tsx
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/inbox/SidePanels.tsx
-#: src/features/mail/MailThread.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -6262,17 +6292,17 @@ msgid "Desktop notifications are blocked for this site in the browser's settings
 msgstr "Masaüstü bildirimleri bu site için tarayıcı ayarlarında engelli, bu yüzden yalnızca ses çalar."
 
 #: src/components/common/SectionPage.tsx
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/ChatView.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
-#: src/features/mail/MailPage.tsx
-#: src/features/mail/MailSide.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
@@ -6294,6 +6324,7 @@ msgstr "Geliştiriciler"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/Feedback.tsx
 msgid "Device"
@@ -6591,6 +6622,7 @@ msgstr "İYS için indir"
 msgid "Download JSON"
 msgstr "JSON indir"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Download the original e-mail (.eml)"
@@ -6863,6 +6895,14 @@ msgstr "Her yanıt gelen kutusunda bir konuşmadır. İlk 50 tanesi burada liste
 msgid "Each with all its messages and notes"
 msgstr "Her biri tüm mesajları ve notlarıyla"
 
+#: src/features/contact/ConversationPanel.tsx
+msgid "Earlier conversations"
+msgstr "Önceki konuşmalar"
+
+#: src/features/mail/MailSide.tsx
+msgid "Earlier with {first}"
+msgstr "{first} ile daha önce"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/conversation/messages/OwnDraftCard.tsx
@@ -7017,9 +7057,15 @@ msgstr "API hataları arttı"
 msgid "Embed snippet"
 msgstr "Yerleştirme kodu"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Emoji"
 msgstr "Emoji"
+
+#. placeholder {0}: SHORTCUTS.emoji
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Emoji ({0})"
+msgstr "Emoji ({0})"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Empty in the first rows"
@@ -7361,6 +7407,10 @@ msgstr "Her yerde"
 msgid "Example Ltd."
 msgstr "Örnek Ltd. Şti."
 
+#: src/features/conversation/messages/MailRow.tsx
+msgid "Expand every message ({shortcut})"
+msgstr "Tüm iletileri aç ({shortcut})"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Expand or collapse every message"
 msgstr "Tüm iletileri genişlet ya da daralt"
@@ -7559,6 +7609,7 @@ msgstr "En az açık konuşması olan"
 
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Fields"
 msgstr "Alanlar"
@@ -7647,6 +7698,7 @@ msgstr "Türe, siteye, yayına ve SLA'ya göre süz"
 msgid "Filter messages like the latest mail"
 msgstr "Son postaya benzeyen iletileri filtrele"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Filter messages like this"
 msgstr "Buna benzeyen iletileri filtrele"
@@ -7905,9 +7957,18 @@ msgstr "Biçim"
 msgid "Forms run on a website chat channel of this inbox, which lists the sites they may be used on. This inbox has none yet."
 msgstr "Formlar bu gelen kutusunun bir web sitesi sohbeti kanalı üzerinden çalışır; kanal, formun kullanılabileceği siteleri belirler. Bu gelen kutusunda henüz böyle bir kanal yok."
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Forward"
 msgstr "İlet"
+
+#. placeholder {0}: MAIL_KEYS.forward
+#. placeholder {0}: keys.forward
+#: src/features/conversation/messages/MailRow.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Forward ({0})"
+msgstr "İlet ({0})"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Forward all incoming mail to the address below and keep a copy in the mailbox."
@@ -7918,6 +7979,7 @@ msgid "Forward as a note mentioning"
 msgstr "Not olarak ilet ve etiketle:"
 
 #: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Forward by e-mail…"
@@ -8009,7 +8071,6 @@ msgstr "Cuma"
 #: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -8654,6 +8715,10 @@ msgstr "{inboxName} tarafından {listName} hakkında e-posta almak istiyorum. İ
 msgid "I'll reply"
 msgstr "Ben yanıtlarım"
 
+#: src/features/conversation/Collision.tsx
+msgid "I'll reply ({replyKey})"
+msgstr "Ben yanıtlarım ({replyKey})"
+
 #: src/features/inbox/ChatList.tsx
 msgid "I'm back"
 msgstr "Geri döndüm"
@@ -9099,6 +9164,10 @@ msgstr "Sunucuyu VS Code'a kurun; VS Code sunucunun sayfasını açar, orada Ins
 msgid "Installation"
 msgstr "Kurulum kimliği"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Internal note"
+msgstr "İç not"
+
 #: src/features/status/text.tsx
 msgid "Investigating"
 msgstr "İnceleniyor"
@@ -9272,6 +9341,10 @@ msgstr "Sana atanmış olarak açılır; ilk mesajı orada yaz."
 #: src/features/setup/NewsletterStep.tsx
 msgid "It sends through {address}."
 msgstr "{address} üzerinden gönderir."
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "It shows in their chat when they come back"
+msgstr "Geri döndüğünde sohbetinde görünür"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 #: src/features/setup/email/EmailTestStep.tsx
@@ -9494,6 +9567,7 @@ msgstr "Tür"
 msgid "Known only from the receiving server’s results of the test mail."
 msgstr "Yalnızca alan sunucunun deneme e-postası için verdiği sonuçlardan anlaşılır."
 
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/text.ts
 #: src/features/reports/TrendsReport.tsx
@@ -9510,7 +9584,10 @@ msgstr "Yalnızca etiket: e-postaları Tüm postalar'dan gelir, konuşmaları bu
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/mail/MailSide.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
@@ -9636,6 +9713,10 @@ msgstr "Geçen ay"
 msgid "Last name"
 msgstr "Soyad"
 
+#: src/features/conversation/LiveLine.tsx
+msgid "Last on {path}"
+msgstr "Son sayfa: {path}"
+
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Last push failed: {failed}"
 msgstr "Son bildirim gönderilemedi: {failed}"
@@ -9662,6 +9743,7 @@ msgid "Last seen"
 msgstr "Son görülme"
 
 #: src/features/contact/Presence.tsx
+#: src/features/conversation/LiveLine.tsx
 msgid "Last seen {seen}"
 msgstr "Son görülme: {seen}"
 
@@ -9743,6 +9825,10 @@ msgstr "Çıkar"
 #: src/features/conversation/Collision.tsx
 msgid "Leave it to {name}"
 msgstr "Bırak, {name} yanıtlasın"
+
+#: src/features/conversation/Collision.tsx
+msgid "Leave it to {name} ({leaveKey})"
+msgstr "Bırak, {name} yanıtlasın ({leaveKey})"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Leave it to the teammate who is typing"
@@ -10165,11 +10251,11 @@ msgstr "Küçük harfler, rakamlar, tire, alt çizgi ve nokta. Bülten gönderil
 
 #: src/app/Palette.tsx
 #: src/features/conversation/composer/CannedMenu.tsx
-#: src/features/conversation/composer/ReplyBox.tsx
 msgid "Macro"
 msgstr "Makro"
 
 #: src/app/Palette.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Macros"
 msgstr "Makrolar"
@@ -10196,6 +10282,11 @@ msgstr "Posta"
 #: src/features/mail/MailThread.tsx
 msgid "Mail actions"
 msgstr "Posta işlemleri"
+
+#. placeholder {0}: MAIL_KEYS.more
+#: src/features/mail/MailThread.tsx
+msgid "Mail actions ({0})"
+msgstr "Posta işlemleri ({0})"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -10545,6 +10636,7 @@ msgstr "Medya"
 
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 msgid "Media, links and docs"
 msgstr "Medya, bağlantılar ve belgeler"
 
@@ -10658,6 +10750,7 @@ msgstr "Başka kişiyle birleştir"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ConversationPanel.tsx
 msgid "Merge…"
 msgstr "Birleştir…"
 
@@ -10690,8 +10783,10 @@ msgstr "Mesaj metni"
 msgid "Message type"
 msgstr "Mesaj türü"
 
+#: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/MailSide.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Messages"
@@ -10859,6 +10954,7 @@ msgstr "Aylar"
 msgid "More"
 msgstr "Daha fazla"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/ConversationMenu.tsx
 msgid "More actions"
 msgstr "Diğer işlemler"
@@ -10884,6 +10980,14 @@ msgstr "Daha fazla seçenek"
 #: src/features/contact/MergePreview.tsx
 msgid "More than {count} conversations"
 msgstr "{count} konuşmadan fazla"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "More ways to send"
+msgstr "Diğer gönderme seçenekleri"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "More ways to send ({laterKey})"
+msgstr "Diğer gönderme seçenekleri ({laterKey})"
 
 #: src/features/docs/Toolbar.tsx
 msgid "Most “helpful” ratings first"
@@ -11100,7 +11204,6 @@ msgstr "Çöp kutusuna taşı ({0})"
 
 #: src/features/feedback/FeedbackHome.tsx
 #: src/features/mail/MailList.tsx
-#: src/features/mail/MailThread.tsx
 msgid "Move to the Trash (#)"
 msgstr "Çöp kutusuna taşı (#)"
 
@@ -11374,6 +11477,7 @@ msgstr "Oluşturulan yeni kişiler"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/inbox/ChatsPage.tsx
 msgid "New conversation"
 msgstr "Yeni konuşma"
@@ -11600,6 +11704,11 @@ msgstr "Yeni webhook uç noktası"
 msgid "New workspace"
 msgstr "Yeni çalışma alanı"
 
+#. placeholder {0}: SHORTCUTS.previous
+#: src/features/mail/MailList.tsx
+msgid "Newer mail ({0})"
+msgstr "Daha yeni posta ({0})"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Newer mail and the switch"
 msgstr "Yeni e-postalar ve geçiş"
@@ -11655,6 +11764,11 @@ msgstr "sonraki deneme {when}"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Next check {next}."
 msgstr "Sonraki kontrol: {next}."
+
+#. placeholder {0}: SHORTCUTS.next
+#: src/features/inbox/ChatList.tsx
+msgid "Next conversation ({0})"
+msgstr "Sonraki konuşma ({0})"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Next language version"
@@ -12026,6 +12140,7 @@ msgstr "Etiket yok"
 msgid "No labels yet"
 msgstr "Henüz etiket yok"
 
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
@@ -12406,9 +12521,11 @@ msgid "Nobody would get this mail. Pick lists with subscribers, or loosen the co
 msgstr "Bu e-postayı kimse almayacak. Abonesi olan listeler seçin ya da koşulları gevşetin."
 
 #: src/features/broadcasts/ListForm.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/contact/MergePreview.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -12629,7 +12746,6 @@ msgstr "Henüz kullanılmadı"
 msgid "Not verified: the mail did not pass the sender check, so this address may be forged."
 msgstr "Doğrulanmadı: posta gönderen denetimini geçemedi, bu adres sahte olabilir."
 
-#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Note"
 msgstr "Not"
@@ -12657,6 +12773,7 @@ msgstr "Not, yalnızca ekip görür"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 msgid "Notes"
 msgstr "Notlar"
 
@@ -12680,6 +12797,10 @@ msgstr "{host} üzerinde o bağlantı noktası yanıt vermiyor. Bağlantı nokta
 #: src/features/migrations/DoneStep.tsx
 msgid "Nothing changed in {provider}; keep the account as an archive if you like."
 msgstr "{provider} tarafında hiçbir şey değişmedi; isterseniz hesabı arşiv olarak saklayın."
+
+#: src/features/mail/MailSide.tsx
+msgid "Nothing earlier."
+msgstr "Daha öncesi yok."
 
 #: src/features/broadcasts/Import.tsx
 msgid "Nothing from the file is added, and the uploaded file is deleted."
@@ -12918,6 +13039,7 @@ msgstr "Abonelik formlarında ve tercih sayfasında sunulur. Özel listeleri eki
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/conversation/LiveLine.tsx
 msgid "Offline"
 msgstr "Çevrimdışı"
 
@@ -12925,6 +13047,11 @@ msgstr "Çevrimdışı"
 #: src/features/status/ResponseChart.tsx
 msgid "OK"
 msgstr "Tamam"
+
+#. placeholder {0}: SHORTCUTS.next
+#: src/features/mail/MailList.tsx
+msgid "Older mail ({0})"
+msgstr "Daha eski posta ({0})"
 
 #: src/features/migrations/parts.tsx
 msgid "Older mail came from the export file you imported, so only newer mail is read here; mail that is in both is not imported twice. After the copy, the usual switch follows."
@@ -12951,6 +13078,10 @@ msgstr "Daha eski ziyaretler"
 #: src/features/settings/webhooks/parts.tsx
 msgid "On"
 msgstr "Açık"
+
+#: src/features/conversation/LiveLine.tsx
+msgid "On {path}"
+msgstr "Şu an {path} sayfasında"
 
 #: src/features/broadcasts/Composer.tsx
 msgid "On by default. Links to your sites get utm_source=newsletter, utm_medium=email and the campaign name, so Analytics shows the visits this broadcast brings. Links with their own utm_ parameters keep them."
@@ -13063,10 +13194,15 @@ msgstr "Çevrimiçi"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/Presence.tsx
 #: src/features/conversation/ConversationStatus.tsx
+#: src/features/conversation/LiveLine.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Online now"
 msgstr "Şu an çevrimiçi"
+
+#: src/features/conversation/LiveLine.tsx
+msgid "Online now · typing"
+msgstr "Şu an çevrimiçi · yazıyor"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Online status"
@@ -13415,6 +13551,10 @@ msgstr "Analitikte aç"
 #: src/features/home/HomeWork.tsx
 msgid "Open in Inbox"
 msgstr "Gelen kutusunda aç"
+
+#: src/features/contact/ConversationPanel.tsx
+msgid "Open in People"
+msgstr "Kişiler’de aç"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Open incident"
@@ -13862,6 +14002,7 @@ msgstr "Parça {part} / {totalParts}"
 msgid "Partial outage"
 msgstr "Kısmi kesinti"
 
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/conversation/Participants.tsx
 msgid "Participants"
 msgstr "Katılımcılar"
@@ -14140,6 +14281,7 @@ msgid "Permission to send"
 msgstr "Gönderim izni"
 
 #: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ConversationPanel.tsx
 msgid "Person"
 msgstr "Kişi"
 
@@ -14548,6 +14690,10 @@ msgstr "Tercih edilir: sağlayıcı sertifikasını yenilediğinde Yuva adresi y
 msgid "Preparing"
 msgstr "Hazırlanıyor"
 
+#: src/features/mail/Compose.tsx
+msgid "Press Enter or a comma after each address."
+msgstr "Her adresten sonra Enter’a ya da virgüle basın."
+
 #: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
@@ -14589,6 +14735,11 @@ msgstr "Yardım merkezini önizle"
 msgid "Preview the page"
 msgstr "Sayfayı önizle"
 
+#. placeholder {0}: SHORTCUTS.previous
+#: src/features/inbox/ChatList.tsx
+msgid "Previous conversation ({0})"
+msgstr "Önceki konuşma ({0})"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Previous or next discussion"
 msgstr "Önceki veya sonraki tartışma"
@@ -14613,6 +14764,7 @@ msgstr "Önceki ya da sonraki durum sayfası"
 msgid "Previous screenshot"
 msgstr "Önceki ekran görüntüsü"
 
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
@@ -14648,9 +14800,9 @@ msgid "pro, team"
 msgstr "pro, ekip"
 
 #: src/components/common/WorkspaceSelector.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxPicker.tsx
-#: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -14934,6 +15086,10 @@ msgstr "Sıraya alındı. Yeni deneme birazdan aşağıda görünür."
 msgid "Quick cleanup"
 msgstr "Hızlı temizlik"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Quick replies"
+msgstr "Hızlı yanıtlar"
+
 #: src/features/settings/automation/RuleForm.tsx
 msgid "Quiet for (minutes)"
 msgstr "Şu kadar süre sessiz (dakika)"
@@ -14996,6 +15152,7 @@ msgid "Reach"
 msgstr "Erişim"
 
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "Read"
 msgstr "Okundu"
 
@@ -15427,6 +15584,11 @@ msgstr "Aktarılan geçmişi kaldır"
 msgid "Remove imported history?"
 msgstr "Aktarılan geçmiş kaldırılsın mı?"
 
+#. placeholder {0}: l.name
+#: src/features/contact/ConversationPanel.tsx
+msgid "Remove label {0}"
+msgstr "{0} etiketini kaldır"
+
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Remove label {labelName}"
 msgstr "{labelName} etiketini kaldır"
@@ -15588,6 +15750,7 @@ msgstr "Grubu yeniden adlandır"
 msgid "Rename the mailbox"
 msgstr "Posta kutusunun adını değiştir"
 
+#: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -15597,6 +15760,10 @@ msgstr "Yeniden aç"
 #: src/features/feedback/FeedbackHome.tsx
 msgid "Reopen ({closeKey})"
 msgstr "Yeniden aç ({closeKey})"
+
+#: src/features/conversation/HeaderActions.tsx
+msgid "Reopen (E)"
+msgstr "Yeniden aç (E)"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reorder the selected view in the sidebar"
@@ -15724,12 +15891,18 @@ msgid "Replies you write in Slack threads no longer reach Yuva."
 msgstr "Slack ileti dizilerinde yazdığınız yanıtlar artık Yuva'ya ulaşmaz."
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Reply"
 msgstr "Yanıt"
+
+#. placeholder {0}: keys.reply
+#: src/features/conversation/messages/MailRow.tsx
+msgid "Reply ({0})"
+msgstr "Yanıtla ({0})"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Reply ({mod}↵)"
@@ -15744,9 +15917,15 @@ msgstr "Yanıtla (R)"
 msgid "Reply account"
 msgstr "Yanıt hesabı"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Reply all"
 msgstr "Tümünü yanıtla"
+
+#. placeholder {0}: keys.replyAll
+#: src/features/conversation/messages/MailRow.tsx
+msgid "Reply all ({0})"
+msgstr "Tümünü yanıtla ({0})"
 
 #: src/features/mail/MailThread.tsx
 msgid "Reply all (A)"
@@ -15764,6 +15943,10 @@ msgstr "Süreli yanıt ve çözüm hedefleri"
 msgid "Reply and resolve"
 msgstr "Yanıtla ve çözüldü say"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Reply by e-mail"
+msgstr "E-postayla yanıtla"
+
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Reply command"
 msgstr "Yanıt komutu"
@@ -15775,6 +15958,10 @@ msgstr "Müşteriyi korumak için yanıt tutuldu"
 #: src/features/home/HomeWork.tsx
 msgid "Reply in {time}"
 msgstr "{time} içinde yanıtla"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Reply in chat"
+msgstr "Sohbette yanıtla"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Reply posted"
@@ -15975,6 +16162,10 @@ msgstr "{endedAt} saatinde çözüldü"
 #: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "Çözülme süresi"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Resolved. A reply opens it again."
+msgstr "Çözüldü. Yanıt verirseniz yeniden açılır."
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Resolved. It moved to the Resolved tab."
@@ -16358,6 +16549,7 @@ msgstr "Değişiklikleri kaydet"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "Taslağı kaydet"
 
@@ -16466,6 +16658,7 @@ msgstr "Başlıklar taranıyor…"
 
 #: src/components/common/SendLater.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 msgid "Schedule"
 msgstr "Zamanla"
 
@@ -16860,6 +17053,11 @@ msgstr "“{name}” şimdi gönderilsin mi?"
 msgid "Send “{name}” on {when}?"
 msgstr "“{name}” {when} tarihinde gönderilsin mi?"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send ({sendKeys})"
+msgstr "Gönder ({sendKeys})"
+
 #: src/features/status/MonitorToken.tsx
 msgid "Send a beat"
 msgstr "Sinyal gönder"
@@ -16876,10 +17074,6 @@ msgstr "Kod gönder"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send a help article"
 msgstr "Yardım makalesi gönder"
-
-#: src/features/conversation/composer/ReplyBox.tsx
-msgid "Send a help article ({articleKey})"
-msgstr "Yardım makalesi gönder ({articleKey})"
 
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "Send a mail a set time after people sign up, once each"
@@ -16952,6 +17146,10 @@ msgstr "Bir deneme e-postası daha gönder"
 msgid "Send drafts"
 msgstr "Taslakları gönderme"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Send e-mail"
+msgstr "E-postayı gönder"
+
 #: src/features/settings/webhooks/sections.tsx
 msgid "Send events"
 msgstr "Olayları gönder"
@@ -16990,7 +17188,6 @@ msgstr "Şu kadar sonra gönder"
 msgid "Send later"
 msgstr "Sonra gönder"
 
-#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 msgid "Send later ({laterKey})"
 msgstr "Sonra gönder ({laterKey})"
@@ -17086,6 +17283,10 @@ msgstr "Alıcılar"
 #: src/features/settings/automation/text.ts
 msgid "Send to a webhook endpoint"
 msgstr "Bir web kancası uç noktasına gönder"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Send to chat"
+msgstr "Sohbete gönder"
 
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/Composer.tsx
@@ -17251,6 +17452,7 @@ msgstr "gönderildi"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/status/Notices.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Sent"
@@ -17539,6 +17741,7 @@ msgstr "Kısayol"
 #: src/components/common/PageLayout.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -18466,8 +18669,8 @@ msgid "Start your mailing list"
 msgstr "E-posta listenizi başlatın"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "Started"
@@ -18553,9 +18756,9 @@ msgstr "Düştüğündeki durum"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatList.tsx
-#: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/automation/ActionRow.tsx
@@ -18900,6 +19103,7 @@ msgstr "TCP kontrolü"
 #: src/app/TeamMenu.tsx
 #: src/components/common/DiscussionAuthor.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/conversation/History.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -20408,6 +20612,7 @@ msgstr "Bu kişi kendi değerini korur"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 msgid "This conversation"
 msgstr "Bu konuşma"
 
@@ -20622,6 +20827,10 @@ msgstr "Bu liste özel olduğu için formlar onu sunmaz. Form kullanmak için ay
 #: src/features/broadcasts/Trigger.tsx
 msgid "This list was deleted. Pick another list, or stop this triggered e-mail."
 msgstr "Bu liste silinmiş. Başka bir liste seçin ya da bu tetiklenen e-postayı durdurun."
+
+#: src/features/mail/MailSide.tsx
+msgid "This mail"
+msgstr "Bu posta"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "This mail is about using {inboxName}, not advertising."
@@ -20917,10 +21126,11 @@ msgid "TLS (port 465)"
 msgstr "TLS (port 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -21017,7 +21227,6 @@ msgid "Tracker"
 msgstr "Takip aracı"
 
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailThread.tsx
 #: src/features/migrations/parts.tsx
 msgid "Trash"
 msgstr "Çöp kutusu"
@@ -21207,6 +21416,7 @@ msgstr "Yanıtsız"
 msgid "Unassign"
 msgstr "Atamayı kaldır"
 
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/home/HomeWork.tsx
 #: src/features/inbox/ChatList.tsx
@@ -21354,6 +21564,7 @@ msgstr "Kilit açıldı"
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/contact/MergeContactDialog.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Unnamed contact"
@@ -22731,6 +22942,7 @@ msgstr "Yeni posta yaz"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Write a note for the team"
 msgstr "Ekibe not yaz"
 
@@ -22778,6 +22990,14 @@ msgstr "Otomatik yanıtı yazın ya da kapatın."
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Write to {first}…"
 msgstr "{first} için yaz…"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Write to {first}… it shows when they come back"
+msgstr "{first} için yaz… geri döndüğünde görür"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Write to {first}… this goes out as an e-mail"
+msgstr "{first} için yaz… e-posta olarak gider"
 
 #: src/components/common/text.ts
 msgid "Write What's new entries and translations"

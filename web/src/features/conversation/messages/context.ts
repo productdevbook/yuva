@@ -17,6 +17,7 @@ export type ThreadContext = {
   onQuote?: (m: Message) => void
   onForward?: (m: Message, to: Member) => void
   onForwardMail?: (m: Message) => void
+  onReply?: (m: Message, all: boolean) => void
   onRemove?: (m: Message) => void
   canRemove?: (m: Message) => boolean
   onEditDraft?: (m: Message) => void

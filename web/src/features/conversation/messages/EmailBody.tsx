@@ -112,9 +112,29 @@ export function MailBody({ mail }: { mail: Mail }) {
   )
 }
 
+export function QuotedToggle({ mail }: { mail: Mail }) {
+  const { t } = useLingui()
+  if (mail.waiting || !mail.m.email?.quoted || mail.originalHtml) return null
+  const label = mail.quotedShown ? t`Hide quoted text` : t`Show quoted text`
+  return (
+    <Button
+      variant="secondary"
+      size="sm"
+      className="h-[18px] rounded-full px-2 text-caption font-bold tracking-[1px] text-fg2"
+      onClick={mail.toggleQuoted}
+      aria-expanded={mail.quotedShown}
+      aria-label={label}
+      title={label}
+      data-testid="quoted-toggle"
+    >
+      •••
+    </Button>
+  )
+}
+
 const control = "h-6 px-1.5 text-caption font-normal text-muted-foreground hover:text-foreground"
 
-export function MailControls({ mail }: { mail: Mail }) {
+export function MailControls({ mail, quoted = true }: { mail: Mail; quoted?: boolean }) {
   const { t } = useLingui()
   const { m, waiting, originalHtml, canOriginal, quotedShown, remote, images, dark, asSent } = mail
   return (
@@ -145,7 +165,7 @@ export function MailControls({ mail }: { mail: Mail }) {
           {asSent ? <Trans>Darken</Trans> : <Trans>Show as sent</Trans>}
         </Button>
       )}
-      {!waiting && m.email?.quoted && !originalHtml && (
+      {quoted && !waiting && m.email?.quoted && !originalHtml && (
         <Button
           variant="ghost"
           size="sm"

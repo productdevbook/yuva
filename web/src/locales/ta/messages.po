@@ -357,12 +357,12 @@ msgstr "{attention, plural, one {# சேனலுக்கு கவனம் �
 msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistants} member {No drafts by members} other {No drafts by this author}}"
 msgstr "{author, select, bot {பாட்களின் வரைவுகள் இல்லை} assistant {உதவியாளர்களின் வரைவுகள் இல்லை} member {உறுப்பினர்களின் வரைவுகள் இல்லை} other {இந்த எழுத்தாளரின் வரைவுகள் இல்லை}}"
 
-#: src/features/mail/MailThread.tsx
+#: src/features/conversation/messages/MailRow.tsx
 msgid "{author} on behalf of {ownerName}"
 msgstr "{ownerName} சார்பாக {author}"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
 msgstr "{author}, {by} அனுப்பியது"
 
@@ -579,6 +579,7 @@ msgstr "{from}-க்கு SPF பதிவு இல்லை. உங்கள
 msgid "{good} good"
 msgstr "{good} நன்று"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/migrations/ReviewStep.tsx
 msgid "{hidden, plural, one {# earlier message} other {# earlier messages}}"
 msgstr "{hidden, plural, one {# முந்தைய செய்தி} other {# முந்தைய செய்திகள்}}"
@@ -791,6 +792,10 @@ msgstr "{n} படிக்காததாகக் குறிக்கப்�
 msgid "{n} moved to the Inbox"
 msgstr "{n} இன்பாக்ஸுக்குத் திருப்பப்பட்டன"
 
+#: src/components/common/ListPager.tsx
+msgid "{n} of {of} in {place}"
+msgstr "{place} இல் {of} இல் {n}"
+
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "{n} snoozed, back {when}"
@@ -864,6 +869,18 @@ msgstr "{name} உம் பதில் தட்டச்சு செய்�
 #: src/features/conversation/messages/Thread.tsx
 msgid "{name} is typing…"
 msgstr "{name} தட்டச்சு செய்கிறார்…"
+
+#: src/features/conversation/LiveLine.tsx
+msgid "{name} left the chat · {time} · no e-mail address known, replies wait until they come back"
+msgstr "{name} அரட்டையை விட்டு வெளியேறினார் · {time} · மின்னஞ்சல் முகவரி தெரியவில்லை, அவர் திரும்பும் வரை பதில்கள் காத்திருக்கும்"
+
+#: src/features/conversation/LiveLine.tsx
+msgid "{name} left the chat · {time} · replies now go by e-mail to {to}"
+msgstr "{name} அரட்டையை விட்டு வெளியேறினார் · {time} · பதில்கள் இப்போது மின்னஞ்சலில் {to} க்குச் செல்லும்"
+
+#: src/features/conversation/LiveLine.tsx
+msgid "{name} left the chat · {time} · replies wait until they come back"
+msgstr "{name} அரட்டையை விட்டு வெளியேறினார் · {time} · அவர் திரும்பும் வரை பதில்கள் காத்திருக்கும்"
 
 #: src/features/setup/SetupHub.tsx
 msgid "{name} news"
@@ -1122,10 +1139,6 @@ msgstr "{source} இறக்குமதிக்குக் கவனம் �
 #: src/features/home/HomeSide.tsx
 msgid "{source} import should finish"
 msgstr "{source} இறக்குமதி முடிய வேண்டும்"
-
-#: src/features/mail/MailThread.tsx
-msgid "{stackCount, plural, one {Show # earlier message} other {Show # earlier messages}}"
-msgstr "{stackCount, plural, one {முந்தைய # செய்தியைக் காட்டு} other {முந்தைய # செய்திகளைக் காட்டு}}"
 
 #: src/features/status/StatusPages.tsx
 msgid "{state} since {since}"
@@ -2185,6 +2198,10 @@ msgstr "மற்றொன்றைச் சேர்"
 #: src/features/setup/AddChannelStep.tsx
 msgid "Add at least one origin."
 msgstr "குறைந்தது ஒரு மூலத்தைச் சேர்க்கவும்."
+
+#: src/features/mail/Compose.tsx
+msgid "Add Cc or Bcc"
+msgstr "Cc அல்லது Bcc சேர்"
 
 #: src/features/settings/ProductsPage.tsx
 msgid "Add channel"
@@ -3417,7 +3434,6 @@ msgstr "உறுப்பினருக்கு ஒதுக்கு"
 msgid "Assign to a team"
 msgstr "குழுவுக்கு ஒதுக்கு"
 
-#: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Assign to me"
@@ -3450,7 +3466,7 @@ msgstr "{assignee}-க்கு ஒதுக்கப்பட்டது, ப�
 msgid "Assigned to you"
 msgstr "உங்களுக்கு ஒதுக்கப்பட்டது"
 
-#: src/features/inbox/InboxSide.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroForm.tsx
 msgid "Assignee"
@@ -3534,6 +3550,8 @@ msgstr "இந்த வேகத்தில் அனுப்ப சுமா
 msgid "Attach files"
 msgstr "கோப்புகளை இணை"
 
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/channels/Attachments.tsx
 msgid "Attachments"
@@ -3644,6 +3662,7 @@ msgstr "வெளியே"
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/MergeContactDialog.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/migrations/Wizard.tsx
 msgid "Back"
 msgstr "பின்"
@@ -3714,9 +3733,9 @@ msgid "Bad only"
 msgstr "மோசமானவை மட்டும்"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "Bcc"
 
@@ -3741,7 +3760,6 @@ msgid "Beats only when the job succeeded."
 msgstr "வேலை வெற்றிபெற்றால் மட்டுமே சமிக்ஞையை அனுப்பும்."
 
 #: src/features/contact/ContactCard.tsx
-#: src/features/mail/MailSide.tsx
 msgid "Before"
 msgstr "முன்"
 
@@ -3789,6 +3807,7 @@ msgstr "தொடர்பைத் தடு"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Blocked"
 msgstr "தடுக்கப்பட்டது"
@@ -4002,6 +4021,7 @@ msgstr "குழு வாரியாக"
 msgid "By language"
 msgstr "மொழி வாரியாக"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "by rule {rule}"
 msgstr "விதி {rule} மூலம்"
@@ -4137,10 +4157,19 @@ msgstr "தயார் பதில்கள்"
 msgid "Canned replies and macros, in the reply box"
 msgstr "தயார் பதில்களும் மேக்ரோக்களும், பதில் பெட்டியில்"
 
-#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Canned reply"
 msgstr "தயார் பதில்"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Canned reply, macro or help article"
+msgstr "தயார் பதில், மேக்ரோ அல்லது உதவிக் கட்டுரை"
+
+#. placeholder {0}: SHORTCUTS.insert
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Canned reply, macro or help article ({0})"
+msgstr "தயார் பதில், மேக்ரோ அல்லது உதவிக் கட்டுரை ({0})"
 
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Catch-all without a From address"
@@ -4156,9 +4185,9 @@ msgid "Cause found"
 msgstr "காரணம் கண்டறியப்பட்டது"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "Cc"
 
@@ -4292,8 +4321,8 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "அனுப்பும் டொமைனை மாற்றினால், புதிய டொமைனுக்கு மீண்டும் இயக்கும் வரை DKIM கையொப்பமிடுதல் அணைந்துவிடும்."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/inbox/ChatList.tsx
-#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelForm.tsx
@@ -4630,7 +4659,6 @@ msgstr "{date} அன்று கடிகாரங்கள் மாறுக
 #: src/features/contact/ContactSheet.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/Compose.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -4723,6 +4751,10 @@ msgstr "மூடப்பட்ட உரையாடல்கள்"
 msgid "closed today"
 msgstr "இன்று மூடப்பட்டவை"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Closed. A reply opens it again."
+msgstr "மூடப்பட்டது. பதில் அளித்தால் மீண்டும் திறக்கும்."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Closes"
 msgstr "மூடுபவை"
@@ -4749,7 +4781,7 @@ msgstr "Code from Slack"
 msgid "Code sent"
 msgstr "குறியீடு அனுப்பப்பட்டது"
 
-#: src/features/mail/MailThread.tsx
+#: src/features/conversation/messages/MailRow.tsx
 msgid "Collapse"
 msgstr "சுருக்கு"
 
@@ -5096,7 +5128,6 @@ msgstr "ஒப்புதல் பதிவு"
 
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
-#: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Contact"
@@ -5198,7 +5229,6 @@ msgstr "புதிய அஞ்சலுடன் தொடர்"
 msgid "Continue with your organisation's sign-in"
 msgstr "Continue with your organisation's sign-in"
 
-#: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
 msgid "Conversation"
 msgstr "உரையாடல்"
@@ -6141,8 +6171,8 @@ msgid "Deleted inbox"
 msgstr "நீக்கப்பட்ட இன்பாக்ஸ்"
 
 #: src/components/common/DiscussionAuthor.tsx
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/inbox/SidePanels.tsx
-#: src/features/mail/MailThread.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -6262,17 +6292,17 @@ msgid "Desktop notifications are blocked for this site in the browser's settings
 msgstr "உலாவியின் அமைப்புகளில் இந்தத் தளத்துக்கு டெஸ்க்டாப் அறிவிப்புகள் தடுக்கப்பட்டுள்ளன, எனவே ஒலி மட்டுமே ஒலிக்கும்."
 
 #: src/components/common/SectionPage.tsx
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/ChatView.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
-#: src/features/mail/MailPage.tsx
-#: src/features/mail/MailSide.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
@@ -6294,6 +6324,7 @@ msgstr "டெவலப்பர்கள்"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/Feedback.tsx
 msgid "Device"
@@ -6591,6 +6622,7 @@ msgstr "İYS-க்குப் பதிவிறக்கு"
 msgid "Download JSON"
 msgstr "JSON-ஐப் பதிவிறக்கு"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Download the original e-mail (.eml)"
@@ -6863,6 +6895,14 @@ msgstr "ஒவ்வொரு பதிலும் இன்பாக்ஸி�
 msgid "Each with all its messages and notes"
 msgstr "ஒவ்வொன்றும் அதன் அனைத்துச் செய்திகள், குறிப்புகளுடன்"
 
+#: src/features/contact/ConversationPanel.tsx
+msgid "Earlier conversations"
+msgstr "முந்தைய உரையாடல்கள்"
+
+#: src/features/mail/MailSide.tsx
+msgid "Earlier with {first}"
+msgstr "{first} உடன் முன்பு"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/conversation/messages/OwnDraftCard.tsx
@@ -7017,9 +7057,15 @@ msgstr "API பிழைகள் அதிகரித்துள்ளன"
 msgid "Embed snippet"
 msgstr "உட்பொதி துணுக்கு"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Emoji"
 msgstr "ஈமோஜி"
+
+#. placeholder {0}: SHORTCUTS.emoji
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Emoji ({0})"
+msgstr "ஈமோஜி ({0})"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Empty in the first rows"
@@ -7361,6 +7407,10 @@ msgstr "எல்லா இடங்களிலும்"
 msgid "Example Ltd."
 msgstr "Example Ltd."
 
+#: src/features/conversation/messages/MailRow.tsx
+msgid "Expand every message ({shortcut})"
+msgstr "எல்லா செய்திகளையும் விரி ({shortcut})"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Expand or collapse every message"
 msgstr "எல்லா செய்திகளையும் விரி அல்லது சுருக்கு"
@@ -7559,6 +7609,7 @@ msgstr "குறைந்த திறந்த உரையாடல்கள�
 
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Fields"
 msgstr "புலங்கள்"
@@ -7647,6 +7698,7 @@ msgstr "வகை, தளம், ஒளிபரப்பு, SLA மூலம�
 msgid "Filter messages like the latest mail"
 msgstr "சமீபத்திய மின்னஞ்சல் போன்ற செய்திகளை வடிகட்டு"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Filter messages like this"
 msgstr "இது போன்ற செய்திகளை வடிகட்டு"
@@ -7905,9 +7957,18 @@ msgstr "வடிவம்"
 msgid "Forms run on a website chat channel of this inbox, which lists the sites they may be used on. This inbox has none yet."
 msgstr "படிவங்கள் இந்த இன்பாக்ஸின் இணையதள அரட்டைச் சேனலில் இயங்கும்; அது அவை பயன்படுத்தக்கூடிய தளங்களைப் பட்டியலிடும். இந்த இன்பாக்ஸுக்கு இன்னும் எதுவும் இல்லை."
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Forward"
 msgstr "முன்னனுப்பு"
+
+#. placeholder {0}: MAIL_KEYS.forward
+#. placeholder {0}: keys.forward
+#: src/features/conversation/messages/MailRow.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Forward ({0})"
+msgstr "முன்னனுப்பு ({0})"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Forward all incoming mail to the address below and keep a copy in the mailbox."
@@ -7918,6 +7979,7 @@ msgid "Forward as a note mentioning"
 msgstr "குறிப்பிட்டு, குறிப்பாக முன்னனுப்பு"
 
 #: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Forward by e-mail…"
@@ -8009,7 +8071,6 @@ msgstr "வெள்ளிக்கிழமை"
 #: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -8654,6 +8715,10 @@ msgstr "{inboxName} இடமிருந்து {listName} பற்றிய
 msgid "I'll reply"
 msgstr "நான் பதிலளிக்கிறேன்"
 
+#: src/features/conversation/Collision.tsx
+msgid "I'll reply ({replyKey})"
+msgstr "நான் பதிலளிக்கிறேன் ({replyKey})"
+
 #: src/features/inbox/ChatList.tsx
 msgid "I'm back"
 msgstr "நான் திரும்பிவிட்டேன்"
@@ -9099,6 +9164,10 @@ msgstr "சேவையகத்தை VS Code-இல் நிறுவுங�
 msgid "Installation"
 msgstr "நிறுவல்"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Internal note"
+msgstr "உள் குறிப்பு"
+
 #: src/features/status/text.tsx
 msgid "Investigating"
 msgstr "விசாரிக்கப்படுகிறது"
@@ -9272,6 +9341,10 @@ msgstr "இது உங்களுக்கு ஒதுக்கப்பட�
 #: src/features/setup/NewsletterStep.tsx
 msgid "It sends through {address}."
 msgstr "இது {address} வழியாக அனுப்பும்."
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "It shows in their chat when they come back"
+msgstr "அவர் திரும்பும்போது அவரது அரட்டையில் தெரியும்"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 #: src/features/setup/email/EmailTestStep.tsx
@@ -9494,6 +9567,7 @@ msgstr "வகை"
 msgid "Known only from the receiving server’s results of the test mail."
 msgstr "சோதனை அஞ்சலுக்குப் பெறும் சேவையகத்தின் முடிவுகளிலிருந்து மட்டுமே தெரியும்."
 
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/text.ts
 #: src/features/reports/TrendsReport.tsx
@@ -9510,7 +9584,10 @@ msgstr "லேபிள் மட்டும்: அதன் அஞ்சல�
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/mail/MailSide.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
@@ -9636,6 +9713,10 @@ msgstr "கடந்த மாதம்"
 msgid "Last name"
 msgstr "குடும்பப் பெயர்"
 
+#: src/features/conversation/LiveLine.tsx
+msgid "Last on {path}"
+msgstr "கடைசியாக {path} இல்"
+
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Last push failed: {failed}"
 msgstr "கடைசி புஷ் தோல்வி: {failed}"
@@ -9662,6 +9743,7 @@ msgid "Last seen"
 msgstr "கடைசியாகப் பார்த்தது"
 
 #: src/features/contact/Presence.tsx
+#: src/features/conversation/LiveLine.tsx
 msgid "Last seen {seen}"
 msgstr "{seen} கடைசியாகப் பார்த்தது"
 
@@ -9743,6 +9825,10 @@ msgstr "Leave it out"
 #: src/features/conversation/Collision.tsx
 msgid "Leave it to {name}"
 msgstr "அதை {name}-க்கு விடு"
+
+#: src/features/conversation/Collision.tsx
+msgid "Leave it to {name} ({leaveKey})"
+msgstr "அதை {name}-க்கு விடு ({leaveKey})"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Leave it to the teammate who is typing"
@@ -10165,11 +10251,11 @@ msgstr "சிறிய எழுத்துகள், இலக்கங்க
 
 #: src/app/Palette.tsx
 #: src/features/conversation/composer/CannedMenu.tsx
-#: src/features/conversation/composer/ReplyBox.tsx
 msgid "Macro"
 msgstr "மேக்ரோ"
 
 #: src/app/Palette.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Macros"
 msgstr "மேக்ரோக்கள்"
@@ -10196,6 +10282,11 @@ msgstr "அஞ்சல்"
 #: src/features/mail/MailThread.tsx
 msgid "Mail actions"
 msgstr "அஞ்சல் செயல்கள்"
+
+#. placeholder {0}: MAIL_KEYS.more
+#: src/features/mail/MailThread.tsx
+msgid "Mail actions ({0})"
+msgstr "அஞ்சல் செயல்கள் ({0})"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -10545,6 +10636,7 @@ msgstr "ஊடகம்"
 
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 msgid "Media, links and docs"
 msgstr "ஊடகம், இணைப்புகள், ஆவணங்கள்"
 
@@ -10658,6 +10750,7 @@ msgstr "மற்றொரு தொடர்புடன் இணை"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ConversationPanel.tsx
 msgid "Merge…"
 msgstr "இணை…"
 
@@ -10690,8 +10783,10 @@ msgstr "செய்தி உரை"
 msgid "Message type"
 msgstr "செய்தி வகை"
 
+#: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/MailSide.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Messages"
@@ -10859,6 +10954,7 @@ msgstr "மாதங்கள்"
 msgid "More"
 msgstr "மேலும்"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/ConversationMenu.tsx
 msgid "More actions"
 msgstr "மேலும் செயல்கள்"
@@ -10884,6 +10980,14 @@ msgstr "மேலும் விருப்பங்கள்"
 #: src/features/contact/MergePreview.tsx
 msgid "More than {count} conversations"
 msgstr "{count}-க்கும் மேற்பட்ட உரையாடல்கள்"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "More ways to send"
+msgstr "அனுப்ப மேலும் வழிகள்"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "More ways to send ({laterKey})"
+msgstr "அனுப்ப மேலும் வழிகள் ({laterKey})"
 
 #: src/features/docs/Toolbar.tsx
 msgid "Most “helpful” ratings first"
@@ -11100,7 +11204,6 @@ msgstr "குப்பைக்கு நகர்த்து ({0})"
 
 #: src/features/feedback/FeedbackHome.tsx
 #: src/features/mail/MailList.tsx
-#: src/features/mail/MailThread.tsx
 msgid "Move to the Trash (#)"
 msgstr "குப்பைக்கு நகர்த்து (#)"
 
@@ -11374,6 +11477,7 @@ msgstr "புதிய தொடர்புகள் உருவாக்க�
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/inbox/ChatsPage.tsx
 msgid "New conversation"
 msgstr "புதிய உரையாடல்"
@@ -11600,6 +11704,11 @@ msgstr "புதிய வெப்ஹூக் முனை"
 msgid "New workspace"
 msgstr "புதிய பணியிடம்"
 
+#. placeholder {0}: SHORTCUTS.previous
+#: src/features/mail/MailList.tsx
+msgid "Newer mail ({0})"
+msgstr "புதிய அஞ்சல் ({0})"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Newer mail and the switch"
 msgstr "புதிய அஞ்சலும் மாற்றமும்"
@@ -11655,6 +11764,11 @@ msgstr "அடுத்த முயற்சி {when}"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Next check {next}."
 msgstr "அடுத்த சரிபார்ப்பு {next}."
+
+#. placeholder {0}: SHORTCUTS.next
+#: src/features/inbox/ChatList.tsx
+msgid "Next conversation ({0})"
+msgstr "அடுத்த உரையாடல் ({0})"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Next language version"
@@ -12026,6 +12140,7 @@ msgstr "லேபிள் இல்லை"
 msgid "No labels yet"
 msgstr "இன்னும் லேபிள்கள் இல்லை"
 
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
@@ -12406,9 +12521,11 @@ msgid "Nobody would get this mail. Pick lists with subscribers, or loosen the co
 msgstr "இந்த அஞ்சல் யாருக்கும் கிடைக்காது. சந்தாதாரர்கள் உள்ள பட்டியல்களைத் தேர்ந்தெடுங்கள், அல்லது நிபந்தனைகளைத் தளர்த்துங்கள்."
 
 #: src/features/broadcasts/ListForm.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/contact/MergePreview.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -12629,7 +12746,6 @@ msgstr "இன்னும் பயன்படுத்தப்படவி�
 msgid "Not verified: the mail did not pass the sender check, so this address may be forged."
 msgstr "சரிபார்க்கப்படவில்லை: மின்னஞ்சல் அனுப்புநர் சோதனையில் தேறவில்லை, எனவே இந்த முகவரி போலியாக இருக்கலாம்."
 
-#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Note"
 msgstr "குறிப்பு"
@@ -12657,6 +12773,7 @@ msgstr "குறிப்பு, குழு மட்டுமே பார�
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 msgid "Notes"
 msgstr "குறிப்புகள்"
 
@@ -12680,6 +12797,10 @@ msgstr "{host}-இன் அந்தப் போர்ட்டில் எ�
 #: src/features/migrations/DoneStep.tsx
 msgid "Nothing changed in {provider}; keep the account as an archive if you like."
 msgstr "{provider}-இல் எதுவும் மாறவில்லை; விரும்பினால் கணக்கைக் காப்பகமாக வைத்திருங்கள்."
+
+#: src/features/mail/MailSide.tsx
+msgid "Nothing earlier."
+msgstr "முன்பு எதுவும் இல்லை."
 
 #: src/features/broadcasts/Import.tsx
 msgid "Nothing from the file is added, and the uploaded file is deleted."
@@ -12918,6 +13039,7 @@ msgstr "சந்தா படிவங்களிலும் விருப�
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/conversation/LiveLine.tsx
 msgid "Offline"
 msgstr "ஆஃப்லைன்"
 
@@ -12925,6 +13047,11 @@ msgstr "ஆஃப்லைன்"
 #: src/features/status/ResponseChart.tsx
 msgid "OK"
 msgstr "சரி"
+
+#. placeholder {0}: SHORTCUTS.next
+#: src/features/mail/MailList.tsx
+msgid "Older mail ({0})"
+msgstr "பழைய அஞ்சல் ({0})"
 
 #: src/features/migrations/parts.tsx
 msgid "Older mail came from the export file you imported, so only newer mail is read here; mail that is in both is not imported twice. After the copy, the usual switch follows."
@@ -12951,6 +13078,10 @@ msgstr "பழைய வருகைகள்"
 #: src/features/settings/webhooks/parts.tsx
 msgid "On"
 msgstr "இயக்கம்"
+
+#: src/features/conversation/LiveLine.tsx
+msgid "On {path}"
+msgstr "{path} இல்"
 
 #: src/features/broadcasts/Composer.tsx
 msgid "On by default. Links to your sites get utm_source=newsletter, utm_medium=email and the campaign name, so Analytics shows the visits this broadcast brings. Links with their own utm_ parameters keep them."
@@ -13063,10 +13194,15 @@ msgstr "ஆன்லைன்"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/Presence.tsx
 #: src/features/conversation/ConversationStatus.tsx
+#: src/features/conversation/LiveLine.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Online now"
 msgstr "இப்போது ஆன்லைனில்"
+
+#: src/features/conversation/LiveLine.tsx
+msgid "Online now · typing"
+msgstr "இப்போது ஆன்லைனில் · தட்டச்சு செய்கிறார்"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Online status"
@@ -13415,6 +13551,10 @@ msgstr "பகுப்பாய்வில் திற"
 #: src/features/home/HomeWork.tsx
 msgid "Open in Inbox"
 msgstr "இன்பாக்ஸில் திற"
+
+#: src/features/contact/ConversationPanel.tsx
+msgid "Open in People"
+msgstr "People இல் திற"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Open incident"
@@ -13862,6 +14002,7 @@ msgstr "{totalParts}-இல் பகுதி {part}"
 msgid "Partial outage"
 msgstr "பகுதி இடையூறு"
 
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/conversation/Participants.tsx
 msgid "Participants"
 msgstr "பங்கேற்பாளர்கள்"
@@ -14140,6 +14281,7 @@ msgid "Permission to send"
 msgstr "அனுப்ப அனுமதி"
 
 #: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ConversationPanel.tsx
 msgid "Person"
 msgstr "நபர்"
 
@@ -14548,6 +14690,10 @@ msgstr "Preferred: Yuva reads it again when the provider rotates its certificate
 msgid "Preparing"
 msgstr "தயாரிக்கிறது"
 
+#: src/features/mail/Compose.tsx
+msgid "Press Enter or a comma after each address."
+msgstr "ஒவ்வொரு முகவரிக்குப் பிறகும் Enter அல்லது காற்புள்ளியை அழுத்தவும்."
+
 #: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
@@ -14589,6 +14735,11 @@ msgstr "உதவி மையத்தை முன்னோட்டம் ப
 msgid "Preview the page"
 msgstr "பக்கத்தை முன்னோட்டம் பார்"
 
+#. placeholder {0}: SHORTCUTS.previous
+#: src/features/inbox/ChatList.tsx
+msgid "Previous conversation ({0})"
+msgstr "முந்தைய உரையாடல் ({0})"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Previous or next discussion"
 msgstr "முந்தைய அல்லது அடுத்த விவாதம்"
@@ -14613,6 +14764,7 @@ msgstr "முந்தைய அல்லது அடுத்த நிலை
 msgid "Previous screenshot"
 msgstr "முந்தைய திரைப்பிடிப்பு"
 
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
@@ -14648,9 +14800,9 @@ msgid "pro, team"
 msgstr "pro, team"
 
 #: src/components/common/WorkspaceSelector.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxPicker.tsx
-#: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -14934,6 +15086,10 @@ msgstr "வரிசையில் உள்ளது. புதிய மு�
 msgid "Quick cleanup"
 msgstr "விரைவுத் துப்புரவு"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Quick replies"
+msgstr "விரைவுப் பதில்கள்"
+
 #: src/features/settings/automation/RuleForm.tsx
 msgid "Quiet for (minutes)"
 msgstr "இவ்வளவு நேரம் அமைதி (நிமிடங்கள்)"
@@ -14996,6 +15152,7 @@ msgid "Reach"
 msgstr "சென்றடைதல்"
 
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "Read"
 msgstr "படி"
 
@@ -15427,6 +15584,11 @@ msgstr "இறக்குமதி செய்த வரலாற்றை அ
 msgid "Remove imported history?"
 msgstr "இறக்குமதி செய்த வரலாற்றை அகற்றவா?"
 
+#. placeholder {0}: l.name
+#: src/features/contact/ConversationPanel.tsx
+msgid "Remove label {0}"
+msgstr "லேபிள் {0} ஐ அகற்று"
+
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Remove label {labelName}"
 msgstr "லேபிள் {labelName} ஐ நீக்கு"
@@ -15588,6 +15750,7 @@ msgstr "குழுவின் பெயரை மாற்று"
 msgid "Rename the mailbox"
 msgstr "அஞ்சல் பெட்டியின் பெயரை மாற்று"
 
+#: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -15597,6 +15760,10 @@ msgstr "மீண்டும் திற"
 #: src/features/feedback/FeedbackHome.tsx
 msgid "Reopen ({closeKey})"
 msgstr "மீண்டும் திற ({closeKey})"
+
+#: src/features/conversation/HeaderActions.tsx
+msgid "Reopen (E)"
+msgstr "மீண்டும் திற (E)"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reorder the selected view in the sidebar"
@@ -15724,12 +15891,18 @@ msgid "Replies you write in Slack threads no longer reach Yuva."
 msgstr "Replies you write in Slack threads no longer reach Yuva."
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Reply"
 msgstr "பதிலளி"
+
+#. placeholder {0}: keys.reply
+#: src/features/conversation/messages/MailRow.tsx
+msgid "Reply ({0})"
+msgstr "பதிலளி ({0})"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Reply ({mod}↵)"
@@ -15744,9 +15917,15 @@ msgstr "பதிலளி (R)"
 msgid "Reply account"
 msgstr "பதில் கணக்கு"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Reply all"
 msgstr "அனைவருக்கும் பதில்"
+
+#. placeholder {0}: keys.replyAll
+#: src/features/conversation/messages/MailRow.tsx
+msgid "Reply all ({0})"
+msgstr "அனைவருக்கும் பதில் ({0})"
 
 #: src/features/mail/MailThread.tsx
 msgid "Reply all (A)"
@@ -15764,6 +15943,10 @@ msgstr "கெடுவுடன் பதில் மற்றும் தீ
 msgid "Reply and resolve"
 msgstr "Reply and resolve"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Reply by e-mail"
+msgstr "மின்னஞ்சலில் பதிலளி"
+
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Reply command"
 msgstr "Reply command"
@@ -15775,6 +15958,10 @@ msgstr "வாடிக்கையாளரைப் பாதுகாக்�
 #: src/features/home/HomeWork.tsx
 msgid "Reply in {time}"
 msgstr "{time} இல் பதிலளிக்கவும்"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Reply in chat"
+msgstr "அரட்டையில் பதிலளி"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Reply posted"
@@ -15975,6 +16162,10 @@ msgstr "{endedAt} மணிக்குத் தீர்க்கப்பட�
 #: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "தீர்க்க ஆன நேரம்"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Resolved. A reply opens it again."
+msgstr "தீர்க்கப்பட்டது. பதில் அளித்தால் மீண்டும் திறக்கும்."
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Resolved. It moved to the Resolved tab."
@@ -16358,6 +16549,7 @@ msgstr "மாற்றங்களைச் சேமி"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "வரைவைச் சேமி"
 
@@ -16466,6 +16658,7 @@ msgstr "தலைப்புகளை ஸ்கேன் செய்கிற�
 
 #: src/components/common/SendLater.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 msgid "Schedule"
 msgstr "திட்டமிடு"
 
@@ -16860,6 +17053,11 @@ msgstr "“{name}”-ஐ இப்போது அனுப்பவா?"
 msgid "Send “{name}” on {when}?"
 msgstr "“{name}”-ஐ {when} அனுப்பவா?"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send ({sendKeys})"
+msgstr "அனுப்பு ({sendKeys})"
+
 #: src/features/status/MonitorToken.tsx
 msgid "Send a beat"
 msgstr "சமிக்ஞையை அனுப்பு"
@@ -16876,10 +17074,6 @@ msgstr "குறியீட்டை அனுப்பு"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send a help article"
 msgstr "உதவிக் கட்டுரையை அனுப்பு"
-
-#: src/features/conversation/composer/ReplyBox.tsx
-msgid "Send a help article ({articleKey})"
-msgstr "உதவிக் கட்டுரையை அனுப்பு ({articleKey})"
 
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "Send a mail a set time after people sign up, once each"
@@ -16952,6 +17146,10 @@ msgstr "மற்றொரு சோதனைச் செய்தியை அ
 msgid "Send drafts"
 msgstr "வரைவுகளை அனுப்பு"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Send e-mail"
+msgstr "மின்னஞ்சல் அனுப்பு"
+
 #: src/features/settings/webhooks/sections.tsx
 msgid "Send events"
 msgstr "நிகழ்வுகளை அனுப்பு"
@@ -16990,7 +17188,6 @@ msgstr "Send it after"
 msgid "Send later"
 msgstr "பிறகு அனுப்பு"
 
-#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 msgid "Send later ({laterKey})"
 msgstr "பிறகு அனுப்பு ({laterKey})"
@@ -17086,6 +17283,10 @@ msgstr "அனுப்பு"
 #: src/features/settings/automation/text.ts
 msgid "Send to a webhook endpoint"
 msgstr "வெப்ஹூக் முனைப்புள்ளிக்கு அனுப்பு"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Send to chat"
+msgstr "அரட்டைக்கு அனுப்பு"
 
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/Composer.tsx
@@ -17251,6 +17452,7 @@ msgstr "அனுப்பப்பட்டது"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/status/Notices.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Sent"
@@ -17539,6 +17741,7 @@ msgstr "குறுக்குவழி"
 #: src/components/common/PageLayout.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -18466,8 +18669,8 @@ msgid "Start your mailing list"
 msgstr "உங்கள் அஞ்சல் பட்டியலைத் தொடங்குங்கள்"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "Started"
@@ -18553,9 +18756,9 @@ msgstr "செயலிழந்தால் நிலை"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatList.tsx
-#: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/automation/ActionRow.tsx
@@ -18900,6 +19103,7 @@ msgstr "TCP சோதனை"
 #: src/app/TeamMenu.tsx
 #: src/components/common/DiscussionAuthor.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/conversation/History.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -20408,6 +20612,7 @@ msgstr "இந்தத் தொடர்பு தன் சொந்த ம�
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 msgid "This conversation"
 msgstr "இந்த உரையாடல்"
 
@@ -20622,6 +20827,10 @@ msgstr "இந்தப் பட்டியல் தனிப்பட்ட�
 #: src/features/broadcasts/Trigger.tsx
 msgid "This list was deleted. Pick another list, or stop this triggered e-mail."
 msgstr "This list was deleted. Pick another list, or stop this triggered e-mail."
+
+#: src/features/mail/MailSide.tsx
+msgid "This mail"
+msgstr "இந்த அஞ்சல்"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "This mail is about using {inboxName}, not advertising."
@@ -20917,10 +21126,11 @@ msgid "TLS (port 465)"
 msgstr "TLS (போர்ட் 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -21017,7 +21227,6 @@ msgid "Tracker"
 msgstr "Tracker"
 
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailThread.tsx
 #: src/features/migrations/parts.tsx
 msgid "Trash"
 msgstr "குப்பை"
@@ -21207,6 +21416,7 @@ msgstr "பதிலளிக்கப்படாதவை"
 msgid "Unassign"
 msgstr "ஒதுக்கீட்டை நீக்கு"
 
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/home/HomeWork.tsx
 #: src/features/inbox/ChatList.tsx
@@ -21354,6 +21564,7 @@ msgstr "திறக்கப்பட்டது"
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/contact/MergeContactDialog.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Unnamed contact"
@@ -22731,6 +22942,7 @@ msgstr "புதிய மின்னஞ்சல் எழுது"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Write a note for the team"
 msgstr "குழுவுக்கான குறிப்பை எழுது"
 
@@ -22778,6 +22990,14 @@ msgstr "தானியங்கி பதிலை எழுதுங்கள�
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Write to {first}…"
 msgstr "{first}-க்கு எழுது…"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Write to {first}… it shows when they come back"
+msgstr "{first}-க்கு எழுது… அவர் திரும்பும்போது தெரியும்"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Write to {first}… this goes out as an e-mail"
+msgstr "{first}-க்கு எழுது… இது மின்னஞ்சலாகச் செல்லும்"
 
 #: src/components/common/text.ts
 msgid "Write What's new entries and translations"

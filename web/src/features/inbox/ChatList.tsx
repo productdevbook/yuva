@@ -17,8 +17,10 @@ import {
   XIcon,
 } from "lucide-react"
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react"
+import { createPortal } from "react-dom"
 import { useNavigate } from "react-router"
 
+import { ListPager } from "@/components/common/ListPager"
 import { SearchError, isSearchError } from "@/components/common/SearchError"
 import { useShell } from "@/app/shell"
 import {
@@ -643,6 +645,8 @@ export function ChatList({
   onInbox,
   hidden = false,
   head,
+  pagerSlot,
+  place,
 }: {
   currentId: string | null
   onOpen: (id: string) => void
@@ -652,6 +656,8 @@ export function ChatList({
   onInbox?: (id: string) => void
   hidden?: boolean
   head?: React.ReactNode | ((shown: ListShown) => React.ReactNode)
+  pagerSlot?: HTMLElement | null
+  place?: string
 }) {
   const { t } = useLingui()
   const errorText = useErrorText()
@@ -747,7 +753,7 @@ export function ChatList({
   if (sort === "oldest") mainRows.sort(byTime)
   const rows = [...pinnedRows, ...mainRows]
   const live = useLiveIds(rows.filter((c) => c.status !== "closed"))
-  const { cursorId, setCursorId, moveCursor, openCursor } = useListCursor(
+  const { cursorId, setCursorId, moveCursor, openCursor, step } = useListCursor(
     rows,
     currentId,
     onOpen,
@@ -1474,12 +1480,31 @@ export function ChatList({
     />
   )
 
+  const at = currentId ? rows.findIndex((c) => c.id === currentId) : -1
+  const pager =
+    pagerSlot &&
+    currentId &&
+    createPortal(
+      <ListPager
+        at={at}
+        total={rows.length}
+        more={!!hasNextPage}
+        place={place ?? t`Conversations`}
+        onPrevious={() => step(-1)}
+        onNext={() => step(1)}
+        previousLabel={t`Previous conversation (${SHORTCUTS.previous})`}
+        nextLabel={t`Next conversation (${SHORTCUTS.next})`}
+      />,
+      pagerSlot
+    )
+
   return (
     <nav
       aria-label={t`Conversations`}
       className={cn("@container/list flex min-w-0 flex-col", hidden && "hidden")}
       data-testid="chat-list"
     >
+      {pager}
       {typeof head === "function"
         ? head({ shown: rows.length, unread: rows.filter((c) => c.unread).length, more: !!hasNextPage })
         : head}

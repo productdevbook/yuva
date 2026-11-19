@@ -3,7 +3,7 @@ import { ClockIcon, PaperclipIcon, XIcon } from "lucide-react"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useNavigate } from "react-router"
 
-import { Kbd, toast } from "@/components/common"
+import { BackArrow, Kbd, toast } from "@/components/common"
 import { DesignBar, DesignButton } from "@/components/common/DesignChoice"
 import {
   designFields,
@@ -37,7 +37,6 @@ import { useSuggestions } from "@/features/conversation/composer/Recipients"
 import { mailPath } from "@/features/mail/folders"
 import { useMySignatures } from "@/features/settings/signature/queries"
 import { useLatest } from "@/hooks/use-latest"
-import { useIsPhone } from "@/hooks/use-media-query"
 import { api, ApiError, unwrap, type DraftItem } from "@/lib/api"
 import { writesMailbox } from "@/lib/mailbox"
 import { cn, newId } from "@/lib/utils"
@@ -129,15 +128,6 @@ function ComposeError({ error }: { error: unknown }) {
 const toggleClass =
   "rounded-md px-1.5 py-0.5 text-caption text-faint outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
 
-function Row({ label, children }: { label: React.ReactNode; children: React.ReactNode }) {
-  return (
-    <div className="mx-4 flex items-start gap-2 border-b border-border/60 pb-1.5">
-      <span className="w-14 shrink-0 pt-1.5 text-small text-faint">{label}</span>
-      <div className="min-w-0 flex-1">{children}</div>
-    </div>
-  )
-}
-
 type Saved = {
   id: string
   conversationId: string
@@ -150,11 +140,20 @@ type Saved = {
 
 type SaveState = "idle" | "saving" | "saved" | "failed"
 
-export function Compose({ box, onClose, draft }: { box: string; onClose: () => void; draft?: DraftItem }) {
+export function Compose({
+  box,
+  onClose,
+  draft,
+  backLabel,
+}: {
+  box: string
+  onClose: () => void
+  draft?: DraftItem
+  backLabel: string
+}) {
   const { t, i18n } = useLingui()
   const errorText = useErrorText()
   const navigate = useNavigate()
-  const phone = useIsPhone()
   const inboxes = useInboxes().data
   const channels = useChannelMap()
   const reopened = !!draft
@@ -418,19 +417,17 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
   const flagged = failedAddress(error)
   const addFiles = (more: File[]) => setFiles((f) => [...f, ...more].slice(0, MAX_FILES))
   const sendKey = `${mod}↵`
+  const sendKeys = sendKey
   const laterKey = `${alt}↵`
   const inboxName = options.find((i) => i.id === inboxId)?.name ?? ""
 
+  const field = "flex flex-col gap-1.5"
+  const fieldLabel = "text-small font-medium text-foreground"
+  const boxed = "rounded-lg border border-input bg-background px-2 py-0.5 focus-within:border-ring"
   return (
-    <div
-      role="dialog"
-      aria-label={t`New mail`}
-      className={cn(
-        "@container/composer fixed z-40 flex flex-col overflow-hidden border bg-card shadow-[0_24px_60px_rgb(0_0_0/0.25)]",
-        phone
-          ? "inset-0 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
-          : "end-6 bottom-0 max-h-[min(720px,calc(100svh-96px))] w-[min(600px,calc(100vw-48px))] rounded-t-2xl"
-      )}
+    <section
+      aria-label={reopened ? t`Draft` : t`New mail`}
+      className="@container/composer mx-auto flex w-full max-w-[760px] flex-col pt-3.5"
       data-testid="compose"
       onKeyDown={(e) => {
         if (e.key === "Escape" && !e.defaultPrevented) {
@@ -448,13 +445,20 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
         }
       }}
     >
-      <div className="flex min-h-14 items-center gap-2 border-b border-border/60 bg-card ps-5 pe-3">
-        <h2 className="flex-1 text-[16px] font-semibold">
-          {reopened ? <Trans>Draft</Trans> : <Trans>New mail</Trans>}
-        </h2>
+      <button
+        type="button"
+        onClick={() => void close()}
+        className="-ms-2 inline-flex h-7 items-center gap-1.5 self-start rounded-md px-2 text-small text-fg2 outline-none hover:bg-line-soft hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+        data-testid="compose-close"
+      >
+        <BackArrow className="size-3.5" />
+        {backLabel}
+      </button>
+      <div className="mt-1.5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <h1 className="m-0 text-title font-semibold">{reopened ? <Trans>Draft</Trans> : <Trans>New mail</Trans>}</h1>
         {state !== "idle" && (
           <span
-            className={cn("text-caption", state === "failed" ? "text-destructive" : "text-faint")}
+            className={cn("text-small", state === "failed" ? "text-destructive" : "text-muted-foreground")}
             aria-live="polite"
             data-testid="compose-saved"
           >
@@ -467,18 +471,12 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
             )}
           </span>
         )}
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          aria-label={t`Close`}
-          onClick={() => void close()}
-          data-testid="compose-close"
-        >
-          <XIcon />
-        </Button>
       </div>
-      <div className="flex min-h-0 flex-1 flex-col gap-1.5 overflow-y-auto py-2">
-        <Row label={<Trans>From</Trans>}>
+      <div className="mt-3 flex flex-col gap-3.5 rounded-xl border bg-card p-4 phone:p-3">
+        <div className={field}>
+          <span className={fieldLabel}>
+            <Trans>From</Trans>
+          </span>
           <div className="flex flex-wrap gap-1.5">
             {reopened ? (
               <span className="min-w-40 flex-1 truncate pt-1.5 text-body" data-testid="compose-from">
@@ -487,7 +485,6 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
             ) : (
               <NativeSelect
                 className="min-w-40 flex-1"
-                size="sm"
                 value={inboxId ?? ""}
                 aria-label={t`From`}
                 onChange={(e) => {
@@ -528,46 +525,46 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
             )}
           </div>
           <OnBehalfNote inboxId={inboxId} />
-        </Row>
-        <>
-          <Row label={<Trans>To</Trans>}>
-            <div className="flex items-start gap-1">
-              <AddressChips
-                ref={toInput}
-                label={t`To`}
-                value={to}
-                onChange={setTo}
-                max={MAX_RECIPIENTS}
-                flagged={flagged ? [flagged] : []}
-                below
-                testId="compose-to"
-                className="flex-1"
-                {...toHints}
-              />
-              {!ccOpen && (
-                <button
-                  type="button"
-                  className={toggleClass}
-                  onClick={() => setCcOpen(true)}
-                  data-testid="compose-cc-toggle"
-                >
-                  <Trans>Cc</Trans>
-                </button>
-              )}
-              {!bccOpen && (
-                <button
-                  type="button"
-                  className={toggleClass}
-                  onClick={() => setBccOpen(true)}
-                  data-testid="compose-bcc-toggle"
-                >
-                  <Trans>Bcc</Trans>
-                </button>
-              )}
-            </div>
-          </Row>
-          {ccOpen && (
-            <Row label={<Trans>Cc</Trans>}>
+        </div>
+        <div className={field}>
+          <span className={fieldLabel}>
+            <Trans>To</Trans>
+          </span>
+          <AddressChips
+            ref={toInput}
+            label={t`To`}
+            value={to}
+            onChange={setTo}
+            max={MAX_RECIPIENTS}
+            flagged={flagged ? [flagged] : []}
+            below
+            testId="compose-to"
+            className={boxed}
+            {...toHints}
+          />
+          <span className="text-caption text-muted-foreground">
+            <Trans>Press Enter or a comma after each address.</Trans>
+          </span>
+          {!ccOpen && !bccOpen && (
+            <button
+              type="button"
+              className={cn(toggleClass, "self-start")}
+              onClick={() => {
+                setCcOpen(true)
+                setBccOpen(true)
+              }}
+              data-testid="compose-cc-toggle"
+            >
+              <Trans>Add Cc or Bcc</Trans>
+            </button>
+          )}
+        </div>
+        {(ccOpen || bccOpen) && (
+          <div className="grid grid-cols-2 gap-3 phone:grid-cols-1">
+            <div className={field}>
+              <span className={fieldLabel}>
+                <Trans>Cc</Trans>
+              </span>
               <AddressChips
                 label={t`Cc`}
                 value={cc}
@@ -576,12 +573,14 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
                 flagged={flagged ? [flagged] : []}
                 below
                 testId="compose-cc"
+                className={boxed}
                 {...ccHints}
               />
-            </Row>
-          )}
-          {bccOpen && (
-            <Row label={<Trans>Bcc</Trans>}>
+            </div>
+            <div className={field}>
+              <span className={fieldLabel}>
+                <Trans>Bcc</Trans>
+              </span>
               <AddressChips
                 label={t`Bcc`}
                 value={bcc}
@@ -590,53 +589,57 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
                 flagged={flagged ? [flagged] : []}
                 below
                 testId="compose-bcc"
+                className={boxed}
                 {...bccHints}
               />
-              <p className="pt-1 text-caption text-faint">
-                <Trans>Bcc recipients get the mail but are hidden from everyone else.</Trans>
-              </p>
-            </Row>
-          )}
-          <Row label={<Trans>Subject</Trans>}>
-            <Input
-              value={subject}
-              maxLength={500}
-              aria-label={t`Subject`}
-              onChange={(e) => setSubject(e.target.value)}
-              className="h-8"
-              data-testid="compose-subject"
-            />
-          </Row>
-        </>
-        {design && (
-          <DesignBar pick={design} onChange={setDesign} conversationId={conversationId} body={body} className="px-4" />
+            </div>
+            <p className="col-span-full -mt-1.5 text-caption text-muted-foreground">
+              <Trans>Bcc recipients get the mail but are hidden from everyone else.</Trans>
+            </p>
+          </div>
         )}
+        <label className={field}>
+          <span className={fieldLabel}>
+            <Trans>Subject</Trans>
+          </span>
+          <Input
+            value={subject}
+            maxLength={500}
+            onChange={(e) => setSubject(e.target.value)}
+            data-testid="compose-subject"
+          />
+        </label>
+        {design && <DesignBar pick={design} onChange={setDesign} conversationId={conversationId} body={body} />}
         {designRecipients && (
-          <p role="alert" className="mx-4 text-caption text-destructive" data-testid="compose-design-recipients">
+          <p role="alert" className="text-caption text-destructive" data-testid="compose-design-recipients">
             <Trans>
               A mail in a design goes to one person: remove the other recipients and the Cc, or send it without the
               design.
             </Trans>
           </p>
         )}
-        <Textarea
-          value={body}
-          maxLength={65536}
-          aria-label={t`Message`}
-          placeholder={t`Write your mail…`}
-          onChange={(e) => setBody(e.target.value)}
-          onPaste={(e) => {
-            if (reopened) return
-            const pasted = Array.from(e.clipboardData.files)
-            if (pasted.length === 0) return
-            e.preventDefault()
-            addFiles(pasted)
-          }}
-          className="min-h-40 flex-1 resize-none rounded-none border-0 bg-transparent px-4 py-2 text-reading shadow-none hover:border-0 focus-visible:ring-0 md:text-reading dark:bg-transparent"
-          data-testid="compose-body"
-        />
+        <label className={field}>
+          <span className={fieldLabel}>
+            <Trans>Message</Trans>
+          </span>
+          <Textarea
+            value={body}
+            maxLength={65536}
+            placeholder={t`Write your mail…`}
+            onChange={(e) => setBody(e.target.value)}
+            onPaste={(e) => {
+              if (reopened) return
+              const pasted = Array.from(e.clipboardData.files)
+              if (pasted.length === 0) return
+              e.preventDefault()
+              addFiles(pasted)
+            }}
+            className="min-h-[200px] text-reading md:text-reading"
+            data-testid="compose-body"
+          />
+        </label>
         {signature && !reopened && !design && (
-          <div className="mx-4 flex items-start gap-3 border-t pt-2" data-testid="compose-signature">
+          <div className="flex items-start gap-3 border-t pt-2" data-testid="compose-signature">
             <div className={cn("min-w-0 flex-1 opacity-70", noSignature && "line-through opacity-40")}>
               <SignatureHtml html={signature} className="max-h-24 overflow-y-auto" />
             </div>
@@ -652,26 +655,40 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
             </Button>
           </div>
         )}
-        {(kept.length > 0 || files.length > 0) && (
-          <ul className="flex flex-wrap gap-1.5 px-4">
+        <div className={field}>
+          <span className={fieldLabel}>
+            <Trans>Attachments</Trans>
+          </span>
+          <input
+            ref={fileInput}
+            type="file"
+            multiple
+            hidden
+            data-testid="compose-files"
+            onChange={(e) => {
+              addFiles(Array.from(e.target.files ?? []))
+              e.target.value = ""
+            }}
+          />
+          <ul className="flex flex-wrap items-center gap-1.5">
             {kept.map((a) => (
               <li
                 key={a.id}
-                className="flex max-w-full items-center gap-1.5 rounded-lg border bg-background py-0.5 ps-2 pe-2 text-caption"
+                className="flex h-10 max-w-full items-center gap-2 rounded-lg border bg-background ps-2.5 pe-3 text-small"
               >
-                <PaperclipIcon className="size-3 shrink-0 text-faint" />
-                <span className="max-w-48 truncate">{a.filename}</span>
-                <span className="text-faint">{formatBytes(a.size, i18n.locale)}</span>
+                <PaperclipIcon className="size-4 shrink-0 text-muted-foreground" />
+                <span className="max-w-48 truncate font-medium">{a.filename}</span>
+                <span className="text-caption text-muted-foreground">{formatBytes(a.size, i18n.locale)}</span>
               </li>
             ))}
             {files.map((f, i) => (
               <li
                 key={`${f.name}-${i}`}
-                className="flex max-w-full items-center gap-1.5 rounded-lg border bg-background py-0.5 ps-2 pe-0.5 text-caption"
+                className="flex h-10 max-w-full items-center gap-2 rounded-lg border bg-background ps-2.5 pe-1 text-small"
               >
                 <FileThumb file={f} />
-                <span className="max-w-48 truncate">{f.name}</span>
-                <span className="text-faint">{formatBytes(f.size, i18n.locale)}</span>
+                <span className="max-w-48 truncate font-medium">{f.name}</span>
+                <span className="text-caption text-muted-foreground">{formatBytes(f.size, i18n.locale)}</span>
                 <Button
                   variant="ghost"
                   size="icon-xs"
@@ -683,10 +700,29 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
                 </Button>
               </li>
             ))}
+            {!reopened && (
+              <li>
+                <Button variant="outline" onClick={() => fileInput.current?.click()} data-testid="compose-attach">
+                  <PaperclipIcon />
+                  <Trans>Attach files</Trans>
+                </Button>
+              </li>
+            )}
+            {inboxId && (
+              <li>
+                <DesignButton
+                  open={designOpen}
+                  onOpenChange={setDesignOpen}
+                  inboxId={inboxId}
+                  conversationId={conversationId}
+                  chosen={design}
+                  onPick={setDesign}
+                  shortcut={`${alt}D`}
+                />
+              </li>
+            )}
           </ul>
-        )}
-      </div>
-      <div className="flex flex-col gap-1.5 border-t border-border/60 px-4 py-3">
+        </div>
         <ComposeError error={fromFailure ? null : error} />
         {asking ? (
           <div className="flex flex-wrap items-center gap-2" data-testid="compose-ask">
@@ -701,60 +737,24 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
             </Button>
           </div>
         ) : (
-          <div className="flex items-center gap-1.5">
-            <input
-              ref={fileInput}
-              type="file"
-              multiple
-              hidden
-              data-testid="compose-files"
-              onChange={(e) => {
-                addFiles(Array.from(e.target.files ?? []))
-                e.target.value = ""
-              }}
-            />
-            {!reopened && (
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                className="text-faint hover:bg-muted"
-                aria-label={t`Attach files`}
-                title={t`Attach files`}
-                onClick={() => fileInput.current?.click()}
-              >
-                <PaperclipIcon />
-              </Button>
-            )}
-            {inboxId && (
-              <DesignButton
-                open={designOpen}
-                onOpenChange={setDesignOpen}
-                inboxId={inboxId}
-                conversationId={conversationId}
-                chosen={design}
-                onPick={setDesign}
-                shortcut={`${alt}D`}
-              />
-            )}
+          <div className="flex flex-wrap items-center gap-2 pt-1">
             <Button
-              variant="ghost"
-              className="h-8 rounded-[9px] px-3 font-normal text-faint hover:bg-muted"
-              disabled={busy || !hasContent}
-              onClick={() => void discard()}
-              data-testid="compose-discard"
+              disabled={!canSend}
+              onClick={() => void go()}
+              title={t`Send (${sendKeys})`}
+              data-testid="compose-send"
             >
-              <Trans>Discard</Trans>
+              <Trans>Send</Trans>
+              <Kbd className="bg-primary-foreground/20 text-primary-foreground phone:hidden">{sendKey}</Kbd>
             </Button>
-            <span className="flex-1" />
             <SendLaterMenu
               open={laterOpen}
               onOpenChange={setLaterOpen}
+              align="start"
               trigger={
                 <Button
                   variant="outline"
-                  className="h-8 w-8 rounded-[9px] border-input bg-card px-0 font-normal"
                   disabled={!canSend}
-                  aria-label={t`Send later`}
                   title={t`Send later (${laterKey})`}
                   data-testid="compose-send-later"
                 />
@@ -762,19 +762,22 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
               onPick={(at) => void go(at)}
             >
               <ClockIcon />
+              <Trans>Send later</Trans>
             </SendLaterMenu>
+            <Button variant="outline" disabled={busy} onClick={() => void close()} data-testid="compose-save">
+              <Trans>Save draft</Trans>
+            </Button>
             <Button
-              className="h-8 rounded-[9px] bg-foreground px-3.5 font-semibold text-background hover:bg-foreground/90"
-              disabled={!canSend}
-              onClick={() => void go()}
-              data-testid="compose-send"
+              variant="ghost"
+              disabled={busy || !hasContent}
+              onClick={() => void discard()}
+              data-testid="compose-discard"
             >
-              <Trans>Send</Trans>
-              <Kbd className="phone:hidden bg-background/15 text-background">{sendKey}</Kbd>
+              <Trans>Discard</Trans>
             </Button>
           </div>
         )}
       </div>
-    </div>
+    </section>
   )
 }

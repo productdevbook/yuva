@@ -41,6 +41,7 @@ import { DesignLine } from "@/features/conversation/messages/DesignLine"
 import { MailBody, MailControls, mailSurface, useMail } from "@/features/conversation/messages/EmailBody"
 import { RedactedLine } from "@/features/conversation/messages/Redacted"
 import { EventLine } from "@/features/conversation/messages/EventLine"
+import { MailFold, MailRow } from "@/features/conversation/messages/MailRow"
 import { Highlight, MessageActions, Ticks } from "@/features/conversation/messages/MessageActions"
 import { OwnDraftCard } from "@/features/conversation/messages/OwnDraftCard"
 import { isOwnDraft } from "@/features/conversation/ownDraft"
@@ -227,16 +228,28 @@ function useWho(m: Message, side: Side, ctx: ThreadContext, name: string) {
   return m.sent_by ? t`${author}, sent by ${by}` : author
 }
 
-function Face({ m, side, ctx, name }: { m: Message; side: Side; ctx: ThreadContext; name: string }) {
+function Face({
+  m,
+  side,
+  ctx,
+  name,
+  small,
+}: {
+  m: Message
+  side: Side
+  ctx: ThreadContext
+  name: string
+  small?: boolean
+}) {
   const author = useAuthorName(m, ctx)
   const by = useAuthorName({ ...m, author: m.sent_by ?? m.author }, ctx)
-  if (side === "in")
-    return <ContactAvatar id={ctx.contact?.id ?? m.conversation_id} name={name} className="size-[34px]" />
-  if (side === "bot") return <BotAvatar name={author} url={m.author.avatar_url} className="size-[34px]" />
+  const size = small ? "size-6 text-[10px]" : "size-[34px]"
+  if (side === "in") return <ContactAvatar id={ctx.contact?.id ?? m.conversation_id} name={name} className={size} />
+  if (side === "bot") return <BotAvatar name={author} url={m.author.avatar_url} className={size} />
   return (
     <PersonAvatar
       name={by}
-      className={cn("size-[34px] text-white", side === "me" ? "bg-muted-foreground text-background" : "bg-mate")}
+      className={cn(size, "text-white", side === "me" ? "bg-muted-foreground text-background" : "bg-mate")}
     />
   )
 }
@@ -280,36 +293,39 @@ function Line({
   first: boolean
   last: boolean
 }) {
+  const { t } = useLingui()
   const side = sideOf(m, me)
   const out = side !== "in"
   const who = useWho(m, side, ctx, name)
   const text = withoutCardLines(m.body, m.cards)
   const ticks = out && !m.delivery
+  const read = ticks && !!ctx.contactReadAt && Date.parse(m.created_at) <= Date.parse(ctx.contactReadAt)
+  const named = side === "bot" || side === "mate" || (side === "in" && !!m.imported_author)
   return (
     <MessageFrame
+      align={out ? "end" : "start"}
       tabIndex={-1}
-      className={cn(
-        "gap-3 outline-none pointer-coarse:flex-wrap pointer-coarse:gap-y-1",
-        first ? "pt-2" : "pt-0",
-        last ? "pb-2" : "pb-0.5"
-      )}
+      className={cn("items-end gap-2 outline-none", first ? "pt-2" : "pt-0", last ? "pb-2" : "pb-1")}
       data-testid="message"
       data-message-id={m.id}
     >
-      <MessageAvatar className={cn(avatarSlot, !first && "invisible")}>
-        <Face m={m} side={side} ctx={ctx} name={name} />
+      <MessageAvatar className={cn("size-6 min-w-6 bg-transparent", !last && "invisible")}>
+        <Face m={m} side={side} ctx={ctx} name={name} small />
       </MessageAvatar>
-      <MessageContent className="max-w-[720px] gap-1.5">
-        {first && (
-          <MessageHeader className={headerClass}>
-            <Who who={who} />
-            <Time iso={m.created_at} />
-            {ticks && last && <Ticks at={m.created_at} readAt={ctx.contactReadAt} />}
-          </MessageHeader>
-        )}
+      <MessageContent className="max-w-[78%] gap-1 phone:max-w-[90%]">
         {text && (
-          <Bubble variant="ghost" className="max-w-full">
-            <BubbleContent className={cn("rounded-md text-reading", ctx.find?.current === m.id && hitRing)}>
+          <Bubble variant="muted" align={out ? "end" : "start"} className="max-w-full">
+            <BubbleContent
+              className={cn(
+                "px-3 py-2 text-reading",
+                side === "bot"
+                  ? "rounded-[14px] rounded-ee-[4px] bg-subtle! ring-1 ring-border ring-inset"
+                  : out
+                    ? "rounded-[14px] rounded-ee-[4px] bg-brand-wash! ring-1 ring-brand/25 ring-inset"
+                    : "rounded-[14px] rounded-es-[4px] bg-seg!",
+                ctx.find?.current === m.id && hitRing
+              )}
+            >
               <div className="text-reading break-words whitespace-pre-wrap">
                 <Highlight text={text} query={ctx.find?.query} />
               </div>
@@ -317,16 +333,27 @@ function Line({
             </BubbleContent>
           </Bubble>
         )}
-        <Attachments items={m.attachments} outgoing={false} />
-        <ArticleCards items={m.cards} outgoing={false} />
+        <Attachments items={m.attachments} outgoing={out} />
+        <ArticleCards items={m.cards} outgoing={out} />
         <DesignLine m={m} />
         <Delivery m={m} />
-        {ticks && last && !first && (
-          <MessageFooter className={footerClass}>
-            <Ticks at={m.created_at} readAt={ctx.contactReadAt} />
+        {last && (
+          <MessageFooter
+            className={cn(footerClass, "gap-x-1.5 px-1", read && "text-success")}
+            data-testid={ticks ? (read ? "ticks-read" : "ticks-sent") : undefined}
+          >
+            {named && <span className="min-w-0 truncate">{who}</span>}
+            {named && <span aria-hidden>·</span>}
+            <Time iso={m.created_at} />
+            {ticks && (
+              <>
+                <span aria-hidden>·</span>
+                <span>{read ? t`Read` : t`Sent`}</span>
+              </>
+            )}
           </MessageFooter>
         )}
-        <MessageActions m={m} ctx={ctx} />
+        <MessageActions m={m} ctx={ctx} className={cn(out && "justify-end")} />
       </MessageContent>
     </MessageFrame>
   )
@@ -1037,6 +1064,11 @@ export type ThreadProps = {
   lastId?: string
   lastMine: boolean
   focusId?: string
+  mailMode?: boolean
+  allOpen?: boolean
+  onAllOpen?: (open: boolean) => void
+  onFilter?: (m: Message) => void
+  tail?: React.ReactNode
 }
 
 type Scroller = Pick<ReturnType<typeof useMessageScroller>, "scrollToEnd" | "scrollToMessage">
@@ -1167,6 +1199,11 @@ function ThreadView({
   scroller,
   content,
   away = false,
+  mailMode = false,
+  allOpen = false,
+  onAllOpen,
+  onFilter,
+  tail,
 }: ThreadProps & {
   scroller: Scroller
   content?: React.RefObject<HTMLDivElement | null>
@@ -1197,8 +1234,43 @@ function ThreadView({
     if (current) scrollToMessage(current, { align: "center", behavior: "smooth" })
   }, [current, scrollToMessage])
 
+  const mails = useMemo(
+    () => (mailMode ? items.filter((m) => isMail(m) && !m.draft && !m.redacted_at) : []),
+    [mailMode, items]
+  )
+  const [opened, setOpened] = useState<Record<string, boolean>>({})
+  const lastMail = mails.at(-1)?.id
+  const hiddenIds = useMemo(() => {
+    if (!mailMode || allOpen || mails.length < 4 || base.find?.query) return null
+    const from = items.indexOf(mails[1])
+    const to = items.indexOf(mails[mails.length - 2])
+    const ids = new Set(
+      items
+        .slice(from, to + 1)
+        .filter((m) => m.kind !== "note" && !(m.draft && isOwnDraft(m, me)))
+        .map((m) => m.id)
+    )
+    if (focusId && ids.has(focusId)) return null
+    return ids
+  }, [mailMode, allOpen, mails, items, base.find?.query, focusId, me])
+  const hiddenMails = hiddenIds ? mails.filter((m) => hiddenIds.has(m.id)).length : 0
+  const isOpen = (m: Message) =>
+    opened[m.id] ?? (allOpen || m.id === lastMail || m.id === focusId || m.id === current || !!m.delivery?.error)
+
   const rows = useMemo(() => {
-    const out: { key: string; day?: string; m?: Message; i: number }[] = []
+    const out: { key: string; day?: string; m?: Message; i: number; fold?: boolean }[] = []
+    if (mailMode) {
+      let folded = false
+      items.forEach((m, i) => {
+        if (hiddenIds?.has(m.id)) {
+          if (!folded) out.push({ key: "mail-fold", i, fold: true })
+          folded = true
+          return
+        }
+        out.push({ key: m.id, m, i })
+      })
+      return out
+    }
     let lastDay = ""
     items.forEach((m, i) => {
       if (i > 0 && items[i - 1].imported_at && !m.imported_at) out.push({ key: IMPORTED_END, i })
@@ -1208,7 +1280,7 @@ function ThreadView({
       out.push({ key: m.id, m, i })
     })
     return out
-  }, [items])
+  }, [items, mailMode, hiddenIds])
 
   const subjects = useMemo(() => {
     const shown = new Map<string, string>()
@@ -1260,6 +1332,19 @@ function ThreadView({
           channelKind={conversation.channel_kind}
         />
       )
+    if (isMail(m) && mailMode)
+      return (
+        <MailRow
+          m={m}
+          ctx={ctx}
+          name={name}
+          open={isOpen(m)}
+          onToggle={() => setOpened((o) => ({ ...o, [m.id]: !isOpen(m) }))}
+          subject={subjects.get(m.id)}
+          onFilter={onFilter && m.direction !== "out" ? () => onFilter(m) : undefined}
+          hit={ctx.find?.current === m.id}
+        />
+      )
     if (isMail(m)) return <Mail m={m} ctx={ctx} name={name} me={me} subject={subjects.get(m.id)} />
     return (
       <Line
@@ -1273,27 +1358,37 @@ function ThreadView({
     )
   }
 
+  const pad = mailMode ? "px-[18px] pt-2 phone:px-3" : undefined
   const body = (
     <>
-      {top && <Row>{top}</Row>}
+      {top && <Row className={pad}>{top}</Row>}
       {older.has && (
-        <Row>
+        <Row className={pad}>
           <Older root={content ? noRoot : viewport} loading={older.loading} onLoad={older.load} />
         </Row>
       )}
       {pending ? (
-        <Row className="grid gap-2">
+        <Row className={cn("grid gap-2", pad)}>
           <Skeleton className="h-12 w-2/3 rounded-2xl" />
           <Skeleton className="h-12 w-1/2 justify-self-end rounded-2xl" />
         </Row>
       ) : error ? (
-        <Row>
+        <Row className={pad}>
           <ErrorLine error={error} />
         </Row>
       ) : (
         rows.map((r) =>
-          r.m ? (
-            <Row key={r.key} messageId={r.m.id} onKeyDown={removeKey(r.m)}>
+          r.fold ? (
+            <Row key={r.key} messageId={r.key}>
+              <MailFold count={hiddenMails} onOpen={() => onAllOpen?.(true)} />
+            </Row>
+          ) : r.m ? (
+            <Row
+              key={r.key}
+              messageId={r.m.id}
+              onKeyDown={removeKey(r.m)}
+              className={cn(mailMode && !isMail(r.m) && "border-t border-line-soft px-[18px] py-1.5 phone:px-3")}
+            >
               {render(r.m, r.i)}
             </Row>
           ) : r.key === IMPORTED_END ? (
@@ -1308,10 +1403,11 @@ function ThreadView({
         )
       )}
       {sending.map((p) => (
-        <Row key={p.key}>
+        <Row key={p.key} className={cn(mailMode && "border-t border-line-soft px-[18px] phone:px-3")}>
           <Pending p={p} />
         </Row>
       ))}
+      {tail && <Row className={cn(mailMode && "px-[18px] phone:px-3")}>{tail}</Row>}
       {typing && (
         <Row>
           <Typing name={name.split(" ")[0]} />
@@ -1349,9 +1445,14 @@ function ThreadView({
     )
 
   return (
-    <MessageScroller className="bg-background">
+    <MessageScroller className="bg-card">
       <MessageScrollerViewport ref={viewport} aria-label={t`Messages`} data-testid="thread">
-        <MessageScrollerContent className="mx-auto w-full max-w-[776px] gap-0 px-7 pt-6 pb-8 phone:px-3">
+        <MessageScrollerContent
+          className={cn(
+            "mx-auto w-full gap-0",
+            mailMode ? "max-w-none p-0 pb-4" : "max-w-[776px] px-7 pt-6 pb-8 phone:px-3"
+          )}
+        >
           {body}
         </MessageScrollerContent>
       </MessageScrollerViewport>

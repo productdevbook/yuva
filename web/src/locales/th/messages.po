@@ -357,12 +357,12 @@ msgstr "{attention, plural, other {ช่องทาง # ช่องต้อ
 msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistants} member {No drafts by members} other {No drafts by this author}}"
 msgstr "{author, select, bot {ไม่มีฉบับร่างจากบอท} assistant {ไม่มีฉบับร่างจากผู้ช่วย} member {ไม่มีฉบับร่างจากสมาชิก} other {ไม่มีฉบับร่างจากผู้เขียนนี้}}"
 
-#: src/features/mail/MailThread.tsx
+#: src/features/conversation/messages/MailRow.tsx
 msgid "{author} on behalf of {ownerName}"
 msgstr "{author} ในนามของ {ownerName}"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
 msgstr "{author} ส่งโดย {by}"
 
@@ -579,6 +579,7 @@ msgstr "{from} ไม่มีระเบียน SPF เผยแพร่ร
 msgid "{good} good"
 msgstr "{good} ดี"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/migrations/ReviewStep.tsx
 msgid "{hidden, plural, one {# earlier message} other {# earlier messages}}"
 msgstr "{hidden, plural, other {ข้อความก่อนหน้า # ข้อความ}}"
@@ -791,6 +792,10 @@ msgstr "ทำเครื่องหมายว่ายังไม่อ่
 msgid "{n} moved to the Inbox"
 msgstr "ย้าย {n} รายการกลับไปที่กล่องจดหมายเข้าแล้ว"
 
+#: src/components/common/ListPager.tsx
+msgid "{n} of {of} in {place}"
+msgstr "{n} จาก {of} ใน {place}"
+
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "{n} snoozed, back {when}"
@@ -864,6 +869,18 @@ msgstr "{name} กำลังพิมพ์ตอบกลับอยู่�
 #: src/features/conversation/messages/Thread.tsx
 msgid "{name} is typing…"
 msgstr "{name} กำลังพิมพ์…"
+
+#: src/features/conversation/LiveLine.tsx
+msgid "{name} left the chat · {time} · no e-mail address known, replies wait until they come back"
+msgstr "{name} ออกจากแชตแล้ว · {time} · ไม่ทราบที่อยู่อีเมล คำตอบจะรอจนกว่าเขาจะกลับมา"
+
+#: src/features/conversation/LiveLine.tsx
+msgid "{name} left the chat · {time} · replies now go by e-mail to {to}"
+msgstr "{name} ออกจากแชตแล้ว · {time} · คำตอบจะส่งทางอีเมลไปที่ {to}"
+
+#: src/features/conversation/LiveLine.tsx
+msgid "{name} left the chat · {time} · replies wait until they come back"
+msgstr "{name} ออกจากแชตแล้ว · {time} · คำตอบจะรอจนกว่าเขาจะกลับมา"
 
 #: src/features/setup/SetupHub.tsx
 msgid "{name} news"
@@ -1122,10 +1139,6 @@ msgstr "การนำเข้าจาก {source} ต้องการค�
 #: src/features/home/HomeSide.tsx
 msgid "{source} import should finish"
 msgstr "การนำเข้าจาก {source} น่าจะเสร็จ"
-
-#: src/features/mail/MailThread.tsx
-msgid "{stackCount, plural, one {Show # earlier message} other {Show # earlier messages}}"
-msgstr "{stackCount, plural, other {แสดงข้อความก่อนหน้า # รายการ}}"
 
 #: src/features/status/StatusPages.tsx
 msgid "{state} since {since}"
@@ -2185,6 +2198,10 @@ msgstr "เพิ่มอีก"
 #: src/features/setup/AddChannelStep.tsx
 msgid "Add at least one origin."
 msgstr "เพิ่มอย่างน้อยหนึ่ง origin"
+
+#: src/features/mail/Compose.tsx
+msgid "Add Cc or Bcc"
+msgstr "เพิ่มสำเนาหรือสำเนาลับ"
 
 #: src/features/settings/ProductsPage.tsx
 msgid "Add channel"
@@ -3417,7 +3434,6 @@ msgstr "มอบหมายให้สมาชิก"
 msgid "Assign to a team"
 msgstr "มอบหมายให้ทีม"
 
-#: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Assign to me"
@@ -3450,7 +3466,7 @@ msgstr "มอบหมายให้ {assignee} เก็บตามชื่
 msgid "Assigned to you"
 msgstr "มอบหมายให้คุณแล้ว"
 
-#: src/features/inbox/InboxSide.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroForm.tsx
 msgid "Assignee"
@@ -3534,6 +3550,8 @@ msgstr "ด้วยความเร็วนี้ การส่งจะ�
 msgid "Attach files"
 msgstr "แนบไฟล์"
 
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/channels/Attachments.tsx
 msgid "Attachments"
@@ -3644,6 +3662,7 @@ msgstr "ไม่อยู่"
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/MergeContactDialog.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/migrations/Wizard.tsx
 msgid "Back"
 msgstr "กลับ"
@@ -3714,9 +3733,9 @@ msgid "Bad only"
 msgstr "เฉพาะที่ไม่ดี"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "สำเนาลับ"
 
@@ -3741,7 +3760,6 @@ msgid "Beats only when the job succeeded."
 msgstr "ส่งสัญญาณเฉพาะเมื่องานสำเร็จ"
 
 #: src/features/contact/ContactCard.tsx
-#: src/features/mail/MailSide.tsx
 msgid "Before"
 msgstr "ก่อนหน้า"
 
@@ -3789,6 +3807,7 @@ msgstr "บล็อกผู้ติดต่อ"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Blocked"
 msgstr "ถูกบล็อก"
@@ -4002,6 +4021,7 @@ msgstr "ตามกลุ่ม"
 msgid "By language"
 msgstr "ตามภาษา"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "by rule {rule}"
 msgstr "โดยกฎ {rule}"
@@ -4137,10 +4157,19 @@ msgstr "คำตอบสำเร็จรูป"
 msgid "Canned replies and macros, in the reply box"
 msgstr "คำตอบสำเร็จรูปและมาโคร ในช่องตอบ"
 
-#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Canned reply"
 msgstr "คำตอบสำเร็จรูป"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Canned reply, macro or help article"
+msgstr "คำตอบสำเร็จรูป มาโคร หรือบทความช่วยเหลือ"
+
+#. placeholder {0}: SHORTCUTS.insert
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Canned reply, macro or help article ({0})"
+msgstr "คำตอบสำเร็จรูป มาโคร หรือบทความช่วยเหลือ ({0})"
 
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Catch-all without a From address"
@@ -4156,9 +4185,9 @@ msgid "Cause found"
 msgstr "พบสาเหตุแล้ว"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "สำเนา"
 
@@ -4292,8 +4321,8 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "การเปลี่ยนโดเมนที่ส่งจะปิดการลงนาม DKIM จนกว่าคุณจะเปิดใหม่สำหรับโดเมนใหม่"
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/inbox/ChatList.tsx
-#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelForm.tsx
@@ -4630,7 +4659,6 @@ msgstr "นาฬิกาเปลี่ยนในวันที่ {date} �
 #: src/features/contact/ContactSheet.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/Compose.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -4723,6 +4751,10 @@ msgstr "การสนทนาที่ปิดแล้ว"
 msgid "closed today"
 msgstr "ปิดแล้ววันนี้"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Closed. A reply opens it again."
+msgstr "ปิดแล้ว การตอบจะเปิดขึ้นอีกครั้ง"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Closes"
 msgstr "ปิดเมื่อ"
@@ -4749,7 +4781,7 @@ msgstr "Code from Slack"
 msgid "Code sent"
 msgstr "ส่งรหัสแล้ว"
 
-#: src/features/mail/MailThread.tsx
+#: src/features/conversation/messages/MailRow.tsx
 msgid "Collapse"
 msgstr "ยุบ"
 
@@ -5096,7 +5128,6 @@ msgstr "บันทึกความยินยอม"
 
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
-#: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Contact"
@@ -5198,7 +5229,6 @@ msgstr "ดำเนินการต่อกับอีเมลที่ใ
 msgid "Continue with your organisation's sign-in"
 msgstr "Continue with your organisation's sign-in"
 
-#: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
 msgid "Conversation"
 msgstr "การสนทนา"
@@ -6141,8 +6171,8 @@ msgid "Deleted inbox"
 msgstr "กล่องข้อความที่ลบแล้ว"
 
 #: src/components/common/DiscussionAuthor.tsx
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/inbox/SidePanels.tsx
-#: src/features/mail/MailThread.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -6262,17 +6292,17 @@ msgid "Desktop notifications are blocked for this site in the browser's settings
 msgstr "การแจ้งเตือนบนเดสก์ท็อปถูกบล็อกสำหรับไซต์นี้ในการตั้งค่าของเบราว์เซอร์ จึงมีเพียงเสียงที่เล่น"
 
 #: src/components/common/SectionPage.tsx
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/ChatView.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
-#: src/features/mail/MailPage.tsx
-#: src/features/mail/MailSide.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
@@ -6294,6 +6324,7 @@ msgstr "นักพัฒนา"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/Feedback.tsx
 msgid "Device"
@@ -6591,6 +6622,7 @@ msgstr "ดาวน์โหลดสำหรับ İYS"
 msgid "Download JSON"
 msgstr "ดาวน์โหลด JSON"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Download the original e-mail (.eml)"
@@ -6863,6 +6895,14 @@ msgstr "แต่ละการตอบกลับคือการสนท
 msgid "Each with all its messages and notes"
 msgstr "แต่ละรายการพร้อมข้อความและบันทึกทั้งหมด"
 
+#: src/features/contact/ConversationPanel.tsx
+msgid "Earlier conversations"
+msgstr "การสนทนาก่อนหน้า"
+
+#: src/features/mail/MailSide.tsx
+msgid "Earlier with {first}"
+msgstr "ก่อนหน้านี้กับ {first}"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/conversation/messages/OwnDraftCard.tsx
@@ -7017,9 +7057,15 @@ msgstr "ข้อผิดพลาดของ API เพิ่มสูงข�
 msgid "Embed snippet"
 msgstr "โค้ดสำหรับฝัง"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Emoji"
 msgstr "อีโมจิ"
+
+#. placeholder {0}: SHORTCUTS.emoji
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Emoji ({0})"
+msgstr "อีโมจิ ({0})"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Empty in the first rows"
@@ -7361,6 +7407,10 @@ msgstr "ทุกที่"
 msgid "Example Ltd."
 msgstr "Example Ltd."
 
+#: src/features/conversation/messages/MailRow.tsx
+msgid "Expand every message ({shortcut})"
+msgstr "ขยายข้อความทั้งหมด ({shortcut})"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Expand or collapse every message"
 msgstr "ขยายหรือยุบทุกข้อความ"
@@ -7559,6 +7609,7 @@ msgstr "มีการสนทนาที่เปิดอยู่น้อ
 
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Fields"
 msgstr "ฟิลด์"
@@ -7647,6 +7698,7 @@ msgstr "กรองตามประเภท ไซต์ การส่ง 
 msgid "Filter messages like the latest mail"
 msgstr "กรองข้อความที่คล้ายอีเมลล่าสุด"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Filter messages like this"
 msgstr "กรองข้อความที่คล้ายนี้"
@@ -7905,9 +7957,18 @@ msgstr "รูปแบบ"
 msgid "Forms run on a website chat channel of this inbox, which lists the sites they may be used on. This inbox has none yet."
 msgstr "แบบฟอร์มทำงานบนช่องทางแชตเว็บไซต์ของกล่องข้อความนี้ ซึ่งแสดงไซต์ที่ใช้ได้ กล่องข้อความนี้ยังไม่มี"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Forward"
 msgstr "ส่งต่อ"
+
+#. placeholder {0}: MAIL_KEYS.forward
+#. placeholder {0}: keys.forward
+#: src/features/conversation/messages/MailRow.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Forward ({0})"
+msgstr "ส่งต่อ ({0})"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Forward all incoming mail to the address below and keep a copy in the mailbox."
@@ -7918,6 +7979,7 @@ msgid "Forward as a note mentioning"
 msgstr "ส่งต่อเป็นบันทึกที่กล่าวถึง"
 
 #: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Forward by e-mail…"
@@ -8009,7 +8071,6 @@ msgstr "วันศุกร์"
 #: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -8654,6 +8715,10 @@ msgstr "ฉันต้องการรับอีเมลเกี่ยว
 msgid "I'll reply"
 msgstr "ฉันจะตอบเอง"
 
+#: src/features/conversation/Collision.tsx
+msgid "I'll reply ({replyKey})"
+msgstr "ฉันจะตอบเอง ({replyKey})"
+
 #: src/features/inbox/ChatList.tsx
 msgid "I'm back"
 msgstr "ฉันกลับมาแล้ว"
@@ -9099,6 +9164,10 @@ msgstr "ติดตั้งเซิร์ฟเวอร์ใน VS Code ซ
 msgid "Installation"
 msgstr "การติดตั้ง"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Internal note"
+msgstr "บันทึกภายใน"
+
 #: src/features/status/text.tsx
 msgid "Investigating"
 msgstr "กำลังตรวจสอบ"
@@ -9272,6 +9341,10 @@ msgstr "เปิดขึ้นโดยมอบหมายให้คุณ
 #: src/features/setup/NewsletterStep.tsx
 msgid "It sends through {address}."
 msgstr "ส่งผ่าน {address}"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "It shows in their chat when they come back"
+msgstr "จะแสดงในแชตเมื่อเขากลับมา"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 #: src/features/setup/email/EmailTestStep.tsx
@@ -9494,6 +9567,7 @@ msgstr "ประเภท"
 msgid "Known only from the receiving server’s results of the test mail."
 msgstr "ทราบจากผลของเซิร์ฟเวอร์ปลายทางต่ออีเมลทดสอบเท่านั้น"
 
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/text.ts
 #: src/features/reports/TrendsReport.tsx
@@ -9510,7 +9584,10 @@ msgstr "เป็นป้ายกำกับเท่านั้น อี�
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/mail/MailSide.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
@@ -9636,6 +9713,10 @@ msgstr "เดือนที่แล้ว"
 msgid "Last name"
 msgstr "นามสกุล"
 
+#: src/features/conversation/LiveLine.tsx
+msgid "Last on {path}"
+msgstr "ล่าสุดที่ {path}"
+
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Last push failed: {failed}"
 msgstr "การพุชล่าสุดล้มเหลว: {failed}"
@@ -9662,6 +9743,7 @@ msgid "Last seen"
 msgstr "พบล่าสุด"
 
 #: src/features/contact/Presence.tsx
+#: src/features/conversation/LiveLine.tsx
 msgid "Last seen {seen}"
 msgstr "เห็นล่าสุด {seen}"
 
@@ -9743,6 +9825,10 @@ msgstr "Leave it out"
 #: src/features/conversation/Collision.tsx
 msgid "Leave it to {name}"
 msgstr "ปล่อยให้ {name} จัดการ"
+
+#: src/features/conversation/Collision.tsx
+msgid "Leave it to {name} ({leaveKey})"
+msgstr "ปล่อยให้ {name} จัดการ ({leaveKey})"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Leave it to the teammate who is typing"
@@ -10165,11 +10251,11 @@ msgstr "ตัวพิมพ์เล็ก ตัวเลข ขีดกล�
 
 #: src/app/Palette.tsx
 #: src/features/conversation/composer/CannedMenu.tsx
-#: src/features/conversation/composer/ReplyBox.tsx
 msgid "Macro"
 msgstr "มาโคร"
 
 #: src/app/Palette.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Macros"
 msgstr "มาโคร"
@@ -10196,6 +10282,11 @@ msgstr "อีเมล"
 #: src/features/mail/MailThread.tsx
 msgid "Mail actions"
 msgstr "การทำงานกับอีเมล"
+
+#. placeholder {0}: MAIL_KEYS.more
+#: src/features/mail/MailThread.tsx
+msgid "Mail actions ({0})"
+msgstr "การทำงานกับอีเมล ({0})"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -10545,6 +10636,7 @@ msgstr "สื่อ"
 
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 msgid "Media, links and docs"
 msgstr "สื่อ ลิงก์ และเอกสาร"
 
@@ -10658,6 +10750,7 @@ msgstr "รวมกับผู้ติดต่ออื่น"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ConversationPanel.tsx
 msgid "Merge…"
 msgstr "รวม…"
 
@@ -10690,8 +10783,10 @@ msgstr "ข้อความ"
 msgid "Message type"
 msgstr "ประเภทข้อความ"
 
+#: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/MailSide.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Messages"
@@ -10859,6 +10954,7 @@ msgstr "เดือน"
 msgid "More"
 msgstr "เพิ่มเติม"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/ConversationMenu.tsx
 msgid "More actions"
 msgstr "การดำเนินการเพิ่มเติม"
@@ -10884,6 +10980,14 @@ msgstr "ตัวเลือกเพิ่มเติม"
 #: src/features/contact/MergePreview.tsx
 msgid "More than {count} conversations"
 msgstr "มากกว่า {count} การสนทนา"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "More ways to send"
+msgstr "วิธีส่งอื่นๆ"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "More ways to send ({laterKey})"
+msgstr "วิธีส่งอื่นๆ ({laterKey})"
 
 #: src/features/docs/Toolbar.tsx
 msgid "Most “helpful” ratings first"
@@ -11100,7 +11204,6 @@ msgstr "ย้ายไปที่ถังขยะ ({0})"
 
 #: src/features/feedback/FeedbackHome.tsx
 #: src/features/mail/MailList.tsx
-#: src/features/mail/MailThread.tsx
 msgid "Move to the Trash (#)"
 msgstr "ย้ายไปที่ถังขยะ (#)"
 
@@ -11374,6 +11477,7 @@ msgstr "สร้างผู้ติดต่อใหม่แล้ว"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/inbox/ChatsPage.tsx
 msgid "New conversation"
 msgstr "การสนทนาใหม่"
@@ -11600,6 +11704,11 @@ msgstr "เอนด์พอยต์เว็บฮุกใหม่"
 msgid "New workspace"
 msgstr "เวิร์กสเปซใหม่"
 
+#. placeholder {0}: SHORTCUTS.previous
+#: src/features/mail/MailList.tsx
+msgid "Newer mail ({0})"
+msgstr "อีเมลที่ใหม่กว่า ({0})"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Newer mail and the switch"
 msgstr "อีเมลที่ใหม่กว่าและการสลับ"
@@ -11655,6 +11764,11 @@ msgstr "ความพยายามครั้งถัดไป {when}"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Next check {next}."
 msgstr "ตรวจสอบครั้งถัดไป {next}"
+
+#. placeholder {0}: SHORTCUTS.next
+#: src/features/inbox/ChatList.tsx
+msgid "Next conversation ({0})"
+msgstr "การสนทนาถัดไป ({0})"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Next language version"
@@ -12026,6 +12140,7 @@ msgstr "ไม่มีป้ายกำกับ"
 msgid "No labels yet"
 msgstr "ยังไม่มีป้ายกำกับ"
 
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
@@ -12406,9 +12521,11 @@ msgid "Nobody would get this mail. Pick lists with subscribers, or loosen the co
 msgstr "จะไม่มีใครได้รับอีเมลนี้ เลือกรายชื่อที่มีผู้สมัครรับ หรือผ่อนเงื่อนไข"
 
 #: src/features/broadcasts/ListForm.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/contact/MergePreview.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -12629,7 +12746,6 @@ msgstr "ยังไม่ได้ใช้"
 msgid "Not verified: the mail did not pass the sender check, so this address may be forged."
 msgstr "ยังไม่ยืนยัน: อีเมลไม่ผ่านการตรวจสอบผู้ส่ง ที่อยู่นี้จึงอาจเป็นของปลอม"
 
-#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Note"
 msgstr "บันทึก"
@@ -12657,6 +12773,7 @@ msgstr "บันทึก เห็นเฉพาะทีม"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 msgid "Notes"
 msgstr "บันทึก"
 
@@ -12680,6 +12797,10 @@ msgstr "ไม่มีอะไรตอบที่พอร์ตนั้น
 #: src/features/migrations/DoneStep.tsx
 msgid "Nothing changed in {provider}; keep the account as an archive if you like."
 msgstr "ไม่มีอะไรเปลี่ยนแปลงใน {provider} เก็บบัญชีไว้เป็นที่เก็บถาวรได้หากต้องการ"
+
+#: src/features/mail/MailSide.tsx
+msgid "Nothing earlier."
+msgstr "ไม่มีก่อนหน้านี้"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Nothing from the file is added, and the uploaded file is deleted."
@@ -12918,6 +13039,7 @@ msgstr "เสนอบนแบบฟอร์มสมัครรับแล
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/conversation/LiveLine.tsx
 msgid "Offline"
 msgstr "ออฟไลน์"
 
@@ -12925,6 +13047,11 @@ msgstr "ออฟไลน์"
 #: src/features/status/ResponseChart.tsx
 msgid "OK"
 msgstr "OK"
+
+#. placeholder {0}: SHORTCUTS.next
+#: src/features/mail/MailList.tsx
+msgid "Older mail ({0})"
+msgstr "อีเมลที่เก่ากว่า ({0})"
 
 #: src/features/migrations/parts.tsx
 msgid "Older mail came from the export file you imported, so only newer mail is read here; mail that is in both is not imported twice. After the copy, the usual switch follows."
@@ -12951,6 +13078,10 @@ msgstr "การเข้าชมที่เก่ากว่า"
 #: src/features/settings/webhooks/parts.tsx
 msgid "On"
 msgstr "เปิด"
+
+#: src/features/conversation/LiveLine.tsx
+msgid "On {path}"
+msgstr "อยู่ที่ {path}"
 
 #: src/features/broadcasts/Composer.tsx
 msgid "On by default. Links to your sites get utm_source=newsletter, utm_medium=email and the campaign name, so Analytics shows the visits this broadcast brings. Links with their own utm_ parameters keep them."
@@ -13063,10 +13194,15 @@ msgstr "ออนไลน์"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/Presence.tsx
 #: src/features/conversation/ConversationStatus.tsx
+#: src/features/conversation/LiveLine.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Online now"
 msgstr "ออนไลน์อยู่"
+
+#: src/features/conversation/LiveLine.tsx
+msgid "Online now · typing"
+msgstr "ออนไลน์อยู่ · กำลังพิมพ์"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Online status"
@@ -13415,6 +13551,10 @@ msgstr "เปิดในการวิเคราะห์"
 #: src/features/home/HomeWork.tsx
 msgid "Open in Inbox"
 msgstr "เปิดในกล่องข้อความ"
+
+#: src/features/contact/ConversationPanel.tsx
+msgid "Open in People"
+msgstr "เปิดใน People"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Open incident"
@@ -13862,6 +14002,7 @@ msgstr "ส่วนที่ {part} จาก {totalParts}"
 msgid "Partial outage"
 msgstr "ขัดข้องบางส่วน"
 
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/conversation/Participants.tsx
 msgid "Participants"
 msgstr "ผู้เข้าร่วม"
@@ -14140,6 +14281,7 @@ msgid "Permission to send"
 msgstr "สิทธิ์ในการส่ง"
 
 #: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ConversationPanel.tsx
 msgid "Person"
 msgstr "บุคคล"
 
@@ -14548,6 +14690,10 @@ msgstr "Preferred: Yuva reads it again when the provider rotates its certificate
 msgid "Preparing"
 msgstr "กำลังเตรียม"
 
+#: src/features/mail/Compose.tsx
+msgid "Press Enter or a comma after each address."
+msgstr "กด Enter หรือจุลภาคหลังแต่ละที่อยู่"
+
 #: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
@@ -14589,6 +14735,11 @@ msgstr "ดูตัวอย่างศูนย์ช่วยเหลือ
 msgid "Preview the page"
 msgstr "ดูตัวอย่างหน้า"
 
+#. placeholder {0}: SHORTCUTS.previous
+#: src/features/inbox/ChatList.tsx
+msgid "Previous conversation ({0})"
+msgstr "การสนทนาก่อนหน้า ({0})"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Previous or next discussion"
 msgstr "กระทู้ก่อนหน้าหรือถัดไป"
@@ -14613,6 +14764,7 @@ msgstr "หน้าสถานะก่อนหน้าหรือถัด
 msgid "Previous screenshot"
 msgstr "ภาพหน้าจอก่อนหน้า"
 
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
@@ -14648,9 +14800,9 @@ msgid "pro, team"
 msgstr "pro, team"
 
 #: src/components/common/WorkspaceSelector.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxPicker.tsx
-#: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -14934,6 +15086,10 @@ msgstr "อยู่ในคิวแล้ว ความพยายาม�
 msgid "Quick cleanup"
 msgstr "ล้างอย่างรวดเร็ว"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Quick replies"
+msgstr "ตอบกลับด่วน"
+
 #: src/features/settings/automation/RuleForm.tsx
 msgid "Quiet for (minutes)"
 msgstr "เงียบเป็นเวลา (นาที)"
@@ -14996,6 +15152,7 @@ msgid "Reach"
 msgstr "การเข้าถึง"
 
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "Read"
 msgstr "อ่าน"
 
@@ -15427,6 +15584,11 @@ msgstr "ลบประวัติที่นำเข้า"
 msgid "Remove imported history?"
 msgstr "ลบประวัติที่นำเข้าไหม"
 
+#. placeholder {0}: l.name
+#: src/features/contact/ConversationPanel.tsx
+msgid "Remove label {0}"
+msgstr "นำป้ายกำกับ {0} ออก"
+
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Remove label {labelName}"
 msgstr "เอาป้ายกำกับ {labelName} ออก"
@@ -15588,6 +15750,7 @@ msgstr "เปลี่ยนชื่อกลุ่ม"
 msgid "Rename the mailbox"
 msgstr "เปลี่ยนชื่อกล่องจดหมาย"
 
+#: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -15597,6 +15760,10 @@ msgstr "เปิดอีกครั้ง"
 #: src/features/feedback/FeedbackHome.tsx
 msgid "Reopen ({closeKey})"
 msgstr "เปิดอีกครั้ง ({closeKey})"
+
+#: src/features/conversation/HeaderActions.tsx
+msgid "Reopen (E)"
+msgstr "เปิดอีกครั้ง (E)"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reorder the selected view in the sidebar"
@@ -15724,12 +15891,18 @@ msgid "Replies you write in Slack threads no longer reach Yuva."
 msgstr "Replies you write in Slack threads no longer reach Yuva."
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Reply"
 msgstr "ตอบกลับ"
+
+#. placeholder {0}: keys.reply
+#: src/features/conversation/messages/MailRow.tsx
+msgid "Reply ({0})"
+msgstr "ตอบกลับ ({0})"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Reply ({mod}↵)"
@@ -15744,9 +15917,15 @@ msgstr "ตอบกลับ (R)"
 msgid "Reply account"
 msgstr "บัญชีตอบกลับ"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Reply all"
 msgstr "ตอบกลับทั้งหมด"
+
+#. placeholder {0}: keys.replyAll
+#: src/features/conversation/messages/MailRow.tsx
+msgid "Reply all ({0})"
+msgstr "ตอบกลับทั้งหมด ({0})"
 
 #: src/features/mail/MailThread.tsx
 msgid "Reply all (A)"
@@ -15764,6 +15943,10 @@ msgstr "เป้าหมายการตอบกลับและการ
 msgid "Reply and resolve"
 msgstr "Reply and resolve"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Reply by e-mail"
+msgstr "ตอบทางอีเมล"
+
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Reply command"
 msgstr "Reply command"
@@ -15775,6 +15958,10 @@ msgstr "การตอบกลับถูกระงับไว้เพื
 #: src/features/home/HomeWork.tsx
 msgid "Reply in {time}"
 msgstr "ตอบกลับภายใน {time}"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Reply in chat"
+msgstr "ตอบในแชต"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Reply posted"
@@ -15975,6 +16162,10 @@ msgstr "แก้ไขแล้วเมื่อ {endedAt}"
 #: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "แก้ไขเสร็จใน"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Resolved. A reply opens it again."
+msgstr "แก้ไขแล้ว การตอบจะเปิดขึ้นอีกครั้ง"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Resolved. It moved to the Resolved tab."
@@ -16358,6 +16549,7 @@ msgstr "บันทึกการเปลี่ยนแปลง"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "บันทึกฉบับร่าง"
 
@@ -16466,6 +16658,7 @@ msgstr "กำลังสแกนเฮดเดอร์…"
 
 #: src/components/common/SendLater.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 msgid "Schedule"
 msgstr "ตั้งเวลา"
 
@@ -16860,6 +17053,11 @@ msgstr "ส่ง “{name}” ตอนนี้ไหม"
 msgid "Send “{name}” on {when}?"
 msgstr "ส่ง “{name}” ในวันที่ {when} ไหม"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send ({sendKeys})"
+msgstr "ส่ง ({sendKeys})"
+
 #: src/features/status/MonitorToken.tsx
 msgid "Send a beat"
 msgstr "ส่งสัญญาณ"
@@ -16876,10 +17074,6 @@ msgstr "ส่งรหัส"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send a help article"
 msgstr "ส่งบทความช่วยเหลือ"
-
-#: src/features/conversation/composer/ReplyBox.tsx
-msgid "Send a help article ({articleKey})"
-msgstr "ส่งบทความช่วยเหลือ ({articleKey})"
 
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "Send a mail a set time after people sign up, once each"
@@ -16952,6 +17146,10 @@ msgstr "ส่งข้อความทดสอบอีกครั้ง"
 msgid "Send drafts"
 msgstr "ส่งฉบับร่าง"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Send e-mail"
+msgstr "ส่งอีเมล"
+
 #: src/features/settings/webhooks/sections.tsx
 msgid "Send events"
 msgstr "ส่งเหตุการณ์"
@@ -16990,7 +17188,6 @@ msgstr "Send it after"
 msgid "Send later"
 msgstr "ส่งภายหลัง"
 
-#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 msgid "Send later ({laterKey})"
 msgstr "ส่งภายหลัง ({laterKey})"
@@ -17086,6 +17283,10 @@ msgstr "ส่งถึง"
 #: src/features/settings/automation/text.ts
 msgid "Send to a webhook endpoint"
 msgstr "ส่งไปยังปลายทางเว็บฮุก"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Send to chat"
+msgstr "ส่งไปที่แชต"
 
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/Composer.tsx
@@ -17251,6 +17452,7 @@ msgstr "ส่งแล้ว"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/status/Notices.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Sent"
@@ -17539,6 +17741,7 @@ msgstr "แป้นพิมพ์ลัด"
 #: src/components/common/PageLayout.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -18466,8 +18669,8 @@ msgid "Start your mailing list"
 msgstr "สร้างรายชื่อผู้รับจดหมายของคุณ"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "Started"
@@ -18553,9 +18756,9 @@ msgstr "สถานะเมื่อล่ม"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatList.tsx
-#: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/automation/ActionRow.tsx
@@ -18900,6 +19103,7 @@ msgstr "การตรวจสอบ TCP"
 #: src/app/TeamMenu.tsx
 #: src/components/common/DiscussionAuthor.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/conversation/History.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -20408,6 +20612,7 @@ msgstr "ผู้ติดต่อนี้คงค่าของตนเอ
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 msgid "This conversation"
 msgstr "การสนทนานี้"
 
@@ -20622,6 +20827,10 @@ msgstr "รายชื่อนี้เป็นส่วนตัว แบ�
 #: src/features/broadcasts/Trigger.tsx
 msgid "This list was deleted. Pick another list, or stop this triggered e-mail."
 msgstr "This list was deleted. Pick another list, or stop this triggered e-mail."
+
+#: src/features/mail/MailSide.tsx
+msgid "This mail"
+msgstr "อีเมลนี้"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "This mail is about using {inboxName}, not advertising."
@@ -20917,10 +21126,11 @@ msgid "TLS (port 465)"
 msgstr "TLS (พอร์ต 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -21017,7 +21227,6 @@ msgid "Tracker"
 msgstr "Tracker"
 
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailThread.tsx
 #: src/features/migrations/parts.tsx
 msgid "Trash"
 msgstr "ถังขยะ"
@@ -21207,6 +21416,7 @@ msgstr "ยังไม่ตอบ"
 msgid "Unassign"
 msgstr "ยกเลิกการมอบหมาย"
 
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/home/HomeWork.tsx
 #: src/features/inbox/ChatList.tsx
@@ -21354,6 +21564,7 @@ msgstr "ปลดล็อกแล้ว"
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/contact/MergeContactDialog.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Unnamed contact"
@@ -22731,6 +22942,7 @@ msgstr "เขียนเมลใหม่"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Write a note for the team"
 msgstr "เขียนบันทึกสำหรับทีม"
 
@@ -22778,6 +22990,14 @@ msgstr "เขียนการตอบกลับอัตโนมัติ
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Write to {first}…"
 msgstr "เขียนถึง {first}…"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Write to {first}… it shows when they come back"
+msgstr "เขียนถึง {first}… จะแสดงเมื่อเขากลับมา"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Write to {first}… this goes out as an e-mail"
+msgstr "เขียนถึง {first}… จะส่งเป็นอีเมล"
 
 #: src/components/common/text.ts
 msgid "Write What's new entries and translations"

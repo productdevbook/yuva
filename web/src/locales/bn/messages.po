@@ -357,12 +357,12 @@ msgstr "{attention, plural, one {#টি চ্যানেলে মনোয�
 msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistants} member {No drafts by members} other {No drafts by this author}}"
 msgstr "{author, select, bot {বটের কোনো ড্রাফট নেই} assistant {অ্যাসিস্ট্যান্টের কোনো ড্রাফট নেই} member {সদস্যদের কোনো ড্রাফট নেই} other {এই লেখকের কোনো ড্রাফট নেই}}"
 
-#: src/features/mail/MailThread.tsx
+#: src/features/conversation/messages/MailRow.tsx
 msgid "{author} on behalf of {ownerName}"
 msgstr "{ownerName}-এর পক্ষে {author}"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
 msgstr "{author}, {by}-এর পাঠানো"
 
@@ -579,6 +579,7 @@ msgstr "{from}-এর কোনো SPF রেকর্ড নেই। আপন
 msgid "{good} good"
 msgstr "{good} ভালো"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/migrations/ReviewStep.tsx
 msgid "{hidden, plural, one {# earlier message} other {# earlier messages}}"
 msgstr "{hidden, plural, one {#টি আগের বার্তা} other {#টি আগের বার্তা}}"
@@ -791,6 +792,10 @@ msgstr "{n}টি অপঠিত হিসেবে চিহ্নিত"
 msgid "{n} moved to the Inbox"
 msgstr "{n}টি ইনবক্সে ফেরানো হয়েছে"
 
+#: src/components/common/ListPager.tsx
+msgid "{n} of {of} in {place}"
+msgstr "{place}-এ {of}টির মধ্যে {n}"
+
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "{n} snoozed, back {when}"
@@ -864,6 +869,18 @@ msgstr "{name} ও একটি উত্তর টাইপ করছেন।"
 #: src/features/conversation/messages/Thread.tsx
 msgid "{name} is typing…"
 msgstr "{name} টাইপ করছেন…"
+
+#: src/features/conversation/LiveLine.tsx
+msgid "{name} left the chat · {time} · no e-mail address known, replies wait until they come back"
+msgstr "{name} চ্যাট ছেড়ে গেছেন · {time} · কোনো ই-মেইল ঠিকানা জানা নেই, তিনি ফিরে না আসা পর্যন্ত উত্তর অপেক্ষা করবে"
+
+#: src/features/conversation/LiveLine.tsx
+msgid "{name} left the chat · {time} · replies now go by e-mail to {to}"
+msgstr "{name} চ্যাট ছেড়ে গেছেন · {time} · উত্তর এখন ই-মেইলে {to}-এ যাবে"
+
+#: src/features/conversation/LiveLine.tsx
+msgid "{name} left the chat · {time} · replies wait until they come back"
+msgstr "{name} চ্যাট ছেড়ে গেছেন · {time} · তিনি ফিরে না আসা পর্যন্ত উত্তর অপেক্ষা করবে"
 
 #: src/features/setup/SetupHub.tsx
 msgid "{name} news"
@@ -1122,10 +1139,6 @@ msgstr "{source} ইমপোর্টে মনোযোগ দরকার"
 #: src/features/home/HomeSide.tsx
 msgid "{source} import should finish"
 msgstr "{source} ইমপোর্ট শেষ হওয়ার কথা"
-
-#: src/features/mail/MailThread.tsx
-msgid "{stackCount, plural, one {Show # earlier message} other {Show # earlier messages}}"
-msgstr "{stackCount, plural, one {আগের # বার্তা দেখান} other {আগের # বার্তা দেখান}}"
 
 #: src/features/status/StatusPages.tsx
 msgid "{state} since {since}"
@@ -2185,6 +2198,10 @@ msgstr "আরেকটি যোগ করুন"
 #: src/features/setup/AddChannelStep.tsx
 msgid "Add at least one origin."
 msgstr "অন্তত একটি অরিজিন যোগ করুন।"
+
+#: src/features/mail/Compose.tsx
+msgid "Add Cc or Bcc"
+msgstr "Cc বা Bcc যোগ করুন"
 
 #: src/features/settings/ProductsPage.tsx
 msgid "Add channel"
@@ -3417,7 +3434,6 @@ msgstr "একজন সদস্যকে অ্যাসাইন করুন
 msgid "Assign to a team"
 msgstr "টিমকে দিন"
 
-#: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Assign to me"
@@ -3450,7 +3466,7 @@ msgstr "{assignee}-কে অ্যাসাইন করা হয়েছে,
 msgid "Assigned to you"
 msgstr "আপনাকে অ্যাসাইন করা হয়েছে"
 
-#: src/features/inbox/InboxSide.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroForm.tsx
 msgid "Assignee"
@@ -3534,6 +3550,8 @@ msgstr "এই গতিতে পাঠাতে প্রায় {paceDays} 
 msgid "Attach files"
 msgstr "ফাইল সংযুক্ত করুন"
 
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/channels/Attachments.tsx
 msgid "Attachments"
@@ -3644,6 +3662,7 @@ msgstr "অনুপস্থিত"
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/MergeContactDialog.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/migrations/Wizard.tsx
 msgid "Back"
 msgstr "ফিরে যান"
@@ -3714,9 +3733,9 @@ msgid "Bad only"
 msgstr "শুধু খারাপ"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "Bcc"
 
@@ -3741,7 +3760,6 @@ msgid "Beats only when the job succeeded."
 msgstr "কাজ সফল হলে তবেই সংকেত পাঠায়।"
 
 #: src/features/contact/ContactCard.tsx
-#: src/features/mail/MailSide.tsx
 msgid "Before"
 msgstr "আগে"
 
@@ -3789,6 +3807,7 @@ msgstr "কন্টাক্ট ব্লক করুন"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Blocked"
 msgstr "ব্লক করা"
@@ -4002,6 +4021,7 @@ msgstr "গ্রুপ অনুযায়ী"
 msgid "By language"
 msgstr "ভাষা অনুযায়ী"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "by rule {rule}"
 msgstr "নিয়ম {rule} দ্বারা"
@@ -4137,10 +4157,19 @@ msgstr "ক্যানড রিপ্লাই"
 msgid "Canned replies and macros, in the reply box"
 msgstr "তৈরি উত্তর ও ম্যাক্রো, উত্তরের ঘরে"
 
-#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Canned reply"
 msgstr "ক্যানড রিপ্লাই"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Canned reply, macro or help article"
+msgstr "ক্যানড রিপ্লাই, ম্যাক্রো বা সহায়তা নিবন্ধ"
+
+#. placeholder {0}: SHORTCUTS.insert
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Canned reply, macro or help article ({0})"
+msgstr "ক্যানড রিপ্লাই, ম্যাক্রো বা সহায়তা নিবন্ধ ({0})"
 
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Catch-all without a From address"
@@ -4156,9 +4185,9 @@ msgid "Cause found"
 msgstr "কারণ পাওয়া গেছে"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "Cc"
 
@@ -4292,8 +4321,8 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "পাঠানোর ডোমেন বদলালে নতুন ডোমেনের জন্য আবার চালু না করা পর্যন্ত DKIM সাইনিং বন্ধ হয়ে যায়।"
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/inbox/ChatList.tsx
-#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelForm.tsx
@@ -4630,7 +4659,6 @@ msgstr "ঘড়ি {date} তারিখে বদলায়; সময় 
 #: src/features/contact/ContactSheet.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/Compose.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -4723,6 +4751,10 @@ msgstr "বন্ধ হওয়া কথোপকথন"
 msgid "closed today"
 msgstr "আজ বন্ধ হয়েছে"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Closed. A reply opens it again."
+msgstr "বন্ধ। একটি উত্তর এটি আবার খুলবে।"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Closes"
 msgstr "বন্ধ হয়"
@@ -4749,7 +4781,7 @@ msgstr "Code from Slack"
 msgid "Code sent"
 msgstr "কোড পাঠানো হয়েছে"
 
-#: src/features/mail/MailThread.tsx
+#: src/features/conversation/messages/MailRow.tsx
 msgid "Collapse"
 msgstr "গুটিয়ে নিন"
 
@@ -5096,7 +5128,6 @@ msgstr "সম্মতির রেকর্ড"
 
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
-#: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Contact"
@@ -5198,7 +5229,6 @@ msgstr "নতুন মেইল নিয়ে চালিয়ে যা�
 msgid "Continue with your organisation's sign-in"
 msgstr "Continue with your organisation's sign-in"
 
-#: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
 msgid "Conversation"
 msgstr "কথোপকথন"
@@ -6141,8 +6171,8 @@ msgid "Deleted inbox"
 msgstr "মুছে ফেলা ইনবক্স"
 
 #: src/components/common/DiscussionAuthor.tsx
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/inbox/SidePanels.tsx
-#: src/features/mail/MailThread.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -6262,17 +6292,17 @@ msgid "Desktop notifications are blocked for this site in the browser's settings
 msgstr "ব্রাউজারের সেটিংসে এই সাইটের জন্য ডেস্কটপ নোটিফিকেশন ব্লক করা, তাই শুধু শব্দ বাজে।"
 
 #: src/components/common/SectionPage.tsx
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/ChatView.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
-#: src/features/mail/MailPage.tsx
-#: src/features/mail/MailSide.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
@@ -6294,6 +6324,7 @@ msgstr "ডেভেলপার"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/Feedback.tsx
 msgid "Device"
@@ -6591,6 +6622,7 @@ msgstr "İYS-এর জন্য ডাউনলোড করুন"
 msgid "Download JSON"
 msgstr "JSON ডাউনলোড করুন"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Download the original e-mail (.eml)"
@@ -6863,6 +6895,14 @@ msgstr "প্রতিটি উত্তর ইনবক্সে একটি
 msgid "Each with all its messages and notes"
 msgstr "প্রতিটি তার সব বার্তা ও নোটসহ"
 
+#: src/features/contact/ConversationPanel.tsx
+msgid "Earlier conversations"
+msgstr "আগের কথোপকথন"
+
+#: src/features/mail/MailSide.tsx
+msgid "Earlier with {first}"
+msgstr "{first}-এর সাথে আগে"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/conversation/messages/OwnDraftCard.tsx
@@ -7017,9 +7057,15 @@ msgstr "API ত্রুটি বেড়েছে"
 msgid "Embed snippet"
 msgstr "এমবেড স্নিপেট"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Emoji"
 msgstr "ইমোজি"
+
+#. placeholder {0}: SHORTCUTS.emoji
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Emoji ({0})"
+msgstr "ইমোজি ({0})"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Empty in the first rows"
@@ -7361,6 +7407,10 @@ msgstr "সর্বত্র"
 msgid "Example Ltd."
 msgstr "Example Ltd."
 
+#: src/features/conversation/messages/MailRow.tsx
+msgid "Expand every message ({shortcut})"
+msgstr "সব বার্তা প্রসারিত করুন ({shortcut})"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Expand or collapse every message"
 msgstr "সব বার্তা খুলুন বা গুটিয়ে নিন"
@@ -7559,6 +7609,7 @@ msgstr "সবচেয়ে কম খোলা কথোপকথন"
 
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Fields"
 msgstr "ফিল্ড"
@@ -7647,6 +7698,7 @@ msgstr "ধরন, সাইট, সম্প্রচার ও SLA অনু�
 msgid "Filter messages like the latest mail"
 msgstr "সর্বশেষ মেলের মতো বার্তা ফিল্টার করুন"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Filter messages like this"
 msgstr "এর মতো বার্তা ফিল্টার করুন"
@@ -7905,9 +7957,18 @@ msgstr "ফরম্যাট"
 msgid "Forms run on a website chat channel of this inbox, which lists the sites they may be used on. This inbox has none yet."
 msgstr "ফর্ম এই ইনবক্সের একটি ওয়েবসাইট চ্যাট চ্যানেলে চলে, যা কোন সাইটে এগুলো ব্যবহার করা যায় তার তালিকা রাখে। এই ইনবক্সে এখনও কোনোটি নেই।"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Forward"
 msgstr "ফরওয়ার্ড"
+
+#. placeholder {0}: MAIL_KEYS.forward
+#. placeholder {0}: keys.forward
+#: src/features/conversation/messages/MailRow.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Forward ({0})"
+msgstr "ফরওয়ার্ড ({0})"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Forward all incoming mail to the address below and keep a copy in the mailbox."
@@ -7918,6 +7979,7 @@ msgid "Forward as a note mentioning"
 msgstr "উল্লেখ করে নোট হিসেবে ফরওয়ার্ড করুন"
 
 #: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Forward by e-mail…"
@@ -8009,7 +8071,6 @@ msgstr "শুক্রবার"
 #: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -8654,6 +8715,10 @@ msgstr "আমি {inboxName} থেকে {listName} সম্পর্কে �
 msgid "I'll reply"
 msgstr "আমি উত্তর দেব"
 
+#: src/features/conversation/Collision.tsx
+msgid "I'll reply ({replyKey})"
+msgstr "আমি উত্তর দেব ({replyKey})"
+
 #: src/features/inbox/ChatList.tsx
 msgid "I'm back"
 msgstr "আমি ফিরে এসেছি"
@@ -9099,6 +9164,10 @@ msgstr "সার্ভারটি VS Code-এ ইনস্টল করুন;
 msgid "Installation"
 msgstr "ইনস্টলেশন"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Internal note"
+msgstr "অভ্যন্তরীণ নোট"
+
 #: src/features/status/text.tsx
 msgid "Investigating"
 msgstr "তদন্ত চলছে"
@@ -9272,6 +9341,10 @@ msgstr "এটি আপনাকে অ্যাসাইন হয়ে খ�
 #: src/features/setup/NewsletterStep.tsx
 msgid "It sends through {address}."
 msgstr "এটি {address} দিয়ে পাঠায়।"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "It shows in their chat when they come back"
+msgstr "তিনি ফিরে এলে এটি তার চ্যাটে দেখা যাবে"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 #: src/features/setup/email/EmailTestStep.tsx
@@ -9494,6 +9567,7 @@ msgstr "ধরন"
 msgid "Known only from the receiving server’s results of the test mail."
 msgstr "শুধু টেস্ট মেইলের গ্রহণকারী সার্ভারের ফল থেকে জানা যায়।"
 
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/text.ts
 #: src/features/reports/TrendsReport.tsx
@@ -9510,7 +9584,10 @@ msgstr "শুধু লেবেল: এর মেইল All mail থেকে 
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/mail/MailSide.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
@@ -9636,6 +9713,10 @@ msgstr "গত মাস"
 msgid "Last name"
 msgstr "পদবি"
 
+#: src/features/conversation/LiveLine.tsx
+msgid "Last on {path}"
+msgstr "শেষ পেজ: {path}"
+
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Last push failed: {failed}"
 msgstr "শেষ পুশ ব্যর্থ: {failed}"
@@ -9662,6 +9743,7 @@ msgid "Last seen"
 msgstr "সর্বশেষ দেখা"
 
 #: src/features/contact/Presence.tsx
+#: src/features/conversation/LiveLine.tsx
 msgid "Last seen {seen}"
 msgstr "শেষবার দেখা {seen}"
 
@@ -9743,6 +9825,10 @@ msgstr "Leave it out"
 #: src/features/conversation/Collision.tsx
 msgid "Leave it to {name}"
 msgstr "এটি {name}-এর হাতে ছেড়ে দিন"
+
+#: src/features/conversation/Collision.tsx
+msgid "Leave it to {name} ({leaveKey})"
+msgstr "এটি {name}-এর হাতে ছেড়ে দিন ({leaveKey})"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Leave it to the teammate who is typing"
@@ -10165,11 +10251,11 @@ msgstr "ছোট হাতের অক্ষর, অঙ্ক, ড্যাশ
 
 #: src/app/Palette.tsx
 #: src/features/conversation/composer/CannedMenu.tsx
-#: src/features/conversation/composer/ReplyBox.tsx
 msgid "Macro"
 msgstr "ম্যাক্রো"
 
 #: src/app/Palette.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Macros"
 msgstr "ম্যাক্রো"
@@ -10196,6 +10282,11 @@ msgstr "মেল"
 #: src/features/mail/MailThread.tsx
 msgid "Mail actions"
 msgstr "মেলের কাজ"
+
+#. placeholder {0}: MAIL_KEYS.more
+#: src/features/mail/MailThread.tsx
+msgid "Mail actions ({0})"
+msgstr "মেলের কাজ ({0})"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -10545,6 +10636,7 @@ msgstr "মিডিয়া"
 
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 msgid "Media, links and docs"
 msgstr "মিডিয়া, লিংক ও ডক্স"
 
@@ -10658,6 +10750,7 @@ msgstr "অন্য কনট্যাক্টের সঙ্গে মার
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ConversationPanel.tsx
 msgid "Merge…"
 msgstr "মার্জ করুন…"
 
@@ -10690,8 +10783,10 @@ msgstr "বার্তার টেক্সট"
 msgid "Message type"
 msgstr "বার্তার ধরন"
 
+#: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/MailSide.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Messages"
@@ -10859,6 +10954,7 @@ msgstr "মাস"
 msgid "More"
 msgstr "আরও"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/ConversationMenu.tsx
 msgid "More actions"
 msgstr "আরও কাজ"
@@ -10884,6 +10980,14 @@ msgstr "আরও বিকল্প"
 #: src/features/contact/MergePreview.tsx
 msgid "More than {count} conversations"
 msgstr "{count}টির বেশি কথোপকথন"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "More ways to send"
+msgstr "পাঠানোর আরও উপায়"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "More ways to send ({laterKey})"
+msgstr "পাঠানোর আরও উপায় ({laterKey})"
 
 #: src/features/docs/Toolbar.tsx
 msgid "Most “helpful” ratings first"
@@ -11100,7 +11204,6 @@ msgstr "ট্র্যাশে সরান ({0})"
 
 #: src/features/feedback/FeedbackHome.tsx
 #: src/features/mail/MailList.tsx
-#: src/features/mail/MailThread.tsx
 msgid "Move to the Trash (#)"
 msgstr "ট্র্যাশে সরান (#)"
 
@@ -11374,6 +11477,7 @@ msgstr "নতুন কনট্যাক্ট তৈরি হয়েছে
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/inbox/ChatsPage.tsx
 msgid "New conversation"
 msgstr "নতুন কথোপকথন"
@@ -11600,6 +11704,11 @@ msgstr "নতুন ওয়েবহুক এন্ডপয়েন্ট"
 msgid "New workspace"
 msgstr "নতুন ওয়ার্কস্পেস"
 
+#. placeholder {0}: SHORTCUTS.previous
+#: src/features/mail/MailList.tsx
+msgid "Newer mail ({0})"
+msgstr "নতুন মেল ({0})"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Newer mail and the switch"
 msgstr "নতুন মেইল ও পাল্টানো"
@@ -11655,6 +11764,11 @@ msgstr "পরের চেষ্টা {when}"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Next check {next}."
 msgstr "পরবর্তী পরীক্ষা {next}।"
+
+#. placeholder {0}: SHORTCUTS.next
+#: src/features/inbox/ChatList.tsx
+msgid "Next conversation ({0})"
+msgstr "পরের কথোপকথন ({0})"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Next language version"
@@ -12026,6 +12140,7 @@ msgstr "কোনো লেবেল নেই"
 msgid "No labels yet"
 msgstr "এখনও কোনো লেবেল নেই"
 
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
@@ -12406,9 +12521,11 @@ msgid "Nobody would get this mail. Pick lists with subscribers, or loosen the co
 msgstr "এই মেইল কেউ পাবে না। সাবস্ক্রাইবার আছে এমন লিস্ট বেছে নিন, বা শর্ত শিথিল করুন।"
 
 #: src/features/broadcasts/ListForm.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/contact/MergePreview.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -12629,7 +12746,6 @@ msgstr "এখনও ব্যবহার হয়নি"
 msgid "Not verified: the mail did not pass the sender check, so this address may be forged."
 msgstr "যাচাই হয়নি: মেইলটি প্রেরক পরীক্ষায় পাস করেনি, তাই ঠিকানাটি জাল হতে পারে।"
 
-#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Note"
 msgstr "নোট"
@@ -12657,6 +12773,7 @@ msgstr "নোট, শুধু টিম দেখে"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 msgid "Notes"
 msgstr "নোট"
 
@@ -12680,6 +12797,10 @@ msgstr "{host}-এর ওই পোর্টে কিছুই উত্তর 
 #: src/features/migrations/DoneStep.tsx
 msgid "Nothing changed in {provider}; keep the account as an archive if you like."
 msgstr "{provider}-এ কিছু বদলায়নি; চাইলে অ্যাকাউন্টটি আর্কাইভ হিসেবে রাখুন।"
+
+#: src/features/mail/MailSide.tsx
+msgid "Nothing earlier."
+msgstr "আগে কিছু নেই।"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Nothing from the file is added, and the uploaded file is deleted."
@@ -12918,6 +13039,7 @@ msgstr "সাবস্ক্রাইব ফর্ম ও পছন্দের
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/conversation/LiveLine.tsx
 msgid "Offline"
 msgstr "অফলাইন"
 
@@ -12925,6 +13047,11 @@ msgstr "অফলাইন"
 #: src/features/status/ResponseChart.tsx
 msgid "OK"
 msgstr "ঠিক আছে"
+
+#. placeholder {0}: SHORTCUTS.next
+#: src/features/mail/MailList.tsx
+msgid "Older mail ({0})"
+msgstr "পুরোনো মেল ({0})"
 
 #: src/features/migrations/parts.tsx
 msgid "Older mail came from the export file you imported, so only newer mail is read here; mail that is in both is not imported twice. After the copy, the usual switch follows."
@@ -12951,6 +13078,10 @@ msgstr "পুরোনো ভিজিট"
 #: src/features/settings/webhooks/parts.tsx
 msgid "On"
 msgstr "চালু"
+
+#: src/features/conversation/LiveLine.tsx
+msgid "On {path}"
+msgstr "এখন {path}-এ"
 
 #: src/features/broadcasts/Composer.tsx
 msgid "On by default. Links to your sites get utm_source=newsletter, utm_medium=email and the campaign name, so Analytics shows the visits this broadcast brings. Links with their own utm_ parameters keep them."
@@ -13063,10 +13194,15 @@ msgstr "অনলাইন"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/Presence.tsx
 #: src/features/conversation/ConversationStatus.tsx
+#: src/features/conversation/LiveLine.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Online now"
 msgstr "এখন অনলাইনে"
+
+#: src/features/conversation/LiveLine.tsx
+msgid "Online now · typing"
+msgstr "এখন অনলাইনে · টাইপ করছেন"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Online status"
@@ -13415,6 +13551,10 @@ msgstr "অ্যানালিটিক্সে খুলুন"
 #: src/features/home/HomeWork.tsx
 msgid "Open in Inbox"
 msgstr "ইনবক্সে খুলুন"
+
+#: src/features/contact/ConversationPanel.tsx
+msgid "Open in People"
+msgstr "People-এ খুলুন"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Open incident"
@@ -13862,6 +14002,7 @@ msgstr "{totalParts}-এর মধ্যে অংশ {part}"
 msgid "Partial outage"
 msgstr "আংশিক বিভ্রাট"
 
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/conversation/Participants.tsx
 msgid "Participants"
 msgstr "অংশগ্রহণকারীরা"
@@ -14140,6 +14281,7 @@ msgid "Permission to send"
 msgstr "পাঠানোর অনুমতি"
 
 #: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ConversationPanel.tsx
 msgid "Person"
 msgstr "ব্যক্তি"
 
@@ -14548,6 +14690,10 @@ msgstr "Preferred: Yuva reads it again when the provider rotates its certificate
 msgid "Preparing"
 msgstr "প্রস্তুত হচ্ছে"
 
+#: src/features/mail/Compose.tsx
+msgid "Press Enter or a comma after each address."
+msgstr "প্রতিটি ঠিকানার পরে Enter বা কমা চাপুন।"
+
 #: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
@@ -14589,6 +14735,11 @@ msgstr "সহায়তা কেন্দ্রের পূর্বরূ�
 msgid "Preview the page"
 msgstr "পেজের প্রিভিউ দেখুন"
 
+#. placeholder {0}: SHORTCUTS.previous
+#: src/features/inbox/ChatList.tsx
+msgid "Previous conversation ({0})"
+msgstr "আগের কথোপকথন ({0})"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Previous or next discussion"
 msgstr "আগের বা পরের আলোচনা"
@@ -14613,6 +14764,7 @@ msgstr "আগের বা পরের স্ট্যাটাস পৃষ�
 msgid "Previous screenshot"
 msgstr "আগের স্ক্রিনশট"
 
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
@@ -14648,9 +14800,9 @@ msgid "pro, team"
 msgstr "pro, team"
 
 #: src/components/common/WorkspaceSelector.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxPicker.tsx
-#: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -14934,6 +15086,10 @@ msgstr "সারিতে। নতুন চেষ্টা কিছুক্
 msgid "Quick cleanup"
 msgstr "দ্রুত পরিষ্কার"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Quick replies"
+msgstr "দ্রুত উত্তর"
+
 #: src/features/settings/automation/RuleForm.tsx
 msgid "Quiet for (minutes)"
 msgstr "এত সময় নীরব (মিনিট)"
@@ -14996,6 +15152,7 @@ msgid "Reach"
 msgstr "পৌঁছানো"
 
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "Read"
 msgstr "পড়ুন"
 
@@ -15427,6 +15584,11 @@ msgstr "ইমপোর্ট করা ইতিহাস সরান"
 msgid "Remove imported history?"
 msgstr "ইমপোর্ট করা ইতিহাস সরাবেন?"
 
+#. placeholder {0}: l.name
+#: src/features/contact/ConversationPanel.tsx
+msgid "Remove label {0}"
+msgstr "লেবেল {0} সরান"
+
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Remove label {labelName}"
 msgstr "লেবেল {labelName} সরান"
@@ -15588,6 +15750,7 @@ msgstr "গ্রুপের নাম বদলান"
 msgid "Rename the mailbox"
 msgstr "মেইলবক্সের নাম বদলান"
 
+#: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -15597,6 +15760,10 @@ msgstr "আবার খুলুন"
 #: src/features/feedback/FeedbackHome.tsx
 msgid "Reopen ({closeKey})"
 msgstr "আবার খুলুন ({closeKey})"
+
+#: src/features/conversation/HeaderActions.tsx
+msgid "Reopen (E)"
+msgstr "আবার খুলুন (E)"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reorder the selected view in the sidebar"
@@ -15724,12 +15891,18 @@ msgid "Replies you write in Slack threads no longer reach Yuva."
 msgstr "Replies you write in Slack threads no longer reach Yuva."
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Reply"
 msgstr "উত্তর দিন"
+
+#. placeholder {0}: keys.reply
+#: src/features/conversation/messages/MailRow.tsx
+msgid "Reply ({0})"
+msgstr "উত্তর দিন ({0})"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Reply ({mod}↵)"
@@ -15744,9 +15917,15 @@ msgstr "উত্তর দিন (R)"
 msgid "Reply account"
 msgstr "উত্তরের অ্যাকাউন্ট"
 
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Reply all"
 msgstr "সবাইকে উত্তর দিন"
+
+#. placeholder {0}: keys.replyAll
+#: src/features/conversation/messages/MailRow.tsx
+msgid "Reply all ({0})"
+msgstr "সবাইকে উত্তর দিন ({0})"
 
 #: src/features/mail/MailThread.tsx
 msgid "Reply all (A)"
@@ -15764,6 +15943,10 @@ msgstr "শেষ সময়সহ উত্তর ও সমাধানে�
 msgid "Reply and resolve"
 msgstr "Reply and resolve"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Reply by e-mail"
+msgstr "ই-মেইলে উত্তর দিন"
+
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Reply command"
 msgstr "Reply command"
@@ -15775,6 +15958,10 @@ msgstr "গ্রাহককে রক্ষা করতে উত্তর �
 #: src/features/home/HomeWork.tsx
 msgid "Reply in {time}"
 msgstr "{time}-এর মধ্যে উত্তর দিন"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Reply in chat"
+msgstr "চ্যাটে উত্তর দিন"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Reply posted"
@@ -15975,6 +16162,10 @@ msgstr "{endedAt}-এ সমাধান হয়েছে"
 #: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "সমাধানের সময়"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Resolved. A reply opens it again."
+msgstr "সমাধান হয়েছে। একটি উত্তর এটি আবার খুলবে।"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Resolved. It moved to the Resolved tab."
@@ -16358,6 +16549,7 @@ msgstr "পরিবর্তন সংরক্ষণ করুন"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "ড্রাফট সংরক্ষণ করুন"
 
@@ -16466,6 +16658,7 @@ msgstr "হেডার স্ক্যান হচ্ছে…"
 
 #: src/components/common/SendLater.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 msgid "Schedule"
 msgstr "শিডিউল করুন"
 
@@ -16860,6 +17053,11 @@ msgstr "“{name}” এখনই পাঠাবেন?"
 msgid "Send “{name}” on {when}?"
 msgstr "“{name}” {when}-এ পাঠাবেন?"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send ({sendKeys})"
+msgstr "পাঠান ({sendKeys})"
+
 #: src/features/status/MonitorToken.tsx
 msgid "Send a beat"
 msgstr "সংকেত পাঠান"
@@ -16876,10 +17074,6 @@ msgstr "কোড পাঠান"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send a help article"
 msgstr "একটি সহায়তা নিবন্ধ পাঠান"
-
-#: src/features/conversation/composer/ReplyBox.tsx
-msgid "Send a help article ({articleKey})"
-msgstr "একটি সহায়তা নিবন্ধ পাঠান ({articleKey})"
 
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "Send a mail a set time after people sign up, once each"
@@ -16952,6 +17146,10 @@ msgstr "আরেকটি টেস্ট বার্তা পাঠান"
 msgid "Send drafts"
 msgstr "ড্রাফট পাঠান"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Send e-mail"
+msgstr "ই-মেইল পাঠান"
+
 #: src/features/settings/webhooks/sections.tsx
 msgid "Send events"
 msgstr "ইভেন্ট পাঠান"
@@ -16990,7 +17188,6 @@ msgstr "Send it after"
 msgid "Send later"
 msgstr "পরে পাঠান"
 
-#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 msgid "Send later ({laterKey})"
 msgstr "পরে পাঠান ({laterKey})"
@@ -17086,6 +17283,10 @@ msgstr "এদের পাঠান"
 #: src/features/settings/automation/text.ts
 msgid "Send to a webhook endpoint"
 msgstr "একটি ওয়েবহুক এন্ডপয়েন্টে পাঠান"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Send to chat"
+msgstr "চ্যাটে পাঠান"
 
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/Composer.tsx
@@ -17251,6 +17452,7 @@ msgstr "পাঠানো হয়েছে"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/status/Notices.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Sent"
@@ -17539,6 +17741,7 @@ msgstr "শর্টকাট"
 #: src/components/common/PageLayout.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -18466,8 +18669,8 @@ msgid "Start your mailing list"
 msgstr "আপনার মেইলিং লিস্ট শুরু করুন"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "Started"
@@ -18553,9 +18756,9 @@ msgstr "বন্ধ হলে অবস্থা"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatList.tsx
-#: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/automation/ActionRow.tsx
@@ -18900,6 +19103,7 @@ msgstr "TCP পরীক্ষা"
 #: src/app/TeamMenu.tsx
 #: src/components/common/DiscussionAuthor.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/conversation/History.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -20408,6 +20612,7 @@ msgstr "এই কনট্যাক্ট নিজের মান রাখ�
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/contact/ConversationPanel.tsx
 msgid "This conversation"
 msgstr "এই কথোপকথন"
 
@@ -20622,6 +20827,10 @@ msgstr "এই লিস্ট ব্যক্তিগত, তাই ফর্�
 #: src/features/broadcasts/Trigger.tsx
 msgid "This list was deleted. Pick another list, or stop this triggered e-mail."
 msgstr "This list was deleted. Pick another list, or stop this triggered e-mail."
+
+#: src/features/mail/MailSide.tsx
+msgid "This mail"
+msgstr "এই মেল"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "This mail is about using {inboxName}, not advertising."
@@ -20917,10 +21126,11 @@ msgid "TLS (port 465)"
 msgstr "TLS (পোর্ট 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
+#: src/features/conversation/messages/MailRow.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -21017,7 +21227,6 @@ msgid "Tracker"
 msgstr "Tracker"
 
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailThread.tsx
 #: src/features/migrations/parts.tsx
 msgid "Trash"
 msgstr "ট্র্যাশ"
@@ -21207,6 +21416,7 @@ msgstr "উত্তরহীন"
 msgid "Unassign"
 msgstr "দেওয়া বাতিল করুন"
 
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/home/HomeWork.tsx
 #: src/features/inbox/ChatList.tsx
@@ -21354,6 +21564,7 @@ msgstr "আনলক করা হয়েছে"
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ConversationPanel.tsx
 #: src/features/contact/MergeContactDialog.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Unnamed contact"
@@ -22731,6 +22942,7 @@ msgstr "নতুন মেইল লিখুন"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Write a note for the team"
 msgstr "টিমের জন্য একটি নোট লিখুন"
 
@@ -22778,6 +22990,14 @@ msgstr "অটো-রিপ্লাই লিখুন, বা বন্ধ ক
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Write to {first}…"
 msgstr "{first}-কে লিখুন…"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Write to {first}… it shows when they come back"
+msgstr "{first}-কে লিখুন… তিনি ফিরে এলে এটি দেখা যাবে"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Write to {first}… this goes out as an e-mail"
+msgstr "{first}-কে লিখুন… এটি ই-মেইল হিসেবে যাবে"
 
 #: src/components/common/text.ts
 msgid "Write What's new entries and translations"

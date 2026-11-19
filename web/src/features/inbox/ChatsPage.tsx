@@ -4,7 +4,7 @@ import { useCallback, useLayoutEffect, useRef, useState } from "react"
 import { useLocation, useNavigate, useParams } from "react-router"
 
 import { inboxRoot } from "@/app/shell"
-import { InfoColumn, PageLayout, PageTop, TopSlotProvider } from "@/components/common"
+import { PageLayout, PageTop } from "@/components/common"
 import { PageTitle } from "@/components/common/ListBox"
 import { ChatView } from "@/features/conversation/ChatView"
 import { FeedbackHome } from "@/features/feedback/FeedbackHome"
@@ -21,7 +21,6 @@ import {
 } from "@/features/inbox/ChatList"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { AssistantsPage } from "@/features/inbox/AssistantsPage"
-import { ConversationEyebrow, ConversationInfo } from "@/features/inbox/InboxSide"
 import { useOpenOnly, useOrigin } from "@/features/inbox/SourceFilter"
 import { MentionsPage } from "@/features/inbox/SidePanels"
 import { useActiveView } from "@/features/inbox/views/useActiveView"
@@ -80,7 +79,7 @@ function InboxPage({ id }: { id: string | null }) {
   const [starting, setStarting] = useState(false)
   const [sidebarInbox] = useInboxFilter()
   const chipInbox = useRememberedInbox()
-  const [slot, setSlot] = useState<HTMLElement | null>(null)
+  const [pager, setPager] = useState<HTMLElement | null>(null)
   const inboxId = sidebarInbox || chipInbox
   const product = useInboxes().data?.find((i) => i.id === inboxId)?.name
   const labels = useChipLabels()
@@ -153,39 +152,33 @@ function InboxPage({ id }: { id: string | null }) {
       />
     )
   }
-  return (
-    <PageLayout
-      testId={id ? "chats" : "inbox-page"}
-      label={t`Conversations`}
-      aside={
-        id ? (
-          <InfoColumn label={t`Details`}>
-            <ConversationInfo id={id} panel={panel} onPanel={setPanel} />
-          </InfoColumn>
-        ) : undefined
-      }
-    >
-      {id && (
-        <PageTop back={back} slot={setSlot}>
-          <ConversationEyebrow id={id} />
-        </PageTop>
-      )}
-      <div className={id ? "max-w-[860px]" : undefined}>
-        <ChatList
-          currentId={id}
-          onOpen={open}
-          chip={chip}
-          inbox={chipInbox}
-          onInbox={rememberInbox}
-          hidden={!!id}
-          head={heading}
-        />
-        {id && (
-          <TopSlotProvider value={slot}>
-            <ChatView key={id} id={id} flat panel={panel} inlinePanel={wide} onPanel={setPanel} />
-          </TopSlotProvider>
-        )}
+  const list = (
+    <ChatList
+      currentId={id}
+      onOpen={open}
+      chip={chip}
+      inbox={chipInbox}
+      onInbox={rememberInbox}
+      hidden={!!id}
+      head={heading}
+      pagerSlot={pager}
+      place={back.label}
+    />
+  )
+  if (id)
+    return (
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col bg-background" data-testid="chats">
+        <div className="mx-auto flex min-h-0 w-full max-w-[1440px] flex-1 flex-col ps-8 pe-7 pb-4 max-md:px-6">
+          <PageTop back={back} slot={setPager} />
+          {list}
+          <ChatView key={id} id={id} panel={panel} inlinePanel={wide} onPanel={setPanel} />
+        </div>
+        <StartConversation open={starting} onOpenChange={setStarting} />
       </div>
+    )
+  return (
+    <PageLayout testId="inbox-page" label={t`Conversations`}>
+      {list}
       <StartConversation open={starting} onOpenChange={setStarting} />
     </PageLayout>
   )
@@ -216,7 +209,7 @@ export function ChatsPage({ section = "conversations" }: { section?: "conversati
     return <InboxPage id={null} />
   }
   return (
-    <main className="flex min-h-0 flex-1 flex-col" data-testid="chats">
+    <main className="flex min-h-0 flex-1 flex-col px-3 pt-2.5 pb-2" data-testid="chats">
       <ChatView
         key={id}
         id={id}

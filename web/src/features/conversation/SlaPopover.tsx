@@ -44,10 +44,12 @@ export function SlaPopover({
   c,
   open,
   onOpenChange,
+  className,
 }: {
   c: Conversation
   open: boolean
   onOpenChange: (open: boolean) => void
+  className?: string
 }) {
   const { t } = useLingui()
   const text = useSlaText()
@@ -59,7 +61,7 @@ export function SlaPopover({
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger
-        render={<button type="button" className={cn(look.chip, "gap-1.5")} />}
+        render={<button type="button" className={cn(look.chip, "gap-1.5", className)} />}
         aria-label={t`SLA targets (W)`}
         title={t`SLA targets (W)`}
         data-testid="sla-trigger"

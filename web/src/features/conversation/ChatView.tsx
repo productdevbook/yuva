@@ -18,6 +18,7 @@ import {
   EmptyState,
   ImportedChip,
   isVisitor,
+  MemberAvatar,
   placeOf,
   sourceOf,
   toast,
@@ -27,13 +28,16 @@ import {
 } from "@/components/common"
 import { inboxRoot } from "@/app/shell"
 import { TopPortal, usePhoneBackTarget } from "@/components/common/PageLayout"
-import { SHORTCUTS } from "@/components/common/ShortcutSheet"
+import { keyLabel, SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { useEnumText, useErrorText } from "@/components/common/text"
 import { useConfirm } from "@/components/common/ConfirmDialog"
 import { Alert } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { ContactSheet } from "@/features/contact/ContactSheet"
+import { FoldPanel } from "@/components/common/Fold"
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
+import { ConversationPanel, type PanelPart } from "@/features/contact/ConversationPanel"
+import { FallbackLine, LiveLine, useChatFallback } from "@/features/conversation/LiveLine"
 import { useContact } from "@/features/contact/queries"
 import { readDraft, useConversationActions, useDraftRevision, usePendingReplies } from "@/features/conversation/actions"
 import { Beaten, TypingCollision } from "@/features/conversation/Collision"
@@ -58,7 +62,6 @@ import {
   HandMenu,
   ProgressMenu,
   SnoozeMenu,
-  TeamMenu,
   useInboxTeams,
   type HeaderMenu,
 } from "@/features/conversation/HeaderActions"
@@ -182,9 +185,11 @@ export function ChatView(props: Props) {
     return (
       <MailThread
         id={c.id}
-        flat={props.flat}
         onBack={props.onBack}
         onLeave={props.onBack ?? (() => navigate(inboxRoot(apart)))}
+        panel={props.panel}
+        inlinePanel={props.inlinePanel}
+        onPanel={props.onPanel}
       />
     )
   return <Loaded {...props} c={c} contact={contact.data} channel={known ?? fetched} />
@@ -232,6 +237,8 @@ function Loaded({
   const [moreView, setMoreView] = useState<MenuView>("root")
   const [historyOpen, setHistoryOpen] = useState(false)
   const [expandQuoted, setExpandQuoted] = useState(false)
+  const [allOpen, setAllOpen] = useState(false)
+  const [reveal, setReveal] = useState<{ part: PanelPart; n: number }>({ part: "conv", n: 0 })
   const [claimedFrom, setClaimedFrom] = useState<string | null>(null)
   const [beatenBy, setBeatenBy] = useState<string | null>(null)
   const fine = useMediaQuery("(pointer: fine)")
@@ -273,6 +280,8 @@ function Loaded({
   )
   const emailTo = channel?.kind === "email" ? (lastContactMail?.email?.from ?? contact?.emails[0]) : undefined
   const undeliverable = !!emailTo && !!contact?.undeliverable.some((u) => u.email === emailTo)
+  const mailMode = c.channel_kind === "email" && c.kind !== "feedback"
+  const fallback = useChatFallback(c, contact, actions.chat, inbound)
   const q = finding ? foldText(findQuery.trim()) : ""
   const hits = q ? shown.filter((m) => (m.kind === "message" || m.kind === "note") && foldText(m.body).includes(q)) : []
   const hitIndex = hits.length === 0 ? -1 : findIndex < 0 || findIndex >= hits.length ? hits.length - 1 : findIndex
@@ -336,6 +345,7 @@ function Loaded({
     onQuote: quote,
     onForward: forward,
     onForwardMail: (m) => setForwarding({ target: m }),
+    onReply: emailTo ? (_m, all) => reply.current?.replyAll(all) : undefined,
     onRemove: remove,
     canRemove,
     onEditDraft: (m) => reply.current?.edit(m),
@@ -481,7 +491,7 @@ function Loaded({
     note: () => reply.current?.focus("note"),
     snooze: () => setMenu("snooze"),
     hand: () => setMenu("hand"),
-    assignTeam: () => (inboxTeams.length > 0 || c.team_id) && setMenu("team"),
+    assignTeam: () => (inboxTeams.length > 0 || c.team_id) && setMenu("hand"),
     labels: () => {
       setMoreView("labels")
       setMoreOpen(true)
@@ -489,6 +499,7 @@ function Loaded({
     fields: () => {
       const wasOpen = shownPanel
       if (!wasOpen) setPanel(true)
+      setReveal((r) => ({ part: "conv", n: r.n + 1 }))
       setTimeout(
         () => document.querySelector<HTMLElement>("[data-testid=conversation-fields] [data-field-input]")?.focus(),
         wasOpen ? 0 : 200
@@ -518,6 +529,10 @@ function Loaded({
     signature: () => reply.current?.signature(),
     sendAs: () => reply.current?.sendAs(),
     trash: () => canManage && trash(),
+    replyAll: () => emailTo && reply.current?.replyAll(true),
+    expand: () => mailMode && setAllOpen((x) => !x),
+    emoji: () => reply.current?.emoji(),
+    insert: () => reply.current?.insertMenu(),
   }
   useInsertHandler((choice) => !trashed && reply.current?.insert(choice))
   useCommandHandlers(
@@ -530,6 +545,7 @@ function Loaded({
           [SHORTCUTS.history]: handlers.history,
           [SHORTCUTS.quoted]: () => setExpandQuoted((x) => !x),
           [SHORTCUTS.find]: openFind,
+          [SHORTCUTS.expand]: () => mailMode && setAllOpen((x) => !x),
           [SHORTCUTS.restore]: () => canManage && restore(),
         }
       : {
@@ -566,6 +582,10 @@ function Loaded({
           [SHORTCUTS.signature]: handlers.signature,
           [SHORTCUTS.sendAs]: handlers.sendAs,
           [SHORTCUTS.trash]: handlers.trash,
+          [SHORTCUTS.replyAll]: handlers.replyAll,
+          [SHORTCUTS.expand]: handlers.expand,
+          [SHORTCUTS.emoji]: handlers.emoji,
+          [SHORTCUTS.insert]: handlers.insert,
         }
   )
 
@@ -680,84 +700,171 @@ function Loaded({
       </button>
     </>
   )
+  const assigneeName = assignee ? assignee.name || assignee.email : ""
+  const detailsKey = keyLabel(SHORTCUTS.contact).join("")
   const toolbar = (
-    <>
-      <div
-        ref={actionsRef}
-        role="toolbar"
-        aria-label={t`Conversation actions`}
-        className="flex flex-wrap items-center gap-1.5 phone:w-full"
-        data-testid="conversation-actions"
-      >
-        {!trashed && (
-          <>
-            <HandMenu
-              c={c}
-              actions={actions}
-              open={menu === "hand"}
-              onOpenChange={openMenu("hand")}
-              label={
-                <span data-testid={assignee ? "header-assignee" : undefined}>
-                  {assignee ? assignee.name || assignee.email : <Trans>Unassigned</Trans>}
+    <div
+      ref={actionsRef}
+      role="toolbar"
+      aria-label={t`Conversation actions`}
+      className="flex flex-wrap items-center gap-1.5 phone:w-full"
+      data-testid="conversation-actions"
+    >
+      {!trashed && (
+        <>
+          <HandMenu
+            c={c}
+            actions={actions}
+            open={menu === "hand"}
+            onOpenChange={openMenu("hand")}
+            label={
+              <span className="inline-flex min-w-0 items-center gap-1.5">
+                {assignee && (
+                  <MemberAvatar name={assigneeName} className="-ms-1 size-5 text-[9px]" ring="ring-transparent" />
+                )}
+                <span className="truncate phone:max-w-28" data-testid={assignee ? "header-assignee" : undefined}>
+                  {assignee ? assigneeName.split(/\s+/)[0] : <Trans>Unassigned</Trans>}
                 </span>
-              }
-            />
-            <TeamMenu c={c} open={menu === "team"} onOpenChange={openMenu("team")} />
-            {!c.assignee_id && (
-              <Button
-                variant="outline"
-                className={look.btnSm}
-                onClick={actions.claim}
-                title={t`Assign to me`}
-                data-testid="assign-me-button"
-              >
-                <Trans>Assign to me</Trans>
-              </Button>
-            )}
-            <SnoozeMenu name={name} actions={actions} open={menu === "snooze"} onOpenChange={openMenu("snooze")} />
-            <SlaPopover c={c} open={menu === "sla"} onOpenChange={openMenu("sla")} />
-            {c.kind === "feedback" && (
-              <ProgressMenu c={c} update={update} open={menu === "progress"} onOpenChange={openMenu("progress")} />
-            )}
-            {c.kind === "feedback" && <IssueMenu onPick={setIssueMode} count={issues.length} />}
-          </>
-        )}
-        <div className="ms-auto flex items-center gap-1.5">
-          {!trashed && (
-            <ConversationMenu
-              c={c}
-              open={moreOpen}
-              onOpenChange={setMoreOpen}
-              view={moreView}
-              onView={setMoreView}
-              update={update}
-              move={move}
-              pinned={pinned}
-              onPin={togglePin}
-              onUnread={markUnread}
-              onDiscussion={handlers.discussion}
-              onIncident={handlers.incident}
-              onForward={() => setForwarding({})}
-              onIdea={handlers.idea}
-              onFind={() => (finding ? closeFind() : openFind())}
-              onTrash={canManage ? trash : undefined}
-            />
+              </span>
+            }
+          />
+          <SnoozeMenu name={name} actions={actions} open={menu === "snooze"} onOpenChange={openMenu("snooze")} />
+          {flat && <SlaPopover c={c} open={menu === "sla"} onOpenChange={openMenu("sla")} />}
+          {c.kind === "feedback" && (
+            <ProgressMenu c={c} update={update} open={menu === "progress"} onOpenChange={openMenu("progress")} />
           )}
-          <Button
-            variant="outline"
-            className={cn(look.btnSm, "w-[30px] px-0", shownPanel && "bg-muted")}
-            onClick={togglePanel}
-            aria-pressed={shownPanel}
-            aria-label={t`Contact details (C)`}
-            title={t`Contact details (C)`}
-            data-testid="toggle-contact-panel"
-          >
-            <PanelRightIcon className="rtl:-scale-x-100" />
-          </Button>
-          {!trashed && <CloseButton c={c} actions={actions} />}
-        </div>
+          {c.kind === "feedback" && <IssueMenu onPick={setIssueMode} count={issues.length} />}
+        </>
+      )}
+      <div className="ms-auto flex items-center gap-1.5">
+        {!trashed && <CloseButton c={c} actions={actions} />}
+        {!trashed && (
+          <ConversationMenu
+            c={c}
+            open={moreOpen}
+            onOpenChange={setMoreOpen}
+            view={moreView}
+            onView={setMoreView}
+            update={update}
+            move={move}
+            pinned={pinned}
+            onPin={togglePin}
+            onUnread={markUnread}
+            onDiscussion={handlers.discussion}
+            onIncident={handlers.incident}
+            onForward={() => setForwarding({})}
+            onIdea={handlers.idea}
+            onFind={() => (finding ? closeFind() : openFind())}
+            onTrash={canManage ? trash : undefined}
+          />
+        )}
+        <Button
+          variant="outline"
+          className={cn(look.btnSm, "w-[30px] px-0", shownPanel && "bg-muted")}
+          onClick={togglePanel}
+          aria-pressed={shownPanel}
+          aria-label={`${t`Details`} (${detailsKey})`}
+          title={`${t`Details`} (${detailsKey})`}
+          data-testid="toggle-contact-panel"
+        >
+          <PanelRightIcon className="rtl:-scale-x-100" />
+        </Button>
       </div>
-    </>
+    </div>
+  )
+  const statusTone =
+    c.status === "open"
+      ? "bg-success/10 text-success"
+      : c.status === "closed"
+        ? "bg-seg text-fg2"
+        : "bg-warning/10 text-warning"
+  const highPriority = c.priority === "urgent" || c.priority === "high"
+  const meta = (
+    <div
+      className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-small text-muted-foreground"
+      data-testid="header-details"
+    >
+      <span
+        className={cn(
+          "inline-flex h-[22px] max-w-full items-center truncate rounded-[5px] px-2 text-caption font-semibold whitespace-nowrap [&_*]:text-inherit",
+          statusTone
+        )}
+        data-testid="header-status"
+      >
+        <Status c={c} lastInbound={lastInbound} />
+      </span>
+      {subject && (
+        <button
+          type="button"
+          onClick={togglePanel}
+          className="max-w-60 truncate rounded-sm font-medium text-foreground outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"
+          title={t`Contact details (C)`}
+          data-testid="person-name"
+        >
+          {name}
+        </button>
+      )}
+      {source && (
+        <>
+          {subject && sep}
+          <span className="shrink-0">{sourceText[source]}</span>
+        </>
+      )}
+      {inbox && (
+        <>
+          {sep}
+          <span className="inline-flex min-w-0 items-center gap-1 truncate">
+            <Dot color={inbox.branding.color} className="size-[7px] rounded-[2px]" />
+            <span className="truncate">{inbox.name}</span>
+          </span>
+        </>
+      )}
+      {place && !actions.chat && (
+        <span className="inline-flex min-w-0 items-center gap-2 phone:hidden">
+          {sep}
+          <span className="min-w-0 truncate" data-testid="header-place">
+            {place}
+          </span>
+        </span>
+      )}
+      {chipLabels.map((l) => (
+        <span
+          key={l.id}
+          className="inline-flex h-[22px] items-center gap-1 rounded-[5px] bg-seg px-2 text-caption font-medium text-fg2 phone:hidden"
+          data-testid="header-label"
+        >
+          <Dot color={l.color} className="size-1.5" />
+          {l.name}
+        </span>
+      ))}
+      {highPriority && (
+        <span
+          className="inline-flex h-[22px] items-center rounded-[5px] bg-destructive/10 px-2 text-caption font-semibold text-destructive"
+          data-testid="header-priority"
+        >
+          {text.priority[c.priority]}
+        </span>
+      )}
+      {!trashed && (
+        <SlaPopover
+          c={c}
+          open={menu === "sla"}
+          onOpenChange={openMenu("sla")}
+          className="h-[22px] rounded-[5px] px-2"
+        />
+      )}
+      {c.imported && <ImportedChip at={c.imported.at} />}
+      {c.broadcast_id && <BroadcastLine id={c.broadcast_id} />}
+      {c.kind === "feedback" && c.feedback && <CategoryChip category={c.feedback.category} inboxId={c.inbox_id} />}
+      {!actions.chat && <PageLine c={c} />}
+      {c.related_conversation_id && (
+        <RelatedLine id={c.related_conversation_id} hrefFor={(id) => `/conversations/${id}`} />
+      )}
+      <IncidentChips conversationId={c.id} items={incidents} />
+      {c.idea && <IdeaChip conversationId={c.id} idea={c.idea} />}
+      <IssueChips subject={{ kind: "conversation", id: c.id }} items={issues} />
+      <Watchers conversationId={c.id} />
+    </div>
   )
   const detailsLine = (
     <>
@@ -921,35 +1028,64 @@ function Loaded({
         lastId={lastId}
         lastMine={lastMine}
         focusId={focusId}
+        mailMode={mailMode && !flat}
+        allOpen={allOpen}
+        onAllOpen={setAllOpen}
+        tail={fallback && !flat ? <FallbackLine name={name} fallback={fallback} /> : undefined}
       />
     </>
+  )
+  const collision = beatenBy ? (
+    <Beaten name={beatenBy} />
+  ) : (
+    showCollision && <TypingCollision name={mateName} typing={!!typingMate} onLeave={leaveTo} onClaim={claim} />
+  )
+  const replyBox = (bare: boolean) => (
+    <ReplyBox
+      key={`${c.id}:${revision}`}
+      ref={reply}
+      c={c}
+      contactName={name}
+      via={channel ? text.channel[channel.kind] : undefined}
+      emailTo={emailTo}
+      undeliverable={undeliverable}
+      suggestion={suggestion}
+      ctx={ctx}
+      actions={actions}
+      autoFocus={fine && revision === 0}
+      fallback={fallback ? { to: fallback.to } : undefined}
+      quick={actions.chat && c.status !== "closed"}
+      bare={bare}
+    />
   )
   const composer = (
     <>
       {!trashed && (
         <Composer>
-          {beatenBy ? (
-            <Beaten name={beatenBy} />
-          ) : (
-            showCollision && <TypingCollision name={mateName} typing={!!typingMate} onLeave={leaveTo} onClaim={claim} />
-          )}
-          <ReplyBox
-            key={`${c.id}:${revision}`}
-            ref={reply}
-            c={c}
-            contactName={name}
-            via={channel ? text.channel[channel.kind] : undefined}
-            emailTo={emailTo}
-            undeliverable={undeliverable}
-            suggestion={suggestion}
-            ctx={ctx}
-            actions={actions}
-            autoFocus={fine && revision === 0}
-          />
+          {collision}
+          {replyBox(false)}
         </Composer>
       )}
     </>
   )
+  const closedBar = c.status === "closed" && !trashed && (
+    <div
+      className="flex shrink-0 flex-wrap items-center gap-2 border-t px-3.5 py-2 text-small text-muted-foreground"
+      data-testid="closed-bar"
+    >
+      <span className="min-w-0 flex-1">
+        {c.kind === "feedback" ? (
+          <Trans>Resolved. A reply opens it again.</Trans>
+        ) : (
+          <Trans>Closed. A reply opens it again.</Trans>
+        )}
+      </span>
+      <Button variant="outline" size="sm" className="h-[30px]" onClick={actions.reopen} data-testid="closed-reopen">
+        <Trans>Reopen</Trans>
+      </Button>
+    </div>
+  )
+  const panelBody = <ConversationPanel key={c.id} c={c} channel={channel} update={update} reveal={reveal} />
   const dialogs = (
     <>
       {confirmDialog}
@@ -976,7 +1112,19 @@ function Loaded({
       )}
       {discussing && <FromConversationDialog c={c} messages={shown} onClose={() => setDiscussing(false)} />}
       {!inlinePanel && (
-        <ContactSheet contactId={c.contact_id} conversationId={c.id} open={sheet} onOpenChange={setSheet} />
+        <Sheet open={sheet} onOpenChange={setSheet}>
+          <SheetContent
+            className="w-[min(360px,92vw)] overflow-y-auto phone:inset-x-0 phone:top-auto phone:bottom-0 phone:max-h-[82svh] phone:w-full phone:rounded-t-2xl phone:border-s-0 phone:border-t"
+            data-testid="contact-panel"
+          >
+            <SheetHeader className="py-3">
+              <SheetTitle className="text-body font-semibold">
+                <Trans>Details</Trans>
+              </SheetTitle>
+            </SheetHeader>
+            {panelBody}
+          </SheetContent>
+        </Sheet>
       )}
     </>
   )
@@ -1011,30 +1159,53 @@ function Loaded({
       </section>
     )
   }
+  const inlineShown = inlinePanel && panel
   return (
     <section
       aria-label={name}
-      className="relative flex min-h-0 min-w-0 flex-1 flex-col bg-background"
+      className="relative flex min-h-0 min-w-0 flex-1 flex-col"
       data-testid="conversation"
       data-conversation-id={c.id}
       {...dropProps}
     >
       {dropOverlay}
-      <header
-        className="@container/person flex shrink-0 flex-wrap items-center gap-x-3 gap-y-2 border-b border-border/60 bg-background px-6 py-2.5 phone:px-3 phone:py-2"
-        data-testid="person"
-      >
-        <div className="flex min-w-0 flex-1 basis-64 items-center gap-2">
-          <BackButton onBack={onBack} />
-          {personButton}
+      <header className="flex shrink-0 flex-wrap items-start gap-x-3 gap-y-2" data-testid="person">
+        <BackButton onBack={onBack} />
+        <div className="min-w-0 flex-[1_1_320px] phone:flex-[1_1_0]">
+          <h1
+            className="m-0 text-title font-semibold [overflow-wrap:anywhere] phone:text-[19px] phone:leading-[25px]"
+            data-testid={subject ? "header-subject" : "header-name"}
+          >
+            {subject || name}
+          </h1>
+          {meta}
         </div>
         {toolbar}
       </header>
-      {detailsLine}
-      {middle}
-      {spamBanner}
-      {thread}
-      {composer}
+      <div
+        className={cn(
+          "mt-3.5 grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)] gap-3.5 phone:mt-2.5",
+          inlineShown ? "grid-cols-[minmax(0,1fr)_320px] max-[1320px]:grid-cols-[minmax(0,1fr)_280px]" : "grid-cols-1"
+        )}
+      >
+        <section
+          aria-label={t`Messages`}
+          className="relative flex min-h-0 min-w-0 flex-col overflow-hidden rounded-xl border bg-card"
+        >
+          {!trashed && collision}
+          {middle}
+          {spamBanner}
+          {actions.chat && <LiveLine c={c} contact={contact} channel={channel} typing={contactTyping} />}
+          <div className="flex min-h-0 flex-1 flex-col">{thread}</div>
+          {closedBar}
+          {!trashed && <div className="shrink-0 border-t phone:pb-[env(safe-area-inset-bottom)]">{replyBox(true)}</div>}
+        </section>
+        {inlineShown && (
+          <FoldPanel label={t`Details`} testId="contact-panel">
+            {panelBody}
+          </FoldPanel>
+        )}
+      </div>
       {dialogs}
     </section>
   )

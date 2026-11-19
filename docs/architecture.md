@@ -2030,26 +2030,49 @@ remote images, http(s)):
   carries `channel_kind`, the kind of the channel it started on (stored on the conversation when
   it is created and kept when the channel goes or the conversation moves), so a row shows its
   source without another request; a page's URL and title are under `feedback` or `question`. In the middle, the
-  open conversation (`/conversations/:id`): a header with the contact, channel, status, assignee
-  and the actions (assign or hand off, snooze, labels, close or reopen, more), the thread built on
-  shadcn's chat components (message, bubble, marker, attachment, message scroller) with date
-  separators. Every item is a chat bubble in a message with header and footer slots, the contact
-  on one side and the team on the other, never a wide card: an e-mail shows its subject on the
-  first message and whenever it changes, then the body, its HTML (original or reading view) in a
-  bubble that grows to the thread's width, with sender and tags in the header and time, view
-  toggles, quoted text, remote images and the `.eml` download in the footer; a note is a bubble
-  from its author on the team's side in the note colour, marked in its footer as seen only by the
-  team; feedback is a bubble from the contact with its category in the header; attachments of any
-  message use the attachment component, images as thumbnails; drafts are outgoing bubbles with
-  Send / Edit / Discard; events and dates are markers. The thread sticks to the newest message
-  while the member is at the bottom and loads older pages on scrolling up; the composer is at the
-  bottom. On the right, the contact details, toggled
-  from the header; below 1200 px wide they open as a sheet, never as a third column, and the
-  header drops the inbox name, the assignee, the labels button and the close button's text when
-  the conversation is narrower than 36rem, so the contact's name keeps its room. On a phone the line under the name
-  (source, place, status) wraps instead of being cut, and assign, snooze and search move into the
-  more menu next to close. On a phone the list and the conversation are
-  two screens with a back button. With nothing open the middle shows what the team did today
+  open conversation (`/conversations/:id`, M42) as a page in the shell: a back link to the list
+  with "n of m in <place>" and previous/next (`k`/`j`, which still step through the list when it
+  is hidden), the title (subject, or the contact's name), one meta line (status, the contact,
+  source, inbox, place, labels, high priority and the SLA chip with its popover, then imported,
+  broadcast, related and the other links), and a toolbar: the assignee (avatar and first name;
+  teams are in that menu and the side panel) and Snooze as compact controls, Close as the only
+  primary button (Reopen when closed), everything else in one more menu, then the side-panel
+  toggle (`C`). Header and title stay put; under them one bordered box holds the collision line,
+  for a chat or app conversation the visitor line (online, typing, last seen, the page they are
+  on, the device from `client_info`, the country and their local time from the time zone), the
+  thread scrolling on its own, the closed line ("Closed. A reply opens it again." with Reopen)
+  and the composer pinned at the bottom. The thread is built on shadcn's chat components (message,
+  bubble, marker, attachment, message scroller): chat and app messages are bubbles grouped by
+  sender, the avatar on the group's last one, time and Sent/Read on the last; a chat opens at
+  its newest message, sticks there while the member is at the bottom and loads older pages on
+  scrolling up. E-mail conversations are a stack of mails: the last one, the one asked for in
+  `?m=` and any with a delivery error open, the others one line each (sender, snippet,
+  attachment mark, time), and with four or more mails the middle ones fold into one "n earlier
+  messages" line (`E` expands or collapses all); an open mail shows who sent it, its From, To, Cc
+  and Bcc, time and read state, Reply, Reply all (when there are several recipients, `R`) and
+  Forward, then the subject when it changes, the body (original or reading view), quoted text
+  behind "•••", the signature, attachments as file chips and the `.eml` download. A note is a
+  bubble in the note colour; drafts keep Send / Edit / Discard; events are markers. When the
+  visitor of a chat has left (offline in `/v1/contacts/{id}/presence`), one quiet line at the end
+  of the thread says so; the reply then goes by e-mail when `continuity` would send it (an address
+  of the contact, the inbox has an SMTP channel, the address is not suppressed): the composer tab
+  reads "Reply by e-mail" with a To line and "Send e-mail", otherwise the reply waits in the chat.
+  Another member on the conversation is one line with "I'll reply" and "Leave it to <name>". The
+  composer has Reply (Reply in chat, Reply by e-mail) and Internal note tabs, the From picker
+  and Cc/Bcc for e-mail, attach, emoji (`:`), one insert menu (`;`) for canned replies, macros
+  and a help article, quick canned replies above it in an open chat, and a split Send whose menu
+  holds send and close and, for e-mail, send later. The side panel (320px, 280px under 1320px
+  wide; a sheet below 1180px and on a phone, opened from the header) scrolls on its own and has
+  folds, remembered per browser: Person (details, products, new conversation, merge, open in
+  People), This conversation (status, product, assignee, channel, started, team, priority,
+  labels, fields, participants, device, media), Earlier conversations and Notes. On a phone the
+  conversation is a detail page: no section strip, the back arrow in the app header. Mail
+  threads (`/mail/...`) are the same page: subject and a lede (status, person, address, message
+  count, labels), star, Snooze, Archive or Move to the Inbox as the primary button and a more
+  menu (unread, labels, forward, filter messages like this, `.eml`, trash), the same mail stack,
+  a Reply / Reply all / Forward / Note for the team row over the composer, and folds for This
+  mail, In this thread and Earlier; writing a new mail is an inline page (From, To, Cc and Bcc,
+  Subject, Message, Attachments; Send, Send later, Save draft, Discard), never a floating window. With nothing open the middle shows what the team did today
   from `GET /v1/stats`: replies sent by members, conversations closed and the median time to the
   first reply, per member too, over the inboxes the caller can see. Nothing is stored for it: it
   is counted from `messages` on each request (indexed by workspace and time) for a window of at

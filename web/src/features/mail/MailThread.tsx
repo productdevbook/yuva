@@ -2,27 +2,30 @@ import { Plural, Trans, useLingui } from "@lingui/react/macro"
 import {
   ArchiveIcon,
   ArrowLeftIcon,
-  ChevronDownIcon,
   ClockIcon,
+  EllipsisIcon,
   FileDownIcon,
   FilterIcon,
+  ForwardIcon,
   InboxIcon,
   MailIcon,
-  PaperclipIcon,
+  PanelRightIcon,
   ReplyAllIcon,
   ReplyIcon,
   SearchXIcon,
   StarIcon,
   StickyNoteIcon,
+  TagIcon,
   Trash2Icon,
 } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useNavigate } from "react-router"
 
-import { ContactAvatar, EmptyState, Kbd, Notice, PersonAvatar, toast, useContactName } from "@/components/common"
-import { TopPortal, usePhoneBackTarget } from "@/components/common/PageLayout"
-import { MAIL_KEYS } from "@/components/common/ShortcutSheet"
-import { formatDateTime, useErrorText } from "@/components/common/text"
+import { Dot, EmptyState, PersonAvatar, toast, useContactName } from "@/components/common"
+import { FoldPanel } from "@/components/common/Fold"
+import { usePhoneBackTarget } from "@/components/common/PageLayout"
+import { keyLabel, MAIL_KEYS } from "@/components/common/ShortcutSheet"
+import { formatShort, useEnumText, useErrorText } from "@/components/common/text"
 import { useConfirm } from "@/components/common/ConfirmDialog"
 import { Button } from "@/components/ui/button"
 import {
@@ -31,8 +34,11 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useContact } from "@/features/contact/queries"
 import {
@@ -43,12 +49,11 @@ import {
   type ConversationActions,
 } from "@/features/conversation/actions"
 import { ReplyBox, type ReplyHandle } from "@/features/conversation/composer/ReplyBox"
+import { ForwardDialog } from "@/features/conversation/ForwardDialog"
 import { useSnoozeTimes } from "@/features/conversation/HeaderActions"
 import { Attachments } from "@/features/conversation/messages/Attachments"
 import { useAuthorName, type ThreadContext } from "@/features/conversation/messages/context"
-import { DeliveryState } from "@/features/conversation/messages/DeliveryState"
-import { DesignLine } from "@/features/conversation/messages/DesignLine"
-import { MailBody, MailControls, useMail } from "@/features/conversation/messages/EmailBody"
+import { MailFold, MailRow } from "@/features/conversation/messages/MailRow"
 import { EventLine } from "@/features/conversation/messages/EventLine"
 import { OwnDraftCard } from "@/features/conversation/messages/OwnDraftCard"
 import { isOwnDraft, isShownDraft } from "@/features/conversation/ownDraft"
@@ -61,19 +66,39 @@ import {
   useMessages,
   useParticipants,
   useTrashConversation,
+  useUpdateConversation,
 } from "@/features/conversation/queries"
 import { useListActions } from "@/features/inbox/memberState"
-import { useFilterAccess } from "@/features/mail/folders"
+import { useFilterAccess, type Folder } from "@/features/mail/folders"
+import { MailPanel, type MailFold as MailPart } from "@/features/mail/MailSide"
 import { useStar } from "@/features/mail/queries"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useMediaQuery } from "@/hooks/use-media-query"
-import { ApiError, isGone, rawMessageUrl, type Contact, type Conversation, type Message } from "@/lib/api"
+import {
+  ApiError,
+  isGone,
+  rawMessageUrl,
+  type Contact,
+  type Conversation,
+  type ConversationUpdate,
+  type Message,
+} from "@/lib/api"
 import { writesMailbox } from "@/lib/mailbox"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { useChannelMap, useInboxes, useLabels, useMemberMap } from "@/lib/workspace"
 
-type Props = { id: string; flat?: boolean; onBack?: () => void; onLeave: () => void; openDraft?: string }
+type Props = {
+  id: string
+  onBack?: () => void
+  onLeave: () => void
+  openDraft?: string
+  box?: string
+  folder?: Folder
+  panel?: boolean
+  inlinePanel?: boolean
+  onPanel?: (open: boolean) => void
+}
 
 function BackButton({ onBack }: { onBack?: () => void }) {
   const { t } = useLingui()
@@ -132,301 +157,28 @@ export function MailThread(props: Props) {
   return <Loaded {...props} c={c} contact={contact.data} />
 }
 
-function Address({ label, value, testId }: { label: React.ReactNode; value: string; testId: string }) {
-  if (!value) return null
-  return (
-    <>
-      <dt className="text-faint">{label}</dt>
-      <dd className="min-w-0 break-words" data-testid={testId}>
-        {value}
-      </dd>
-    </>
-  )
-}
-
-function MailCard({
-  m,
-  ctx,
-  contactName,
-  open,
-  flat,
-  onToggle,
-  onFilter,
-}: {
-  m: Message
-  ctx: ThreadContext
-  contactName: string
-  open: boolean
-  flat?: boolean
-  onToggle: () => void
-  onFilter?: () => void
-}) {
-  const { t, i18n } = useLingui()
-  const { workspaceId } = useSession()
-  const mail = useMail(m, ctx.expandQuoted)
-  const author = useAuthorName(m, ctx)
-  const by = useAuthorName({ ...m, author: m.sent_by ?? m.author }, ctx)
-  const out = m.direction === "out"
-  const e = m.email
-  const owner = m.on_behalf_of_member_id ? ctx.members.get(m.on_behalf_of_member_id) : undefined
-  const ownerName = owner ? owner.name || owner.email : t`Deleted member`
-  const name = !out
-    ? contactName
-    : m.on_behalf_of_member_id
-      ? t`${author} on behalf of ${ownerName}`
-      : m.sent_by
-        ? t`${author}, sent by ${by}`
-        : author
-  const date = formatDateTime(m.created_at, i18n.locale)
-  const snippet = m.body.replace(/\s+/g, " ").trim()
-  const face = out ? (
-    <PersonAvatar name={by} className="size-7 shrink-0 bg-muted-foreground text-background" />
-  ) : (
-    <ContactAvatar id={ctx.contact?.id ?? m.conversation_id} name={contactName} className="size-7 shrink-0" />
-  )
-  if (!open && flat) {
-    return (
-      <button
-        type="button"
-        onClick={onToggle}
-        className="flex w-full min-w-0 scroll-mt-24 items-center gap-3 border-t border-line-soft px-1 py-3 text-start outline-none hover:bg-subtle focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
-        aria-expanded={false}
-        data-testid="mail-message"
-        data-collapsed
-        data-message-id={m.id}
-      >
-        {face}
-        <span className="w-40 shrink-0 truncate text-body font-medium text-foreground">{name}</span>
-        <span className="min-w-0 flex-1 truncate text-body text-muted-foreground">{snippet}</span>
-        {m.attachments.length > 0 && <PaperclipIcon className="size-3.5 shrink-0 text-muted2" />}
-        <time className="shrink-0 font-mono text-xs text-muted2" dateTime={m.created_at}>
-          {date}
-        </time>
-      </button>
-    )
-  }
-  if (flat) {
-    const tail = mail.listed.length > 0 || m.delivery || m.design
-    return (
-      <section
-        className="flex min-w-0 scroll-mt-24 flex-col border-t border-line-soft py-[22px] outline-none"
-        tabIndex={-1}
-        data-testid="mail-message"
-        data-message-id={m.id}
-      >
-        <header className="flex min-w-0 flex-col gap-0.5">
-          <button
-            type="button"
-            onClick={onToggle}
-            className="flex min-w-0 items-center gap-2 rounded-md text-start outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            aria-expanded
-            title={t`Collapse`}
-          >
-            {face}
-            <span className="min-w-0 truncate text-[15px] font-semibold" data-testid="mail-from-name">
-              {name}
-            </span>
-            <span className="flex-1" />
-            <time className="shrink-0 font-mono text-xs text-muted2" dateTime={m.created_at}>
-              {date}
-            </time>
-          </button>
-          {e && (
-            <dl className="ms-9 grid grid-cols-[auto_1fr] gap-x-2 text-caption leading-[18px] text-muted2">
-              {e.from && (
-                <>
-                  <dt>
-                    <Trans>From</Trans>
-                  </dt>
-                  <dd className="min-w-0 truncate font-mono" data-testid="mail-from">
-                    {e.from}
-                  </dd>
-                </>
-              )}
-              <Address label={<Trans>To</Trans>} value={e.to.join(", ")} testId="mail-to" />
-              <Address label={<Trans>Cc</Trans>} value={e.cc?.join(", ") ?? ""} testId="mail-cc" />
-              <Address label={<Trans>Bcc</Trans>} value={e.bcc?.join(", ") ?? ""} testId="mail-bcc" />
-            </dl>
-          )}
-        </header>
-        <div
-          className={cn(
-            "mt-3.5 ms-9 min-w-0 text-foreground [&_.text-reading]:text-base [&_.text-reading]:leading-7",
-            (mail.originalHtml || mail.waiting) && "-ms-1 sm:ms-9"
-          )}
-        >
-          <MailBody mail={mail} />
-        </div>
-        {tail && (
-          <div className="mt-3.5 ms-9 flex flex-col gap-2">
-            <DesignLine m={m} />
-            <Attachments items={mail.listed} />
-            {m.delivery && <DeliveryState d={m.delivery} />}
-          </div>
-        )}
-        <footer className="mt-2.5 ms-8 flex flex-wrap items-center gap-1">
-          <MailControls mail={mail} />
-          {onFilter && (
-            <button
-              type="button"
-              onClick={onFilter}
-              className="ms-auto inline-flex h-6 items-center gap-1 rounded-md px-1.5 text-small text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-              data-testid="mail-filter-like"
-            >
-              <FilterIcon className="size-3.5" />
-              <Trans>Filter messages like this</Trans>
-            </button>
-          )}
-          {e?.raw && (
-            <a
-              href={rawMessageUrl(m.id, workspaceId)}
-              download
-              className={cn(
-                "inline-flex size-6 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
-                !onFilter && "ms-auto"
-              )}
-              title={t`Download the original e-mail (.eml)`}
-              data-testid="raw-download"
-            >
-              <FileDownIcon className="size-3.5" />
-              <span className="sr-only">
-                <Trans>Download the original e-mail (.eml)</Trans>
-              </span>
-            </a>
-          )}
-        </footer>
-      </section>
-    )
-  }
-  if (!open) {
-    return (
-      <button
-        type="button"
-        onClick={onToggle}
-        className="flex w-full min-w-0 items-center gap-3 rounded-xl border border-border/60 bg-surface px-3.5 py-2.5 text-start outline-none hover:bg-muted/60 focus-visible:ring-2 focus-visible:ring-ring"
-        aria-expanded={false}
-        data-testid="mail-message"
-        data-collapsed
-        data-message-id={m.id}
-      >
-        {face}
-        <span className="w-36 shrink-0 truncate text-small font-semibold phone:w-24">{name}</span>
-        <span className="min-w-0 flex-1 truncate text-small text-muted-foreground">{snippet}</span>
-        {m.attachments.length > 0 && <PaperclipIcon className="size-3.5 shrink-0 text-faint" />}
-        <time className="shrink-0 text-caption text-faint" dateTime={m.created_at}>
-          {date}
-        </time>
-      </button>
-    )
-  }
-  return (
-    <article
-      className="flex min-w-0 flex-col rounded-[14px] border bg-card shadow-[0_1px_2px_rgb(0_0_0/0.03)]"
-      tabIndex={-1}
-      data-testid="mail-message"
-      data-message-id={m.id}
-    >
-      <header className="flex min-w-0 items-start gap-3 px-5 pt-4 pb-2.5 phone:px-4">
-        {out ? (
-          <PersonAvatar name={by} className="size-9 shrink-0 bg-muted-foreground text-background" />
-        ) : (
-          <ContactAvatar id={ctx.contact?.id ?? m.conversation_id} name={contactName} className="size-9 shrink-0" />
-        )}
-        <div className="flex min-w-0 flex-1 flex-col gap-1">
-          <button
-            type="button"
-            onClick={onToggle}
-            className="flex min-w-0 items-baseline gap-2 rounded-md text-start outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            aria-expanded
-            title={t`Collapse`}
-          >
-            <span className="min-w-0 flex-1 truncate phone:whitespace-normal phone:break-words">
-              <span className="text-body font-semibold" data-testid="mail-from-name">
-                {name}
-              </span>
-              {e?.from && (
-                <span className="ms-1.5 text-small text-faint" data-testid="mail-from">
-                  &lt;{e.from}&gt;
-                </span>
-              )}
-            </span>
-            <time className="shrink-0 text-caption text-faint" dateTime={m.created_at}>
-              {date}
-            </time>
-          </button>
-          {e && (
-            <dl className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-0.5 text-small text-muted-foreground">
-              <Address label={<Trans>To</Trans>} value={e.to.join(", ")} testId="mail-to" />
-              <Address label={<Trans>Cc</Trans>} value={e.cc?.join(", ") ?? ""} testId="mail-cc" />
-              <Address label={<Trans>Bcc</Trans>} value={e.bcc?.join(", ") ?? ""} testId="mail-bcc" />
-            </dl>
-          )}
-        </div>
-      </header>
-      <div className={cn("min-w-0", mail.originalHtml || mail.waiting ? "" : "px-5 pb-4 phone:px-4")}>
-        <MailBody mail={mail} />
-      </div>
-      {(mail.listed.length > 0 || m.delivery || m.design) && (
-        <div className="flex flex-col gap-2 px-5 pb-4 phone:px-4">
-          <DesignLine m={m} />
-          <Attachments items={mail.listed} />
-          {m.delivery && <DeliveryState d={m.delivery} />}
-        </div>
-      )}
-      <footer className="flex flex-wrap items-center gap-1 border-t border-border/60 px-3 py-1.5">
-        <MailControls mail={mail} />
-        {onFilter && (
-          <button
-            type="button"
-            onClick={onFilter}
-            className="ms-auto inline-flex h-6 items-center gap-1 rounded-md px-1.5 text-small text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-            data-testid="mail-filter-like"
-          >
-            <FilterIcon className="size-3.5" />
-            <Trans>Filter messages like this</Trans>
-          </button>
-        )}
-        {e?.raw && (
-          <a
-            href={rawMessageUrl(m.id, workspaceId)}
-            download
-            className={cn(
-              "inline-flex size-6 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
-              !onFilter && "ms-auto"
-            )}
-            title={t`Download the original e-mail (.eml)`}
-            data-testid="raw-download"
-          >
-            <FileDownIcon className="size-3.5" />
-            <span className="sr-only">
-              <Trans>Download the original e-mail (.eml)</Trans>
-            </span>
-          </a>
-        )}
-      </footer>
-    </article>
-  )
-}
-
-function NoteCard({ m, ctx }: { m: Message; ctx: ThreadContext }) {
+function NoteRow({ m, ctx }: { m: Message; ctx: ThreadContext }) {
   const { i18n } = useLingui()
   const author = useAuthorName(m, ctx)
   return (
     <article
-      className="flex min-w-0 flex-col gap-1 rounded-xl border border-note-border bg-note/40 px-4 py-2.5"
+      className="border-t border-line-soft bg-note px-[18px] py-3 shadow-[inset_3px_0_0_var(--color-note-border)] phone:px-3"
       data-testid="mail-note"
       data-message-id={m.id}
     >
-      <span className="flex items-center gap-1.5 text-caption text-faint">
-        <StickyNoteIcon className="size-3.5 text-note-ink" />
-        <span className="font-semibold text-foreground">{author}</span>
-        <span className="rounded-full bg-note px-1.5 text-[11px] leading-[18px] font-semibold text-note-ink">
+      <span className="flex flex-wrap items-center gap-x-2 text-small text-muted-foreground">
+        <PersonAvatar name={author} className="size-6 bg-muted-foreground text-[10px] text-background" />
+        <b className="font-semibold text-foreground">{author}</b>
+        <span>
           <Trans>Note for the team</Trans>
         </span>
-        <time dateTime={m.created_at}>{formatDateTime(m.created_at, i18n.locale)}</time>
+        <span className="flex-1" />
+        <time dateTime={m.created_at}>{formatShort(m.created_at, i18n.locale)}</time>
       </span>
-      <div className="text-reading break-words whitespace-pre-wrap">{m.body}</div>
-      <Attachments items={m.attachments} />
+      <div className="mt-1.5 ms-[34px] text-reading break-words whitespace-pre-wrap phone:ms-0">{m.body}</div>
+      <div className="ms-[34px] empty:hidden phone:ms-0">
+        <Attachments items={m.attachments} />
+      </div>
     </article>
   )
 }
@@ -445,17 +197,15 @@ function MailSnooze({
   return (
     <DropdownMenu open={open} onOpenChange={onOpenChange}>
       <DropdownMenuTrigger
-        render={
-          <Button variant="outline" className="h-8 gap-1.5 rounded-[9px] border-input bg-card px-3 font-normal" />
-        }
+        render={<Button variant="outline" className="h-[30px] gap-1.5 rounded-lg border-input px-2.5 font-normal" />}
+        aria-label={t`Snooze (B)`}
         title={t`Snooze (B)`}
         data-testid="mail-snooze"
       >
-        <ClockIcon />
-        <span className="phone:sr-only">
+        <ClockIcon className="text-muted-foreground" />
+        <span className="phone:hidden">
           <Trans>Snooze</Trans>
         </span>
-        <ChevronDownIcon className="text-faint" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-[260px] max-w-[calc(100vw-32px)]">
         <DropdownMenuGroup>
@@ -474,10 +224,22 @@ function MailSnooze({
   )
 }
 
-function Loaded({ c, contact, flat, onBack, onLeave, openDraft }: Props & { c: Conversation; contact?: Contact }) {
+function Loaded({
+  c,
+  contact,
+  onBack,
+  onLeave,
+  openDraft,
+  box,
+  folder,
+  panel,
+  inlinePanel,
+  onPanel,
+}: Props & { c: Conversation; contact?: Contact }) {
   const { t } = useLingui()
   const errorText = useErrorText()
-  const { canManage, membership } = useSession()
+  const { canManage, membership, workspaceId } = useSession()
+  const text = useEnumText()
   const me = membership.member_id
   const members = useMemberMap()
   const labels = useLabels().data ?? []
@@ -534,25 +296,25 @@ function Loaded({ c, contact, flat, onBack, onLeave, openDraft }: Props & { c: C
   }, [editTarget])
   useEffect(() => {
     if (cardCount === 0) return
-    const down = () =>
-      flat
-        ? window.scrollTo({ top: document.documentElement.scrollHeight })
-        : scroller.current?.scrollTo({ top: scroller.current.scrollHeight })
+    const down = () => scroller.current?.scrollTo({ top: scroller.current.scrollHeight })
     const timers = [0, 200, 600].map((ms) => setTimeout(down, ms))
     return () => timers.forEach(clearTimeout)
-  }, [cardCount, flat])
+  }, [cardCount])
   const mails = shown.filter((m) => m.kind === "message" || m.kind === "forward")
   const lastMail = mails.at(-1)
-  const [opened, setOpened] = useState<Set<string>>(new Set())
+  const [opened, setOpened] = useState<Record<string, boolean>>({})
   const [allOpen, setAllOpen] = useState(false)
-  const [stackOpen, setStackOpen] = useState(false)
-  const isOpen = (m: Message) => allOpen || m.id === lastMail?.id || opened.has(m.id)
-  const toggleOne = (id: string) =>
-    setOpened((s) => {
-      const next = new Set(s)
-      if (!next.delete(id)) next.add(id)
-      return next
-    })
+  const isOpen = (m: Message) => opened[m.id] ?? (allOpen || m.id === lastMail?.id || !!m.delivery?.error)
+  const toggleOne = (m: Message) => setOpened((o) => ({ ...o, [m.id]: !isOpen(m) }))
+  const [moreOpen, setMoreOpen] = useState(false)
+  const [forwarding, setForwarding] = useState<{ target?: Message } | null>(null)
+  const [sheet, setSheet] = useState(false)
+  const [folds, setFolds] = useState<Record<MailPart, boolean>>({ details: true, thread: true, before: true })
+  const setFold = (part: MailPart, open: boolean) => setFolds((f) => ({ ...f, [part]: open }))
+  const shownPanel = inlinePanel ? !!panel : sheet
+  const setPanel = (open: boolean) => (inlinePanel ? onPanel?.(open) : setSheet(open))
+  const togglePanel = () => setPanel(!shownPanel)
+  const updater = useUpdateConversation(c.id)
 
   const contactEmails = contact?.emails.map((e) => e.toLowerCase()) ?? []
   const inbound = shown.filter((m) => m.kind === "message" && m.direction !== "out")
@@ -575,6 +337,8 @@ function Loaded({ c, contact, flat, onBack, onLeave, openDraft }: Props & { c: C
     expandQuoted,
     inboxId: c.inbox_id,
     contactReadAt: c.last_read_by_contact_at,
+    onReply: write && !trashed ? (_m, all) => reply.current?.replyAll(all) : undefined,
+    onForwardMail: write && !trashed ? (m) => setForwarding({ target: m }) : undefined,
   }
 
   const lastId = shown.at(-1)?.id
@@ -629,6 +393,11 @@ function Loaded({ c, contact, flat, onBack, onLeave, openDraft }: Props & { c: C
     onLeave()
   }
   const toggleStar = () => write && star([c.id], !starred)
+  const update = (body: ConversationUpdate) => updater.mutate(body, { onError: fail })
+  const editLabels = () => {
+    setFold("details", true)
+    setPanel(true)
+  }
   const replyTo = (all: boolean) => {
     if (write) reply.current?.replyAll(all)
   }
@@ -660,6 +429,7 @@ function Loaded({ c, contact, flat, onBack, onLeave, openDraft }: Props & { c: C
           [MAIL_KEYS.quoted]: () => setExpandQuoted((x) => !x),
           [MAIL_KEYS.restore]: () => write && canManage && restore(),
           [MAIL_KEYS.expand]: () => setAllOpen((x) => !x),
+          [MAIL_KEYS.details]: togglePanel,
         }
       : {
           [MAIL_KEYS.reply]: () => replyTo(false),
@@ -675,28 +445,104 @@ function Loaded({ c, contact, flat, onBack, onLeave, openDraft }: Props & { c: C
           [MAIL_KEYS.filter]: () => write && latestFilterable && setFiltering(latestFilterable.id),
           [MAIL_KEYS.quoted]: () => setExpandQuoted((x) => !x),
           [MAIL_KEYS.expand]: () => setAllOpen((x) => !x),
+          [MAIL_KEYS.details]: togglePanel,
+          [MAIL_KEYS.more]: () => write && setMoreOpen(true),
+          [MAIL_KEYS.forward]: () => write && setForwarding({}),
+          [MAIL_KEYS.labels]: () => write && editLabels(),
           ...(write ? cardKeys : {}),
         }
   )
 
   const subject = c.subject.trim() || t`(no subject)`
-  const btn = "h-8 gap-1.5 rounded-[9px] border-input bg-card px-3 font-normal"
+  const mailCount = mails.length
+  const address = inbox?.mailbox?.addresses[0]
+  const latestRaw = shown.findLast((m) => m.kind === "message" && !!m.email?.raw)
+  const statusTone = archived
+    ? "bg-seg text-fg2"
+    : c.status === "snoozed"
+      ? "bg-warning/10 text-warning"
+      : "bg-success/10 text-success"
+  const chipLabels = labels.filter((l) => c.labels.includes(l.id))
+  const detailsKey = keyLabel(MAIL_KEYS.details).join("")
   const starButton = (
-    <button
-      type="button"
+    <Button
+      variant="ghost"
+      size="icon-sm"
       disabled={!write}
       onClick={toggleStar}
-      className={cn(
-        "grid size-8 shrink-0 place-items-center rounded-lg outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none",
-        starred ? "text-warning" : "text-faint"
-      )}
+      className={cn("size-[30px]", starred ? "text-warning hover:text-warning" : "text-muted-foreground")}
       aria-pressed={starred}
       aria-label={starred ? t`Remove the star` : t`Star`}
       title={starred ? t`Remove the star (S)` : t`Star (S)`}
       data-testid="mail-thread-star"
     >
       <StarIcon className={cn("size-[18px]", starred && "fill-current")} />
-    </button>
+    </Button>
+  )
+  const moreMenu = write && !trashed && (
+    <DropdownMenu open={moreOpen} onOpenChange={setMoreOpen}>
+      <DropdownMenuTrigger
+        render={<Button variant="outline" className="h-[30px] w-[30px] rounded-lg border-input px-0" />}
+        aria-label={t`Mail actions`}
+        title={t`Mail actions (${MAIL_KEYS.more})`}
+        data-testid="mail-more"
+      >
+        <EllipsisIcon />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-[260px] max-w-[calc(100vw-32px)]">
+        <DropdownMenuItem onClick={markUnread} data-testid="mail-unread">
+          <MailIcon />
+          <span className="flex-1">
+            <Trans>Mark as unread</Trans>
+          </span>
+          <DropdownMenuShortcut>{MAIL_KEYS.unread}</DropdownMenuShortcut>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={editLabels} data-testid="mail-labels">
+          <TagIcon />
+          <span className="flex-1">{t`Labels`}…</span>
+          <DropdownMenuShortcut>{MAIL_KEYS.labels}</DropdownMenuShortcut>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setForwarding({})} data-testid="mail-forward-menu">
+          <ForwardIcon className="rtl:-scale-x-100" />
+          <span className="flex-1">
+            <Trans>Forward</Trans>
+          </span>
+          <DropdownMenuShortcut>{MAIL_KEYS.forward}</DropdownMenuShortcut>
+        </DropdownMenuItem>
+        {latestFilterable && (
+          <DropdownMenuItem onClick={() => setFiltering(latestFilterable.id)} data-testid="mail-filter">
+            <FilterIcon />
+            <span className="flex-1">
+              <Trans>Filter messages like this</Trans>
+            </span>
+            <DropdownMenuShortcut>{MAIL_KEYS.filter}</DropdownMenuShortcut>
+          </DropdownMenuItem>
+        )}
+        {latestRaw && (
+          <DropdownMenuItem
+            render={<a href={rawMessageUrl(latestRaw.id, workspaceId)} download />}
+            data-testid="mail-raw"
+          >
+            <FileDownIcon />
+            <span className="flex-1">
+              <Trans>Download the original e-mail (.eml)</Trans>
+            </span>
+          </DropdownMenuItem>
+        )}
+        {canManage && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem variant="destructive" onClick={trash} data-testid="mail-trash">
+              <Trash2Icon />
+              <span className="flex-1">
+                <Trans>Move to the Trash</Trans>
+              </span>
+              <DropdownMenuShortcut>{MAIL_KEYS.trash}</DropdownMenuShortcut>
+            </DropdownMenuItem>
+          </>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
   const toolbar = (
     <div
@@ -705,82 +551,97 @@ function Loaded({ c, contact, flat, onBack, onLeave, openDraft }: Props & { c: C
       className="flex flex-wrap items-center gap-1.5 phone:w-full"
       data-testid="mail-actions"
     >
-      {!trashed && (
-        <>
-          {write && (
-            <Button
-              variant="outline"
-              className={btn}
-              onClick={archive}
-              title={archived ? t`Move to the Inbox (E)` : t`Archive (E)`}
-              data-testid="mail-archive"
-            >
-              {archived ? <InboxIcon /> : <ArchiveIcon />}
-              <span className="phone:sr-only">
-                {archived ? <Trans>Move to the Inbox</Trans> : <Trans>Archive</Trans>}
-              </span>
-            </Button>
-          )}
-          {write && <MailSnooze actions={actions} open={snoozing} onOpenChange={setSnoozing} />}
-          <Button
-            variant="outline"
-            className={btn}
-            onClick={markUnread}
-            title={t`Mark as unread (U)`}
-            data-testid="mail-unread"
-          >
-            <MailIcon />
-            <span className="phone:sr-only">
-              <Trans>Mark as unread</Trans>
-            </span>
-          </Button>
-          {write && canManage && (
-            <Button
-              variant="outline"
-              className={cn(btn, "text-destructive")}
-              onClick={trash}
-              title={t`Move to the Trash (#)`}
-              data-testid="mail-trash"
-            >
-              <Trash2Icon />
-              <span className="phone:sr-only">
-                <Trans>Trash</Trans>
-              </span>
-            </Button>
-          )}
-        </>
+      {starButton}
+      {!trashed && write && <MailSnooze actions={actions} open={snoozing} onOpenChange={setSnoozing} />}
+      {!trashed && !write && (
+        <Button
+          variant="outline"
+          className="h-[30px] gap-1.5 rounded-lg border-input px-2.5 font-normal"
+          onClick={markUnread}
+          title={t`Mark as unread (U)`}
+          data-testid="mail-unread"
+        >
+          <MailIcon />
+          <span className="phone:hidden">
+            <Trans>Mark as unread</Trans>
+          </span>
+        </Button>
       )}
+      <div className="ms-auto flex items-center gap-1.5">
+        {!trashed && write && (
+          <Button
+            variant={archived ? "outline" : "default"}
+            className="h-[30px] rounded-lg px-3 font-semibold"
+            onClick={archive}
+            title={archived ? t`Move to the Inbox (E)` : t`Archive (E)`}
+            data-testid="mail-archive"
+          >
+            {archived ? <InboxIcon /> : <ArchiveIcon />}
+            {archived ? <Trans>Move to the Inbox</Trans> : <Trans>Archive</Trans>}
+          </Button>
+        )}
+        {moreMenu}
+        <Button
+          variant="outline"
+          className={cn("h-[30px] w-[30px] rounded-lg border-input px-0", shownPanel && "bg-muted")}
+          onClick={togglePanel}
+          aria-pressed={shownPanel}
+          aria-label={`${t`Details`} (${detailsKey})`}
+          title={`${t`Details`} (${detailsKey})`}
+          data-testid="mail-toggle-details"
+        >
+          <PanelRightIcon className="rtl:-scale-x-100" />
+        </Button>
+      </div>
     </div>
   )
-  const firstOpen = shown.findIndex((m) => (m.kind === "message" || m.kind === "forward") && isOpen(m))
-  const before = flat && !allOpen && !stackOpen && firstOpen > 0 ? shown.slice(0, firstOpen) : []
-  const stackCount = before.filter((m) => m.kind === "message" || m.kind === "forward").length
-  const stacked = stackCount >= 2 ? new Set(before.map((m) => m.id)) : new Set<string>()
-  const listed = shown.filter((m) => !stacked.has(m.id))
-  const messageList = (
-    <>
-      {listed.map((m) =>
-        m.redacted_at ? (
-          <RedactedLine key={m.id} m={m} ctx={ctx} />
-        ) : m.kind === "note" ? (
-          <NoteCard key={m.id} m={m} ctx={ctx} />
-        ) : m.kind === "event" ? (
-          <EventLine key={m.id} m={m} ctx={ctx} />
-        ) : (
-          <MailCard
-            key={m.id}
-            m={m}
-            ctx={ctx}
-            contactName={name}
-            open={isOpen(m)}
-            flat={flat}
-            onToggle={() => toggleOne(m.id)}
-            onFilter={m.kind === "message" && filterable(m) ? () => setFiltering(m.id) : undefined}
-          />
-        )
-      )}
-    </>
-  )
+  const middleMails = mails.slice(1, -1)
+  const folding = !allOpen && mails.length >= 4 && middleMails.every((m) => !isOpen(m))
+  const hidden = folding
+    ? new Set(
+        shown
+          .slice(shown.indexOf(mails[1]), shown.indexOf(mails[mails.length - 2]) + 1)
+          .filter((m) => m.kind !== "note")
+          .map((m) => m.id)
+      )
+    : new Set<string>()
+  const foldAt = folding ? shown.findIndex((m) => hidden.has(m.id)) : -1
+  const messageList = shown.map((m, i) => {
+    if (hidden.has(m.id))
+      return i === foldAt ? (
+        <MailFold
+          key="mail-fold"
+          count={middleMails.length}
+          onOpen={() => setAllOpen(true)}
+          shortcut={MAIL_KEYS.expand}
+        />
+      ) : null
+    if (m.redacted_at)
+      return (
+        <div key={m.id} className="border-t border-line-soft px-[18px] py-1.5 phone:px-3">
+          <RedactedLine m={m} ctx={ctx} />
+        </div>
+      )
+    if (m.kind === "note") return <NoteRow key={m.id} m={m} ctx={ctx} />
+    if (m.kind === "event")
+      return (
+        <div key={m.id} className="border-t border-line-soft px-[18px] py-1 phone:px-3">
+          <EventLine m={m} ctx={ctx} />
+        </div>
+      )
+    return (
+      <MailRow
+        key={m.id}
+        m={m}
+        ctx={ctx}
+        name={name}
+        open={isOpen(m)}
+        onToggle={() => toggleOne(m)}
+        onFilter={m.kind === "message" && filterable(m) ? () => setFiltering(m.id) : undefined}
+        keys={{ reply: MAIL_KEYS.reply, replyAll: MAIL_KEYS.replyAll, forward: MAIL_KEYS.forward }}
+      />
+    )
+  })
   const after = (
     <>
       {cards.map((m) => (
@@ -823,118 +684,68 @@ function Loaded({ c, contact, flat, onBack, onLeave, openDraft }: Props & { c: C
       ))}
     </>
   )
-  const replyArea = (
-    <>
-      <div className="flex flex-wrap items-center gap-2" data-testid="mail-reply-modes">
-        <Button
-          variant="outline"
-          className="h-8 gap-1.5 rounded-[9px] border-input bg-card px-3 font-normal"
-          onClick={() => replyTo(false)}
-          title={t`Reply (R)`}
-          data-testid="mail-reply"
-        >
-          <ReplyIcon />
-          <Trans>Reply</Trans>
-          <Kbd className="phone:hidden">{MAIL_KEYS.reply}</Kbd>
-        </Button>
-        <Button
-          variant="outline"
-          className="h-8 gap-1.5 rounded-[9px] border-input bg-card px-3 font-normal"
-          onClick={() => replyTo(true)}
-          title={t`Reply all (A)`}
-          data-testid="mail-reply-all"
-        >
-          <ReplyAllIcon />
-          <Trans>Reply all</Trans>
-          <Kbd className="phone:hidden">{MAIL_KEYS.replyAll}</Kbd>
-        </Button>
-      </div>
-      <ReplyBox
-        key={`${c.id}:${revision}`}
-        ref={reply}
-        c={c}
-        contactName={name}
-        emailTo={emailTo}
-        undeliverable={undeliverable}
-        suggestion={suggestion}
-        ctx={ctx}
-        actions={actions}
-        autoFocus={fine && revision === 0 && !!readDraft(c.id).body}
-      />
-    </>
-  )
-  if (flat) {
-    const mailCount = mails.length
-    return (
-      <article
-        aria-label={subject}
-        className="relative flex min-w-0 max-w-[720px] flex-col"
-        data-testid="mail-thread"
-        data-conversation-id={c.id}
+  const barButton = "h-[30px] gap-1.5 rounded-lg border-input px-2.5 font-normal"
+  const replyBar = (
+    <div
+      className="flex shrink-0 flex-wrap items-center gap-2 border-t px-[18px] py-2.5 phone:px-3"
+      data-testid="mail-reply-modes"
+    >
+      <Button
+        variant="outline"
+        className={barButton}
+        onClick={() => replyTo(false)}
+        title={t`Reply (R)`}
+        data-testid="mail-reply"
       >
-        <TopPortal>
-          {starButton}
-          {toolbar}
-        </TopPortal>
-        <h1 className="m-0 mt-3 text-page leading-[34px] text-balance break-words" data-testid="mail-thread-subject">
-          {subject}
-        </h1>
-        <p className="m-0 mt-1.5 text-reading text-muted-foreground" data-testid="mail-thread-lede">
-          {name}
-          {inbox && <> · {inbox.name}</>}
-          {mailCount > 0 && (
-            <>
-              {" · "}
-              <Plural value={mailCount} one="# message" other="# messages" />
-            </>
-          )}
-        </p>
-        {trashed && (
-          <div className="mt-4 overflow-hidden rounded-xl border">
-            <TrashBanner c={c} onRestore={restore} busy={trasher.isPending} />
-          </div>
-        )}
-        <div ref={scroller} className="mt-6 flex flex-col [&>[data-testid=mail-note]]:my-3" data-testid="mail-messages">
-          {messages.hasNextPage && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="mb-2 self-center"
-              onClick={() => void messages.fetchNextPage()}
-              disabled={messages.isFetchingNextPage}
-            >
-              <Trans>Load older messages</Trans>
-            </Button>
-          )}
-          {messages.isPending && <Skeleton className="h-40 w-full rounded-xl" />}
-          {stacked.size > 0 && (
-            <button
-              type="button"
-              onClick={() => setStackOpen(true)}
-              aria-expanded={false}
-              className="flex w-full items-center gap-3 py-3.5 text-small text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              data-testid="mail-stack"
-            >
-              <span aria-hidden className="h-px flex-1 bg-border" />
-              <span className="underline decoration-input underline-offset-4">
-                <Plural value={stackCount} one="Show # earlier message" other="Show # earlier messages" />
-              </span>
-              <span aria-hidden className="h-px flex-1 bg-border" />
-            </button>
-          )}
-          {messageList}
-          <div className="flex flex-col gap-2 empty:hidden">{after}</div>
-        </div>
-        {!trashed && !write && (
-          <Notice className="mt-4" data-testid="mail-read-only">
-            <Trans>You can read this mailbox but not change it. Its owner can let you send from it.</Trans>
-          </Notice>
-        )}
-        {!trashed && write && <div className="mt-2 flex flex-col gap-2 border-t pt-[18px]">{replyArea}</div>}
-        {confirmDialog}
-      </article>
-    )
-  }
+        <ReplyIcon />
+        <Trans>Reply</Trans>
+      </Button>
+      <Button
+        variant="outline"
+        className={barButton}
+        onClick={() => replyTo(true)}
+        title={t`Reply all (A)`}
+        data-testid="mail-reply-all"
+      >
+        <ReplyAllIcon />
+        <Trans>Reply all</Trans>
+      </Button>
+      <Button
+        variant="outline"
+        className={barButton}
+        onClick={() => setForwarding({})}
+        title={t`Forward (${MAIL_KEYS.forward})`}
+        data-testid="mail-forward"
+      >
+        <ForwardIcon className="rtl:-scale-x-100" />
+        <Trans>Forward</Trans>
+      </Button>
+      <span className="flex-1" />
+      <Button
+        variant="outline"
+        className={barButton}
+        onClick={() => reply.current?.focus("note")}
+        title={t`Write a note for the team`}
+        data-testid="mail-note-button"
+      >
+        <StickyNoteIcon />
+        <Trans>Note for the team</Trans>
+      </Button>
+    </div>
+  )
+  const panelBody = (
+    <MailPanel
+      c={c}
+      name={name}
+      mails={mails}
+      update={update}
+      box={box}
+      folder={folder}
+      folds={folds}
+      onFold={setFold}
+    />
+  )
+  const inlineShown = !!inlinePanel && !!panel
   return (
     <section
       aria-label={subject}
@@ -942,54 +753,138 @@ function Loaded({ c, contact, flat, onBack, onLeave, openDraft }: Props & { c: C
       data-testid="mail-thread"
       data-conversation-id={c.id}
     >
-      <header className="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-2 border-b border-border/60 bg-background px-6 py-2.5 phone:px-3 phone:py-2">
-        <div className="flex min-w-0 flex-1 basis-64 items-center gap-2">
-          <BackButton onBack={onBack} />
-          <div className="flex min-w-0 flex-1 flex-col leading-tight">
-            <h2 className="truncate text-[16px] font-semibold" data-testid="mail-thread-subject">
-              {subject}
-            </h2>
-            {inbox && (
-              <span className="inline-flex min-w-0 items-center gap-1 text-caption text-faint">
-                <MailIcon className="size-3.5 shrink-0" />
-                <span className="truncate">{inbox.name}</span>
-              </span>
+      <header className="flex shrink-0 flex-wrap items-start gap-x-3 gap-y-2" data-testid="mail-header">
+        <BackButton onBack={onBack} />
+        <div className="min-w-0 flex-[1_1_320px] phone:flex-[1_1_0]">
+          <h1
+            className="m-0 text-title font-semibold [overflow-wrap:anywhere] phone:text-[19px] phone:leading-[25px]"
+            data-testid="mail-thread-subject"
+          >
+            {subject}
+          </h1>
+          <div
+            className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-small text-muted-foreground"
+            data-testid="mail-thread-lede"
+          >
+            <span
+              className={cn(
+                "inline-flex h-[22px] items-center rounded-[5px] px-2 text-caption font-semibold whitespace-nowrap",
+                statusTone
+              )}
+            >
+              {text.statusOf(c.status, c.kind)}
+            </span>
+            <span className="min-w-0 truncate">{name}</span>
+            {(address || inbox) && (
+              <>
+                <span aria-hidden>·</span>
+                <span className="min-w-0 truncate">{address ?? inbox?.name}</span>
+              </>
             )}
+            {mailCount > 0 && (
+              <>
+                <span aria-hidden>·</span>
+                <span>
+                  <Plural value={mailCount} one="# message" other="# messages" />
+                </span>
+              </>
+            )}
+            {chipLabels.map((l) => (
+              <span
+                key={l.id}
+                className="inline-flex h-[22px] items-center gap-1 rounded-[5px] bg-seg px-2 text-caption font-medium text-fg2 phone:hidden"
+              >
+                <Dot color={l.color} className="size-1.5" />
+                {l.name}
+              </span>
+            ))}
           </div>
-          {starButton}
         </div>
         {toolbar}
       </header>
-      {trashed && <TrashBanner c={c} onRestore={restore} busy={trasher.isPending} />}
-      <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto bg-background" data-testid="mail-messages">
-        <div className="mx-auto flex max-w-[776px] flex-col gap-2 px-7 pt-5 pb-2 phone:px-3 phone:pt-4">
-          {messages.hasNextPage && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="self-center"
-              onClick={() => void messages.fetchNextPage()}
-              disabled={messages.isFetchingNextPage}
+      <div
+        className={cn(
+          "mt-3.5 grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)] gap-3.5 phone:mt-2.5",
+          inlineShown ? "grid-cols-[minmax(0,1fr)_320px] max-[1320px]:grid-cols-[minmax(0,1fr)_280px]" : "grid-cols-1"
+        )}
+      >
+        <section
+          aria-label={t`Messages`}
+          className="relative flex min-h-0 min-w-0 flex-col overflow-hidden rounded-xl border bg-card"
+        >
+          {trashed && <TrashBanner c={c} onRestore={restore} busy={trasher.isPending} />}
+          {!trashed && !write && (
+            <p
+              role="status"
+              className="shrink-0 border-b border-line-soft bg-subtle px-3.5 py-2 text-small text-fg2"
+              data-testid="mail-read-only"
             >
-              <Trans>Load older messages</Trans>
-            </Button>
+              <Trans>You can read this mailbox but not change it. Its owner can let you send from it.</Trans>
+            </p>
           )}
-          {messages.isPending && <Skeleton className="h-40 w-full rounded-xl" />}
-          {messageList}
-          {after}
-        </div>
+          <div
+            ref={scroller}
+            className="min-h-0 flex-1 overflow-y-auto overscroll-contain [&>:first-child]:border-t-0"
+            data-testid="mail-messages"
+          >
+            {messages.hasNextPage && (
+              <div className="flex justify-center py-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => void messages.fetchNextPage()}
+                  disabled={messages.isFetchingNextPage}
+                >
+                  <Trans>Load older messages</Trans>
+                </Button>
+              </div>
+            )}
+            {messages.isPending && <Skeleton className="m-4 h-40 rounded-xl" />}
+            {messageList}
+            <div className="flex flex-col gap-2 px-[18px] pb-3 empty:hidden phone:px-3">{after}</div>
+          </div>
+          {!trashed && write && replyBar}
+          {!trashed && write && (
+            <div className="shrink-0 border-t phone:pb-[env(safe-area-inset-bottom)]">
+              <ReplyBox
+                key={`${c.id}:${revision}`}
+                ref={reply}
+                c={c}
+                contactName={name}
+                emailTo={emailTo}
+                undeliverable={undeliverable}
+                suggestion={suggestion}
+                ctx={ctx}
+                actions={actions}
+                autoFocus={fine && revision === 0 && !!readDraft(c.id).body}
+                bare
+              />
+            </div>
+          )}
+        </section>
+        {inlineShown && (
+          <FoldPanel label={t`Details`} testId="mail-panel">
+            {panelBody}
+          </FoldPanel>
+        )}
       </div>
-      {!trashed && !write && (
-        <div className="shrink-0 bg-background px-7 pt-2 pb-5 phone:px-3">
-          <Notice className="mx-auto max-w-[776px]" data-testid="mail-read-only">
-            <Trans>You can read this mailbox but not change it. Its owner can let you send from it.</Trans>
-          </Notice>
-        </div>
+      {!inlinePanel && (
+        <Sheet open={sheet} onOpenChange={setSheet}>
+          <SheetContent
+            className="w-[min(360px,92vw)] overflow-y-auto phone:inset-x-0 phone:top-auto phone:bottom-0 phone:max-h-[82svh] phone:w-full phone:rounded-t-2xl phone:border-s-0 phone:border-t"
+            data-testid="mail-panel"
+          >
+            <SheetHeader className="py-3">
+              <SheetTitle className="text-body font-semibold">
+                <Trans>Details</Trans>
+              </SheetTitle>
+            </SheetHeader>
+            {panelBody}
+          </SheetContent>
+        </Sheet>
       )}
-      {!trashed && write && (
-        <div className="shrink-0 bg-background px-7 pt-2 pb-5 phone:px-3 phone:pb-[max(0.5rem,env(safe-area-inset-bottom))]">
-          <div className="mx-auto flex max-w-[776px] flex-col gap-2">{replyArea}</div>
-        </div>
+      {forwarding && (
+        <ForwardDialog c={c} target={forwarding.target} messages={shown} onClose={() => setForwarding(null)} />
       )}
       {confirmDialog}
     </section>

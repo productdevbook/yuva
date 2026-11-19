@@ -11,6 +11,7 @@ import {
   XIcon,
 } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
+import { createPortal } from "react-dom"
 
 import { ErrorLine, FlatTag, FlatTime, Kbd, toast } from "@/components/common"
 import {
@@ -24,6 +25,7 @@ import {
   ListBoxSkeleton,
   RowCheckbox,
 } from "@/components/common/ListBox"
+import { ListPager } from "@/components/common/ListPager"
 import { SearchError, isSearchError } from "@/components/common/SearchError"
 import { MAIL_KEYS, SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { formatWhen } from "@/components/common/SendLater"
@@ -220,6 +222,8 @@ export function MailList({
   active,
   hidden = false,
   head,
+  pagerSlot,
+  place,
 }: {
   box: string
   folder: Folder
@@ -228,6 +232,8 @@ export function MailList({
   active: boolean
   hidden?: boolean
   head?: React.ReactNode
+  pagerSlot?: HTMLElement | null
+  place?: string
 }) {
   const { t } = useLingui()
   const errorText = useErrorText()
@@ -242,7 +248,7 @@ export function MailList({
   const anchor = useRef<string | null>(null)
   const list = useConversations(mailFilters(box, folder, q))
   const rows = useMemo(() => list.data?.pages.flatMap((p) => p.items) ?? [], [list.data])
-  const { cursorId, setCursorId, moveCursor, openCursor } = useListCursor(
+  const { cursorId, setCursorId, moveCursor, openCursor, step } = useListCursor(
     rows,
     currentId,
     onOpen,
@@ -628,12 +634,31 @@ export function MailList({
     />
   )
 
+  const at = currentId ? rows.findIndex((c) => c.id === currentId) : -1
+  const pager =
+    pagerSlot &&
+    currentId &&
+    createPortal(
+      <ListPager
+        at={at}
+        total={rows.length}
+        more={!!hasNextPage}
+        place={place ?? t`Mail`}
+        onPrevious={() => step(-1)}
+        onNext={() => step(1)}
+        previousLabel={t`Newer mail (${SHORTCUTS.previous})`}
+        nextLabel={t`Older mail (${SHORTCUTS.next})`}
+      />,
+      pagerSlot
+    )
+
   return (
     <nav
       aria-label={t`Mail`}
       className={cn("@container/list flex min-w-0 flex-col", hidden && "hidden")}
       data-testid="mail-list"
     >
+      {pager}
       {head}
       <FilterRow>
         {searchBox}

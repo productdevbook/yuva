@@ -63,6 +63,10 @@ export const SHORTCUTS = {
   restore: "Z",
   deleteForever: "Delete",
   saveView: "V",
+  replyAll: "R",
+  expand: "E",
+  emoji: ":",
+  insert: ";",
 } as const
 
 export const MAIL_KEYS = {
@@ -87,6 +91,10 @@ export const MAIL_KEYS = {
   sendAgain: "D",
   design: "m",
   filter: "F",
+  forward: "w",
+  more: ".",
+  details: "i",
+  labels: "t",
 } as const
 
 export const FEEDBACK_KEYS = {
@@ -309,6 +317,7 @@ export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenCha
       title: t`Answering`,
       items: [
         [k(SHORTCUTS.reply), t`Write a reply`],
+        [k(SHORTCUTS.replyAll), t`Reply to everyone`],
         [k(SHORTCUTS.note), t`Write a note for the team`],
         [[mod, "↵"], t`Send and close`],
         [["⇧", mod, "↵"], t`Send only`],
@@ -318,6 +327,8 @@ export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenCha
         [k(SHORTCUTS.discardSuggestion), t`Discard the suggested reply`],
         [k(SHORTCUTS.attach), t`Attach files`],
         [["/"], t`Canned replies and macros, in the reply box`],
+        [k(SHORTCUTS.insert), t`Canned reply, macro or help article`],
+        [k(SHORTCUTS.emoji), t`Emoji`],
         [k(SHORTCUTS.leave), t`Leave it to the teammate who is typing`],
         [["Del"], t`Remove the message or note you clicked on`],
       ],
@@ -341,6 +352,7 @@ export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenCha
         [k(SHORTCUTS.trash), t`Move to the Trash`],
         [k(SHORTCUTS.restore), t`Restore from the Trash`],
         [k(SHORTCUTS.quoted), t`Show or hide quoted text`],
+        [k(SHORTCUTS.expand), t`Expand or collapse every message`],
         [k(SHORTCUTS.copyDetails), t`Copy the feedback details`],
         [k(SHORTCUTS.find), t`Search in this conversation`],
         [k(SHORTCUTS.pin), t`Pin to the top of your list, or unpin`],
@@ -387,6 +399,7 @@ export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenCha
         [k(MAIL_KEYS.compose), t`Write a new mail`],
         [k(MAIL_KEYS.reply), t`Reply to the sender`],
         [k(MAIL_KEYS.replyAll), t`Reply to everyone`],
+        [k(MAIL_KEYS.forward), t`Forward by e-mail…`],
         [k(MAIL_KEYS.note), t`Write a note for the team`],
         [k(MAIL_KEYS.attach), t`Attach files`],
         [k(MAIL_KEYS.archive), t`Archive, or move back to the Inbox`],
@@ -399,6 +412,9 @@ export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenCha
         [k(MAIL_KEYS.unread), t`Mark as unread and go back to the list`],
         [k(MAIL_KEYS.quoted), t`Show or hide quoted text`],
         [k(MAIL_KEYS.expand), t`Expand or collapse every message`],
+        [k(MAIL_KEYS.more), t`More actions`],
+        [k(MAIL_KEYS.labels), t`Labels`],
+        [k(MAIL_KEYS.details), t`Details`],
         [["Esc"], t`Back to the list`],
         [[k(SHORTCUTS.next)[0], k(SHORTCUTS.previous)[0]], t`Open the next or previous mail`],
         [k(MAIL_KEYS.select), t`Select the mail under the cursor`],

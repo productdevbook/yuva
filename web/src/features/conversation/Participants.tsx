@@ -72,7 +72,7 @@ function Row({
   )
 }
 
-export function Participants({ conversationId }: { conversationId: string }) {
+export function Participants({ conversationId, bare }: { conversationId: string; bare?: boolean }) {
   const { t } = useLingui()
   const conversation = useConversation(conversationId).data
   const channels = useChannelMap()
@@ -97,21 +97,37 @@ export function Participants({ conversationId }: { conversationId: string }) {
     add.mutate(valid[0], { onSuccess: () => setText("") })
   }
 
-  return (
-    <CardSection title={<Trans>Participants</Trans>} testId="participants-section">
-      <div className="flex flex-col gap-3">
-        {list.isPending ? (
-          <Skeleton className="h-10 w-full" />
-        ) : (
-          <>
-            {active.length === 0 && suggested.length === 0 && (
-              <p className="text-faint">
-                <Trans>Nobody else is copied. Replies go to the contact only.</Trans>
+  const body = (
+    <div className="flex flex-col gap-3" data-testid={bare ? "participants-section" : undefined}>
+      {list.isPending ? (
+        <Skeleton className="h-10 w-full" />
+      ) : (
+        <>
+          {active.length === 0 && suggested.length === 0 && (
+            <p className="text-faint">
+              <Trans>Nobody else is copied. Replies go to the contact only.</Trans>
+            </p>
+          )}
+          {active.length > 0 && (
+            <ul className="flex flex-col gap-2.5" data-testid="participants-active">
+              {active.map((p) => (
+                <Row
+                  key={p.email}
+                  p={p}
+                  busy={busy}
+                  onAdd={() => add.mutate(p.email)}
+                  onRemove={() => remove.mutate(p.email)}
+                />
+              ))}
+            </ul>
+          )}
+          {suggested.length > 0 && (
+            <div className="flex flex-col gap-2">
+              <p className="text-caption text-faint">
+                <Trans>Suggested, never copied unless you add them</Trans>
               </p>
-            )}
-            {active.length > 0 && (
-              <ul className="flex flex-col gap-2.5" data-testid="participants-active">
-                {active.map((p) => (
+              <ul className="flex flex-col gap-2.5" data-testid="participants-suggested">
+                {suggested.map((p) => (
                   <Row
                     key={p.email}
                     p={p}
@@ -121,67 +137,55 @@ export function Participants({ conversationId }: { conversationId: string }) {
                   />
                 ))}
               </ul>
-            )}
-            {suggested.length > 0 && (
-              <div className="flex flex-col gap-2">
-                <p className="text-caption text-faint">
-                  <Trans>Suggested, never copied unless you add them</Trans>
-                </p>
-                <ul className="flex flex-col gap-2.5" data-testid="participants-suggested">
-                  {suggested.map((p) => (
-                    <Row
-                      key={p.email}
-                      p={p}
-                      busy={busy}
-                      onAdd={() => add.mutate(p.email)}
-                      onRemove={() => remove.mutate(p.email)}
-                    />
-                  ))}
-                </ul>
-              </div>
-            )}
-          </>
-        )}
-        <form
-          className="flex items-center gap-1.5"
-          onSubmit={(e) => {
-            e.preventDefault()
-            submit()
+            </div>
+          )}
+        </>
+      )}
+      <form
+        className="flex items-center gap-1.5"
+        onSubmit={(e) => {
+          e.preventDefault()
+          submit()
+        }}
+      >
+        <Input
+          type="email"
+          name="participant"
+          value={text}
+          onChange={(e) => {
+            setText(e.target.value)
+            setInvalid(false)
           }}
+          placeholder={t`Add an address`}
+          aria-label={t`Add a participant by e-mail address`}
+          aria-invalid={invalid}
+          autoComplete="off"
+          data-testid="participant-input"
+        />
+        <Button
+          type="submit"
+          variant="outline"
+          size="icon-sm"
+          disabled={text.trim() === "" || busy}
+          aria-label={t`Add participant`}
+          title={t`Add participant`}
+          data-testid="participant-submit"
         >
-          <Input
-            type="email"
-            name="participant"
-            value={text}
-            onChange={(e) => {
-              setText(e.target.value)
-              setInvalid(false)
-            }}
-            placeholder={t`Add an address`}
-            aria-label={t`Add a participant by e-mail address`}
-            aria-invalid={invalid}
-            autoComplete="off"
-            data-testid="participant-input"
-          />
-          <Button
-            type="submit"
-            variant="outline"
-            size="icon-sm"
-            disabled={text.trim() === "" || busy}
-            aria-label={t`Add participant`}
-            title={t`Add participant`}
-            data-testid="participant-submit"
-          >
-            <PlusIcon />
-          </Button>
-        </form>
-        {invalid && (
-          <p role="alert" className="text-caption text-destructive">
-            <Trans>Enter one valid e-mail address.</Trans>
-          </p>
-        )}
-        <ErrorLine error={add.error ?? remove.error} className="text-caption" />
-      </div>
+          <PlusIcon />
+        </Button>
+      </form>
+      {invalid && (
+        <p role="alert" className="text-caption text-destructive">
+          <Trans>Enter one valid e-mail address.</Trans>
+        </p>
+      )}
+      <ErrorLine error={add.error ?? remove.error} className="text-caption" />
+    </div>
+  )
+  if (bare) return body
+  return (
+    <CardSection title={<Trans>Participants</Trans>} testId="participants-section">
+      {body}
     </CardSection>
   )
 }

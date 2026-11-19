@@ -3,14 +3,18 @@ import { PenSquareIcon } from "lucide-react"
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
 import { Link, Navigate, useLocation, useNavigate } from "react-router"
 
-import { Dot, InfoColumn, Kbd, PageLayout, PageTop, TopSep, TopSlotProvider } from "@/components/common"
+import { Kbd, PageLayout, PageTop } from "@/components/common"
 import { ListBox, ListBoxEmpty, PageTitle } from "@/components/common/ListBox"
-import { useEnumText } from "@/components/common/text"
-import { useConversation } from "@/features/conversation/queries"
-import { MailThreadInfo } from "@/features/mail/MailSide"
 import { MAIL_KEYS } from "@/components/common/ShortcutSheet"
 import { Button } from "@/components/ui/button"
-import { mailPath, useFolderLabels, useFolders, useMailInboxes, useMailRoute } from "@/features/mail/folders"
+import {
+  mailPath,
+  useFolderLabels,
+  useFolders,
+  useMailInboxes,
+  useMailRoute,
+  type Folder,
+} from "@/features/mail/folders"
 import { Compose } from "@/features/mail/Compose"
 import { COMPOSE_EVENT } from "@/features/mail/compose"
 import { MailDrafts } from "@/features/mail/MailDrafts"
@@ -18,7 +22,7 @@ import { MailList } from "@/features/mail/MailList"
 import { MailThread } from "@/features/mail/MailThread"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import type { DraftItem } from "@/lib/api"
-import { useIsPhone } from "@/hooks/use-media-query"
+import { useIsPhone, useMediaQuery } from "@/hooks/use-media-query"
 import { useViewing } from "@/lib/realtime"
 import { useSession } from "@/lib/session"
 
@@ -75,36 +79,59 @@ function NoMailInboxesPage() {
 
 function Thread({
   id,
-  flat,
   onBack,
   onLeave,
+  box,
+  folder,
+  panel,
+  inlinePanel,
+  onPanel,
 }: {
   id: string
-  flat?: boolean
   onBack?: () => void
   onLeave: () => void
+  box: string
+  folder: Folder
+  panel: boolean
+  inlinePanel: boolean
+  onPanel: (open: boolean) => void
 }) {
   const state = useLocation().state as { editDraft?: string } | null
-  return <MailThread key={id} id={id} flat={flat} onBack={onBack} onLeave={onLeave} openDraft={state?.editDraft} />
+  return (
+    <MailThread
+      key={id}
+      id={id}
+      onBack={onBack}
+      onLeave={onLeave}
+      openDraft={state?.editDraft}
+      box={box}
+      folder={folder}
+      panel={panel}
+      inlinePanel={inlinePanel}
+      onPanel={onPanel}
+    />
+  )
 }
 
-function MailEyebrow({ id }: { id: string }) {
-  const text = useEnumText()
-  const c = useConversation(id).data
-  const inbox = useMailInboxes().find((i) => i.id === c?.inbox_id)
-  if (!c) return null
-  return (
-    <>
-      {inbox && (
-        <>
-          <Dot color={inbox.branding.color} className="size-2 rounded-[2px]" />
-          <span className="truncate font-medium text-foreground">{inbox.name}</span>
-          <TopSep />
-        </>
-      )}
-      <span className="truncate">{text.statusOf(c.status, c.kind)}</span>
-    </>
-  )
+const PANEL_KEY = "mail-panel"
+
+function usePanel() {
+  const [open, setOpen] = useState(() => {
+    try {
+      return localStorage.getItem(PANEL_KEY) !== "closed"
+    } catch {
+      return true
+    }
+  })
+  const set = useCallback((v: boolean) => {
+    setOpen(v)
+    try {
+      localStorage.setItem(PANEL_KEY, v ? "open" : "closed")
+    } catch {
+      // Storage can be blocked; the panel then stays as chosen for this page only.
+    }
+  }, [])
+  return [open, set] as const
 }
 
 export function MailPage() {
@@ -116,7 +143,9 @@ export function MailPage() {
   const { box, folder, id } = useMailRoute()
   const folders = useFolders()
   const labels = useFolderLabels()
-  const [slot, setSlot] = useState<HTMLElement | null>(null)
+  const [pager, setPager] = useState<HTMLElement | null>(null)
+  const wide = useMediaQuery("(min-width: 1180px)")
+  const [panel, setPanel] = usePanel()
   const listY = useRef(0)
   const open = useCallback(
     (next: string, editDraft?: string) => {
@@ -144,15 +173,34 @@ export function MailPage() {
   if (pathname !== canonical) return <Navigate to={canonical} replace />
 
   const compose = () => setComposing({})
-  const composer = composing && (
-    <Compose key={composing.draft?.draft.id} box={box} draft={composing.draft} onClose={() => setComposing(null)} />
-  )
+  if (composing)
+    return (
+      <PageLayout testId="mail" label={t`Mail`}>
+        <Compose
+          key={composing.draft?.draft.id}
+          box={box}
+          draft={composing.draft}
+          onClose={() => setComposing(null)}
+          backLabel={labels[folder]}
+        />
+      </PageLayout>
+    )
 
   if (phone && id) {
     return (
       <main className="flex min-h-0 flex-1 flex-col" data-testid="mail">
-        <Thread id={id} onBack={leave} onLeave={leave} />
-        {composer}
+        <div className="flex min-h-0 flex-1 flex-col px-3 pt-2.5 pb-2">
+          <Thread
+            id={id}
+            onBack={leave}
+            onLeave={leave}
+            box={box}
+            folder={folder}
+            panel={false}
+            inlinePanel={false}
+            onPanel={setPanel}
+          />
+        </div>
       </main>
     )
   }
@@ -172,49 +220,56 @@ export function MailPage() {
       actions={<ComposeButton onClick={compose} />}
     />
   )
-  return (
-    <PageLayout
-      testId="mail"
-      label={t`Mail`}
-      aside={
-        id ? (
-          <InfoColumn label={t`Details`}>
-            <MailThreadInfo id={id} box={box} folder={folder} />
-          </InfoColumn>
-        ) : undefined
-      }
-    >
-      {id && (
-        <PageTop
-          back={{ label: labels[folder], onClick: leave }}
-          slot={setSlot}
-          actions={<ComposeButton onClick={compose} />}
-        >
-          <MailEyebrow id={id} />
-        </PageTop>
-      )}
-      <div className={id ? "max-w-[860px]" : undefined}>
-        {folder === "drafts" ? (
-          <MailDrafts
-            box={box}
-            currentId={id}
-            onOpen={open}
-            onCompose={(draft) => setComposing({ draft })}
-            active={!composing}
-            flat
-            hidden={!!id}
-            head={heading}
+  const list =
+    folder === "drafts" ? (
+      <MailDrafts
+        box={box}
+        currentId={id}
+        onOpen={open}
+        onCompose={(draft) => setComposing({ draft })}
+        active={!composing}
+        flat
+        hidden={!!id}
+        head={heading}
+      />
+    ) : (
+      <MailList
+        box={box}
+        folder={folder}
+        currentId={id}
+        onOpen={open}
+        active
+        hidden={!!id}
+        head={heading}
+        pagerSlot={pager}
+        place={labels[folder]}
+      />
+    )
+  if (id)
+    return (
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col bg-background" data-testid="mail">
+        <div className="mx-auto flex min-h-0 w-full max-w-[1440px] flex-1 flex-col ps-8 pe-7 pb-4 max-md:px-6">
+          <PageTop
+            back={{ label: labels[folder], onClick: leave }}
+            slot={setPager}
+            actions={<ComposeButton onClick={compose} />}
           />
-        ) : (
-          <MailList box={box} folder={folder} currentId={id} onOpen={open} active hidden={!!id} head={heading} />
-        )}
-        {id && (
-          <TopSlotProvider value={slot}>
-            <Thread id={id} flat onLeave={leave} />
-          </TopSlotProvider>
-        )}
+          {list}
+          <Thread
+            id={id}
+            onLeave={leave}
+            box={box}
+            folder={folder}
+            panel={panel}
+            inlinePanel={wide}
+            onPanel={setPanel}
+          />
+        </div>
       </div>
-      {composer}
+    )
+  return (
+    <PageLayout testId="mail" label={t`Mail`}>
+      {list}
     </PageLayout>
   )
 }

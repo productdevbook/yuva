@@ -1,5 +1,5 @@
 import { Plural, Trans, useLingui } from "@lingui/react/macro"
-import { CheckIcon, ChevronDownIcon, FlagIcon, UserRoundCheckIcon, UsersRoundIcon } from "lucide-react"
+import { CheckIcon, ChevronDownIcon, Clock3Icon, FlagIcon, UserRoundCheckIcon, UsersRoundIcon } from "lucide-react"
 import { useState, type RefObject } from "react"
 
 import { ErrorLine, MemberAvatar } from "@/components/common"
@@ -68,12 +68,15 @@ export function SnoozeMenu({
   return (
     <DropdownMenu open={open} onOpenChange={onOpenChange}>
       <DropdownMenuTrigger
-        render={<Button variant="outline" className={look.btnSm} />}
+        render={<Button variant="outline" className={cn(look.btnSm, "gap-1.5 phone:px-2")} />}
+        aria-label={t`Snooze (S)`}
         title={t`Snooze (S)`}
         data-testid="snooze-menu"
       >
-        <Trans>Snooze</Trans>
-        <ChevronDownIcon className="text-faint" />
+        <Clock3Icon className="text-muted-foreground" />
+        <span className="phone:hidden">
+          <Trans>Snooze</Trans>
+        </span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" anchor={anchor} className="w-[280px] max-w-[calc(100vw-32px)]">
         <SnoozeTimes name={name} actions={actions} />
@@ -415,11 +418,13 @@ export function CloseButton({ c, actions }: { c: Conversation; actions: Conversa
   const closed = c.status === "closed"
   return (
     <Button
-      className="h-8 rounded-[9px] bg-foreground px-3.5 font-semibold text-background hover:bg-foreground/90"
+      variant={closed ? "outline" : "default"}
+      className={cn("h-[30px] rounded-lg px-3", !closed && "font-semibold")}
       onClick={closed ? actions.reopen : actions.close}
-      title={closed ? undefined : feedback ? t`Resolve (E)` : t`Close (E)`}
+      title={closed ? t`Reopen (E)` : feedback ? t`Resolve (E)` : t`Close (E)`}
       data-testid={closed ? "reopen-conversation" : "close-conversation"}
     >
+      {!closed && <CheckIcon />}
       {closed ? <Trans>Reopen</Trans> : feedback ? <Trans>Resolve</Trans> : <Trans context="conversation">Close</Trans>}
     </Button>
   )

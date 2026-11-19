@@ -1,14 +1,32 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { ClockIcon, LifeBuoyIcon, PaperclipIcon, SlashIcon, SmileIcon, SparklesIcon, XIcon } from "lucide-react"
+import {
+  ChevronDownIcon,
+  ChevronLeftIcon,
+  ClockIcon,
+  LifeBuoyIcon,
+  PaperclipIcon,
+  SmileIcon,
+  SparklesIcon,
+  XIcon,
+  ZapIcon,
+} from "lucide-react"
 import { forwardRef, lazy, Suspense, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react"
 
 import { BotAvatar, ErrorLine, Kbd, toast } from "@/components/common"
 import { DesignBar, DesignButton } from "@/components/common/DesignChoice"
 import { pickKey, pickOf, useDesignBlocked, type DesignPick } from "@/components/common/designChoice"
-import { formatWhen, SendLaterMenu } from "@/components/common/SendLater"
+import { formatWhen, PickTimeDialog, SendLaterMenu, SendLaterTimes } from "@/components/common/SendLater"
 import { alt, keyLabel, mod, SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { formatBytes, useErrorText } from "@/components/common/text"
-import { popupClass } from "@/components/ui/dropdown-menu"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+  popupClass,
+} from "@/components/ui/dropdown-menu"
 import {
   clearSendFailure,
   firstName,
@@ -59,7 +77,15 @@ import { useTypingSender } from "@/lib/typing"
 import { cn } from "@/lib/utils"
 import { useAssignableMembers, useChannelMap } from "@/lib/workspace"
 import { Button } from "@/components/ui/button"
-import { Command, CommandEmpty, CommandItem, CommandList } from "@/components/ui/command"
+import { ButtonGroup } from "@/components/ui/button-group"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
@@ -79,6 +105,8 @@ export type ReplyHandle = {
   recipients: () => void
   signature: () => void
   sendAs: () => void
+  emoji: () => void
+  insertMenu: () => void
   replyAll: (all: boolean) => void
   edit: (m: Message) => void
   adopt: (m: Message) => void
@@ -172,9 +200,26 @@ export const ReplyBox = forwardRef<
     actions: ConversationActions
     autoFocus: boolean
     className?: string
+    fallback?: { to?: string }
+    quick?: boolean
+    bare?: boolean
   }
 >(function ReplyBox(
-  { c, contactName, via, emailTo, undeliverable, suggestion, ctx, actions, autoFocus, className },
+  {
+    c,
+    contactName,
+    via,
+    emailTo,
+    undeliverable,
+    suggestion,
+    ctx,
+    actions,
+    autoFocus,
+    className,
+    fallback,
+    quick,
+    bare,
+  },
   ref
 ) {
   const { t, i18n } = useLingui()
@@ -184,7 +229,6 @@ export const ReplyBox = forwardRef<
   const [files, setFiles] = useState<File[]>(initial.files)
   const [articles, setArticles] = useState<HelpPick[]>(initial.articles)
   const [macro, setMacro] = useState<MacroPick | undefined>(initial.macro)
-  const [articleOpen, setArticleOpen] = useState(false)
   const [design, setDesign] = useState<DesignPick | undefined>(initial.design)
   const [designOpen, setDesignOpen] = useState(false)
   const [linked, setLinked] = useState<string | null>(initial.suggestionId ?? null)
@@ -192,6 +236,9 @@ export const ReplyBox = forwardRef<
   const [pick, setPick] = useState(0)
   const [dismissed, setDismissed] = useState<number | null>(null)
   const [cannedOpen, setCannedOpen] = useState(false)
+  const [insertView, setInsertView] = useState<"list" | "article">("list")
+  const [sendOpen, setSendOpen] = useState(false)
+  const [laterCustom, setLaterCustom] = useState(false)
   const [emojiOpen, setEmojiOpen] = useState(false)
   const [noting, setNoting] = useState(false)
   const [mentioned, setMentioned] = useState<{ id: string; label: string }[]>([])
@@ -205,7 +252,6 @@ export const ReplyBox = forwardRef<
   const [fromTyped, setFromTyped] = useState<string | null>(initial.from ?? null)
   const stashFrom = useRef<string | null>(null)
   const [editing, setEditing] = useState<Message | null>(null)
-  const [laterOpen, setLaterOpen] = useState(false)
   const stash = useRef("")
   const stashDesign = useRef<DesignPick | undefined>(undefined)
   const sending = useRef(false)
@@ -421,7 +467,20 @@ export const ReplyBox = forwardRef<
     discardSuggestion: dropSuggestion,
     quote,
     article: () => {
-      if (helpCenter && !note) setArticleOpen(true)
+      if (!helpCenter || note) return
+      setInsertView("article")
+      setCannedOpen(true)
+    },
+    emoji: () => {
+      if (blocked) return
+      textarea.current?.focus()
+      setEmojiOpen(true)
+    },
+    insertMenu: () => {
+      if (blocked) return
+      textarea.current?.focus()
+      setInsertView("list")
+      setCannedOpen(true)
     },
     design: () => {
       if (designable) setDesignOpen(true)
@@ -635,7 +694,7 @@ export const ReplyBox = forwardRef<
     }
     if (e.key === "Enter" && e.altKey && mailing && !note && !blocked && !editing) {
       e.preventDefault()
-      setLaterOpen(true)
+      setSendOpen(true)
       return
     }
     if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
@@ -657,42 +716,128 @@ export const ReplyBox = forwardRef<
   }
 
   const recipientsShown = !!emailTo && !note && !blocked
+  const fromInline = fromRow && !catchAll
+  const fallbackTo = !note && fallback?.to
   const hint = note
     ? t`The customer does not see this`
-    : emailTo
-      ? recipientsShown
+    : fallback
+      ? fallback.to
         ? ""
-        : t`To: ${emailTo}`
-      : via
-        ? t`Goes out through ${via}`
-        : ""
+        : t`It shows in their chat when they come back`
+      : emailTo
+        ? recipientsShown
+          ? ""
+          : t`To: ${emailTo}`
+        : via
+          ? t`Goes out through ${via}`
+          : ""
+  const quickReplies = quick && !note && !blocked && !editing && !body.trim() ? choices.filter((r) => r.body) : []
+  const canned = choices.filter((r) => r.kind === "canned")
+  const macros = choices.filter((r) => r.kind === "macro")
+  const sendKey = `${mod}↵`
+  const sendKeys = actions.chat ? "Enter" : `${mod}⇧↵`
+  const sendBlocked = !hasContent || blocked || designBlocked || fromBlocked
+  const placeholder = note
+    ? t`A note for the team… type @ to mention a teammate`
+    : fallback?.to
+      ? t`Write to ${first}… this goes out as an e-mail`
+      : fallback
+        ? t`Write to ${first}… it shows when they come back`
+        : t`Write to ${first}…`
+  const choiceItem = (r: ReplyChoice) => (
+    <CommandItem
+      key={`${r.kind}:${r.id}`}
+      value={`${r.title} ${r.shortcut} ${r.kind}:${r.id}`}
+      onSelect={() => insertCanned(r)}
+      className="block rounded-lg px-2.5 py-2 data-selected:bg-muted"
+    >
+      <span className="flex items-center gap-2">
+        <span className="min-w-0 flex-1 truncate">{r.title}</span>
+        {r.shortcut && <span className="shrink-0 text-caption text-faint">/{r.shortcut}</span>}
+      </span>
+      <small className="block truncate text-caption text-faint">{r.body ?? <Trans>Actions only</Trans>}</small>
+    </CommandItem>
+  )
 
   return (
     <div
       className={cn(
-        "@container/composer relative rounded-[14px] border border-input bg-card shadow-[0_1px_2px_rgb(0_0_0/0.04)] transition-colors focus-within:border-faint",
-        note && "border-note-border bg-note focus-within:border-note-ink/40",
+        bare
+          ? "@container/composer relative"
+          : "@container/composer relative rounded-[14px] border border-input bg-card shadow-[0_1px_2px_rgb(0_0_0/0.04)] transition-colors focus-within:border-faint",
+        note && (bare ? "bg-note" : "border-note-border bg-note focus-within:border-note-ink/40"),
         className
       )}
       data-testid="reply-box"
     >
-      <div className="flex items-center gap-0.5 px-2 pt-2">
+      <div className="flex flex-wrap items-center gap-0.5 px-2 pt-2">
         <Tabs value={mode} onValueChange={(v) => focus(v as "message" | "note")} className="gap-0">
           <TabsList aria-label={t`Message type`}>
             {(["message", "note"] as const).map((m) => (
-              <TabsTrigger key={m} value={m} className={cn("flex-none px-3", note && "data-active:text-note-ink")}>
-                {m === "message" ? <Trans>Reply</Trans> : <Trans>Note</Trans>}
+              <TabsTrigger
+                key={m}
+                value={m}
+                className={cn("flex-none px-3", note && "data-active:text-note-ink")}
+                data-testid={`composer-tab-${m}`}
+              >
+                {m === "note" ? (
+                  <Trans>Internal note</Trans>
+                ) : fallback?.to ? (
+                  <Trans>Reply by e-mail</Trans>
+                ) : actions.chat ? (
+                  <Trans>Reply in chat</Trans>
+                ) : (
+                  <Trans>Reply</Trans>
+                )}
               </TabsTrigger>
             ))}
           </TabsList>
         </Tabs>
-        <span
-          className="ms-auto min-w-0 truncate pe-2 text-caption text-faint"
-          data-testid={!note && emailTo && !recipientsShown ? "composer-email-to" : undefined}
-        >
-          {hint}
-        </span>
+        {fromInline && !note ? (
+          <div className="ms-auto flex min-w-0 items-center gap-1.5 pe-1" data-testid="composer-from">
+            <span className="shrink-0 text-caption text-faint">
+              <Trans>From</Trans>
+            </span>
+            <FromPicker
+              ref={fromSelect}
+              className="max-w-60 min-w-0"
+              channelAddress={sendingAddress(channel)}
+              senders={senders}
+              value={pickedFrom}
+              onChange={(v) => {
+                clearSendFailure(c.id)
+                setPickedFrom(v)
+              }}
+              testId="composer-from-picker"
+            />
+          </div>
+        ) : (
+          <span
+            className="ms-auto min-w-0 truncate pe-2 text-caption text-faint"
+            data-testid={!note && emailTo && !recipientsShown ? "composer-email-to" : undefined}
+          >
+            {hint}
+          </span>
+        )}
       </div>
+      {fromInline && !note && fromFailure && (
+        <p role="alert" className="px-4 pt-1 text-caption text-destructive" data-testid="composer-from-note">
+          {errorText(fromFailure)}
+        </p>
+      )}
+      {fallbackTo && (
+        <div
+          className="mx-3 mt-1.5 flex min-h-[34px] items-center gap-2 border-b border-line-soft text-small"
+          data-testid="composer-fallback-to"
+        >
+          <span className="w-11 shrink-0 text-muted-foreground">
+            <Trans>To</Trans>
+          </span>
+          <span className="inline-flex h-6 max-w-full min-w-0 items-center truncate rounded-full bg-brand-wash px-2 ring-1 ring-brand/25 ring-inset">
+            {contactName === fallbackTo ? fallbackTo : `${contactName} <${fallbackTo}>`}
+          </span>
+        </div>
+      )}
       {recipientsShown && (
         <Recipients
           to={emailTo}
@@ -708,7 +853,7 @@ export const ReplyBox = forwardRef<
           bccRef={bccInput}
         />
       )}
-      {fromRow && (
+      {fromRow && catchAll && (
         <div className="flex items-start gap-1 px-3 pb-1.5" data-testid="composer-from">
           <span className="flex h-8 min-w-7 shrink-0 items-center pe-1 text-caption text-faint">
             <Trans>From</Trans>
@@ -727,27 +872,7 @@ export const ReplyBox = forwardRef<
                 error={fromFailure && !fromIssue ? errorText(fromFailure) : undefined}
                 testId="composer-from-field"
               />
-            ) : (
-              <>
-                <FromPicker
-                  ref={fromSelect}
-                  className="w-full"
-                  channelAddress={sendingAddress(channel)}
-                  senders={senders}
-                  value={pickedFrom}
-                  onChange={(v) => {
-                    clearSendFailure(c.id)
-                    setPickedFrom(v)
-                  }}
-                  testId="composer-from-picker"
-                />
-                {fromFailure && (
-                  <p role="alert" className="pt-1 text-caption text-destructive" data-testid="composer-from-note">
-                    {errorText(fromFailure)}
-                  </p>
-                )}
-              </>
-            )}
+            ) : null}
           </div>
         </div>
       )}
@@ -783,6 +908,27 @@ export const ReplyBox = forwardRef<
           className="pt-2"
         />
       )}
+      {quickReplies.length > 0 && (
+        <div
+          role="group"
+          aria-label={t`Quick replies`}
+          className="flex flex-wrap gap-1.5 px-3 pt-2"
+          data-testid="quick-replies"
+        >
+          {quickReplies.slice(0, 3).map((r) => (
+            <Button
+              key={`${r.kind}:${r.id}`}
+              variant="outline"
+              size="sm"
+              className="h-7 max-w-56 rounded-full px-2.5 text-small font-normal"
+              onClick={() => insertCanned(r)}
+              data-testid="quick-reply"
+            >
+              <span className="truncate">{r.title}</span>
+            </Button>
+          ))}
+        </div>
+      )}
       {menuOpen && <CannedMenu items={matches} active={pick} onPick={insertSlash} />}
       {mentionOpen && <MentionMenu items={mentionMatches} active={pick} onPick={insertMention} />}
       {!blocked && (
@@ -793,7 +939,7 @@ export const ReplyBox = forwardRef<
           rows={2}
           data-testid="composer-input"
           aria-label={note ? t`Team note` : t`Reply`}
-          placeholder={note ? t`A note for the team… type @ to mention a teammate` : t`Write to ${first}…`}
+          placeholder={placeholder}
           className="max-h-[40vh] min-h-[64px] resize-none rounded-none border-0 bg-transparent px-4 py-2.5 text-reading shadow-none hover:border-0 focus-visible:ring-0 md:text-reading dark:bg-transparent"
           onChange={(e) => {
             setBody(e.target.value)
@@ -914,14 +1060,14 @@ export const ReplyBox = forwardRef<
         </Button>
         <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>
           <PopoverTrigger
-            render={<Button variant="ghost" size="sm" className="text-faint hover:bg-muted aria-expanded:bg-muted" />}
-            title={t`Emoji`}
+            render={
+              <Button variant="ghost" size="icon-sm" className="text-faint hover:bg-muted aria-expanded:bg-muted" />
+            }
+            aria-label={t`Emoji`}
+            title={t`Emoji (${SHORTCUTS.emoji})`}
             data-testid="emoji-button"
           >
             <SmileIcon />
-            <span className="@max-md/composer:hidden">
-              <Trans>Emoji</Trans>
-            </span>
           </PopoverTrigger>
           <PopoverContent
             side="top"
@@ -933,78 +1079,81 @@ export const ReplyBox = forwardRef<
             </Suspense>
           </PopoverContent>
         </Popover>
-        <Popover open={cannedOpen} onOpenChange={setCannedOpen}>
+        <Popover
+          open={cannedOpen}
+          onOpenChange={(o) => {
+            setCannedOpen(o)
+            if (!o) setInsertView("list")
+          }}
+        >
           <PopoverTrigger
-            render={<Button variant="ghost" size="sm" className="text-faint hover:bg-muted aria-expanded:bg-muted" />}
-            title={t`Canned replies`}
+            render={
+              <Button variant="ghost" size="icon-sm" className="text-faint hover:bg-muted aria-expanded:bg-muted" />
+            }
+            aria-label={t`Canned reply, macro or help article`}
+            title={t`Canned reply, macro or help article (${SHORTCUTS.insert})`}
             data-testid="canned-button"
           >
-            <SlashIcon />
-            <span className="@max-md/composer:hidden">
-              <Trans>Canned reply</Trans>
-            </span>
+            <ZapIcon />
           </PopoverTrigger>
           <PopoverContent
             side="top"
             align="start"
-            className={cn(popupClass, "w-[min(320px,calc(100vw-48px))] gap-0 rounded-xl p-0 ring-0")}
+            className={cn(popupClass, "w-[min(360px,calc(100vw-48px))] gap-0 rounded-xl p-0 ring-0")}
           >
-            <Command className="bg-transparent p-1.5" label={t`Canned replies`}>
-              <CommandList className="max-h-72">
-                <CommandEmpty className="px-3 py-6 text-faint">
-                  <Trans>No canned replies yet. Add them in settings.</Trans>
-                </CommandEmpty>
-                {choices.map((r) => (
-                  <CommandItem
-                    key={`${r.kind}:${r.id}`}
-                    value={`${r.title} ${r.shortcut} ${r.kind}:${r.id}`}
-                    onSelect={() => insertCanned(r)}
-                    className="block rounded-lg px-2.5 py-2 data-selected:bg-muted"
-                  >
-                    {r.title}
-                    {r.kind === "macro" && (
-                      <span className="ms-2 rounded-md bg-muted px-1.5 text-caption text-muted-foreground">
-                        <Trans>Macro</Trans>
-                      </span>
-                    )}
-                    <small className="block truncate text-caption text-faint">
-                      {r.body ?? <Trans>Actions only</Trans>}
-                    </small>
-                  </CommandItem>
-                ))}
-              </CommandList>
-            </Command>
+            {insertView === "article" && helpCenter ? (
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="m-1.5 mb-0 self-start text-small"
+                  onClick={() => setInsertView("list")}
+                  data-testid="article-back"
+                >
+                  <ChevronLeftIcon className="rtl:rotate-180" />
+                  <Trans>Back</Trans>
+                </Button>
+                <ArticlePicker
+                  center={helpCenter}
+                  chosen={articles}
+                  onPick={(a) => {
+                    setArticles((all) => (all.length < 3 && !all.some((x) => x.id === a.id) ? [...all, a] : all))
+                    setCannedOpen(false)
+                    setInsertView("list")
+                    requestAnimationFrame(() => textarea.current?.focus())
+                  }}
+                />
+              </>
+            ) : (
+              <Command className="bg-transparent p-1.5" label={t`Canned reply, macro or help article`}>
+                <CommandList className="max-h-80">
+                  <CommandEmpty className="px-3 py-6 text-faint">
+                    <Trans>No canned replies yet. Add them in settings.</Trans>
+                  </CommandEmpty>
+                  {canned.length > 0 && (
+                    <CommandGroup heading={t`Canned replies`}>{canned.map(choiceItem)}</CommandGroup>
+                  )}
+                  {macros.length > 0 && <CommandGroup heading={t`Macros`}>{macros.map(choiceItem)}</CommandGroup>}
+                  {helpCenter && !note && (
+                    <>
+                      <CommandSeparator className="my-1" />
+                      <CommandItem
+                        value="help-article"
+                        onSelect={() => setInsertView("article")}
+                        className="flex items-center gap-2 rounded-lg px-2.5 py-2 data-selected:bg-muted"
+                        data-testid="article-button"
+                      >
+                        <LifeBuoyIcon className="size-4 text-muted-foreground" />
+                        <span className="flex-1">{t`Help article`}…</span>
+                        <span className="text-caption text-faint">{articleKey}</span>
+                      </CommandItem>
+                    </>
+                  )}
+                </CommandList>
+              </Command>
+            )}
           </PopoverContent>
         </Popover>
-        {helpCenter && !note && (
-          <Popover open={articleOpen} onOpenChange={setArticleOpen}>
-            <PopoverTrigger
-              render={<Button variant="ghost" size="sm" className="text-faint hover:bg-muted aria-expanded:bg-muted" />}
-              title={t`Send a help article (${articleKey})`}
-              data-testid="article-button"
-            >
-              <LifeBuoyIcon />
-              <span className="@max-md/composer:hidden">
-                <Trans>Help article</Trans>
-              </span>
-            </PopoverTrigger>
-            <PopoverContent
-              side="top"
-              align="start"
-              className={cn(popupClass, "w-[min(360px,calc(100vw-48px))] gap-0 rounded-xl p-0 ring-0")}
-            >
-              <ArticlePicker
-                center={helpCenter}
-                chosen={articles}
-                onPick={(a) => {
-                  setArticles((all) => (all.length < 3 && !all.some((x) => x.id === a.id) ? [...all, a] : all))
-                  setArticleOpen(false)
-                  requestAnimationFrame(() => textarea.current?.focus())
-                }}
-              />
-            </PopoverContent>
-          </Popover>
-        )}
         {designable && (
           <DesignButton
             open={designOpen}
@@ -1035,7 +1184,7 @@ export const ReplyBox = forwardRef<
             )}
           </span>
         )}
-        <span className="me-1.5 text-caption text-faint @max-md/composer:hidden">{actions.chat ? "↵" : `${mod}↵`}</span>
+        <span className="me-1.5 text-caption text-faint @max-md/composer:hidden">{actions.chat ? "↵" : sendKey}</span>
         {editing ? (
           <>
             <Button variant="ghost" onClick={leaveEdit} data-testid="composer-edit-cancel">
@@ -1071,47 +1220,67 @@ export const ReplyBox = forwardRef<
           </Button>
         ) : (
           <>
-            {mailing && !blocked && (
-              <SendLaterMenu
-                open={laterOpen}
-                onOpenChange={setLaterOpen}
-                trigger={
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    disabled={!hasContent || designBlocked || fromBlocked}
-                    aria-label={t`Send later`}
-                    title={t`Send later (${laterKey})`}
-                    data-testid="composer-send-later"
-                  />
-                }
-                onPick={(at) => void send(false, at)}
+            <ButtonGroup aria-label={t`Send`}>
+              <Button
+                onClick={() => void send(false)}
+                disabled={sendBlocked}
+                title={t`Send (${sendKeys})`}
+                data-testid="composer-send"
               >
-                <ClockIcon />
-              </SendLaterMenu>
+                {fallback?.to ? (
+                  <Trans>Send e-mail</Trans>
+                ) : fallback ? (
+                  <Trans>Send to chat</Trans>
+                ) : (
+                  <Trans>Send</Trans>
+                )}
+              </Button>
+              <DropdownMenu open={sendOpen} onOpenChange={setSendOpen}>
+                <DropdownMenuTrigger
+                  render={
+                    <Button
+                      size="icon"
+                      className="w-8 border-s border-primary-foreground/20"
+                      disabled={sendBlocked}
+                      aria-label={t`More ways to send`}
+                      title={mailing ? t`More ways to send (${laterKey})` : t`More ways to send`}
+                      data-testid="composer-send-menu"
+                    />
+                  }
+                >
+                  <ChevronDownIcon />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent side="top" align="end" className="w-[280px] max-w-[calc(100vw-32px)]">
+                  <DropdownMenuItem onClick={() => void send(true)} data-testid="composer-send-close">
+                    <span className="flex-1">
+                      {c.kind === "feedback" ? (
+                        <Trans>Reply and resolve</Trans>
+                      ) : c.inbox_purpose === "mail" ? (
+                        <Trans>Send and archive</Trans>
+                      ) : (
+                        <Trans>Send and close</Trans>
+                      )}
+                    </span>
+                    <DropdownMenuShortcut>{sendKey}</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                  {mailing && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <SendLaterTimes onPick={(at) => void send(false, at)} onCustom={() => setLaterCustom(true)} />
+                    </>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </ButtonGroup>
+            {laterCustom && (
+              <PickTimeDialog
+                open
+                onOpenChange={setLaterCustom}
+                title={<Trans>Send later</Trans>}
+                confirm={<Trans>Schedule</Trans>}
+                onPick={(at) => void send(false, at)}
+              />
             )}
-            <Button
-              variant={actions.chat ? "default" : "outline"}
-              onClick={() => void send(false)}
-              disabled={!hasContent || blocked || designBlocked || fromBlocked}
-              data-testid="composer-send"
-            >
-              <Trans>Send</Trans>
-            </Button>
-            <Button
-              variant={actions.chat ? "outline" : "default"}
-              onClick={() => void send(true)}
-              disabled={!hasContent || blocked || designBlocked || fromBlocked}
-              data-testid="composer-send-close"
-            >
-              {c.kind === "feedback" ? (
-                <Trans>Reply and resolve</Trans>
-              ) : c.inbox_purpose === "mail" ? (
-                <Trans>Send and archive</Trans>
-              ) : (
-                <Trans>Send and close</Trans>
-              )}
-            </Button>
           </>
         )}
       </div>

@@ -761,6 +761,26 @@ one highlighted item; no page scrolls sideways on a 390px phone; light and dark 
 agent's Home shows their own conversations and no imports; an owner finishes mail setup from the
 Home card and lands back on Home at 1 of 4.
 
+## M42 — Conversation screens redesign
+
+Status: done on main. Decision in `architecture.md` › Panel. Panel only (`web/`), on shadcn; every
+route, endpoint and shortcut stays.
+
+- A conversation is a page: back link with "n of m" and previous/next, title, one meta line, a
+  toolbar with assignee, Snooze, Close as the one primary button and a more menu, and a fixed box
+  whose thread scrolls on its own with the composer pinned at the bottom.
+- E-mail collapses earlier messages, quoted text, and has Reply, Reply all and Forward per
+  message; chat has bubbles, read receipts, a visitor line and quick canned replies; a chat whose
+  visitor left switches the composer to "Reply by e-mail" when an address is known.
+- Collision is one line; the composer has Reply / Internal note tabs, one insert menu and a split
+  Send; the side panel is folds (a sheet on a phone).
+- Team mail threads use the same page, and a new mail is an inline page instead of a dialog.
+
+Accept: every shortcut in the sheet works in the thread view; a chat opens at its newest message;
+on a 390px phone the conversation is a detail page without a section strip and nothing scrolls
+sideways; a chat whose visitor left and who has an e-mail address shows "Reply by e-mail" and its
+To line.
+
 ## Later
 
 - M10, native apps for members (#18, #19): not scheduled; not part of 0.1.0.

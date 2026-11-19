@@ -169,7 +169,7 @@ export function PickTimeDialog({
   )
 }
 
-function Times({ onPick, onCustom }: { onPick: (at: Date) => void; onCustom: () => void }) {
+export function SendLaterTimes({ onPick, onCustom }: { onPick: (at: Date) => void; onCustom: () => void }) {
   const { i18n, t } = useLingui()
   const [times] = useState(() => sendTimes(new Date()))
   const hour = new Intl.DateTimeFormat(i18n.locale, { hour: "2-digit", minute: "2-digit" })
@@ -229,7 +229,7 @@ export function SendLaterMenu({
       <DropdownMenu open={open} onOpenChange={onOpenChange}>
         <DropdownMenuTrigger render={trigger}>{children}</DropdownMenuTrigger>
         <DropdownMenuContent align={align} side={side} className="w-[280px] max-w-[calc(100vw-32px)]">
-          <Times onPick={onPick} onCustom={() => setCustom(true)} />
+          <SendLaterTimes onPick={onPick} onCustom={() => setCustom(true)} />
           {error ? <ErrorLine error={error} className="px-2.5 pb-1 text-caption" /> : null}
         </DropdownMenuContent>
       </DropdownMenu>

@@ -64,5 +64,5 @@ export function useListCursor(
     },
     active
   )
-  return { cursorId, setCursorId, moveCursor, openCursor }
+  return { cursorId, setCursorId, moveCursor, openCursor, step }
 }
