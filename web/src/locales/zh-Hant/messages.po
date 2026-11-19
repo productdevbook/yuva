@@ -48,6 +48,11 @@ msgstr "「此頁面對您有幫助嗎?」、文件上的反饋和討論"
 msgid "(no subject)"
 msgstr "(無主題)"
 
+#. placeholder {0}: u.count
+#: src/features/home/HomeWork.tsx
+msgid "{0, plural, one {{name} · # waiting} other {{name} · # waiting}}"
+msgstr "{0, plural, one {{name} · # 個等待中} other {{name} · # 個等待中}}"
+
 #. placeholder {0}: msg.attachments
 #: src/features/migrations/ReviewStep.tsx
 msgid "{0, plural, one {# attachment} other {# attachments}}"
@@ -148,7 +153,6 @@ msgid "{0} active today"
 msgstr "今日活躍 {0}"
 
 #. placeholder {0}: done.length
-#. placeholder {0}: done.size
 #: src/features/inbox/ChatList.tsx
 msgid "{0} closed"
 msgstr "{0} 個已關閉"
@@ -733,6 +737,10 @@ msgstr "每天 {n} 個"
 msgid "{n} archived"
 msgstr "已封存 {n} 個"
 
+#: src/features/inbox/ChatList.tsx
+msgid "{n} assigned to you"
+msgstr "已指派給你 {n} 個"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "{n} attempts"
 msgstr "{n} 次嘗試"
@@ -740,6 +748,10 @@ msgstr "{n} 次嘗試"
 #: src/features/broadcasts/Overview.tsx
 msgid "{n} broadcasts"
 msgstr "{n} 個群發"
+
+#: src/features/inbox/ChatList.tsx
+msgid "{n} closed"
+msgstr "已關閉 {n} 個"
 
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatsPage.tsx
@@ -772,6 +784,7 @@ msgstr "已將 {n} 個移回收件匣"
 msgid "{n} reports"
 msgstr "{n} 則回饋"
 
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "{n} snoozed, back {when}"
 msgstr "已推遲 {n} 個，{when}回來"
@@ -961,7 +974,7 @@ msgstr "{percent}%,{sent} / {size}"
 msgid "{person} left the workspace by deleting their account"
 msgstr "{person} 刪除帳號並離開了工作區"
 
-#: src/features/inbox/ChatList.tsx
+#: src/components/common/ListBox.tsx
 msgid "{picked} selected"
 msgstr "已選取 {picked} 項"
 
@@ -2520,6 +2533,7 @@ msgid "All imports"
 msgstr "所有匯入"
 
 #: src/app/Palette.tsx
+#: src/features/inbox/ChatsPage.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
@@ -2575,7 +2589,6 @@ msgstr "所有產品"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
@@ -3127,6 +3140,10 @@ msgid "Any state"
 msgstr "任何狀態"
 
 #: src/features/inbox/ChatList.tsx
+msgid "Any status"
+msgstr "任何狀態"
+
+#: src/features/inbox/ChatList.tsx
 msgid "Any team"
 msgstr "任何團隊"
 
@@ -3269,6 +3286,10 @@ msgstr "批准所選帖子"
 msgid "Approved"
 msgstr "已批准"
 
+#: src/features/mail/MailList.tsx
+msgid "archive"
+msgstr "封存"
+
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
@@ -3405,6 +3426,10 @@ msgid "Assign or hand to a teammate"
 msgstr "指派或交給團隊成員"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Assign the selected conversations to me"
+msgstr "將所選對話指派給我"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Assign the selected waiting conversation to you"
 msgstr "將選取的等待中對話指派給自己"
 
@@ -3424,8 +3449,14 @@ msgstr "指派給團隊"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Assign to me"
 msgstr "指派給我"
+
+#. placeholder {0}: SHORTCUTS.hand
+#: src/features/inbox/ChatList.tsx
+msgid "Assign to me ({0})"
+msgstr "指派給我 ({0})"
 
 #: src/features/conversation/messages/EventLine.tsx
 msgid "Assigned automatically to {assignee}"
@@ -3445,7 +3476,6 @@ msgid "Assigned to {assignee}, kept by name"
 msgstr "已指派給 {assignee},按名稱保留"
 
 #: src/features/home/HomePage.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 msgid "Assigned to you"
 msgstr "已指派給你"
@@ -4049,6 +4079,7 @@ msgstr "活動名稱"
 #: src/app/Palette.tsx
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
@@ -4072,9 +4103,7 @@ msgstr "活動名稱"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/fields/RequiredFieldsHost.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/AddProductDialog.tsx
@@ -4334,6 +4363,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "更改傳送域名會關閉 DKIM 簽名,直到你為新域名重新啟用。"
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
@@ -4554,7 +4584,6 @@ msgid "Choose a workspace"
 msgstr "選擇工作區"
 
 #: src/features/feedback/FeedbackList.tsx
-#: src/features/inbox/ChatsPage.tsx
 msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
 msgstr "從列表中選擇,或用 ↑ ↓ 移動並按 Enter 開啟。"
 
@@ -4621,9 +4650,8 @@ msgstr "清除搜尋"
 msgid "Clear the selection"
 msgstr "清除選取"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
 msgstr "清除選取 (Esc)"
 
@@ -4690,6 +4718,11 @@ msgctxt "conversation"
 msgid "Close"
 msgstr "關閉"
 
+#. placeholder {0}: SHORTCUTS.close
+#: src/features/inbox/ChatList.tsx
+msgid "Close ({0})"
+msgstr "關閉 ({0})"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Close (E)"
 msgstr "關閉(E)"
@@ -4739,6 +4772,14 @@ msgstr "關閉搜尋"
 msgid "Close the search (Esc)"
 msgstr "關閉搜尋(Esc)"
 
+#: src/features/inbox/ChatList.tsx
+msgid "close the selected"
+msgstr "關閉所選"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Close the selected conversations"
+msgstr "關閉所選對話"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -4755,7 +4796,6 @@ msgstr "在回覆前已關閉"
 msgid "Closed conversations"
 msgstr "已關閉的對話"
 
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "closed today"
 msgstr "今日已關閉"
@@ -5862,6 +5902,7 @@ msgstr "代理人"
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
+#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
@@ -7282,7 +7323,6 @@ msgstr "其他所有瀏覽器和裝置都將登出，目前裝置保持登入。
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
 msgstr "所有產品"
@@ -7325,10 +7365,6 @@ msgstr "每個網站和應用程式的訪客都顯示在首頁和分析中。"
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
 msgstr "所有人"
-
-#: src/features/inbox/ChatsPage.tsx
-msgid "Everyone has been answered."
-msgstr "所有人都已得到回覆。"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Everyone in this file agreed to receive {listName} from {inboxName}, and I can show how and when if asked."
@@ -7629,7 +7665,6 @@ msgstr "已用示例值填充。"
 msgid "Filled with the values of {who}"
 msgstr "已用 {who} 的值填充"
 
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter"
 msgstr "篩選"
@@ -7664,7 +7699,6 @@ msgstr "篩選與此相似的郵件"
 
 #: src/app/places.tsx
 #: src/features/mail/MailFiltersPage.tsx
-#: src/features/mail/MailPage.tsx
 msgid "Filters"
 msgstr "篩選器"
 
@@ -7803,7 +7837,6 @@ msgid "Fix the address or the channel's SMTP settings, then send the reply again
 msgstr "請修正地址或頻道的 SMTP 設定,然後再次傳送回覆。"
 
 #: src/app/places.tsx
-#: src/features/mail/MailPage.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "Folders"
@@ -10352,10 +10385,6 @@ msgstr "信箱"
 msgid "Mailbox address"
 msgstr "信箱地址"
 
-#: src/features/mail/MailPage.tsx
-msgid "Mailbox: {name}"
-msgstr "信箱：{name}"
-
 #: src/app/places.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -10493,8 +10522,13 @@ msgid "Mark as read"
 msgstr "標為已讀"
 
 #: src/features/mail/MailList.tsx
-msgid "Mark as read or unread (U)"
-msgstr "標為已讀或未讀 (U)"
+msgid "Mark as read (U)"
+msgstr "標示為已讀 (U)"
+
+#. placeholder {0}: SHORTCUTS.unread
+#: src/features/inbox/ChatList.tsx
+msgid "Mark as read or unread ({0})"
+msgstr "標示為已讀或未讀 ({0})"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/docs/discussions/Bulk.tsx
@@ -10509,6 +10543,7 @@ msgstr "標為垃圾郵件"
 msgid "Mark as unread"
 msgstr "標為未讀"
 
+#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Mark as unread (U)"
 msgstr "標為未讀 (U)"
@@ -10524,6 +10559,10 @@ msgstr "標記或取消標記為垃圾郵件"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected conversations as not spam, in Spam"
 msgstr "將垃圾郵件中所選的對話標示為非垃圾郵件"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Mark the selected conversations as read or unread"
+msgstr "將所選對話標示為已讀或未讀"
 
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Mark the selected discussions as spam ({n})?"
@@ -10618,10 +10657,6 @@ msgstr "中位數"
 #: src/features/status/IncidentDetail.tsx
 msgid "median {median}"
 msgstr "中位數 {median}"
-
-#: src/features/inbox/ChatsPage.tsx
-msgid "median first reply"
-msgstr "首次回覆中位數"
 
 #: src/features/reports/ReportPages.tsx
 msgid "median today"
@@ -10988,9 +11023,13 @@ msgstr "評分最多、待處理反饋、未關閉討論和等待稽覈的帖子
 msgid "Most votes"
 msgstr "票數最多"
 
-#. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+msgid "move"
+msgstr "移動"
+
+#. placeholder {0}: ids.length
+#: src/features/inbox/ChatList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "將 {0} 項移到垃圾箱？"
 
@@ -11126,7 +11165,6 @@ msgstr "移到上一個或下一個階段"
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
@@ -11421,7 +11459,6 @@ msgstr "已建立的新聯絡人"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactSheet.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/ChatsPage.tsx
 msgid "New conversation"
 msgstr "新對話"
@@ -11535,13 +11572,16 @@ msgstr "新建列表"
 msgid "New macro"
 msgstr "新增巨集"
 
+#: src/features/mail/MailList.tsx
+msgid "new mail"
+msgstr "新郵件"
+
 #: src/features/mail/Compose.tsx
 #: src/features/mail/MailPage.tsx
 msgid "New mail"
 msgstr "新郵件"
 
 #: src/app/places.tsx
-#: src/features/mail/MailPage.tsx
 msgid "New mailbox"
 msgstr "新信箱"
 
@@ -13296,6 +13336,12 @@ msgstr "僅團隊可見。"
 msgid "open"
 msgstr "未結"
 
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "開啟"
+
 #: src/components/common/text.ts
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -14235,10 +14281,6 @@ msgstr "選擇顏色"
 msgid "Pick a contact"
 msgstr "選擇聯絡人"
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "Pick a conversation"
-msgstr "選擇對話"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Pick a CSV file, or drop it here"
 msgstr "選擇 CSV 檔案,或拖到這裡"
@@ -14381,17 +14423,9 @@ msgstr "請至少選擇一個許可權範圍。"
 msgid "Pick at least one."
 msgstr "請至少選擇一個。"
 
-#: src/features/inbox/ChatList.tsx
-msgid "Pick conversations"
-msgstr "選擇對話"
-
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "自己逐個選擇許可權範圍。"
-
-#: src/features/mail/MailList.tsx
-msgid "Pick mails"
-msgstr "選擇郵件"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
@@ -15040,7 +15074,6 @@ msgstr "觸達"
 msgid "Read"
 msgstr "讀取"
 
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/ProductsPage.tsx
 msgctxt "mailbox access"
@@ -15051,7 +15084,6 @@ msgstr "閱讀"
 msgid "Read analytics properties and their numbers"
 msgstr "讀取分析屬性及其資料"
 
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Read and send"
@@ -15753,7 +15785,6 @@ msgstr "對我們所寄郵件的回覆"
 msgid "Replies to this address are refused until you clear it."
 msgstr "在你清除之前,發往此地址的回覆會被拒絕。"
 
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "replies today"
 msgstr "今日回覆"
@@ -16036,10 +16067,6 @@ msgstr "回應時間，最近 24 小時"
 #: src/features/reports/TrendsReport.tsx
 msgid "Response times"
 msgstr "回應時間"
-
-#: src/features/inbox/ChatList.tsx
-msgid "Rest of the team"
-msgstr "團隊其他成員"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -16348,10 +16375,6 @@ msgstr "滿意度"
 msgid "Satisfied"
 msgstr "滿意"
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "satisfied · 👍 {good} 👎 {bad}"
-msgstr "滿意 · 👍 {good} 👎 {bad}"
-
 #: src/components/common/text.ts
 msgid "Saturday"
 msgstr "星期六"
@@ -16623,11 +16646,14 @@ msgstr "附有螢幕截圖"
 msgid "SDK"
 msgstr "SDK"
 
+#: src/features/inbox/ChatList.tsx
+msgid "search"
+msgstr "搜尋"
+
 #: src/app/Palette.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
-#: src/features/inbox/ChatList.tsx
 msgid "Search"
 msgstr "搜尋"
 
@@ -16727,6 +16753,10 @@ msgstr "搜尋人員、操作或設定"
 msgid "Search people, actions or settings…"
 msgstr "搜尋人員、操作或設定…"
 
+#: src/features/inbox/ChatList.tsx
+msgid "Search people, subjects, messages"
+msgstr "搜尋聯絡人、主旨和訊息"
+
 #: src/features/broadcasts/Report.tsx
 msgid "Search recipients"
 msgstr "搜尋收件人"
@@ -16783,32 +16813,25 @@ msgstr "{seen}看到"
 msgid "Seen by the monitor"
 msgstr "被監控看到"
 
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "select"
+msgstr "選取"
+
 #: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "選擇"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
 msgid "Select {name}"
 msgstr "選取 {name}"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Select all"
 msgstr "全選"
-
-#: src/features/inbox/ChatList.tsx
-msgid "Select conversations"
-msgstr "選取對話"
-
-#: src/features/mail/MailList.tsx
-msgid "Select mails"
-msgstr "選取郵件"
-
-#: src/features/mail/MailList.tsx
-msgid "Select mails (X)"
-msgstr "選取郵件 (X)"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the contact under the cursor"
@@ -16827,13 +16850,11 @@ msgid "Select the previous or next block"
 msgstr "選擇上一個或下一個區塊"
 
 #: src/components/common/Selection.tsx
-#: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "已選取：{picked}"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Selection"
 msgstr "選取"
 
@@ -17492,10 +17513,6 @@ msgstr "正在設定…"
 msgid "Settings"
 msgstr "設定"
 
-#: src/features/inbox/ChatList.tsx
-msgid "Settings ({mod},)"
-msgstr "設定({mod},)"
-
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "Settings (JSON)"
@@ -17534,10 +17551,6 @@ msgstr "為你的團隊準備的共用信箱"
 #: src/components/common/MailboxOwnerChoice.tsx
 msgid "Shared with the team"
 msgstr "與團隊共用"
-
-#: src/features/mail/MailPage.tsx
-msgid "Shared with you"
-msgstr "與你共用"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -18166,6 +18179,7 @@ msgstr "SMTP 主機"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
@@ -18365,6 +18379,10 @@ msgid "Stage"
 msgstr "階段"
 
 #: src/features/mail/MailList.tsx
+msgid "star"
+msgstr "星號"
+
+#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Star"
@@ -18552,6 +18570,7 @@ msgstr "故障時的狀態"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 #: src/features/migrations/MapStep.tsx
@@ -18935,7 +18954,6 @@ msgstr "團隊 ID"
 
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/workspace/FocusForm.tsx
 #: src/features/setup/SetupHub.tsx
@@ -21021,7 +21039,6 @@ msgid "Tracker"
 msgstr "Tracker"
 
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/parts.tsx
 msgid "Trash"
@@ -21996,10 +22013,6 @@ msgstr "等待中"
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "正在等待 {provider} 的限制;將在 {waiting} 繼續。"
 
-#: src/features/inbox/ChatList.tsx
-msgid "Waiting for a teammate"
-msgstr "正在等待有空的同事"
-
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Waiting for an available teammate since {since}"
@@ -22394,10 +22407,6 @@ msgstr "當信箱的篩選器針對收到的郵件指定你時。"
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "當已排程的訊息因被拒絕而保留為草稿時。"
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "When a new message arrives, it will be in the list."
-msgstr "新訊息到達時,會出現在列表中。"
-
 #: src/features/settings/notifications/events.ts
 msgid "When a teammate adds you to a note with @."
 msgstr "當團隊成員在備註中用 @ 新增你時。"
@@ -22432,6 +22441,7 @@ msgstr "關閉時,API 金鑰只能起草,由成員稽覈併傳送。"
 msgid "When should it come back?"
 msgstr "什麼時候回來?"
 
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "When should they come back?"
 msgstr "什麼時候讓它們回來？"
@@ -22907,10 +22917,6 @@ msgstr "你可以閱讀此信箱,但不能變更。其擁有者可以允許你�
 msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
 msgstr "30 天內可以從垃圾箱還原，之後會連同訊息與檔案永久刪除。"
 
-#: src/features/mail/MailList.tsx
-msgid "You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
-msgstr "30 天內可以從垃圾箱還原，之後會連同訊息與檔案永久刪除。"
-
 #: src/features/account/ConnectPage.tsx
 msgid "You can then write, vote and follow discussions there. The team behind {host} sees your name and e-mail address when you write; other readers see only your name."
 msgstr "之後你就可以在那裡發言、投票和關注討論。你發言時,{host} 背後的團隊能看到你的姓名和電子郵件地址;其他讀者只能看到你的姓名。"
@@ -23120,10 +23126,6 @@ msgstr "你的郵件供應商或你自己的 SMTP 伺服器"
 
 #: src/features/migrations/Wizard.tsx
 msgid "Your mailbox"
-msgstr "你的信箱"
-
-#: src/features/mail/MailPage.tsx
-msgid "Your mailboxes"
 msgstr "你的信箱"
 
 #: src/features/migrations/text.ts

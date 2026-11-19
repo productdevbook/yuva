@@ -48,6 +48,11 @@ msgstr "“ਕੀ ਇਹ ਪੰਨਾ ਮਦਦਗਾਰ ਸੀ?”, ਤੁਹ�
 msgid "(no subject)"
 msgstr "(ਕੋਈ ਵਿਸ਼ਾ ਨਹੀਂ)"
 
+#. placeholder {0}: u.count
+#: src/features/home/HomeWork.tsx
+msgid "{0, plural, one {{name} · # waiting} other {{name} · # waiting}}"
+msgstr "{0, plural, one {{name} · # ਉਡੀਕ ਵਿੱਚ} other {{name} · # ਉਡੀਕ ਵਿੱਚ}}"
+
 #. placeholder {0}: msg.attachments
 #: src/features/migrations/ReviewStep.tsx
 msgid "{0, plural, one {# attachment} other {# attachments}}"
@@ -148,7 +153,6 @@ msgid "{0} active today"
 msgstr "ਅੱਜ {0} ਸਰਗਰਮ"
 
 #. placeholder {0}: done.length
-#. placeholder {0}: done.size
 #: src/features/inbox/ChatList.tsx
 msgid "{0} closed"
 msgstr "{0} ਬੰਦ"
@@ -733,6 +737,10 @@ msgstr "ਦਿਨ ਵਿੱਚ {n}"
 msgid "{n} archived"
 msgstr "{n} ਆਰਕਾਈਵ ਕੀਤੇ"
 
+#: src/features/inbox/ChatList.tsx
+msgid "{n} assigned to you"
+msgstr "{n} ਤੁਹਾਨੂੰ ਸੌਂਪੀਆਂ"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "{n} attempts"
 msgstr "{n} ਕੋਸ਼ਿਸ਼ਾਂ"
@@ -740,6 +748,10 @@ msgstr "{n} ਕੋਸ਼ਿਸ਼ਾਂ"
 #: src/features/broadcasts/Overview.tsx
 msgid "{n} broadcasts"
 msgstr "{n} ਬ੍ਰਾਡਕਾਸਟ"
+
+#: src/features/inbox/ChatList.tsx
+msgid "{n} closed"
+msgstr "{n} ਬੰਦ ਕੀਤੀਆਂ"
 
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatsPage.tsx
@@ -772,6 +784,7 @@ msgstr "{n} ਇਨਬਾਕਸ ਵਿੱਚ ਵਾਪਸ ਭੇਜੇ"
 msgid "{n} reports"
 msgstr "{n} ਰਿਪੋਰਟਾਂ"
 
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "{n} snoozed, back {when}"
 msgstr "{n} ਸਨੂਜ਼ ਕੀਤੇ, {when} ਵਾਪਸ ਆਉਣਗੇ"
@@ -961,7 +974,7 @@ msgstr "{percent}%, {size} ਵਿੱਚੋਂ {sent}"
 msgid "{person} left the workspace by deleting their account"
 msgstr "{person} ਨੇ ਖਾਤਾ ਮਿਟਾ ਕੇ ਵਰਕਸਪੇਸ ਛੱਡ ਦਿੱਤਾ"
 
-#: src/features/inbox/ChatList.tsx
+#: src/components/common/ListBox.tsx
 msgid "{picked} selected"
 msgstr "{picked} ਚੁਣੇ ਗਏ"
 
@@ -2520,6 +2533,7 @@ msgid "All imports"
 msgstr "ਸਾਰੇ ਇੰਪੋਰਟ"
 
 #: src/app/Palette.tsx
+#: src/features/inbox/ChatsPage.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
@@ -2575,7 +2589,6 @@ msgstr "ਸਾਰੇ ਉਤਪਾਦ"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
@@ -3127,6 +3140,10 @@ msgid "Any state"
 msgstr "ਕੋਈ ਵੀ ਸਥਿਤੀ"
 
 #: src/features/inbox/ChatList.tsx
+msgid "Any status"
+msgstr "ਕੋਈ ਵੀ ਸਥਿਤੀ"
+
+#: src/features/inbox/ChatList.tsx
 msgid "Any team"
 msgstr "ਕੋਈ ਵੀ ਟੀਮ"
 
@@ -3269,6 +3286,10 @@ msgstr "ਚੁਣੀ ਹੋਈ ਪੋਸਟ ਨੂੰ ਮਨਜ਼ੂਰ ਕਰ�
 msgid "Approved"
 msgstr "ਮਨਜ਼ੂਰ"
 
+#: src/features/mail/MailList.tsx
+msgid "archive"
+msgstr "ਆਰਕਾਈਵ"
+
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
@@ -3405,6 +3426,10 @@ msgid "Assign or hand to a teammate"
 msgstr "ਕਿਸੇ ਟੀਮ ਮੈਂਬਰ ਨੂੰ ਸੌਂਪੋ ਜਾਂ ਹਵਾਲੇ ਕਰੋ"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Assign the selected conversations to me"
+msgstr "ਚੁਣੀਆਂ ਗੱਲਾਂਬਾਤਾਂ ਮੈਨੂੰ ਸੌਂਪੋ"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Assign the selected waiting conversation to you"
 msgstr "ਚੁਣੀ ਹੋਈ ਉਡੀਕ ਵਾਲੀ ਗੱਲਬਾਤ ਆਪਣੇ ਨਾਂ ਕਰੋ"
 
@@ -3424,8 +3449,14 @@ msgstr "ਟੀਮ ਨੂੰ ਸੌਂਪੋ"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Assign to me"
 msgstr "ਮੈਨੂੰ ਸੌਂਪੋ"
+
+#. placeholder {0}: SHORTCUTS.hand
+#: src/features/inbox/ChatList.tsx
+msgid "Assign to me ({0})"
+msgstr "ਮੈਨੂੰ ਸੌਂਪੋ ({0})"
 
 #: src/features/conversation/messages/EventLine.tsx
 msgid "Assigned automatically to {assignee}"
@@ -3445,7 +3476,6 @@ msgid "Assigned to {assignee}, kept by name"
 msgstr "{assignee} ਨੂੰ ਸੌਂਪਿਆ ਗਿਆ, ਨਾਮ ਨਾਲ ਰੱਖਿਆ ਗਿਆ"
 
 #: src/features/home/HomePage.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 msgid "Assigned to you"
 msgstr "ਤੁਹਾਨੂੰ ਸੌਂਪੀ ਗਈ"
@@ -4049,6 +4079,7 @@ msgstr "ਮੁਹਿੰਮ ਦਾ ਨਾਮ"
 #: src/app/Palette.tsx
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
@@ -4072,9 +4103,7 @@ msgstr "ਮੁਹਿੰਮ ਦਾ ਨਾਮ"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/fields/RequiredFieldsHost.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/AddProductDialog.tsx
@@ -4334,6 +4363,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "ਭੇਜਣ ਦਾ ਡੋਮੇਨ ਬਦਲਣ ਨਾਲ DKIM ਸਾਈਨਿੰਗ ਉਦੋਂ ਤੱਕ ਬੰਦ ਹੋ ਜਾਂਦੀ ਹੈ ਜਦੋਂ ਤੱਕ ਤੁਸੀਂ ਨਵੇਂ ਡੋਮੇਨ ਲਈ ਇਸਨੂੰ ਦੁਬਾਰਾ ਚਾਲੂ ਨਹੀਂ ਕਰਦੇ।"
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
@@ -4554,7 +4584,6 @@ msgid "Choose a workspace"
 msgstr "ਵਰਕਸਪੇਸ ਚੁਣੋ"
 
 #: src/features/feedback/FeedbackList.tsx
-#: src/features/inbox/ChatsPage.tsx
 msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
 msgstr "ਲਿਸਟ ਵਿੱਚੋਂ ਇੱਕ ਚੁਣੋ, ਜਾਂ ↑ ↓ ਨਾਲ ਚੱਲੋ ਅਤੇ Enter ਨਾਲ ਖੋਲ੍ਹੋ।"
 
@@ -4621,9 +4650,8 @@ msgstr "ਖੋਜ ਸਾਫ਼ ਕਰੋ"
 msgid "Clear the selection"
 msgstr "ਚੋਣ ਸਾਫ਼ ਕਰੋ"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
 msgstr "ਚੋਣ ਸਾਫ਼ ਕਰੋ (Esc)"
 
@@ -4690,6 +4718,11 @@ msgctxt "conversation"
 msgid "Close"
 msgstr "ਬੰਦ ਕਰੋ"
 
+#. placeholder {0}: SHORTCUTS.close
+#: src/features/inbox/ChatList.tsx
+msgid "Close ({0})"
+msgstr "ਬੰਦ ਕਰੋ ({0})"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Close (E)"
 msgstr "ਬੰਦ ਕਰੋ (E)"
@@ -4739,6 +4772,14 @@ msgstr "ਖੋਜ ਬੰਦ ਕਰੋ"
 msgid "Close the search (Esc)"
 msgstr "ਖੋਜ ਬੰਦ ਕਰੋ (Esc)"
 
+#: src/features/inbox/ChatList.tsx
+msgid "close the selected"
+msgstr "ਚੁਣੀਆਂ ਬੰਦ ਕਰੋ"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Close the selected conversations"
+msgstr "ਚੁਣੀਆਂ ਗੱਲਾਂਬਾਤਾਂ ਬੰਦ ਕਰੋ"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -4755,7 +4796,6 @@ msgstr "ਜਵਾਬ ਤੋਂ ਪਹਿਲਾਂ ਬੰਦ ਹੋਈ"
 msgid "Closed conversations"
 msgstr "ਬੰਦ ਗੱਲਬਾਤਾਂ"
 
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "closed today"
 msgstr "ਅੱਜ ਬੰਦ ਹੋਈਆਂ"
@@ -5862,6 +5902,7 @@ msgstr "ਪ੍ਰਤੀਨਿਧ"
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
+#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
@@ -7282,7 +7323,6 @@ msgstr "ਬਾਕੀ ਸਾਰੇ ਬ੍ਰਾਊਜ਼ਰਾਂ ਅਤੇ ਡ�
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
 msgstr "ਸਾਰੇ ਪ੍ਰੋਡਕਟ"
@@ -7325,10 +7365,6 @@ msgstr "ਹਰ ਵੈੱਬਸਾਈਟ ਅਤੇ ਐਪ ਆਪਣੇ ਵਿਜ�
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
 msgstr "ਹਰ ਕੋਈ"
-
-#: src/features/inbox/ChatsPage.tsx
-msgid "Everyone has been answered."
-msgstr "ਸਭ ਨੂੰ ਜਵਾਬ ਦਿੱਤਾ ਜਾ ਚੁੱਕਾ ਹੈ।"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Everyone in this file agreed to receive {listName} from {inboxName}, and I can show how and when if asked."
@@ -7629,7 +7665,6 @@ msgstr "ਨਮੂਨੇ ਦੇ ਮੁੱਲਾਂ ਨਾਲ ਭਰਿਆ ਗਿ�
 msgid "Filled with the values of {who}"
 msgstr "{who} ਦੇ ਮੁੱਲਾਂ ਨਾਲ ਭਰਿਆ ਗਿਆ"
 
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter"
 msgstr "ਫਿਲਟਰ"
@@ -7664,7 +7699,6 @@ msgstr "ਇਸ ਵਰਗੇ ਸੁਨੇਹੇ ਫ਼ਿਲਟਰ ਕਰੋ"
 
 #: src/app/places.tsx
 #: src/features/mail/MailFiltersPage.tsx
-#: src/features/mail/MailPage.tsx
 msgid "Filters"
 msgstr "ਫ਼ਿਲਟਰ"
 
@@ -7803,7 +7837,6 @@ msgid "Fix the address or the channel's SMTP settings, then send the reply again
 msgstr "ਪਤਾ ਜਾਂ ਚੈਨਲ ਦੀਆਂ SMTP ਸੈਟਿੰਗਾਂ ਠੀਕ ਕਰੋ, ਫਿਰ ਜਵਾਬ ਦੁਬਾਰਾ ਭੇਜੋ।"
 
 #: src/app/places.tsx
-#: src/features/mail/MailPage.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "Folders"
@@ -10352,10 +10385,6 @@ msgstr "ਮੇਲਬਾਕਸ"
 msgid "Mailbox address"
 msgstr "ਮੇਲਬਾਕਸ ਦਾ ਪਤਾ"
 
-#: src/features/mail/MailPage.tsx
-msgid "Mailbox: {name}"
-msgstr "ਮੇਲਬਾਕਸ: {name}"
-
 #: src/app/places.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -10493,8 +10522,13 @@ msgid "Mark as read"
 msgstr "ਪੜ੍ਹੇ ਹੋਏ ਵਜੋਂ ਚਿੰਨ੍ਹਿਤ ਕਰੋ"
 
 #: src/features/mail/MailList.tsx
-msgid "Mark as read or unread (U)"
-msgstr "ਪੜ੍ਹੀ ਜਾਂ ਅਣਪੜ੍ਹੀ ਵਜੋਂ ਨਿਸ਼ਾਨ ਲਾਓ (U)"
+msgid "Mark as read (U)"
+msgstr "ਪੜ੍ਹਿਆ ਮਾਰਕ ਕਰੋ (U)"
+
+#. placeholder {0}: SHORTCUTS.unread
+#: src/features/inbox/ChatList.tsx
+msgid "Mark as read or unread ({0})"
+msgstr "ਪੜ੍ਹਿਆ ਜਾਂ ਅਣਪੜ੍ਹਿਆ ਮਾਰਕ ਕਰੋ ({0})"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/docs/discussions/Bulk.tsx
@@ -10509,6 +10543,7 @@ msgstr "ਸਪੈਮ ਵਜੋਂ ਚਿੰਨ੍ਹਿਤ ਕਰੋ"
 msgid "Mark as unread"
 msgstr "ਅਣਪੜ੍ਹੇ ਵਜੋਂ ਚਿੰਨ੍ਹਿਤ ਕਰੋ"
 
+#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Mark as unread (U)"
 msgstr "ਅਣਪੜ੍ਹੀ ਵਜੋਂ ਨਿਸ਼ਾਨ ਲਾਓ (U)"
@@ -10524,6 +10559,10 @@ msgstr "ਸਪੈਮ ਵਜੋਂ ਚਿੰਨ੍ਹਿਤ ਕਰੋ ਜਾਂ �
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected conversations as not spam, in Spam"
 msgstr "ਸਪੈਮ ਵਿੱਚ ਚੁਣੀਆਂ ਹੋਈਆਂ ਗੱਲਬਾਤਾਂ ਨੂੰ ਸਪੈਮ ਨਹੀਂ ਵਜੋਂ ਚਿੰਨ੍ਹਿਤ ਕਰੋ"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Mark the selected conversations as read or unread"
+msgstr "ਚੁਣੀਆਂ ਗੱਲਾਂਬਾਤਾਂ ਨੂੰ ਪੜ੍ਹੀਆਂ ਜਾਂ ਅਣਪੜ੍ਹੀਆਂ ਮਾਰਕ ਕਰੋ"
 
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Mark the selected discussions as spam ({n})?"
@@ -10618,10 +10657,6 @@ msgstr "ਮੱਧਮਾਨ"
 #: src/features/status/IncidentDetail.tsx
 msgid "median {median}"
 msgstr "ਮੱਧਮਾਨ {median}"
-
-#: src/features/inbox/ChatsPage.tsx
-msgid "median first reply"
-msgstr "ਮੱਧਮਾਨ ਪਹਿਲਾ ਜਵਾਬ"
 
 #: src/features/reports/ReportPages.tsx
 msgid "median today"
@@ -10988,9 +11023,13 @@ msgstr "ਸਭ ਤੋਂ ਵੱਧ ਰੇਟਿੰਗਾਂ, ਖੁੱਲ੍ਹ�
 msgid "Most votes"
 msgstr "ਸਭ ਤੋਂ ਵੱਧ ਵੋਟਾਂ"
 
-#. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+msgid "move"
+msgstr "ਹਿਲਾਓ"
+
+#. placeholder {0}: ids.length
+#: src/features/inbox/ChatList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "{0} ਨੂੰ ਟ੍ਰੈਸ਼ ਵਿੱਚ ਭੇਜਣਾ ਹੈ?"
 
@@ -11126,7 +11165,6 @@ msgstr "ਪਿਛਲੇ ਜਾਂ ਅਗਲੇ ਪੜਾਅ ਵਿੱਚ ਲੈ 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
@@ -11421,7 +11459,6 @@ msgstr "ਨਵੇਂ ਸੰਪਰਕ ਬਣਾਏ ਗਏ"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactSheet.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/ChatsPage.tsx
 msgid "New conversation"
 msgstr "ਨਵੀਂ ਗੱਲਬਾਤ"
@@ -11535,13 +11572,16 @@ msgstr "ਨਵੀਂ ਲਿਸਟ"
 msgid "New macro"
 msgstr "ਨਵਾਂ ਮੈਕਰੋ"
 
+#: src/features/mail/MailList.tsx
+msgid "new mail"
+msgstr "ਨਵੀਂ ਮੇਲ"
+
 #: src/features/mail/Compose.tsx
 #: src/features/mail/MailPage.tsx
 msgid "New mail"
 msgstr "ਨਵੀਂ ਮੇਲ"
 
 #: src/app/places.tsx
-#: src/features/mail/MailPage.tsx
 msgid "New mailbox"
 msgstr "ਨਵਾਂ ਮੇਲਬਾਕਸ"
 
@@ -13296,6 +13336,12 @@ msgstr "ਸਿਰਫ਼ ਤੁਹਾਡੀ ਟੀਮ ਨੂੰ ਦਿਖਦਾ �
 msgid "open"
 msgstr "ਖੁੱਲ੍ਹੀ"
 
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "ਖੋਲ੍ਹੋ"
+
 #: src/components/common/text.ts
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -14235,10 +14281,6 @@ msgstr "ਰੰਗ ਚੁਣੋ"
 msgid "Pick a contact"
 msgstr "ਸੰਪਰਕ ਚੁਣੋ"
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "Pick a conversation"
-msgstr "ਗੱਲਬਾਤ ਚੁਣੋ"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Pick a CSV file, or drop it here"
 msgstr "CSV ਫ਼ਾਈਲ ਚੁਣੋ, ਜਾਂ ਇੱਥੇ ਸੁੱਟੋ"
@@ -14381,17 +14423,9 @@ msgstr "ਘੱਟੋ-ਘੱਟ ਇੱਕ ਸਕੋਪ ਚੁਣੋ।"
 msgid "Pick at least one."
 msgstr "ਘੱਟੋ-ਘੱਟ ਇੱਕ ਚੁਣੋ।"
 
-#: src/features/inbox/ChatList.tsx
-msgid "Pick conversations"
-msgstr "ਗੱਲਬਾਤਾਂ ਚੁਣੋ"
-
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "ਹਰ ਸਕੋਪ ਆਪ ਚੁਣੋ।"
-
-#: src/features/mail/MailList.tsx
-msgid "Pick mails"
-msgstr "ਮੇਲਾਂ ਚੁਣੋ"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
@@ -15040,7 +15074,6 @@ msgstr "ਪਹੁੰਚ"
 msgid "Read"
 msgstr "ਪੜ੍ਹੋ"
 
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/ProductsPage.tsx
 msgctxt "mailbox access"
@@ -15051,7 +15084,6 @@ msgstr "ਪੜ੍ਹਨਾ"
 msgid "Read analytics properties and their numbers"
 msgstr "ਐਨਾਲਿਟਿਕਸ ਪ੍ਰਾਪਰਟੀਆਂ ਅਤੇ ਉਹਨਾਂ ਦੇ ਅੰਕੜੇ ਪੜ੍ਹੋ"
 
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Read and send"
@@ -15753,7 +15785,6 @@ msgstr "ਸਾਡੇ ਭੇਜੇ ਮੇਲ ਦੇ ਜਵਾਬ"
 msgid "Replies to this address are refused until you clear it."
 msgstr "ਜਦੋਂ ਤੱਕ ਤੁਸੀਂ ਇਸਨੂੰ ਸਾਫ਼ ਨਹੀਂ ਕਰਦੇ, ਇਸ ਪਤੇ ਉੱਤੇ ਜਵਾਬ ਰੱਦ ਹੁੰਦੇ ਹਨ।"
 
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "replies today"
 msgstr "ਅੱਜ ਦੇ ਜਵਾਬ"
@@ -16036,10 +16067,6 @@ msgstr "ਜਵਾਬ ਸਮਾਂ, ਪਿਛਲੇ 24 ਘੰਟੇ"
 #: src/features/reports/TrendsReport.tsx
 msgid "Response times"
 msgstr "ਜਵਾਬ ਦਾ ਸਮਾਂ"
-
-#: src/features/inbox/ChatList.tsx
-msgid "Rest of the team"
-msgstr "ਟੀਮ ਦੇ ਬਾਕੀ ਮੈਂਬਰ"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -16348,10 +16375,6 @@ msgstr "ਸੰਤੁਸ਼ਟੀ"
 msgid "Satisfied"
 msgstr "ਸੰਤੁਸ਼ਟ"
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "satisfied · 👍 {good} 👎 {bad}"
-msgstr "ਸੰਤੁਸ਼ਟ · 👍 {good} 👎 {bad}"
-
 #: src/components/common/text.ts
 msgid "Saturday"
 msgstr "ਸ਼ਨੀਵਾਰ"
@@ -16623,11 +16646,14 @@ msgstr "Screenshots attached"
 msgid "SDK"
 msgstr "SDK"
 
+#: src/features/inbox/ChatList.tsx
+msgid "search"
+msgstr "ਖੋਜੋ"
+
 #: src/app/Palette.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
-#: src/features/inbox/ChatList.tsx
 msgid "Search"
 msgstr "ਖੋਜੋ"
 
@@ -16727,6 +16753,10 @@ msgstr "ਲੋਕ, ਕਾਰਵਾਈਆਂ ਜਾਂ ਸੈਟਿੰਗਾਂ �
 msgid "Search people, actions or settings…"
 msgstr "ਲੋਕ, ਕਾਰਵਾਈਆਂ ਜਾਂ ਸੈਟਿੰਗਾਂ ਖੋਜੋ…"
 
+#: src/features/inbox/ChatList.tsx
+msgid "Search people, subjects, messages"
+msgstr "ਲੋਕਾਂ, ਵਿਸ਼ਿਆਂ ਅਤੇ ਸੁਨੇਹਿਆਂ ਵਿੱਚ ਖੋਜੋ"
+
 #: src/features/broadcasts/Report.tsx
 msgid "Search recipients"
 msgstr "ਪ੍ਰਾਪਤਕਰਤਾ ਖੋਜੋ"
@@ -16783,32 +16813,25 @@ msgstr "{seen} ਦੇਖਿਆ"
 msgid "Seen by the monitor"
 msgstr "ਮਾਨੀਟਰ ਨੇ ਦੇਖਿਆ"
 
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "select"
+msgstr "ਚੁਣੋ"
+
 #: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "ਚੋਣ"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
 msgid "Select {name}"
 msgstr "{name} ਚੁਣੋ"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Select all"
 msgstr "ਸਭ ਚੁਣੋ"
-
-#: src/features/inbox/ChatList.tsx
-msgid "Select conversations"
-msgstr "ਗੱਲਬਾਤਾਂ ਚੁਣੋ"
-
-#: src/features/mail/MailList.tsx
-msgid "Select mails"
-msgstr "ਮੇਲਾਂ ਚੁਣੋ"
-
-#: src/features/mail/MailList.tsx
-msgid "Select mails (X)"
-msgstr "ਮੇਲਾਂ ਚੁਣੋ (X)"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the contact under the cursor"
@@ -16827,13 +16850,11 @@ msgid "Select the previous or next block"
 msgstr "ਪਿਛਲਾ ਜਾਂ ਅਗਲਾ ਬਲਾਕ ਚੁਣੋ"
 
 #: src/components/common/Selection.tsx
-#: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "ਚੁਣੀਆਂ: {picked}"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Selection"
 msgstr "ਚੋਣ"
 
@@ -17492,10 +17513,6 @@ msgstr "ਸੈੱਟ ਅੱਪ ਹੋ ਰਿਹਾ ਹੈ…"
 msgid "Settings"
 msgstr "ਸੈਟਿੰਗਾਂ"
 
-#: src/features/inbox/ChatList.tsx
-msgid "Settings ({mod},)"
-msgstr "ਸੈਟਿੰਗਾਂ ({mod},)"
-
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "Settings (JSON)"
@@ -17534,10 +17551,6 @@ msgstr "ਤੁਹਾਡੀ ਟੀਮ ਲਈ ਸਾਂਝੇ ਮੇਲਬਾਕ�
 #: src/components/common/MailboxOwnerChoice.tsx
 msgid "Shared with the team"
 msgstr "ਟੀਮ ਨਾਲ ਸਾਂਝਾ"
-
-#: src/features/mail/MailPage.tsx
-msgid "Shared with you"
-msgstr "ਤੁਹਾਡੇ ਨਾਲ ਸਾਂਝੇ"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -18166,6 +18179,7 @@ msgstr "SMTP ਹੋਸਟ"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
@@ -18365,6 +18379,10 @@ msgid "Stage"
 msgstr "ਪੜਾਅ"
 
 #: src/features/mail/MailList.tsx
+msgid "star"
+msgstr "ਤਾਰਾ"
+
+#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Star"
@@ -18552,6 +18570,7 @@ msgstr "ਬੰਦ ਹੋਣ 'ਤੇ ਹਾਲਤ"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 #: src/features/migrations/MapStep.tsx
@@ -18935,7 +18954,6 @@ msgstr "ਟੀਮ ID"
 
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/workspace/FocusForm.tsx
 #: src/features/setup/SetupHub.tsx
@@ -21021,7 +21039,6 @@ msgid "Tracker"
 msgstr "Tracker"
 
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/parts.tsx
 msgid "Trash"
@@ -21996,10 +22013,6 @@ msgstr "ਉਡੀਕ ਵਿੱਚ"
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "{provider} ਦੀ ਸੀਮਾ ਦੀ ਉਡੀਕ; {waiting} ਉੱਤੇ ਜਾਰੀ ਰਹਿੰਦਾ ਹੈ।"
 
-#: src/features/inbox/ChatList.tsx
-msgid "Waiting for a teammate"
-msgstr "ਉਪਲਬਧ ਸਾਥੀ ਦੀ ਉਡੀਕ"
-
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Waiting for an available teammate since {since}"
@@ -22394,10 +22407,6 @@ msgstr "ਜਦੋਂ ਮੇਲ ਇਨਬਾਕਸ ਦਾ ਫ਼ਿਲਟਰ ਆ�
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "ਜਦੋਂ ਸ਼ਡਿਊਲ ਕੀਤਾ ਸੁਨੇਹਾ ਰੱਦ ਹੋਣ ਕਾਰਨ ਡਰਾਫ਼ਟ ਰਹਿ ਜਾਂਦਾ ਹੈ।"
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "When a new message arrives, it will be in the list."
-msgstr "ਜਦੋਂ ਨਵਾਂ ਸੁਨੇਹਾ ਆਵੇਗਾ, ਉਹ ਸੂਚੀ ਵਿੱਚ ਹੋਵੇਗਾ।"
-
 #: src/features/settings/notifications/events.ts
 msgid "When a teammate adds you to a note with @."
 msgstr "ਜਦੋਂ ਕੋਈ ਟੀਮ ਮੈਂਬਰ ਤੁਹਾਨੂੰ @ ਨਾਲ ਨੋਟ ਵਿੱਚ ਜੋੜਦਾ ਹੈ।"
@@ -22432,6 +22441,7 @@ msgstr "ਬੰਦ ਹੋਣ ਉੱਤੇ API ਕੁੰਜੀਆਂ ਸਿਰਫ�
 msgid "When should it come back?"
 msgstr "ਇਹ ਕਦੋਂ ਵਾਪਸ ਆਉਣਾ ਚਾਹੀਦਾ ਹੈ?"
 
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "When should they come back?"
 msgstr "ਇਹ ਕਦੋਂ ਵਾਪਸ ਆਉਣ?"
@@ -22907,10 +22917,6 @@ msgstr "ਤੁਸੀਂ ਇਹ ਮੇਲਬਾਕਸ ਪੜ੍ਹ ਸਕਦੇ �
 msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
 msgstr "ਤੁਸੀਂ 30 ਦਿਨਾਂ ਤੱਕ ਰੱਦੀ ਵਿੱਚੋਂ ਇਸਨੂੰ ਬਹਾਲ ਕਰ ਸਕਦੇ ਹੋ, ਫਿਰ ਇਹ ਸੁਨੇਹਿਆਂ ਅਤੇ ਫ਼ਾਈਲਾਂ ਸਮੇਤ ਹਮੇਸ਼ਾ ਲਈ ਮਿਟ ਜਾਂਦੀ ਹੈ।"
 
-#: src/features/mail/MailList.tsx
-msgid "You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
-msgstr "ਤੁਸੀਂ 30 ਦਿਨਾਂ ਤੱਕ ਰੱਦੀ ਵਿੱਚੋਂ ਇਹਨਾਂ ਨੂੰ ਬਹਾਲ ਕਰ ਸਕਦੇ ਹੋ, ਫਿਰ ਇਹ ਸੁਨੇਹਿਆਂ ਅਤੇ ਫ਼ਾਈਲਾਂ ਸਮੇਤ ਹਮੇਸ਼ਾ ਲਈ ਮਿਟ ਜਾਂਦੀਆਂ ਹਨ।"
-
 #: src/features/account/ConnectPage.tsx
 msgid "You can then write, vote and follow discussions there. The team behind {host} sees your name and e-mail address when you write; other readers see only your name."
 msgstr "ਫਿਰ ਤੁਸੀਂ ਉੱਥੇ ਲਿਖ, ਵੋਟ ਅਤੇ ਚਰਚਾਵਾਂ ਫਾਲੋ ਕਰ ਸਕਦੇ ਹੋ। ਜਦੋਂ ਤੁਸੀਂ ਲਿਖਦੇ ਹੋ ਤਾਂ {host} ਦੇ ਪਿੱਛੇ ਦੀ ਟੀਮ ਤੁਹਾਡਾ ਨਾਮ ਅਤੇ ਈ-ਮੇਲ ਪਤਾ ਵੇਖਦੀ ਹੈ; ਹੋਰ ਪਾਠਕ ਸਿਰਫ਼ ਤੁਹਾਡਾ ਨਾਮ ਵੇਖਦੇ ਹਨ।"
@@ -23121,10 +23127,6 @@ msgstr "ਤੁਹਾਡੇ ਮੇਲ ਪ੍ਰਦਾਤਾ ਦਾ ਜਾਂ ਤ�
 #: src/features/migrations/Wizard.tsx
 msgid "Your mailbox"
 msgstr "ਤੁਹਾਡਾ ਮੇਲਬਾਕਸ"
-
-#: src/features/mail/MailPage.tsx
-msgid "Your mailboxes"
-msgstr "ਤੁਹਾਡੇ ਮੇਲਬਾਕਸ"
 
 #: src/features/migrations/text.ts
 msgid "Your Microsoft 365 organization lets only an admin consent to apps. Send your admin the link below; once they accept, sign in again."

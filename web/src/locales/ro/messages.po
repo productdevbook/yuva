@@ -48,6 +48,11 @@ msgstr "„Ți-a fost utilă această pagină?”, feedback și discuții în do
 msgid "(no subject)"
 msgstr "(fără subiect)"
 
+#. placeholder {0}: u.count
+#: src/features/home/HomeWork.tsx
+msgid "{0, plural, one {{name} · # waiting} other {{name} · # waiting}}"
+msgstr "{0, plural, one {{name} · în așteptare: #} other {{name} · în așteptare: #}}"
+
 #. placeholder {0}: msg.attachments
 #: src/features/migrations/ReviewStep.tsx
 msgid "{0, plural, one {# attachment} other {# attachments}}"
@@ -148,7 +153,6 @@ msgid "{0} active today"
 msgstr "{0} active azi"
 
 #. placeholder {0}: done.length
-#. placeholder {0}: done.size
 #: src/features/inbox/ChatList.tsx
 msgid "{0} closed"
 msgstr "{0} închise"
@@ -733,6 +737,10 @@ msgstr "{n} pe zi"
 msgid "{n} archived"
 msgstr "Arhivate: {n}"
 
+#: src/features/inbox/ChatList.tsx
+msgid "{n} assigned to you"
+msgstr "Atribuite ție: {n}"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "{n} attempts"
 msgstr "{n} încercări"
@@ -740,6 +748,10 @@ msgstr "{n} încercări"
 #: src/features/broadcasts/Overview.tsx
 msgid "{n} broadcasts"
 msgstr "{n} mesaje în masă"
+
+#: src/features/inbox/ChatList.tsx
+msgid "{n} closed"
+msgstr "Închise: {n}"
 
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatsPage.tsx
@@ -772,6 +784,7 @@ msgstr "Mutate în Mesaje primite: {n}"
 msgid "{n} reports"
 msgstr "{n} rapoarte"
 
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "{n} snoozed, back {when}"
 msgstr "Amânate: {n}, revin {when}"
@@ -961,7 +974,7 @@ msgstr "{percent}%, {sent} din {size}"
 msgid "{person} left the workspace by deleting their account"
 msgstr "{person} a părăsit spațiul de lucru ștergându-și contul"
 
-#: src/features/inbox/ChatList.tsx
+#: src/components/common/ListBox.tsx
 msgid "{picked} selected"
 msgstr "{picked} selectate"
 
@@ -2520,6 +2533,7 @@ msgid "All imports"
 msgstr "Toate importurile"
 
 #: src/app/Palette.tsx
+#: src/features/inbox/ChatsPage.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
@@ -2575,7 +2589,6 @@ msgstr "toate produsele"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
@@ -3127,6 +3140,10 @@ msgid "Any state"
 msgstr "Orice stare"
 
 #: src/features/inbox/ChatList.tsx
+msgid "Any status"
+msgstr "Orice stare"
+
+#: src/features/inbox/ChatList.tsx
 msgid "Any team"
 msgstr "Orice echipă"
 
@@ -3269,6 +3286,10 @@ msgstr "Aprobă postarea selectată"
 msgid "Approved"
 msgstr "Aprobat"
 
+#: src/features/mail/MailList.tsx
+msgid "archive"
+msgstr "arhivează"
+
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
@@ -3405,6 +3426,10 @@ msgid "Assign or hand to a teammate"
 msgstr "Atribuie sau predă unui coleg"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Assign the selected conversations to me"
+msgstr "Atribuie-mi conversațiile selectate"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Assign the selected waiting conversation to you"
 msgstr "Atribuie-ți conversația în așteptare selectată"
 
@@ -3424,8 +3449,14 @@ msgstr "Atribuie unei echipe"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Assign to me"
 msgstr "Atribuie-mi"
+
+#. placeholder {0}: SHORTCUTS.hand
+#: src/features/inbox/ChatList.tsx
+msgid "Assign to me ({0})"
+msgstr "Atribuie-mi ({0})"
 
 #: src/features/conversation/messages/EventLine.tsx
 msgid "Assigned automatically to {assignee}"
@@ -3445,7 +3476,6 @@ msgid "Assigned to {assignee}, kept by name"
 msgstr "Atribuită lui {assignee}, păstrată după nume"
 
 #: src/features/home/HomePage.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 msgid "Assigned to you"
 msgstr "Atribuită ție"
@@ -4049,6 +4079,7 @@ msgstr "Nume campanie"
 #: src/app/Palette.tsx
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
@@ -4072,9 +4103,7 @@ msgstr "Nume campanie"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/fields/RequiredFieldsHost.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/AddProductDialog.tsx
@@ -4334,6 +4363,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "Schimbarea domeniului de trimitere oprește semnarea DKIM până o reactivezi pentru noul domeniu."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
@@ -4554,7 +4584,6 @@ msgid "Choose a workspace"
 msgstr "Alege un spațiu de lucru"
 
 #: src/features/feedback/FeedbackList.tsx
-#: src/features/inbox/ChatsPage.tsx
 msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
 msgstr "Alege din listă sau mută-te cu ↑ ↓ și deschide cu Enter."
 
@@ -4621,9 +4650,8 @@ msgstr "Șterge căutarea"
 msgid "Clear the selection"
 msgstr "Șterge selecția"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
 msgstr "Șterge selecția (Esc)"
 
@@ -4690,6 +4718,11 @@ msgctxt "conversation"
 msgid "Close"
 msgstr "Închide"
 
+#. placeholder {0}: SHORTCUTS.close
+#: src/features/inbox/ChatList.tsx
+msgid "Close ({0})"
+msgstr "Închide ({0})"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Close (E)"
 msgstr "Închide (E)"
@@ -4739,6 +4772,14 @@ msgstr "Închide căutarea"
 msgid "Close the search (Esc)"
 msgstr "Închide căutarea (Esc)"
 
+#: src/features/inbox/ChatList.tsx
+msgid "close the selected"
+msgstr "închide selecția"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Close the selected conversations"
+msgstr "Închide conversațiile selectate"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -4755,7 +4796,6 @@ msgstr "Închisă înainte de un răspuns"
 msgid "Closed conversations"
 msgstr "Conversații închise"
 
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "closed today"
 msgstr "închise azi"
@@ -5862,6 +5902,7 @@ msgstr "Delegați"
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
+#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
@@ -7282,7 +7323,6 @@ msgstr "Toate celelalte browsere și dispozitive sunt deconectate. Acesta rămâ
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
 msgstr "toate produsele"
@@ -7325,10 +7365,6 @@ msgstr "Fiecare site și aplicație își arată vizitatorii în Acasă și în 
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
 msgstr "Toată lumea"
-
-#: src/features/inbox/ChatsPage.tsx
-msgid "Everyone has been answered."
-msgstr "Tuturor li s-a răspuns."
 
 #: src/features/broadcasts/Import.tsx
 msgid "Everyone in this file agreed to receive {listName} from {inboxName}, and I can show how and when if asked."
@@ -7629,7 +7665,6 @@ msgstr "Completat cu valori de exemplu."
 msgid "Filled with the values of {who}"
 msgstr "Completat cu valorile lui {who}"
 
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter"
 msgstr "Filtru"
@@ -7664,7 +7699,6 @@ msgstr "Filtrează mesajele ca acesta"
 
 #: src/app/places.tsx
 #: src/features/mail/MailFiltersPage.tsx
-#: src/features/mail/MailPage.tsx
 msgid "Filters"
 msgstr "Filtre"
 
@@ -7803,7 +7837,6 @@ msgid "Fix the address or the channel's SMTP settings, then send the reply again
 msgstr "Corectează adresa sau setările SMTP ale canalului, apoi trimite din nou răspunsul."
 
 #: src/app/places.tsx
-#: src/features/mail/MailPage.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "Folders"
@@ -10352,10 +10385,6 @@ msgstr "Cutie poștală"
 msgid "Mailbox address"
 msgstr "Adresa căsuței"
 
-#: src/features/mail/MailPage.tsx
-msgid "Mailbox: {name}"
-msgstr "Cutie poștală: {name}"
-
 #: src/app/places.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -10493,8 +10522,13 @@ msgid "Mark as read"
 msgstr "Marchează ca citit"
 
 #: src/features/mail/MailList.tsx
-msgid "Mark as read or unread (U)"
-msgstr "Marchează ca citit sau necitit (U)"
+msgid "Mark as read (U)"
+msgstr "Marchează ca citit (U)"
+
+#. placeholder {0}: SHORTCUTS.unread
+#: src/features/inbox/ChatList.tsx
+msgid "Mark as read or unread ({0})"
+msgstr "Marchează ca citit sau necitit ({0})"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/docs/discussions/Bulk.tsx
@@ -10509,6 +10543,7 @@ msgstr "Marchează ca spam"
 msgid "Mark as unread"
 msgstr "Marchează ca necitit"
 
+#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Mark as unread (U)"
 msgstr "Marchează ca necitit (U)"
@@ -10524,6 +10559,10 @@ msgstr "Marchează sau demarchează ca spam"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected conversations as not spam, in Spam"
 msgstr "Marchează conversațiile selectate din Spam ca nu este spam"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Mark the selected conversations as read or unread"
+msgstr "Marchează conversațiile selectate ca citite sau necitite"
 
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Mark the selected discussions as spam ({n})?"
@@ -10618,10 +10657,6 @@ msgstr "Mediana"
 #: src/features/status/IncidentDetail.tsx
 msgid "median {median}"
 msgstr "mediană {median}"
-
-#: src/features/inbox/ChatsPage.tsx
-msgid "median first reply"
-msgstr "mediana primului răspuns"
 
 #: src/features/reports/ReportPages.tsx
 msgid "median today"
@@ -10988,9 +11023,13 @@ msgstr "Cele mai multe evaluări, feedback deschis, discuții deschise și post�
 msgid "Most votes"
 msgstr "Cele mai multe voturi"
 
-#. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+msgid "move"
+msgstr "deplasare"
+
+#. placeholder {0}: ids.length
+#: src/features/inbox/ChatList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "Muți {0} în coș?"
 
@@ -11126,7 +11165,6 @@ msgstr "Mută la etapa anterioară sau următoare"
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
@@ -11421,7 +11459,6 @@ msgstr "Contacte noi create"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactSheet.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/ChatsPage.tsx
 msgid "New conversation"
 msgstr "Conversație nouă"
@@ -11535,13 +11572,16 @@ msgstr "Listă nouă"
 msgid "New macro"
 msgstr "Macro nou"
 
+#: src/features/mail/MailList.tsx
+msgid "new mail"
+msgstr "e-mail nou"
+
 #: src/features/mail/Compose.tsx
 #: src/features/mail/MailPage.tsx
 msgid "New mail"
 msgstr "Mesaj nou"
 
 #: src/app/places.tsx
-#: src/features/mail/MailPage.tsx
 msgid "New mailbox"
 msgstr "Căsuță nouă"
 
@@ -13296,6 +13336,12 @@ msgstr "Doar echipa ta o vede."
 msgid "open"
 msgstr "deschisă"
 
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "deschide"
+
 #: src/components/common/text.ts
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -14235,10 +14281,6 @@ msgstr "Alege o culoare"
 msgid "Pick a contact"
 msgstr "Alege un contact"
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "Pick a conversation"
-msgstr "Alege o conversație"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Pick a CSV file, or drop it here"
 msgstr "Alege un fișier CSV sau trage-l aici"
@@ -14381,17 +14423,9 @@ msgstr "Alege cel puțin un domeniu de acces."
 msgid "Pick at least one."
 msgstr "Alege cel puțin una."
 
-#: src/features/inbox/ChatList.tsx
-msgid "Pick conversations"
-msgstr "Alege conversații"
-
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "Alege fiecare domeniu de acces singur."
-
-#: src/features/mail/MailList.tsx
-msgid "Pick mails"
-msgstr "Alege e-mailuri"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
@@ -15040,7 +15074,6 @@ msgstr "Acoperire"
 msgid "Read"
 msgstr "Citire"
 
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/ProductsPage.tsx
 msgctxt "mailbox access"
@@ -15051,7 +15084,6 @@ msgstr "Citire"
 msgid "Read analytics properties and their numbers"
 msgstr "Citește proprietățile de analiză și cifrele lor"
 
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Read and send"
@@ -15753,7 +15785,6 @@ msgstr "Răspunsuri la e-mailurile trimise de noi"
 msgid "Replies to this address are refused until you clear it."
 msgstr "Răspunsurile către această adresă sunt refuzate până o ștergi."
 
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "replies today"
 msgstr "răspunsuri azi"
@@ -16036,10 +16067,6 @@ msgstr "Timp de răspuns, ultimele 24 de ore"
 #: src/features/reports/TrendsReport.tsx
 msgid "Response times"
 msgstr "Timpi de răspuns"
-
-#: src/features/inbox/ChatList.tsx
-msgid "Rest of the team"
-msgstr "Restul echipei"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -16348,10 +16375,6 @@ msgstr "Satisfacție"
 msgid "Satisfied"
 msgstr "Mulțumiți"
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "satisfied · 👍 {good} 👎 {bad}"
-msgstr "mulțumiți · 👍 {good} 👎 {bad}"
-
 #: src/components/common/text.ts
 msgid "Saturday"
 msgstr "Sâmbătă"
@@ -16623,11 +16646,14 @@ msgstr "Capturi de ecran atașate"
 msgid "SDK"
 msgstr "SDK"
 
+#: src/features/inbox/ChatList.tsx
+msgid "search"
+msgstr "caută"
+
 #: src/app/Palette.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
-#: src/features/inbox/ChatList.tsx
 msgid "Search"
 msgstr "Caută"
 
@@ -16727,6 +16753,10 @@ msgstr "Caută persoane, acțiuni sau setări"
 msgid "Search people, actions or settings…"
 msgstr "Caută persoane, acțiuni sau setări…"
 
+#: src/features/inbox/ChatList.tsx
+msgid "Search people, subjects, messages"
+msgstr "Caută persoane, subiecte și mesaje"
+
 #: src/features/broadcasts/Report.tsx
 msgid "Search recipients"
 msgstr "Caută destinatari"
@@ -16783,32 +16813,25 @@ msgstr "Văzut {seen}"
 msgid "Seen by the monitor"
 msgstr "Văzut de monitor"
 
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "select"
+msgstr "selectează"
+
 #: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "Selecție"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
 msgid "Select {name}"
 msgstr "Selectează {name}"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Select all"
 msgstr "Selectează tot"
-
-#: src/features/inbox/ChatList.tsx
-msgid "Select conversations"
-msgstr "Selectează conversații"
-
-#: src/features/mail/MailList.tsx
-msgid "Select mails"
-msgstr "Selectează e-mailuri"
-
-#: src/features/mail/MailList.tsx
-msgid "Select mails (X)"
-msgstr "Selectează e-mailuri (X)"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the contact under the cursor"
@@ -16827,13 +16850,11 @@ msgid "Select the previous or next block"
 msgstr "Selectează blocul anterior sau următor"
 
 #: src/components/common/Selection.tsx
-#: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Selectate: {picked}"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Selection"
 msgstr "Selecție"
 
@@ -17492,10 +17513,6 @@ msgstr "Se configurează…"
 msgid "Settings"
 msgstr "Setări"
 
-#: src/features/inbox/ChatList.tsx
-msgid "Settings ({mod},)"
-msgstr "Setări ({mod},)"
-
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "Settings (JSON)"
@@ -17534,10 +17551,6 @@ msgstr "Căsuțe poștale comune pentru echipa ta"
 #: src/components/common/MailboxOwnerChoice.tsx
 msgid "Shared with the team"
 msgstr "Partajată cu echipa"
-
-#: src/features/mail/MailPage.tsx
-msgid "Shared with you"
-msgstr "Partajate cu dumneavoastră"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -18166,6 +18179,7 @@ msgstr "Gazdă SMTP"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
@@ -18365,6 +18379,10 @@ msgid "Stage"
 msgstr "Etapă"
 
 #: src/features/mail/MailList.tsx
+msgid "star"
+msgstr "stea"
+
+#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Star"
@@ -18552,6 +18570,7 @@ msgstr "Stare la cădere"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 #: src/features/migrations/MapStep.tsx
@@ -18935,7 +18954,6 @@ msgstr "ID echipă"
 
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/workspace/FocusForm.tsx
 #: src/features/setup/SetupHub.tsx
@@ -21021,7 +21039,6 @@ msgid "Tracker"
 msgstr "Tracker"
 
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/parts.tsx
 msgid "Trash"
@@ -21996,10 +22013,6 @@ msgstr "Așteaptă"
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "Se așteaptă limita {provider}; continuă {waiting}."
 
-#: src/features/inbox/ChatList.tsx
-msgid "Waiting for a teammate"
-msgstr "Așteaptă un coleg disponibil"
-
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Waiting for an available teammate since {since}"
@@ -22394,10 +22407,6 @@ msgstr "Când un filtru al unei căsuțe de e-mail te desemnează pentru un e-ma
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "Când un mesaj programat rămâne ciornă pentru că a fost refuzat."
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "When a new message arrives, it will be in the list."
-msgstr "Când sosește un mesaj nou, va fi în listă."
-
 #: src/features/settings/notifications/events.ts
 msgid "When a teammate adds you to a note with @."
 msgstr "Când un coleg te adaugă la o notă cu @."
@@ -22432,6 +22441,7 @@ msgstr "Când este oprit, cheile API pot doar redacta ciorne, iar un membru le r
 msgid "When should it come back?"
 msgstr "Când ar trebui să revină?"
 
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "When should they come back?"
 msgstr "Când ar trebui să revină?"
@@ -22907,10 +22917,6 @@ msgstr "Puteți citi această căsuță, dar nu o puteți modifica. Proprietarul
 msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
 msgstr "Îl poți restaura din coș timp de 30 de zile, apoi este șters definitiv împreună cu mesajele și fișierele."
 
-#: src/features/mail/MailList.tsx
-msgid "You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
-msgstr "Le poți restaura din coș timp de 30 de zile, apoi sunt șterse definitiv împreună cu mesajele și fișierele."
-
 #: src/features/account/ConnectPage.tsx
 msgid "You can then write, vote and follow discussions there. The team behind {host} sees your name and e-mail address when you write; other readers see only your name."
 msgstr "Apoi poți scrie, vota și urmări discuții acolo. Echipa din spatele {host} îți vede numele și adresa de e-mail când scrii; ceilalți cititori văd doar numele."
@@ -23121,10 +23127,6 @@ msgstr "Furnizorul tău de e-mail sau propriul server SMTP"
 #: src/features/migrations/Wizard.tsx
 msgid "Your mailbox"
 msgstr "Căsuța ta"
-
-#: src/features/mail/MailPage.tsx
-msgid "Your mailboxes"
-msgstr "Căsuțele dumneavoastră"
 
 #: src/features/migrations/text.ts
 msgid "Your Microsoft 365 organization lets only an admin consent to apps. Send your admin the link below; once they accept, sign in again."

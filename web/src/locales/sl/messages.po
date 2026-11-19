@@ -48,6 +48,11 @@ msgstr "»Ali je bila ta stran koristna?«, povratne informacije in razprave v v
 msgid "(no subject)"
 msgstr "(brez zadeve)"
 
+#. placeholder {0}: u.count
+#: src/features/home/HomeWork.tsx
+msgid "{0, plural, one {{name} · # waiting} other {{name} · # waiting}}"
+msgstr "{0, plural, one {{name} · čaka: #} other {{name} · čaka: #}}"
+
 #. placeholder {0}: msg.attachments
 #: src/features/migrations/ReviewStep.tsx
 msgid "{0, plural, one {# attachment} other {# attachments}}"
@@ -148,7 +153,6 @@ msgid "{0} active today"
 msgstr "{0} aktivnih danes"
 
 #. placeholder {0}: done.length
-#. placeholder {0}: done.size
 #: src/features/inbox/ChatList.tsx
 msgid "{0} closed"
 msgstr "{0} zaprtih"
@@ -733,6 +737,10 @@ msgstr "{n} na dan"
 msgid "{n} archived"
 msgstr "Arhivirano: {n}"
 
+#: src/features/inbox/ChatList.tsx
+msgid "{n} assigned to you"
+msgstr "Dodeljeno vam: {n}"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "{n} attempts"
 msgstr "Poskusov: {n}"
@@ -740,6 +748,10 @@ msgstr "Poskusov: {n}"
 #: src/features/broadcasts/Overview.tsx
 msgid "{n} broadcasts"
 msgstr "{n} množičnih sporočil"
+
+#: src/features/inbox/ChatList.tsx
+msgid "{n} closed"
+msgstr "Zaprto: {n}"
 
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatsPage.tsx
@@ -772,6 +784,7 @@ msgstr "Premaknjeno v Prejeto: {n}"
 msgid "{n} reports"
 msgstr "{n} prijav"
 
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "{n} snoozed, back {when}"
 msgstr "Odloženo: {n}, vrnejo se {when}"
@@ -961,7 +974,7 @@ msgstr "{percent} %, {sent} od {size}"
 msgid "{person} left the workspace by deleting their account"
 msgstr "{person} je zapustil(a) delovni prostor z izbrisom računa"
 
-#: src/features/inbox/ChatList.tsx
+#: src/components/common/ListBox.tsx
 msgid "{picked} selected"
 msgstr "Izbrano: {picked}"
 
@@ -2520,6 +2533,7 @@ msgid "All imports"
 msgstr "Vsi uvozi"
 
 #: src/app/Palette.tsx
+#: src/features/inbox/ChatsPage.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
@@ -2575,7 +2589,6 @@ msgstr "vsi izdelki"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
@@ -3127,6 +3140,10 @@ msgid "Any state"
 msgstr "Vsako stanje"
 
 #: src/features/inbox/ChatList.tsx
+msgid "Any status"
+msgstr "Katero koli stanje"
+
+#: src/features/inbox/ChatList.tsx
 msgid "Any team"
 msgstr "Katera koli ekipa"
 
@@ -3269,6 +3286,10 @@ msgstr "Odobri izbrano objavo"
 msgid "Approved"
 msgstr "Odobreno"
 
+#: src/features/mail/MailList.tsx
+msgid "archive"
+msgstr "arhiviraj"
+
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
@@ -3405,6 +3426,10 @@ msgid "Assign or hand to a teammate"
 msgstr "Dodeli ali predaj sodelavcu"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Assign the selected conversations to me"
+msgstr "Dodeli mi izbrane pogovore"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Assign the selected waiting conversation to you"
 msgstr "Dodeli si izbrani čakajoči pogovor"
 
@@ -3424,8 +3449,14 @@ msgstr "Dodeli ekipi"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Assign to me"
 msgstr "Dodeli meni"
+
+#. placeholder {0}: SHORTCUTS.hand
+#: src/features/inbox/ChatList.tsx
+msgid "Assign to me ({0})"
+msgstr "Dodeli meni ({0})"
 
 #: src/features/conversation/messages/EventLine.tsx
 msgid "Assigned automatically to {assignee}"
@@ -3445,7 +3476,6 @@ msgid "Assigned to {assignee}, kept by name"
 msgstr "Dodeljeno uporabniku {assignee}, ohranjeno po imenu"
 
 #: src/features/home/HomePage.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 msgid "Assigned to you"
 msgstr "Dodeljeno vam"
@@ -4049,6 +4079,7 @@ msgstr "Ime kampanje"
 #: src/app/Palette.tsx
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
@@ -4072,9 +4103,7 @@ msgstr "Ime kampanje"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/fields/RequiredFieldsHost.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/AddProductDialog.tsx
@@ -4334,6 +4363,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "Sprememba domene pošiljanja izklopi podpisovanje DKIM, dokler ga ne vklopite znova za novo domeno."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
@@ -4554,7 +4584,6 @@ msgid "Choose a workspace"
 msgstr "Izberite delovni prostor"
 
 #: src/features/feedback/FeedbackList.tsx
-#: src/features/inbox/ChatsPage.tsx
 msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
 msgstr "Izberite s seznama ali se premikajte s ↑ ↓ in odprite z Enter."
 
@@ -4621,9 +4650,8 @@ msgstr "Počisti iskanje"
 msgid "Clear the selection"
 msgstr "Počisti izbiro"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
 msgstr "Počisti izbiro (Esc)"
 
@@ -4690,6 +4718,11 @@ msgctxt "conversation"
 msgid "Close"
 msgstr "Zapri"
 
+#. placeholder {0}: SHORTCUTS.close
+#: src/features/inbox/ChatList.tsx
+msgid "Close ({0})"
+msgstr "Zapri ({0})"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Close (E)"
 msgstr "Zapri (E)"
@@ -4739,6 +4772,14 @@ msgstr "Zapri iskanje"
 msgid "Close the search (Esc)"
 msgstr "Zapri iskanje (Esc)"
 
+#: src/features/inbox/ChatList.tsx
+msgid "close the selected"
+msgstr "zapri izbrane"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Close the selected conversations"
+msgstr "Zapri izbrane pogovore"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -4755,7 +4796,6 @@ msgstr "Zaprto pred odgovorom"
 msgid "Closed conversations"
 msgstr "Zaprti pogovori"
 
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "closed today"
 msgstr "danes zaprto"
@@ -5862,6 +5902,7 @@ msgstr "Pooblaščenci"
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
+#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
@@ -7282,7 +7323,6 @@ msgstr "Vsi drugi brskalniki in naprave bodo odjavljeni. Ta ostane prijavljena."
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
 msgstr "vsi izdelki"
@@ -7325,10 +7365,6 @@ msgstr "Vsako spletno mesto in aplikacija prikazuje svoje obiskovalce na Domu in
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
 msgstr "Vsi"
-
-#: src/features/inbox/ChatsPage.tsx
-msgid "Everyone has been answered."
-msgstr "Vsem je odgovorjeno."
 
 #: src/features/broadcasts/Import.tsx
 msgid "Everyone in this file agreed to receive {listName} from {inboxName}, and I can show how and when if asked."
@@ -7629,7 +7665,6 @@ msgstr "Napolnjeno z vzorčnimi vrednostmi."
 msgid "Filled with the values of {who}"
 msgstr "Napolnjeno z vrednostmi uporabnika {who}"
 
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter"
 msgstr "Filter"
@@ -7664,7 +7699,6 @@ msgstr "Filtriraj sporočila, kot je to"
 
 #: src/app/places.tsx
 #: src/features/mail/MailFiltersPage.tsx
-#: src/features/mail/MailPage.tsx
 msgid "Filters"
 msgstr "Filtri"
 
@@ -7803,7 +7837,6 @@ msgid "Fix the address or the channel's SMTP settings, then send the reply again
 msgstr "Popravite naslov ali nastavitve SMTP kanala in nato znova pošljite odgovor."
 
 #: src/app/places.tsx
-#: src/features/mail/MailPage.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "Folders"
@@ -10352,10 +10385,6 @@ msgstr "Nabiralnik"
 msgid "Mailbox address"
 msgstr "Naslov nabiralnika"
 
-#: src/features/mail/MailPage.tsx
-msgid "Mailbox: {name}"
-msgstr "Nabiralnik: {name}"
-
 #: src/app/places.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -10493,8 +10522,13 @@ msgid "Mark as read"
 msgstr "Označi kot prebrano"
 
 #: src/features/mail/MailList.tsx
-msgid "Mark as read or unread (U)"
-msgstr "Označi kot prebrano ali neprebrano (U)"
+msgid "Mark as read (U)"
+msgstr "Označi kot prebrano (U)"
+
+#. placeholder {0}: SHORTCUTS.unread
+#: src/features/inbox/ChatList.tsx
+msgid "Mark as read or unread ({0})"
+msgstr "Označi kot prebrano ali neprebrano ({0})"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/docs/discussions/Bulk.tsx
@@ -10509,6 +10543,7 @@ msgstr "Označi kot vsiljeno pošto"
 msgid "Mark as unread"
 msgstr "Označi kot neprebrano"
 
+#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Mark as unread (U)"
 msgstr "Označi kot neprebrano (U)"
@@ -10524,6 +10559,10 @@ msgstr "Označi ali odznači kot vsiljeno pošto"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected conversations as not spam, in Spam"
 msgstr "Izbrane pogovore v vsiljeni pošti označi kot ni vsiljena pošta"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Mark the selected conversations as read or unread"
+msgstr "Označi izbrane pogovore kot prebrane ali neprebrane"
 
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Mark the selected discussions as spam ({n})?"
@@ -10618,10 +10657,6 @@ msgstr "Mediana"
 #: src/features/status/IncidentDetail.tsx
 msgid "median {median}"
 msgstr "mediana {median}"
-
-#: src/features/inbox/ChatsPage.tsx
-msgid "median first reply"
-msgstr "mediana prvega odgovora"
 
 #: src/features/reports/ReportPages.tsx
 msgid "median today"
@@ -10988,9 +11023,13 @@ msgstr "Najprej največ ocen, odprte povratne informacije, odprte razprave in ob
 msgid "Most votes"
 msgstr "Največ glasov"
 
-#. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+msgid "move"
+msgstr "premikanje"
+
+#. placeholder {0}: ids.length
+#: src/features/inbox/ChatList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "Premaknem {0} v koš?"
 
@@ -11126,7 +11165,6 @@ msgstr "Premakni v prejšnjo ali naslednjo fazo"
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
@@ -11421,7 +11459,6 @@ msgstr "Novi stiki ustvarjeni"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactSheet.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/ChatsPage.tsx
 msgid "New conversation"
 msgstr "Nov pogovor"
@@ -11535,13 +11572,16 @@ msgstr "Nov seznam"
 msgid "New macro"
 msgstr "Novo makro"
 
+#: src/features/mail/MailList.tsx
+msgid "new mail"
+msgstr "nova pošta"
+
 #: src/features/mail/Compose.tsx
 #: src/features/mail/MailPage.tsx
 msgid "New mail"
 msgstr "Nova e-pošta"
 
 #: src/app/places.tsx
-#: src/features/mail/MailPage.tsx
 msgid "New mailbox"
 msgstr "Nov predal"
 
@@ -13296,6 +13336,12 @@ msgstr "To vidi samo vaša ekipa."
 msgid "open"
 msgstr "odprt"
 
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "odpri"
+
 #: src/components/common/text.ts
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -14235,10 +14281,6 @@ msgstr "Izberi barvo"
 msgid "Pick a contact"
 msgstr "Izberite stik"
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "Pick a conversation"
-msgstr "Izberite pogovor"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Pick a CSV file, or drop it here"
 msgstr "Izberite datoteko CSV ali jo spustite sem"
@@ -14381,17 +14423,9 @@ msgstr "Izberite vsaj en doseg."
 msgid "Pick at least one."
 msgstr "Izberite vsaj eno."
 
-#: src/features/inbox/ChatList.tsx
-msgid "Pick conversations"
-msgstr "Izberite pogovore"
-
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "Vsak doseg izberite sami."
-
-#: src/features/mail/MailList.tsx
-msgid "Pick mails"
-msgstr "Izberite sporočila"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
@@ -15040,7 +15074,6 @@ msgstr "Doseg"
 msgid "Read"
 msgstr "Beri"
 
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/ProductsPage.tsx
 msgctxt "mailbox access"
@@ -15051,7 +15084,6 @@ msgstr "Branje"
 msgid "Read analytics properties and their numbers"
 msgstr "Beri analitične lastnosti in njihove številke"
 
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Read and send"
@@ -15753,7 +15785,6 @@ msgstr "Odgovori na e-pošto, ki smo jo poslali"
 msgid "Replies to this address are refused until you clear it."
 msgstr "Odgovori na ta naslov so zavrnjeni, dokler ga ne počistite."
 
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "replies today"
 msgstr "odgovorov danes"
@@ -16036,10 +16067,6 @@ msgstr "Odzivni čas, zadnjih 24 ur"
 #: src/features/reports/TrendsReport.tsx
 msgid "Response times"
 msgstr "Odzivni časi"
-
-#: src/features/inbox/ChatList.tsx
-msgid "Rest of the team"
-msgstr "Preostali del ekipe"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -16348,10 +16375,6 @@ msgstr "Zadovoljstvo"
 msgid "Satisfied"
 msgstr "Zadovoljni"
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "satisfied · 👍 {good} 👎 {bad}"
-msgstr "zadovoljnih · 👍 {good} 👎 {bad}"
-
 #: src/components/common/text.ts
 msgid "Saturday"
 msgstr "Sobota"
@@ -16623,11 +16646,14 @@ msgstr "Priloženi posnetki zaslona"
 msgid "SDK"
 msgstr "SDK"
 
+#: src/features/inbox/ChatList.tsx
+msgid "search"
+msgstr "iskanje"
+
 #: src/app/Palette.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
-#: src/features/inbox/ChatList.tsx
 msgid "Search"
 msgstr "Išči"
 
@@ -16727,6 +16753,10 @@ msgstr "Išči ljudi, dejanja ali nastavitve"
 msgid "Search people, actions or settings…"
 msgstr "Išči ljudi, dejanja ali nastavitve …"
 
+#: src/features/inbox/ChatList.tsx
+msgid "Search people, subjects, messages"
+msgstr "Iskanje oseb, zadev in sporočil"
+
 #: src/features/broadcasts/Report.tsx
 msgid "Search recipients"
 msgstr "Išči prejemnike"
@@ -16783,32 +16813,25 @@ msgstr "Viden {seen}"
 msgid "Seen by the monitor"
 msgstr "Videl monitor"
 
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "select"
+msgstr "izberi"
+
 #: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "Izbira"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
 msgid "Select {name}"
 msgstr "Izberi: {name}"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Select all"
 msgstr "Izberi vse"
-
-#: src/features/inbox/ChatList.tsx
-msgid "Select conversations"
-msgstr "Izberi pogovore"
-
-#: src/features/mail/MailList.tsx
-msgid "Select mails"
-msgstr "Izberi sporočila"
-
-#: src/features/mail/MailList.tsx
-msgid "Select mails (X)"
-msgstr "Izberi sporočila (X)"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the contact under the cursor"
@@ -16827,13 +16850,11 @@ msgid "Select the previous or next block"
 msgstr "Izberi prejšnji ali naslednji blok"
 
 #: src/components/common/Selection.tsx
-#: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Izbrano: {picked}"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Selection"
 msgstr "Izbor"
 
@@ -17492,10 +17513,6 @@ msgstr "Nastavljanje …"
 msgid "Settings"
 msgstr "Nastavitve"
 
-#: src/features/inbox/ChatList.tsx
-msgid "Settings ({mod},)"
-msgstr "Nastavitve ({mod},)"
-
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "Settings (JSON)"
@@ -17534,10 +17551,6 @@ msgstr "Skupni nabiralniki za vašo ekipo"
 #: src/components/common/MailboxOwnerChoice.tsx
 msgid "Shared with the team"
 msgstr "Deljen z ekipo"
-
-#: src/features/mail/MailPage.tsx
-msgid "Shared with you"
-msgstr "Deljeno z vami"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -18166,6 +18179,7 @@ msgstr "Gostitelj SMTP"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
@@ -18365,6 +18379,10 @@ msgid "Stage"
 msgstr "Faza"
 
 #: src/features/mail/MailList.tsx
+msgid "star"
+msgstr "zvezdica"
+
+#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Star"
@@ -18552,6 +18570,7 @@ msgstr "Stanje ob izpadu"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 #: src/features/migrations/MapStep.tsx
@@ -18935,7 +18954,6 @@ msgstr "ID ekipe"
 
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/workspace/FocusForm.tsx
 #: src/features/setup/SetupHub.tsx
@@ -21021,7 +21039,6 @@ msgid "Tracker"
 msgstr "Tracker"
 
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/parts.tsx
 msgid "Trash"
@@ -21996,10 +22013,6 @@ msgstr "Čaka"
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "Čakanje na omejitev {provider}; nadaljuje se {waiting}."
 
-#: src/features/inbox/ChatList.tsx
-msgid "Waiting for a teammate"
-msgstr "Čaka na razpoložljivega kolega"
-
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Waiting for an available teammate since {since}"
@@ -22394,10 +22407,6 @@ msgstr "Ko vas filter poštnega predala navede pri prispeli e-pošti."
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "Ko načrtovano sporočilo ostane osnutek, ker je bilo zavrnjeno."
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "When a new message arrives, it will be in the list."
-msgstr "Ko prispe novo sporočilo, bo na seznamu."
-
 #: src/features/settings/notifications/events.ts
 msgid "When a teammate adds you to a note with @."
 msgstr "Ko vas sodelavec doda v opombo z @."
@@ -22432,6 +22441,7 @@ msgstr "Ko je izklopljeno, lahko ključi API pišejo samo osnutke, član pa jih 
 msgid "When should it come back?"
 msgstr "Kdaj naj se vrne?"
 
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "When should they come back?"
 msgstr "Kdaj naj se vrnejo?"
@@ -22907,10 +22917,6 @@ msgstr "Ta predal lahko berete, ne pa spreminjate. Lastnik vam lahko dovoli poš
 msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
 msgstr "Iz koša ga lahko obnovite 30 dni, nato se trajno izbriše skupaj s sporočili in datotekami."
 
-#: src/features/mail/MailList.tsx
-msgid "You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
-msgstr "Iz koša jih lahko obnovite 30 dni, nato se trajno izbrišejo skupaj s sporočili in datotekami."
-
 #: src/features/account/ConnectPage.tsx
 msgid "You can then write, vote and follow discussions there. The team behind {host} sees your name and e-mail address when you write; other readers see only your name."
 msgstr "Tam nato lahko pišete, glasujete in sledite razpravam. Ekipa za {host} vidi vaše ime in e-poštni naslov, ko pišete; drugi bralci vidijo samo vaše ime."
@@ -23121,10 +23127,6 @@ msgstr "Strežnik SMTP vašega poštnega ponudnika ali vaš lasten"
 #: src/features/migrations/Wizard.tsx
 msgid "Your mailbox"
 msgstr "Vaš nabiralnik"
-
-#: src/features/mail/MailPage.tsx
-msgid "Your mailboxes"
-msgstr "Vaši predali"
 
 #: src/features/migrations/text.ts
 msgid "Your Microsoft 365 organization lets only an admin consent to apps. Send your admin the link below; once they accept, sign in again."

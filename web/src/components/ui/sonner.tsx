@@ -8,7 +8,7 @@ function Toaster(props: ToasterProps) {
     <Sonner
       theme={theme}
       position="bottom-center"
-      className="toaster group"
+      className="toaster group max-[600px]:w-auto!"
       toastOptions={{
         unstyled: true,
         classNames: {

@@ -48,6 +48,11 @@ msgstr "«Чи була ця сторінка корисною?», відгук�
 msgid "(no subject)"
 msgstr "(без теми)"
 
+#. placeholder {0}: u.count
+#: src/features/home/HomeWork.tsx
+msgid "{0, plural, one {{name} · # waiting} other {{name} · # waiting}}"
+msgstr "{0, plural, one {{name} · очікують: #} other {{name} · очікують: #}}"
+
 #. placeholder {0}: msg.attachments
 #: src/features/migrations/ReviewStep.tsx
 msgid "{0, plural, one {# attachment} other {# attachments}}"
@@ -148,7 +153,6 @@ msgid "{0} active today"
 msgstr "{0} активні сьогодні"
 
 #. placeholder {0}: done.length
-#. placeholder {0}: done.size
 #: src/features/inbox/ChatList.tsx
 msgid "{0} closed"
 msgstr "{0} закрито"
@@ -733,6 +737,10 @@ msgstr "{n} на день"
 msgid "{n} archived"
 msgstr "В архіві: {n}"
 
+#: src/features/inbox/ChatList.tsx
+msgid "{n} assigned to you"
+msgstr "Призначено вам: {n}"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "{n} attempts"
 msgstr "Спроб: {n}"
@@ -740,6 +748,10 @@ msgstr "Спроб: {n}"
 #: src/features/broadcasts/Overview.tsx
 msgid "{n} broadcasts"
 msgstr "{n} розсилок"
+
+#: src/features/inbox/ChatList.tsx
+msgid "{n} closed"
+msgstr "Закрито: {n}"
 
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatsPage.tsx
@@ -772,6 +784,7 @@ msgstr "Повернуто до Вхідних: {n}"
 msgid "{n} reports"
 msgstr "{n} відгуків"
 
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "{n} snoozed, back {when}"
 msgstr "Відкладено: {n}, повернуться {when}"
@@ -961,7 +974,7 @@ msgstr "{percent}%, {sent} із {size}"
 msgid "{person} left the workspace by deleting their account"
 msgstr "{person} залишив(ла) робочий простір, видаливши обліковий запис"
 
-#: src/features/inbox/ChatList.tsx
+#: src/components/common/ListBox.tsx
 msgid "{picked} selected"
 msgstr "Вибрано: {picked}"
 
@@ -2520,6 +2533,7 @@ msgid "All imports"
 msgstr "Усі імпорти"
 
 #: src/app/Palette.tsx
+#: src/features/inbox/ChatsPage.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
@@ -2575,7 +2589,6 @@ msgstr "усі продукти"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
@@ -3127,6 +3140,10 @@ msgid "Any state"
 msgstr "Будь-який стан"
 
 #: src/features/inbox/ChatList.tsx
+msgid "Any status"
+msgstr "Будь-який статус"
+
+#: src/features/inbox/ChatList.tsx
 msgid "Any team"
 msgstr "Будь-яка команда"
 
@@ -3269,6 +3286,10 @@ msgstr "Схвалити вибране повідомлення"
 msgid "Approved"
 msgstr "Схвалено"
 
+#: src/features/mail/MailList.tsx
+msgid "archive"
+msgstr "архівувати"
+
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
@@ -3405,6 +3426,10 @@ msgid "Assign or hand to a teammate"
 msgstr "Призначити або передати колезі"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Assign the selected conversations to me"
+msgstr "Призначити мені вибрані розмови"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Assign the selected waiting conversation to you"
 msgstr "Призначити собі вибрану розмову, що чекає"
 
@@ -3424,8 +3449,14 @@ msgstr "Призначити команді"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Assign to me"
 msgstr "Призначити мені"
+
+#. placeholder {0}: SHORTCUTS.hand
+#: src/features/inbox/ChatList.tsx
+msgid "Assign to me ({0})"
+msgstr "Призначити мені ({0})"
 
 #: src/features/conversation/messages/EventLine.tsx
 msgid "Assigned automatically to {assignee}"
@@ -3445,7 +3476,6 @@ msgid "Assigned to {assignee}, kept by name"
 msgstr "Призначено: {assignee}, збережено за іменем"
 
 #: src/features/home/HomePage.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 msgid "Assigned to you"
 msgstr "Призначено вам"
@@ -4049,6 +4079,7 @@ msgstr "Назва кампанії"
 #: src/app/Palette.tsx
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
@@ -4072,9 +4103,7 @@ msgstr "Назва кампанії"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/fields/RequiredFieldsHost.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/AddProductDialog.tsx
@@ -4334,6 +4363,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "Зміна домену надсилання вимикає підпис DKIM, доки ви не ввімкнете його знову для нового домену."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
@@ -4554,7 +4584,6 @@ msgid "Choose a workspace"
 msgstr "Виберіть робочий простір"
 
 #: src/features/feedback/FeedbackList.tsx
-#: src/features/inbox/ChatsPage.tsx
 msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
 msgstr "Виберіть зі списку або переміщуйтеся клавішами ↑ ↓ і відкривайте Enter."
 
@@ -4621,9 +4650,8 @@ msgstr "Очистити пошук"
 msgid "Clear the selection"
 msgstr "Скасувати вибір"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
 msgstr "Скасувати вибір (Esc)"
 
@@ -4690,6 +4718,11 @@ msgctxt "conversation"
 msgid "Close"
 msgstr "Закрити"
 
+#. placeholder {0}: SHORTCUTS.close
+#: src/features/inbox/ChatList.tsx
+msgid "Close ({0})"
+msgstr "Закрити ({0})"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Close (E)"
 msgstr "Закрити (E)"
@@ -4739,6 +4772,14 @@ msgstr "Закрити пошук"
 msgid "Close the search (Esc)"
 msgstr "Закрити пошук (Esc)"
 
+#: src/features/inbox/ChatList.tsx
+msgid "close the selected"
+msgstr "закрити вибрані"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Close the selected conversations"
+msgstr "Закрити вибрані розмови"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -4755,7 +4796,6 @@ msgstr "Закрито до відповіді"
 msgid "Closed conversations"
 msgstr "Закриті розмови"
 
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "closed today"
 msgstr "закрито сьогодні"
@@ -5862,6 +5902,7 @@ msgstr "Делеговані"
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
+#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
@@ -7282,7 +7323,6 @@ msgstr "На всіх інших браузерах і пристроях буд
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
 msgstr "усі продукти"
@@ -7325,10 +7365,6 @@ msgstr "Кожен сайт і застосунок показує своїх в
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
 msgstr "Усі"
-
-#: src/features/inbox/ChatsPage.tsx
-msgid "Everyone has been answered."
-msgstr "Усім відповіли."
 
 #: src/features/broadcasts/Import.tsx
 msgid "Everyone in this file agreed to receive {listName} from {inboxName}, and I can show how and when if asked."
@@ -7629,7 +7665,6 @@ msgstr "Заповнено прикладами значень."
 msgid "Filled with the values of {who}"
 msgstr "Заповнено значеннями {who}"
 
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter"
 msgstr "Фільтр"
@@ -7664,7 +7699,6 @@ msgstr "Фільтрувати повідомлення, як це"
 
 #: src/app/places.tsx
 #: src/features/mail/MailFiltersPage.tsx
-#: src/features/mail/MailPage.tsx
 msgid "Filters"
 msgstr "Фільтри"
 
@@ -7803,7 +7837,6 @@ msgid "Fix the address or the channel's SMTP settings, then send the reply again
 msgstr "Виправте адресу або налаштування SMTP каналу, потім надішліть відповідь знову."
 
 #: src/app/places.tsx
-#: src/features/mail/MailPage.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "Folders"
@@ -10352,10 +10385,6 @@ msgstr "Поштова скринька"
 msgid "Mailbox address"
 msgstr "Адреса скриньки"
 
-#: src/features/mail/MailPage.tsx
-msgid "Mailbox: {name}"
-msgstr "Поштова скринька: {name}"
-
 #: src/app/places.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -10493,8 +10522,13 @@ msgid "Mark as read"
 msgstr "Позначити як прочитане"
 
 #: src/features/mail/MailList.tsx
-msgid "Mark as read or unread (U)"
-msgstr "Позначити як прочитане чи непрочитане (U)"
+msgid "Mark as read (U)"
+msgstr "Позначити як прочитане (U)"
+
+#. placeholder {0}: SHORTCUTS.unread
+#: src/features/inbox/ChatList.tsx
+msgid "Mark as read or unread ({0})"
+msgstr "Позначити як прочитане або непрочитане ({0})"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/docs/discussions/Bulk.tsx
@@ -10509,6 +10543,7 @@ msgstr "Позначити як спам"
 msgid "Mark as unread"
 msgstr "Позначити як непрочитане"
 
+#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Mark as unread (U)"
 msgstr "Позначити як непрочитане (U)"
@@ -10524,6 +10559,10 @@ msgstr "Позначити або зняти позначку спаму"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected conversations as not spam, in Spam"
 msgstr "Позначити вибрані розмови в Спамі як не спам"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Mark the selected conversations as read or unread"
+msgstr "Позначити вибрані розмови як прочитані або непрочитані"
 
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Mark the selected discussions as spam ({n})?"
@@ -10618,10 +10657,6 @@ msgstr "Медіана"
 #: src/features/status/IncidentDetail.tsx
 msgid "median {median}"
 msgstr "медіана {median}"
-
-#: src/features/inbox/ChatsPage.tsx
-msgid "median first reply"
-msgstr "медіанний час першої відповіді"
 
 #: src/features/reports/ReportPages.tsx
 msgid "median today"
@@ -10988,9 +11023,13 @@ msgstr "Спершу найбільше оцінок, відкритих від�
 msgid "Most votes"
 msgstr "Найбільше голосів"
 
-#. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+msgid "move"
+msgstr "переміщення"
+
+#. placeholder {0}: ids.length
+#: src/features/inbox/ChatList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "Перемістити до кошика: {0}?"
 
@@ -11126,7 +11165,6 @@ msgstr "Перенести на попередній або наступний �
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
@@ -11421,7 +11459,6 @@ msgstr "Створено нових контактів"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactSheet.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/ChatsPage.tsx
 msgid "New conversation"
 msgstr "Нова розмова"
@@ -11535,13 +11572,16 @@ msgstr "Новий список"
 msgid "New macro"
 msgstr "Новий макрос"
 
+#: src/features/mail/MailList.tsx
+msgid "new mail"
+msgstr "новий лист"
+
 #: src/features/mail/Compose.tsx
 #: src/features/mail/MailPage.tsx
 msgid "New mail"
 msgstr "Новий лист"
 
 #: src/app/places.tsx
-#: src/features/mail/MailPage.tsx
 msgid "New mailbox"
 msgstr "Нова скринька"
 
@@ -13296,6 +13336,12 @@ msgstr "Це бачить лише ваша команда."
 msgid "open"
 msgstr "відкрита"
 
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "відкрити"
+
 #: src/components/common/text.ts
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -14235,10 +14281,6 @@ msgstr "Вибрати колір"
 msgid "Pick a contact"
 msgstr "Виберіть контакт"
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "Pick a conversation"
-msgstr "Виберіть розмову"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Pick a CSV file, or drop it here"
 msgstr "Виберіть файл CSV або перетягніть його сюди"
@@ -14381,17 +14423,9 @@ msgstr "Виберіть хоча б одну область доступу."
 msgid "Pick at least one."
 msgstr "Виберіть хоча б один."
 
-#: src/features/inbox/ChatList.tsx
-msgid "Pick conversations"
-msgstr "Виберіть розмови"
-
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "Виберіть кожну область доступу самі."
-
-#: src/features/mail/MailList.tsx
-msgid "Pick mails"
-msgstr "Виберіть листи"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
@@ -15040,7 +15074,6 @@ msgstr "Охоплення"
 msgid "Read"
 msgstr "Читання"
 
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/ProductsPage.tsx
 msgctxt "mailbox access"
@@ -15051,7 +15084,6 @@ msgstr "Читання"
 msgid "Read analytics properties and their numbers"
 msgstr "Читати ресурси аналітики та їхні показники"
 
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Read and send"
@@ -15753,7 +15785,6 @@ msgstr "Відповіді на надіслані нами листи"
 msgid "Replies to this address are refused until you clear it."
 msgstr "Відповіді на цю адресу відхиляються, доки ви не скинете це."
 
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "replies today"
 msgstr "відповідей сьогодні"
@@ -16036,10 +16067,6 @@ msgstr "Час відповіді, останні 24 години"
 #: src/features/reports/TrendsReport.tsx
 msgid "Response times"
 msgstr "Час відповіді"
-
-#: src/features/inbox/ChatList.tsx
-msgid "Rest of the team"
-msgstr "Решта команди"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -16348,10 +16375,6 @@ msgstr "Задоволеність"
 msgid "Satisfied"
 msgstr "Задоволені"
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "satisfied · 👍 {good} 👎 {bad}"
-msgstr "задоволені · 👍 {good} 👎 {bad}"
-
 #: src/components/common/text.ts
 msgid "Saturday"
 msgstr "Субота"
@@ -16623,11 +16646,14 @@ msgstr "Додано знімки екрана"
 msgid "SDK"
 msgstr "SDK"
 
+#: src/features/inbox/ChatList.tsx
+msgid "search"
+msgstr "пошук"
+
 #: src/app/Palette.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
-#: src/features/inbox/ChatList.tsx
 msgid "Search"
 msgstr "Пошук"
 
@@ -16727,6 +16753,10 @@ msgstr "Пошук людей, дій або налаштувань"
 msgid "Search people, actions or settings…"
 msgstr "Пошук людей, дій або налаштувань…"
 
+#: src/features/inbox/ChatList.tsx
+msgid "Search people, subjects, messages"
+msgstr "Пошук за людьми, темами й повідомленнями"
+
 #: src/features/broadcasts/Report.tsx
 msgid "Search recipients"
 msgstr "Пошук отримувачів"
@@ -16783,32 +16813,25 @@ msgstr "Був(ла) {seen}"
 msgid "Seen by the monitor"
 msgstr "Помічений монітором"
 
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "select"
+msgstr "вибрати"
+
 #: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "Вибір"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
 msgid "Select {name}"
 msgstr "Вибрати: {name}"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Select all"
 msgstr "Вибрати все"
-
-#: src/features/inbox/ChatList.tsx
-msgid "Select conversations"
-msgstr "Вибрати розмови"
-
-#: src/features/mail/MailList.tsx
-msgid "Select mails"
-msgstr "Вибрати листи"
-
-#: src/features/mail/MailList.tsx
-msgid "Select mails (X)"
-msgstr "Вибрати листи (X)"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the contact under the cursor"
@@ -16827,13 +16850,11 @@ msgid "Select the previous or next block"
 msgstr "Вибрати попередній або наступний блок"
 
 #: src/components/common/Selection.tsx
-#: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Вибрано: {picked}"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Selection"
 msgstr "Вибір"
 
@@ -17492,10 +17513,6 @@ msgstr "Налаштування…"
 msgid "Settings"
 msgstr "Налаштування"
 
-#: src/features/inbox/ChatList.tsx
-msgid "Settings ({mod},)"
-msgstr "Налаштування ({mod},)"
-
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "Settings (JSON)"
@@ -17534,10 +17551,6 @@ msgstr "Спільні поштові скриньки для вашої ком�
 #: src/components/common/MailboxOwnerChoice.tsx
 msgid "Shared with the team"
 msgstr "Спільна з командою"
-
-#: src/features/mail/MailPage.tsx
-msgid "Shared with you"
-msgstr "Доступні вам"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -18166,6 +18179,7 @@ msgstr "Хост SMTP"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
@@ -18365,6 +18379,10 @@ msgid "Stage"
 msgstr "Етап"
 
 #: src/features/mail/MailList.tsx
+msgid "star"
+msgstr "зірочка"
+
+#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Star"
@@ -18552,6 +18570,7 @@ msgstr "Стан у разі збою"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 #: src/features/migrations/MapStep.tsx
@@ -18935,7 +18954,6 @@ msgstr "ID команди"
 
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/workspace/FocusForm.tsx
 #: src/features/setup/SetupHub.tsx
@@ -21021,7 +21039,6 @@ msgid "Tracker"
 msgstr "Tracker"
 
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/parts.tsx
 msgid "Trash"
@@ -21996,10 +22013,6 @@ msgstr "Очікування"
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "Очікування ліміту {provider}; триватиме о {waiting}."
 
-#: src/features/inbox/ChatList.tsx
-msgid "Waiting for a teammate"
-msgstr "Чекає вільного колегу"
-
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Waiting for an available teammate since {since}"
@@ -22394,10 +22407,6 @@ msgstr "Коли фільтр поштової скриньки признача
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "Коли заплановане повідомлення лишається чернеткою, бо його відхилили."
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "When a new message arrives, it will be in the list."
-msgstr "Коли надійде нове повідомлення, воно з'явиться у списку."
-
 #: src/features/settings/notifications/events.ts
 msgid "When a teammate adds you to a note with @."
 msgstr "Коли колега додає вас у нотатку через @."
@@ -22432,6 +22441,7 @@ msgstr "Коли вимкнено, ключі API можуть лише писа
 msgid "When should it come back?"
 msgstr "Коли він має повернутися?"
 
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "When should they come back?"
 msgstr "Коли їм повернутися?"
@@ -22907,10 +22917,6 @@ msgstr "Ви можете читати цю скриньку, але не змі
 msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
 msgstr "Його можна відновити з кошика протягом 30 днів, потім він видаляється назавжди разом із повідомленнями та файлами."
 
-#: src/features/mail/MailList.tsx
-msgid "You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
-msgstr "Їх можна відновити з кошика протягом 30 днів, потім вони видаляються назавжди разом із повідомленнями та файлами."
-
 #: src/features/account/ConnectPage.tsx
 msgid "You can then write, vote and follow discussions there. The team behind {host} sees your name and e-mail address when you write; other readers see only your name."
 msgstr "Тоді ви зможете писати, голосувати й стежити за обговореннями там. Команда {host} бачить ваше ім'я та адресу електронної пошти, коли ви пишете; інші читачі бачать лише ім'я."
@@ -23121,10 +23127,6 @@ msgstr "Сервер SMTP вашого поштового провайдера �
 #: src/features/migrations/Wizard.tsx
 msgid "Your mailbox"
 msgstr "Ваша скринька"
-
-#: src/features/mail/MailPage.tsx
-msgid "Your mailboxes"
-msgstr "Ваші скриньки"
 
 #: src/features/migrations/text.ts
 msgid "Your Microsoft 365 organization lets only an admin consent to apps. Send your admin the link below; once they accept, sign in again."

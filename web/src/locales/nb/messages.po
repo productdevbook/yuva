@@ -48,6 +48,11 @@ msgstr "«Var denne siden nyttig?», tilbakemeldinger og diskusjoner i dokumenta
 msgid "(no subject)"
 msgstr "(ingen emne)"
 
+#. placeholder {0}: u.count
+#: src/features/home/HomeWork.tsx
+msgid "{0, plural, one {{name} · # waiting} other {{name} · # waiting}}"
+msgstr "{0, plural, one {{name} · # venter} other {{name} · # venter}}"
+
 #. placeholder {0}: msg.attachments
 #: src/features/migrations/ReviewStep.tsx
 msgid "{0, plural, one {# attachment} other {# attachments}}"
@@ -148,7 +153,6 @@ msgid "{0} active today"
 msgstr "{0} aktive i dag"
 
 #. placeholder {0}: done.length
-#. placeholder {0}: done.size
 #: src/features/inbox/ChatList.tsx
 msgid "{0} closed"
 msgstr "{0} lukket"
@@ -733,6 +737,10 @@ msgstr "{n} per dag"
 msgid "{n} archived"
 msgstr "{n} arkivert"
 
+#: src/features/inbox/ChatList.tsx
+msgid "{n} assigned to you"
+msgstr "{n} tildelt deg"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "{n} attempts"
 msgstr "{n} forsøk"
@@ -740,6 +748,10 @@ msgstr "{n} forsøk"
 #: src/features/broadcasts/Overview.tsx
 msgid "{n} broadcasts"
 msgstr "{n} utsendelser"
+
+#: src/features/inbox/ChatList.tsx
+msgid "{n} closed"
+msgstr "{n} lukket"
 
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatsPage.tsx
@@ -772,6 +784,7 @@ msgstr "{n} flyttet til innboksen"
 msgid "{n} reports"
 msgstr "{n} rapporter"
 
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "{n} snoozed, back {when}"
 msgstr "{n} utsatt, tilbake {when}"
@@ -961,7 +974,7 @@ msgstr "{percent} %, {sent} av {size}"
 msgid "{person} left the workspace by deleting their account"
 msgstr "{person} forlot arbeidsområdet ved å slette kontoen sin"
 
-#: src/features/inbox/ChatList.tsx
+#: src/components/common/ListBox.tsx
 msgid "{picked} selected"
 msgstr "{picked} valgt"
 
@@ -2520,6 +2533,7 @@ msgid "All imports"
 msgstr "Alle importer"
 
 #: src/app/Palette.tsx
+#: src/features/inbox/ChatsPage.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
@@ -2575,7 +2589,6 @@ msgstr "alle produkter"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
@@ -3127,6 +3140,10 @@ msgid "Any state"
 msgstr "Alle tilstander"
 
 #: src/features/inbox/ChatList.tsx
+msgid "Any status"
+msgstr "Hvilken som helst status"
+
+#: src/features/inbox/ChatList.tsx
 msgid "Any team"
 msgstr "Hvilket som helst team"
 
@@ -3269,6 +3286,10 @@ msgstr "Godkjenn det valgte innlegget"
 msgid "Approved"
 msgstr "Godkjent"
 
+#: src/features/mail/MailList.tsx
+msgid "archive"
+msgstr "arkiver"
+
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
@@ -3405,6 +3426,10 @@ msgid "Assign or hand to a teammate"
 msgstr "Tildel eller overlat til en kollega"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Assign the selected conversations to me"
+msgstr "Tildel de valgte samtalene til meg"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Assign the selected waiting conversation to you"
 msgstr "Tildel deg selv den valgte ventende samtalen"
 
@@ -3424,8 +3449,14 @@ msgstr "Tildel et team"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Assign to me"
 msgstr "Tildel til meg"
+
+#. placeholder {0}: SHORTCUTS.hand
+#: src/features/inbox/ChatList.tsx
+msgid "Assign to me ({0})"
+msgstr "Tildel til meg ({0})"
 
 #: src/features/conversation/messages/EventLine.tsx
 msgid "Assigned automatically to {assignee}"
@@ -3445,7 +3476,6 @@ msgid "Assigned to {assignee}, kept by name"
 msgstr "Tildelt {assignee}, beholdt med navn"
 
 #: src/features/home/HomePage.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 msgid "Assigned to you"
 msgstr "Tildelt deg"
@@ -4049,6 +4079,7 @@ msgstr "Kampanjenavn"
 #: src/app/Palette.tsx
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
@@ -4072,9 +4103,7 @@ msgstr "Kampanjenavn"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/fields/RequiredFieldsHost.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/AddProductDialog.tsx
@@ -4334,6 +4363,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "Å endre avsenderdomenet slår av DKIM-signering til du slår den på igjen for det nye domenet."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
@@ -4554,7 +4584,6 @@ msgid "Choose a workspace"
 msgstr "Velg et arbeidsområde"
 
 #: src/features/feedback/FeedbackList.tsx
-#: src/features/inbox/ChatsPage.tsx
 msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
 msgstr "Velg én fra listen, eller beveg deg med ↑ ↓ og åpne den med Enter."
 
@@ -4621,9 +4650,8 @@ msgstr "Tøm søket"
 msgid "Clear the selection"
 msgstr "Fjern utvalget"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
 msgstr "Fjern utvalget (Esc)"
 
@@ -4690,6 +4718,11 @@ msgctxt "conversation"
 msgid "Close"
 msgstr "Lukk"
 
+#. placeholder {0}: SHORTCUTS.close
+#: src/features/inbox/ChatList.tsx
+msgid "Close ({0})"
+msgstr "Lukk ({0})"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Close (E)"
 msgstr "Lukk (E)"
@@ -4739,6 +4772,14 @@ msgstr "Lukk søket"
 msgid "Close the search (Esc)"
 msgstr "Lukk søket (Esc)"
 
+#: src/features/inbox/ChatList.tsx
+msgid "close the selected"
+msgstr "lukk de valgte"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Close the selected conversations"
+msgstr "Lukk de valgte samtalene"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -4755,7 +4796,6 @@ msgstr "Lukket før et svar"
 msgid "Closed conversations"
 msgstr "Lukkede samtaler"
 
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "closed today"
 msgstr "lukket i dag"
@@ -5862,6 +5902,7 @@ msgstr "Stedfortredere"
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
+#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
@@ -7282,7 +7323,6 @@ msgstr "Alle andre nettlesere og enheter logges ut. Denne forblir innlogget."
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
 msgstr "alle produkter"
@@ -7325,10 +7365,6 @@ msgstr "Hvert nettsted og hver app viser besøkende på Hjem og i Analytics."
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
 msgstr "Alle"
-
-#: src/features/inbox/ChatsPage.tsx
-msgid "Everyone has been answered."
-msgstr "Alle har fått svar."
 
 #: src/features/broadcasts/Import.tsx
 msgid "Everyone in this file agreed to receive {listName} from {inboxName}, and I can show how and when if asked."
@@ -7629,7 +7665,6 @@ msgstr "Fylt med eksempelverdier."
 msgid "Filled with the values of {who}"
 msgstr "Fylt med verdiene til {who}"
 
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter"
 msgstr "Filter"
@@ -7664,7 +7699,6 @@ msgstr "Filtrer meldinger som denne"
 
 #: src/app/places.tsx
 #: src/features/mail/MailFiltersPage.tsx
-#: src/features/mail/MailPage.tsx
 msgid "Filters"
 msgstr "Filtre"
 
@@ -7803,7 +7837,6 @@ msgid "Fix the address or the channel's SMTP settings, then send the reply again
 msgstr "Rett adressen eller SMTP-innstillingene til kanalen, og send deretter svaret på nytt."
 
 #: src/app/places.tsx
-#: src/features/mail/MailPage.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "Folders"
@@ -10352,10 +10385,6 @@ msgstr "Postkasse"
 msgid "Mailbox address"
 msgstr "Postboksadresse"
 
-#: src/features/mail/MailPage.tsx
-msgid "Mailbox: {name}"
-msgstr "Postkasse: {name}"
-
 #: src/app/places.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -10493,8 +10522,13 @@ msgid "Mark as read"
 msgstr "Marker som lest"
 
 #: src/features/mail/MailList.tsx
-msgid "Mark as read or unread (U)"
-msgstr "Merk som lest eller ulest (U)"
+msgid "Mark as read (U)"
+msgstr "Merk som lest (U)"
+
+#. placeholder {0}: SHORTCUTS.unread
+#: src/features/inbox/ChatList.tsx
+msgid "Mark as read or unread ({0})"
+msgstr "Merk som lest eller ulest ({0})"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/docs/discussions/Bulk.tsx
@@ -10509,6 +10543,7 @@ msgstr "Marker som søppelpost"
 msgid "Mark as unread"
 msgstr "Marker som ulest"
 
+#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Mark as unread (U)"
 msgstr "Merk som ulest (U)"
@@ -10524,6 +10559,10 @@ msgstr "Marker eller fjern markering som søppelpost"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected conversations as not spam, in Spam"
 msgstr "Merk de valgte samtalene i Søppelpost som ikke søppelpost"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Mark the selected conversations as read or unread"
+msgstr "Merk de valgte samtalene som lest eller ulest"
 
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Mark the selected discussions as spam ({n})?"
@@ -10618,10 +10657,6 @@ msgstr "Median"
 #: src/features/status/IncidentDetail.tsx
 msgid "median {median}"
 msgstr "median {median}"
-
-#: src/features/inbox/ChatsPage.tsx
-msgid "median first reply"
-msgstr "median første svar"
 
 #: src/features/reports/ReportPages.tsx
 msgid "median today"
@@ -10988,9 +11023,13 @@ msgstr "Flest vurderinger, åpne tilbakemeldinger, åpne diskusjoner og ventende
 msgid "Most votes"
 msgstr "Flest stemmer"
 
-#. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+msgid "move"
+msgstr "flytt"
+
+#. placeholder {0}: ids.length
+#: src/features/inbox/ChatList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "Flytte {0} til papirkurven?"
 
@@ -11126,7 +11165,6 @@ msgstr "Flytt til forrige eller neste fase"
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
@@ -11421,7 +11459,6 @@ msgstr "Nye kontakter opprettet"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactSheet.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/ChatsPage.tsx
 msgid "New conversation"
 msgstr "Ny samtale"
@@ -11535,13 +11572,16 @@ msgstr "Ny liste"
 msgid "New macro"
 msgstr "Ny makro"
 
+#: src/features/mail/MailList.tsx
+msgid "new mail"
+msgstr "ny e-post"
+
 #: src/features/mail/Compose.tsx
 #: src/features/mail/MailPage.tsx
 msgid "New mail"
 msgstr "Ny e-post"
 
 #: src/app/places.tsx
-#: src/features/mail/MailPage.tsx
 msgid "New mailbox"
 msgstr "Ny postboks"
 
@@ -13296,6 +13336,12 @@ msgstr "Bare teamet ditt ser det."
 msgid "open"
 msgstr "åpen"
 
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "åpne"
+
 #: src/components/common/text.ts
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -14235,10 +14281,6 @@ msgstr "Velg en farge"
 msgid "Pick a contact"
 msgstr "Velg en kontakt"
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "Pick a conversation"
-msgstr "Velg en samtale"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Pick a CSV file, or drop it here"
 msgstr "Velg en CSV-fil, eller slipp den her"
@@ -14381,17 +14423,9 @@ msgstr "Velg minst ett scope."
 msgid "Pick at least one."
 msgstr "Velg minst én."
 
-#: src/features/inbox/ChatList.tsx
-msgid "Pick conversations"
-msgstr "Velg samtaler"
-
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "Velg hvert scope selv."
-
-#: src/features/mail/MailList.tsx
-msgid "Pick mails"
-msgstr "Velg e-poster"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
@@ -15040,7 +15074,6 @@ msgstr "Rekkevidde"
 msgid "Read"
 msgstr "Les"
 
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/ProductsPage.tsx
 msgctxt "mailbox access"
@@ -15051,7 +15084,6 @@ msgstr "Lese"
 msgid "Read analytics properties and their numbers"
 msgstr "Les analytics-properties og tallene deres"
 
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Read and send"
@@ -15753,7 +15785,6 @@ msgstr "Svar på e-post vi har sendt"
 msgid "Replies to this address are refused until you clear it."
 msgstr "Svar til denne adressen avvises til du fjerner den."
 
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "replies today"
 msgstr "svar i dag"
@@ -16036,10 +16067,6 @@ msgstr "Svartid, siste 24 timer"
 #: src/features/reports/TrendsReport.tsx
 msgid "Response times"
 msgstr "Svartider"
-
-#: src/features/inbox/ChatList.tsx
-msgid "Rest of the team"
-msgstr "Resten av teamet"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -16348,10 +16375,6 @@ msgstr "Tilfredshet"
 msgid "Satisfied"
 msgstr "Fornøyde"
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "satisfied · 👍 {good} 👎 {bad}"
-msgstr "fornøyde · 👍 {good} 👎 {bad}"
-
 #: src/components/common/text.ts
 msgid "Saturday"
 msgstr "Lørdag"
@@ -16623,11 +16646,14 @@ msgstr "Skjermbilder vedlagt"
 msgid "SDK"
 msgstr "SDK"
 
+#: src/features/inbox/ChatList.tsx
+msgid "search"
+msgstr "søk"
+
 #: src/app/Palette.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
-#: src/features/inbox/ChatList.tsx
 msgid "Search"
 msgstr "Søk"
 
@@ -16727,6 +16753,10 @@ msgstr "Søk etter personer, handlinger eller innstillinger"
 msgid "Search people, actions or settings…"
 msgstr "Søk etter personer, handlinger eller innstillinger …"
 
+#: src/features/inbox/ChatList.tsx
+msgid "Search people, subjects, messages"
+msgstr "Søk i personer, emner og meldinger"
+
 #: src/features/broadcasts/Report.tsx
 msgid "Search recipients"
 msgstr "Søk i mottakere"
@@ -16783,32 +16813,25 @@ msgstr "Sett {seen}"
 msgid "Seen by the monitor"
 msgstr "Sett av monitoren"
 
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "select"
+msgstr "velg"
+
 #: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "Valg"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
 msgid "Select {name}"
 msgstr "Velg {name}"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Select all"
 msgstr "Velg alle"
-
-#: src/features/inbox/ChatList.tsx
-msgid "Select conversations"
-msgstr "Velg samtaler"
-
-#: src/features/mail/MailList.tsx
-msgid "Select mails"
-msgstr "Velg e-poster"
-
-#: src/features/mail/MailList.tsx
-msgid "Select mails (X)"
-msgstr "Velg e-poster (X)"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the contact under the cursor"
@@ -16827,13 +16850,11 @@ msgid "Select the previous or next block"
 msgstr "Velg forrige eller neste blokk"
 
 #: src/components/common/Selection.tsx
-#: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Valgt: {picked}"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Selection"
 msgstr "Utvalg"
 
@@ -17492,10 +17513,6 @@ msgstr "Setter opp …"
 msgid "Settings"
 msgstr "Innstillinger"
 
-#: src/features/inbox/ChatList.tsx
-msgid "Settings ({mod},)"
-msgstr "Innstillinger ({mod},)"
-
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "Settings (JSON)"
@@ -17534,10 +17551,6 @@ msgstr "Delte postkasser for teamet ditt"
 #: src/components/common/MailboxOwnerChoice.tsx
 msgid "Shared with the team"
 msgstr "Delt med teamet"
-
-#: src/features/mail/MailPage.tsx
-msgid "Shared with you"
-msgstr "Delt med deg"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -18166,6 +18179,7 @@ msgstr "SMTP-vert"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
@@ -18365,6 +18379,10 @@ msgid "Stage"
 msgstr "Fase"
 
 #: src/features/mail/MailList.tsx
+msgid "star"
+msgstr "stjerne"
+
+#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Star"
@@ -18552,6 +18570,7 @@ msgstr "Tilstand når den er nede"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 #: src/features/migrations/MapStep.tsx
@@ -18935,7 +18954,6 @@ msgstr "Team-ID"
 
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/workspace/FocusForm.tsx
 #: src/features/setup/SetupHub.tsx
@@ -21021,7 +21039,6 @@ msgid "Tracker"
 msgstr "Tracker"
 
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/parts.tsx
 msgid "Trash"
@@ -21996,10 +22013,6 @@ msgstr "Venter"
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "Venter på grensen til {provider}; fortsetter {waiting}."
 
-#: src/features/inbox/ChatList.tsx
-msgid "Waiting for a teammate"
-msgstr "Venter på en ledig kollega"
-
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Waiting for an available teammate since {since}"
@@ -22394,10 +22407,6 @@ msgstr "Når et filter i en e-postinnboks peker ut deg for en e-post som er komm
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "Når en planlagt melding blir værende som utkast fordi den ble avvist."
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "When a new message arrives, it will be in the list."
-msgstr "Når en ny melding kommer, vises den i listen."
-
 #: src/features/settings/notifications/events.ts
 msgid "When a teammate adds you to a note with @."
 msgstr "Når en kollega legger deg til i et notat med @."
@@ -22432,6 +22441,7 @@ msgstr "Når av, kan API-nøkler bare skrive utkast, og et medlem gjennomgår og
 msgid "When should it come back?"
 msgstr "Når skal den komme tilbake?"
 
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "When should they come back?"
 msgstr "Når skal de komme tilbake?"
@@ -22907,10 +22917,6 @@ msgstr "Du kan lese denne postboksen, men ikke endre den. Eieren kan la deg send
 msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
 msgstr "Du kan gjenopprette den fra papirkurven i 30 dager, deretter slettes den for godt med meldinger og filer."
 
-#: src/features/mail/MailList.tsx
-msgid "You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
-msgstr "Du kan gjenopprette dem fra papirkurven i 30 dager, deretter slettes de for godt med meldinger og filer."
-
 #: src/features/account/ConnectPage.tsx
 msgid "You can then write, vote and follow discussions there. The team behind {host} sees your name and e-mail address when you write; other readers see only your name."
 msgstr "Du kan så skrive, stemme og følge diskusjoner der. Teamet bak {host} ser navnet og e-postadressen din når du skriver; andre lesere ser bare navnet ditt."
@@ -23121,10 +23127,6 @@ msgstr "E-postleverandørens eller din egen SMTP-server"
 #: src/features/migrations/Wizard.tsx
 msgid "Your mailbox"
 msgstr "Postboksen din"
-
-#: src/features/mail/MailPage.tsx
-msgid "Your mailboxes"
-msgstr "Postboksene dine"
 
 #: src/features/migrations/text.ts
 msgid "Your Microsoft 365 organization lets only an admin consent to apps. Send your admin the link below; once they accept, sign in again."

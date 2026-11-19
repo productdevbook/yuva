@@ -6,6 +6,8 @@ import { useSearchParams } from "react-router"
 import { toast, useConfirm } from "@/components/common"
 import { keyLabel, SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { useErrorText } from "@/components/common/text"
+import { filterButtonOn } from "@/components/common/ListBox"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,7 +16,6 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { look } from "@/features/inbox/PageFrame"
 import { toViewFilters, viewSearch } from "@/features/inbox/views/filters"
 import { canEditView, useView, useViewMutations } from "@/features/inbox/views/queries"
 import { useActiveView } from "@/features/inbox/views/useActiveView"
@@ -23,6 +24,7 @@ import { useHotkeys } from "@/hooks/use-hotkeys"
 import type { SavedView } from "@/lib/api"
 import type { ConversationFilters } from "@/lib/keys"
 import { useSession } from "@/lib/session"
+import { cn } from "@/lib/utils"
 
 export function ViewsMenu({ filters, active }: { filters: ConversationFilters; active: boolean }) {
   const { t } = useLingui()
@@ -42,7 +44,7 @@ export function ViewsMenu({ filters, active }: { filters: ConversationFilters; a
     <>
       <DropdownMenu>
         <DropdownMenuTrigger
-          render={<button type="button" className={id ? look.listChipOn : look.listChip} />}
+          render={<Button variant="outline" size="icon-sm" className={cn("bg-card", id && filterButtonOn)} />}
           aria-label={t`Saved views`}
           title={t`Saved views`}
           data-testid="views-menu"

@@ -48,6 +48,11 @@ msgstr "„Bola táto stránka užitočná?“, spätná väzba a diskusie vo va
 msgid "(no subject)"
 msgstr "(bez predmetu)"
 
+#. placeholder {0}: u.count
+#: src/features/home/HomeWork.tsx
+msgid "{0, plural, one {{name} · # waiting} other {{name} · # waiting}}"
+msgstr "{0, plural, one {{name} · čaká: #} other {{name} · čaká: #}}"
+
 #. placeholder {0}: msg.attachments
 #: src/features/migrations/ReviewStep.tsx
 msgid "{0, plural, one {# attachment} other {# attachments}}"
@@ -148,7 +153,6 @@ msgid "{0} active today"
 msgstr "{0} aktívnych dnes"
 
 #. placeholder {0}: done.length
-#. placeholder {0}: done.size
 #: src/features/inbox/ChatList.tsx
 msgid "{0} closed"
 msgstr "{0} uzavretých"
@@ -733,6 +737,10 @@ msgstr "{n} denne"
 msgid "{n} archived"
 msgstr "Archivované: {n}"
 
+#: src/features/inbox/ChatList.tsx
+msgid "{n} assigned to you"
+msgstr "Priradené vám: {n}"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "{n} attempts"
 msgstr "Pokusov: {n}"
@@ -740,6 +748,10 @@ msgstr "Pokusov: {n}"
 #: src/features/broadcasts/Overview.tsx
 msgid "{n} broadcasts"
 msgstr "{n} hromadných správ"
+
+#: src/features/inbox/ChatList.tsx
+msgid "{n} closed"
+msgstr "Zatvorené: {n}"
 
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatsPage.tsx
@@ -772,6 +784,7 @@ msgstr "Presunuté do Doručenej pošty: {n}"
 msgid "{n} reports"
 msgstr "{n} hlásení"
 
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "{n} snoozed, back {when}"
 msgstr "Odložené: {n}, vrátia sa {when}"
@@ -961,7 +974,7 @@ msgstr "{percent} %, {sent} z {size}"
 msgid "{person} left the workspace by deleting their account"
 msgstr "{person} opustil(a) pracovný priestor zmazaním účtu"
 
-#: src/features/inbox/ChatList.tsx
+#: src/components/common/ListBox.tsx
 msgid "{picked} selected"
 msgstr "Vybrané: {picked}"
 
@@ -2520,6 +2533,7 @@ msgid "All imports"
 msgstr "Všetky importy"
 
 #: src/app/Palette.tsx
+#: src/features/inbox/ChatsPage.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
@@ -2575,7 +2589,6 @@ msgstr "všetky produkty"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
@@ -3127,6 +3140,10 @@ msgid "Any state"
 msgstr "Akýkoľvek stav"
 
 #: src/features/inbox/ChatList.tsx
+msgid "Any status"
+msgstr "Akýkoľvek stav"
+
+#: src/features/inbox/ChatList.tsx
 msgid "Any team"
 msgstr "Ľubovoľný tím"
 
@@ -3269,6 +3286,10 @@ msgstr "Schváliť vybraný príspevok"
 msgid "Approved"
 msgstr "Schválené"
 
+#: src/features/mail/MailList.tsx
+msgid "archive"
+msgstr "archivovať"
+
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
@@ -3405,6 +3426,10 @@ msgid "Assign or hand to a teammate"
 msgstr "Prideliť alebo odovzdať kolegovi"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Assign the selected conversations to me"
+msgstr "Priradiť mi vybrané konverzácie"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Assign the selected waiting conversation to you"
 msgstr "Priradiť si vybranú čakajúcu konverzáciu"
 
@@ -3424,8 +3449,14 @@ msgstr "Priradiť tímu"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Assign to me"
 msgstr "Prideliť mne"
+
+#. placeholder {0}: SHORTCUTS.hand
+#: src/features/inbox/ChatList.tsx
+msgid "Assign to me ({0})"
+msgstr "Priradiť mne ({0})"
 
 #: src/features/conversation/messages/EventLine.tsx
 msgid "Assigned automatically to {assignee}"
@@ -3445,7 +3476,6 @@ msgid "Assigned to {assignee}, kept by name"
 msgstr "Pridelené používateľovi {assignee}, zachované podľa mena"
 
 #: src/features/home/HomePage.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 msgid "Assigned to you"
 msgstr "Priradené vám"
@@ -4049,6 +4079,7 @@ msgstr "Názov kampane"
 #: src/app/Palette.tsx
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
@@ -4072,9 +4103,7 @@ msgstr "Názov kampane"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/fields/RequiredFieldsHost.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/AddProductDialog.tsx
@@ -4334,6 +4363,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "Zmena odosielacej domény vypne podpisovanie DKIM, kým ho pre novú doménu znova nezapnete."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
@@ -4554,7 +4584,6 @@ msgid "Choose a workspace"
 msgstr "Vyberte pracovný priestor"
 
 #: src/features/feedback/FeedbackList.tsx
-#: src/features/inbox/ChatsPage.tsx
 msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
 msgstr "Vyberte zo zoznamu, alebo sa pohybujte šípkami ↑ ↓ a otvorte Enterom."
 
@@ -4621,9 +4650,8 @@ msgstr "Vymazať hľadanie"
 msgid "Clear the selection"
 msgstr "Zrušiť výber"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
 msgstr "Zrušiť výber (Esc)"
 
@@ -4690,6 +4718,11 @@ msgctxt "conversation"
 msgid "Close"
 msgstr "Zavrieť"
 
+#. placeholder {0}: SHORTCUTS.close
+#: src/features/inbox/ChatList.tsx
+msgid "Close ({0})"
+msgstr "Zavrieť ({0})"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Close (E)"
 msgstr "Zavrieť (E)"
@@ -4739,6 +4772,14 @@ msgstr "Zavrieť hľadanie"
 msgid "Close the search (Esc)"
 msgstr "Zavrieť hľadanie (Esc)"
 
+#: src/features/inbox/ChatList.tsx
+msgid "close the selected"
+msgstr "zavrieť vybrané"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Close the selected conversations"
+msgstr "Zavrieť vybrané konverzácie"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -4755,7 +4796,6 @@ msgstr "Zatvorené pred odpoveďou"
 msgid "Closed conversations"
 msgstr "Uzavreté konverzácie"
 
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "closed today"
 msgstr "dnes uzavreté"
@@ -5862,6 +5902,7 @@ msgstr "Zástupcovia"
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
+#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
@@ -7282,7 +7323,6 @@ msgstr "Všetky ostatné prehliadače a zariadenia budú odhlásené. Toto zosta
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
 msgstr "všetky produkty"
@@ -7325,10 +7365,6 @@ msgstr "Každý web a aplikácia zobrazuje svojich návštevníkov na Domov a v 
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
 msgstr "Všetci"
-
-#: src/features/inbox/ChatsPage.tsx
-msgid "Everyone has been answered."
-msgstr "Všetkým je odpovedané."
 
 #: src/features/broadcasts/Import.tsx
 msgid "Everyone in this file agreed to receive {listName} from {inboxName}, and I can show how and when if asked."
@@ -7629,7 +7665,6 @@ msgstr "Vyplnené ukážkovými hodnotami."
 msgid "Filled with the values of {who}"
 msgstr "Vyplnené hodnotami používateľa {who}"
 
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter"
 msgstr "Filter"
@@ -7664,7 +7699,6 @@ msgstr "Filtrovať správy ako táto"
 
 #: src/app/places.tsx
 #: src/features/mail/MailFiltersPage.tsx
-#: src/features/mail/MailPage.tsx
 msgid "Filters"
 msgstr "Filtre"
 
@@ -7803,7 +7837,6 @@ msgid "Fix the address or the channel's SMTP settings, then send the reply again
 msgstr "Opravte adresu alebo nastavenia SMTP kanála a potom odpoveď odošlite znova."
 
 #: src/app/places.tsx
-#: src/features/mail/MailPage.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "Folders"
@@ -10352,10 +10385,6 @@ msgstr "Schránka"
 msgid "Mailbox address"
 msgstr "Adresa schránky"
 
-#: src/features/mail/MailPage.tsx
-msgid "Mailbox: {name}"
-msgstr "Schránka: {name}"
-
 #: src/app/places.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -10493,8 +10522,13 @@ msgid "Mark as read"
 msgstr "Označiť ako prečítané"
 
 #: src/features/mail/MailList.tsx
-msgid "Mark as read or unread (U)"
-msgstr "Označiť ako prečítané alebo neprečítané (U)"
+msgid "Mark as read (U)"
+msgstr "Označiť ako prečítané (U)"
+
+#. placeholder {0}: SHORTCUTS.unread
+#: src/features/inbox/ChatList.tsx
+msgid "Mark as read or unread ({0})"
+msgstr "Označiť ako prečítané alebo neprečítané ({0})"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/docs/discussions/Bulk.tsx
@@ -10509,6 +10543,7 @@ msgstr "Označiť ako spam"
 msgid "Mark as unread"
 msgstr "Označiť ako neprečítané"
 
+#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Mark as unread (U)"
 msgstr "Označiť ako neprečítané (U)"
@@ -10524,6 +10559,10 @@ msgstr "Označiť alebo odznačiť ako spam"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected conversations as not spam, in Spam"
 msgstr "Označiť vybrané konverzácie v Spame ako nie je spam"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Mark the selected conversations as read or unread"
+msgstr "Označiť vybrané konverzácie ako prečítané alebo neprečítané"
 
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Mark the selected discussions as spam ({n})?"
@@ -10618,10 +10657,6 @@ msgstr "Medián"
 #: src/features/status/IncidentDetail.tsx
 msgid "median {median}"
 msgstr "medián {median}"
-
-#: src/features/inbox/ChatsPage.tsx
-msgid "median first reply"
-msgstr "medián prvej odpovede"
 
 #: src/features/reports/ReportPages.tsx
 msgid "median today"
@@ -10988,9 +11023,13 @@ msgstr "Najprv najviac hodnotení, otvorená spätná väzba, otvorené diskusie
 msgid "Most votes"
 msgstr "Najviac hlasov"
 
-#. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+msgid "move"
+msgstr "pohyb"
+
+#. placeholder {0}: ids.length
+#: src/features/inbox/ChatList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "Presunúť {0} do koša?"
 
@@ -11126,7 +11165,6 @@ msgstr "Presunúť do predchádzajúcej alebo ďalšej fázy"
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
@@ -11421,7 +11459,6 @@ msgstr "Nové kontakty vytvorené"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactSheet.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/ChatsPage.tsx
 msgid "New conversation"
 msgstr "Nová konverzácia"
@@ -11535,13 +11572,16 @@ msgstr "Nový zoznam"
 msgid "New macro"
 msgstr "Nové makro"
 
+#: src/features/mail/MailList.tsx
+msgid "new mail"
+msgstr "nový e-mail"
+
 #: src/features/mail/Compose.tsx
 #: src/features/mail/MailPage.tsx
 msgid "New mail"
 msgstr "Nový e-mail"
 
 #: src/app/places.tsx
-#: src/features/mail/MailPage.tsx
 msgid "New mailbox"
 msgstr "Nová schránka"
 
@@ -13296,6 +13336,12 @@ msgstr "Vidí to len váš tím."
 msgid "open"
 msgstr "otvorená"
 
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "otvoriť"
+
 #: src/components/common/text.ts
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -14235,10 +14281,6 @@ msgstr "Vybrať farbu"
 msgid "Pick a contact"
 msgstr "Vyberte kontakt"
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "Pick a conversation"
-msgstr "Vyberte konverzáciu"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Pick a CSV file, or drop it here"
 msgstr "Vyberte súbor CSV, alebo ho sem presuňte"
@@ -14381,17 +14423,9 @@ msgstr "Vyberte aspoň jeden rozsah."
 msgid "Pick at least one."
 msgstr "Vyberte aspoň jedno."
 
-#: src/features/inbox/ChatList.tsx
-msgid "Pick conversations"
-msgstr "Vyberte konverzácie"
-
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "Každý rozsah vyberte sami."
-
-#: src/features/mail/MailList.tsx
-msgid "Pick mails"
-msgstr "Vyberte e-maily"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
@@ -15040,7 +15074,6 @@ msgstr "Dosah"
 msgid "Read"
 msgstr "Čítať"
 
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/ProductsPage.tsx
 msgctxt "mailbox access"
@@ -15051,7 +15084,6 @@ msgstr "Čítanie"
 msgid "Read analytics properties and their numbers"
 msgstr "Čítať analytické vlastnosti a ich čísla"
 
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Read and send"
@@ -15753,7 +15785,6 @@ msgstr "Odpovede na e-maily, ktoré sme odoslali"
 msgid "Replies to this address are refused until you clear it."
 msgstr "Odpovede na túto adresu sú odmietané, kým ju nevymažete."
 
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "replies today"
 msgstr "odpovedí dnes"
@@ -16036,10 +16067,6 @@ msgstr "Čas odozvy, posledných 24 hodín"
 #: src/features/reports/TrendsReport.tsx
 msgid "Response times"
 msgstr "Časy odpovede"
-
-#: src/features/inbox/ChatList.tsx
-msgid "Rest of the team"
-msgstr "Zvyšok tímu"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -16348,10 +16375,6 @@ msgstr "Spokojnosť"
 msgid "Satisfied"
 msgstr "Spokojní"
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "satisfied · 👍 {good} 👎 {bad}"
-msgstr "spokojných · 👍 {good} 👎 {bad}"
-
 #: src/components/common/text.ts
 msgid "Saturday"
 msgstr "Sobota"
@@ -16623,11 +16646,14 @@ msgstr "Priložené snímky obrazovky"
 msgid "SDK"
 msgstr "SDK"
 
+#: src/features/inbox/ChatList.tsx
+msgid "search"
+msgstr "hľadať"
+
 #: src/app/Palette.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
-#: src/features/inbox/ChatList.tsx
 msgid "Search"
 msgstr "Hľadať"
 
@@ -16727,6 +16753,10 @@ msgstr "Hľadať ľudí, akcie alebo nastavenia"
 msgid "Search people, actions or settings…"
 msgstr "Hľadať ľudí, akcie alebo nastavenia…"
 
+#: src/features/inbox/ChatList.tsx
+msgid "Search people, subjects, messages"
+msgstr "Hľadať ľudí, predmety a správy"
+
 #: src/features/broadcasts/Report.tsx
 msgid "Search recipients"
 msgstr "Hľadať príjemcov"
@@ -16783,32 +16813,25 @@ msgstr "Videný {seen}"
 msgid "Seen by the monitor"
 msgstr "Videné monitorom"
 
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "select"
+msgstr "vybrať"
+
 #: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "Výber"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
 msgid "Select {name}"
 msgstr "Vybrať: {name}"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Select all"
 msgstr "Vybrať všetko"
-
-#: src/features/inbox/ChatList.tsx
-msgid "Select conversations"
-msgstr "Vybrať konverzácie"
-
-#: src/features/mail/MailList.tsx
-msgid "Select mails"
-msgstr "Vybrať e-maily"
-
-#: src/features/mail/MailList.tsx
-msgid "Select mails (X)"
-msgstr "Vybrať e-maily (X)"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the contact under the cursor"
@@ -16827,13 +16850,11 @@ msgid "Select the previous or next block"
 msgstr "Vybrať predchádzajúci alebo ďalší blok"
 
 #: src/components/common/Selection.tsx
-#: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Vybrané: {picked}"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Selection"
 msgstr "Výber"
 
@@ -17492,10 +17513,6 @@ msgstr "Nastavuje sa…"
 msgid "Settings"
 msgstr "Nastavenia"
 
-#: src/features/inbox/ChatList.tsx
-msgid "Settings ({mod},)"
-msgstr "Nastavenia ({mod},)"
-
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "Settings (JSON)"
@@ -17534,10 +17551,6 @@ msgstr "Zdieľané schránky pre váš tím"
 #: src/components/common/MailboxOwnerChoice.tsx
 msgid "Shared with the team"
 msgstr "Zdieľaná s tímom"
-
-#: src/features/mail/MailPage.tsx
-msgid "Shared with you"
-msgstr "Zdieľané s vami"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -18166,6 +18179,7 @@ msgstr "Hostiteľ SMTP"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
@@ -18365,6 +18379,10 @@ msgid "Stage"
 msgstr "Fáza"
 
 #: src/features/mail/MailList.tsx
+msgid "star"
+msgstr "hviezdička"
+
+#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Star"
@@ -18552,6 +18570,7 @@ msgstr "Stav pri výpadku"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 #: src/features/migrations/MapStep.tsx
@@ -18935,7 +18954,6 @@ msgstr "ID tímu"
 
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/workspace/FocusForm.tsx
 #: src/features/setup/SetupHub.tsx
@@ -21021,7 +21039,6 @@ msgid "Tracker"
 msgstr "Tracker"
 
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/parts.tsx
 msgid "Trash"
@@ -21996,10 +22013,6 @@ msgstr "Čaká"
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "Čaká sa na limit {provider}; pokračuje {waiting}."
 
-#: src/features/inbox/ChatList.tsx
-msgid "Waiting for a teammate"
-msgstr "Čaká na dostupného kolegu"
-
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Waiting for an available teammate since {since}"
@@ -22394,10 +22407,6 @@ msgstr "Keď vás filter schránky uvedie pri prijatom e-maile."
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "Keď naplánovaná správa zostane konceptom, pretože bola odmietnutá."
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "When a new message arrives, it will be in the list."
-msgstr "Keď príde nová správa, bude v zozname."
-
 #: src/features/settings/notifications/events.ts
 msgid "When a teammate adds you to a note with @."
 msgstr "Keď vás kolega pridá do poznámky cez @."
@@ -22432,6 +22441,7 @@ msgstr "Keď je vypnuté, kľúče API môžu len písať koncepty a člen ich k
 msgid "When should it come back?"
 msgstr "Kedy sa má vrátiť?"
 
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "When should they come back?"
 msgstr "Kedy sa majú vrátiť?"
@@ -22907,10 +22917,6 @@ msgstr "Túto schránku môžete čítať, ale nie meniť. Vlastník vám môže
 msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
 msgstr "Môžete ho obnoviť z koša počas 30 dní, potom bude natrvalo vymazaný aj so správami a súbormi."
 
-#: src/features/mail/MailList.tsx
-msgid "You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
-msgstr "Môžete ich obnoviť z koša počas 30 dní, potom budú natrvalo vymazané aj so správami a súbormi."
-
 #: src/features/account/ConnectPage.tsx
 msgid "You can then write, vote and follow discussions there. The team behind {host} sees your name and e-mail address when you write; other readers see only your name."
 msgstr "Potom tam môžete písať, hlasovať a sledovať diskusie. Tím za {host} vidí pri písaní vaše meno a e-mailovú adresu; ostatní čitatelia vidia len vaše meno."
@@ -23121,10 +23127,6 @@ msgstr "Server SMTP vášho poštového poskytovateľa alebo váš vlastný"
 #: src/features/migrations/Wizard.tsx
 msgid "Your mailbox"
 msgstr "Vaša schránka"
-
-#: src/features/mail/MailPage.tsx
-msgid "Your mailboxes"
-msgstr "Vaše schránky"
 
 #: src/features/migrations/text.ts
 msgid "Your Microsoft 365 organization lets only an admin consent to apps. Send your admin the link below; once they accept, sign in again."

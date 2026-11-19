@@ -165,7 +165,6 @@ export function useWaitingRows(h: Home, inboxId: string, late: ConversationListI
   const attention = (useMigrationsNeedingAttention().data ?? []).filter((m) => !inboxId || m.inbox_id === inboxId)
   const presets = usePresets().data ?? []
   const presetName = usePresetName()
-  const fmt = new Intl.NumberFormat(i18n.locale)
   const rows: Waiting[] = []
   for (const c of (late ?? []).slice(0, SHOWN)) {
     const name = text.who(c)
@@ -200,8 +199,11 @@ export function useWaitingRows(h: Home, inboxId: string, late: ConversationListI
     const byInbox = new Map(inboxes.map((i) => [i.id, i.name]))
     const parts = unassigned
       .filter((u) => byInbox.has(u.id))
-      .map((u) => `${byInbox.get(u.id)} ${fmt.format(u.count)}`)
-      .join(" · ")
+      .map((u) => {
+        const name = byInbox.get(u.id)
+        return plural(u.count, { one: `${name} · # waiting`, other: `${name} · # waiting` })
+      })
+      .join(", ")
     const one = unassigned.length === 1 ? unassigned[0]!.id : ""
     rows.push({
       key: "unassigned",

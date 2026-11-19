@@ -48,6 +48,11 @@ msgstr "“Trang này có hữu ích không?”, phản hồi và thảo luận 
 msgid "(no subject)"
 msgstr "(không có chủ đề)"
 
+#. placeholder {0}: u.count
+#: src/features/home/HomeWork.tsx
+msgid "{0, plural, one {{name} · # waiting} other {{name} · # waiting}}"
+msgstr "{0, plural, one {{name} · # đang chờ} other {{name} · # đang chờ}}"
+
 #. placeholder {0}: msg.attachments
 #: src/features/migrations/ReviewStep.tsx
 msgid "{0, plural, one {# attachment} other {# attachments}}"
@@ -148,7 +153,6 @@ msgid "{0} active today"
 msgstr "{0} hoạt động hôm nay"
 
 #. placeholder {0}: done.length
-#. placeholder {0}: done.size
 #: src/features/inbox/ChatList.tsx
 msgid "{0} closed"
 msgstr "{0} đã đóng"
@@ -733,6 +737,10 @@ msgstr "{n} mỗi ngày"
 msgid "{n} archived"
 msgstr "Đã lưu trữ {n}"
 
+#: src/features/inbox/ChatList.tsx
+msgid "{n} assigned to you"
+msgstr "Đã giao {n} cho bạn"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "{n} attempts"
 msgstr "{n} lần thử"
@@ -740,6 +748,10 @@ msgstr "{n} lần thử"
 #: src/features/broadcasts/Overview.tsx
 msgid "{n} broadcasts"
 msgstr "{n} thư hàng loạt"
+
+#: src/features/inbox/ChatList.tsx
+msgid "{n} closed"
+msgstr "Đã đóng {n}"
 
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatsPage.tsx
@@ -772,6 +784,7 @@ msgstr "Đã chuyển {n} về Hộp thư đến"
 msgid "{n} reports"
 msgstr "{n} báo cáo"
 
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "{n} snoozed, back {when}"
 msgstr "Đã tạm hoãn {n}, quay lại {when}"
@@ -961,7 +974,7 @@ msgstr "{percent}%, {sent} trên {size}"
 msgid "{person} left the workspace by deleting their account"
 msgstr "{person} đã rời không gian làm việc bằng cách xóa tài khoản"
 
-#: src/features/inbox/ChatList.tsx
+#: src/components/common/ListBox.tsx
 msgid "{picked} selected"
 msgstr "Đã chọn {picked}"
 
@@ -2520,6 +2533,7 @@ msgid "All imports"
 msgstr "Tất cả lần nhập"
 
 #: src/app/Palette.tsx
+#: src/features/inbox/ChatsPage.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
@@ -2575,7 +2589,6 @@ msgstr "tất cả sản phẩm"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
@@ -3127,6 +3140,10 @@ msgid "Any state"
 msgstr "Mọi trạng thái"
 
 #: src/features/inbox/ChatList.tsx
+msgid "Any status"
+msgstr "Mọi trạng thái"
+
+#: src/features/inbox/ChatList.tsx
 msgid "Any team"
 msgstr "Nhóm bất kỳ"
 
@@ -3269,6 +3286,10 @@ msgstr "Duyệt bài đăng đã chọn"
 msgid "Approved"
 msgstr "Đã duyệt"
 
+#: src/features/mail/MailList.tsx
+msgid "archive"
+msgstr "lưu trữ"
+
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
@@ -3405,6 +3426,10 @@ msgid "Assign or hand to a teammate"
 msgstr "Giao hoặc chuyển cho đồng nghiệp"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Assign the selected conversations to me"
+msgstr "Giao các cuộc trò chuyện đã chọn cho tôi"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Assign the selected waiting conversation to you"
 msgstr "Giao cuộc hội thoại đang chờ đã chọn cho bạn"
 
@@ -3424,8 +3449,14 @@ msgstr "Giao cho nhóm"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Assign to me"
 msgstr "Giao cho tôi"
+
+#. placeholder {0}: SHORTCUTS.hand
+#: src/features/inbox/ChatList.tsx
+msgid "Assign to me ({0})"
+msgstr "Giao cho tôi ({0})"
 
 #: src/features/conversation/messages/EventLine.tsx
 msgid "Assigned automatically to {assignee}"
@@ -3445,7 +3476,6 @@ msgid "Assigned to {assignee}, kept by name"
 msgstr "Đã giao cho {assignee}, giữ theo tên"
 
 #: src/features/home/HomePage.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 msgid "Assigned to you"
 msgstr "Đã giao cho bạn"
@@ -4049,6 +4079,7 @@ msgstr "Tên chiến dịch"
 #: src/app/Palette.tsx
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
@@ -4072,9 +4103,7 @@ msgstr "Tên chiến dịch"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/fields/RequiredFieldsHost.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/AddProductDialog.tsx
@@ -4334,6 +4363,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "Đổi tên miền gửi sẽ tắt ký DKIM cho đến khi bạn bật lại cho tên miền mới."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
@@ -4554,7 +4584,6 @@ msgid "Choose a workspace"
 msgstr "Chọn không gian làm việc"
 
 #: src/features/feedback/FeedbackList.tsx
-#: src/features/inbox/ChatsPage.tsx
 msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
 msgstr "Chọn một mục trong danh sách, hoặc di chuyển bằng ↑ ↓ và mở bằng Enter."
 
@@ -4621,9 +4650,8 @@ msgstr "Xóa tìm kiếm"
 msgid "Clear the selection"
 msgstr "Bỏ chọn tất cả"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
 msgstr "Bỏ chọn tất cả (Esc)"
 
@@ -4690,6 +4718,11 @@ msgctxt "conversation"
 msgid "Close"
 msgstr "Đóng"
 
+#. placeholder {0}: SHORTCUTS.close
+#: src/features/inbox/ChatList.tsx
+msgid "Close ({0})"
+msgstr "Đóng ({0})"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Close (E)"
 msgstr "Đóng (E)"
@@ -4739,6 +4772,14 @@ msgstr "Đóng tìm kiếm"
 msgid "Close the search (Esc)"
 msgstr "Đóng tìm kiếm (Esc)"
 
+#: src/features/inbox/ChatList.tsx
+msgid "close the selected"
+msgstr "đóng mục đã chọn"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Close the selected conversations"
+msgstr "Đóng các cuộc trò chuyện đã chọn"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -4755,7 +4796,6 @@ msgstr "Đã đóng trước khi có phản hồi"
 msgid "Closed conversations"
 msgstr "Cuộc trò chuyện đã đóng"
 
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "closed today"
 msgstr "đã đóng hôm nay"
@@ -5862,6 +5902,7 @@ msgstr "Người được ủy quyền"
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
+#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
@@ -7282,7 +7323,6 @@ msgstr "Mọi trình duyệt và thiết bị khác sẽ bị đăng xuất. Thi
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
 msgstr "mọi sản phẩm"
@@ -7325,10 +7365,6 @@ msgstr "Mọi trang web và ứng dụng hiện khách truy cập của chúng t
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
 msgstr "Mọi người"
-
-#: src/features/inbox/ChatsPage.tsx
-msgid "Everyone has been answered."
-msgstr "Mọi người đã được trả lời."
 
 #: src/features/broadcasts/Import.tsx
 msgid "Everyone in this file agreed to receive {listName} from {inboxName}, and I can show how and when if asked."
@@ -7629,7 +7665,6 @@ msgstr "Đã điền bằng giá trị mẫu."
 msgid "Filled with the values of {who}"
 msgstr "Đã điền bằng giá trị của {who}"
 
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter"
 msgstr "Bộ lọc"
@@ -7664,7 +7699,6 @@ msgstr "Lọc các tin nhắn giống thư này"
 
 #: src/app/places.tsx
 #: src/features/mail/MailFiltersPage.tsx
-#: src/features/mail/MailPage.tsx
 msgid "Filters"
 msgstr "Bộ lọc"
 
@@ -7803,7 +7837,6 @@ msgid "Fix the address or the channel's SMTP settings, then send the reply again
 msgstr "Hãy sửa địa chỉ hoặc cài đặt SMTP của kênh, rồi gửi lại phản hồi."
 
 #: src/app/places.tsx
-#: src/features/mail/MailPage.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "Folders"
@@ -10352,10 +10385,6 @@ msgstr "Hộp thư"
 msgid "Mailbox address"
 msgstr "Địa chỉ hộp thư"
 
-#: src/features/mail/MailPage.tsx
-msgid "Mailbox: {name}"
-msgstr "Hộp thư: {name}"
-
 #: src/app/places.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -10493,8 +10522,13 @@ msgid "Mark as read"
 msgstr "Đánh dấu là đã đọc"
 
 #: src/features/mail/MailList.tsx
-msgid "Mark as read or unread (U)"
-msgstr "Đánh dấu đã đọc hoặc chưa đọc (U)"
+msgid "Mark as read (U)"
+msgstr "Đánh dấu đã đọc (U)"
+
+#. placeholder {0}: SHORTCUTS.unread
+#: src/features/inbox/ChatList.tsx
+msgid "Mark as read or unread ({0})"
+msgstr "Đánh dấu đã đọc hoặc chưa đọc ({0})"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/docs/discussions/Bulk.tsx
@@ -10509,6 +10543,7 @@ msgstr "Đánh dấu là thư rác"
 msgid "Mark as unread"
 msgstr "Đánh dấu là chưa đọc"
 
+#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Mark as unread (U)"
 msgstr "Đánh dấu là chưa đọc (U)"
@@ -10524,6 +10559,10 @@ msgstr "Đánh dấu hoặc bỏ đánh dấu là thư rác"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected conversations as not spam, in Spam"
 msgstr "Đánh dấu các cuộc trò chuyện đã chọn trong Thư rác là không phải thư rác"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Mark the selected conversations as read or unread"
+msgstr "Đánh dấu các cuộc trò chuyện đã chọn là đã đọc hoặc chưa đọc"
 
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Mark the selected discussions as spam ({n})?"
@@ -10618,10 +10657,6 @@ msgstr "Trung vị"
 #: src/features/status/IncidentDetail.tsx
 msgid "median {median}"
 msgstr "trung vị {median}"
-
-#: src/features/inbox/ChatsPage.tsx
-msgid "median first reply"
-msgstr "thời gian phản hồi đầu tiên trung vị"
 
 #: src/features/reports/ReportPages.tsx
 msgid "median today"
@@ -10988,9 +11023,13 @@ msgstr "Nhiều đánh giá nhất, phản hồi đang mở, thảo luận đang
 msgid "Most votes"
 msgstr "Nhiều phiếu nhất"
 
-#. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+msgid "move"
+msgstr "di chuyển"
+
+#. placeholder {0}: ids.length
+#: src/features/inbox/ChatList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "Chuyển {0} vào Thùng rác?"
 
@@ -11126,7 +11165,6 @@ msgstr "Chuyển sang giai đoạn trước hoặc sau"
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
@@ -11421,7 +11459,6 @@ msgstr "Đã tạo liên hệ mới"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactSheet.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/ChatsPage.tsx
 msgid "New conversation"
 msgstr "Cuộc trò chuyện mới"
@@ -11535,13 +11572,16 @@ msgstr "Danh sách mới"
 msgid "New macro"
 msgstr "Macro mới"
 
+#: src/features/mail/MailList.tsx
+msgid "new mail"
+msgstr "thư mới"
+
 #: src/features/mail/Compose.tsx
 #: src/features/mail/MailPage.tsx
 msgid "New mail"
 msgstr "Thư mới"
 
 #: src/app/places.tsx
-#: src/features/mail/MailPage.tsx
 msgid "New mailbox"
 msgstr "Hộp thư mới"
 
@@ -13296,6 +13336,12 @@ msgstr "Chỉ nhóm của bạn thấy."
 msgid "open"
 msgstr "đang mở"
 
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "mở"
+
 #: src/components/common/text.ts
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -14235,10 +14281,6 @@ msgstr "Chọn màu"
 msgid "Pick a contact"
 msgstr "Chọn một liên hệ"
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "Pick a conversation"
-msgstr "Chọn một cuộc trò chuyện"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Pick a CSV file, or drop it here"
 msgstr "Chọn một tệp CSV, hoặc thả vào đây"
@@ -14381,17 +14423,9 @@ msgstr "Hãy chọn ít nhất một phạm vi."
 msgid "Pick at least one."
 msgstr "Hãy chọn ít nhất một."
 
-#: src/features/inbox/ChatList.tsx
-msgid "Pick conversations"
-msgstr "Chọn cuộc trò chuyện"
-
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "Tự chọn từng phạm vi."
-
-#: src/features/mail/MailList.tsx
-msgid "Pick mails"
-msgstr "Chọn thư"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
@@ -15040,7 +15074,6 @@ msgstr "Tiếp cận"
 msgid "Read"
 msgstr "Đọc"
 
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/ProductsPage.tsx
 msgctxt "mailbox access"
@@ -15051,7 +15084,6 @@ msgstr "Đọc"
 msgid "Read analytics properties and their numbers"
 msgstr "Đọc thuộc tính phân tích và số liệu của chúng"
 
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Read and send"
@@ -15753,7 +15785,6 @@ msgstr "Phản hồi cho thư chúng tôi đã gửi"
 msgid "Replies to this address are refused until you clear it."
 msgstr "Phản hồi gửi tới địa chỉ này bị từ chối cho đến khi bạn xóa nó."
 
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "replies today"
 msgstr "phản hồi hôm nay"
@@ -16036,10 +16067,6 @@ msgstr "Thời gian phản hồi, 24 giờ qua"
 #: src/features/reports/TrendsReport.tsx
 msgid "Response times"
 msgstr "Thời gian phản hồi"
-
-#: src/features/inbox/ChatList.tsx
-msgid "Rest of the team"
-msgstr "Những người còn lại trong nhóm"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -16348,10 +16375,6 @@ msgstr "Mức hài lòng"
 msgid "Satisfied"
 msgstr "Hài lòng"
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "satisfied · 👍 {good} 👎 {bad}"
-msgstr "hài lòng · 👍 {good} 👎 {bad}"
-
 #: src/components/common/text.ts
 msgid "Saturday"
 msgstr "Thứ Bảy"
@@ -16623,11 +16646,14 @@ msgstr "Đã đính kèm ảnh chụp màn hình"
 msgid "SDK"
 msgstr "SDK"
 
+#: src/features/inbox/ChatList.tsx
+msgid "search"
+msgstr "tìm kiếm"
+
 #: src/app/Palette.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
-#: src/features/inbox/ChatList.tsx
 msgid "Search"
 msgstr "Tìm kiếm"
 
@@ -16727,6 +16753,10 @@ msgstr "Tìm người, thao tác hoặc cài đặt"
 msgid "Search people, actions or settings…"
 msgstr "Tìm người, thao tác hoặc cài đặt…"
 
+#: src/features/inbox/ChatList.tsx
+msgid "Search people, subjects, messages"
+msgstr "Tìm người, tiêu đề và tin nhắn"
+
 #: src/features/broadcasts/Report.tsx
 msgid "Search recipients"
 msgstr "Tìm người nhận"
@@ -16783,32 +16813,25 @@ msgstr "Thấy {seen}"
 msgid "Seen by the monitor"
 msgstr "Được trình giám sát thấy"
 
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "select"
+msgstr "chọn"
+
 #: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "Lựa chọn"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
 msgid "Select {name}"
 msgstr "Chọn {name}"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Select all"
 msgstr "Chọn tất cả"
-
-#: src/features/inbox/ChatList.tsx
-msgid "Select conversations"
-msgstr "Chọn cuộc trò chuyện"
-
-#: src/features/mail/MailList.tsx
-msgid "Select mails"
-msgstr "Chọn thư"
-
-#: src/features/mail/MailList.tsx
-msgid "Select mails (X)"
-msgstr "Chọn thư (X)"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the contact under the cursor"
@@ -16827,13 +16850,11 @@ msgid "Select the previous or next block"
 msgstr "Chọn khối trước hoặc sau"
 
 #: src/components/common/Selection.tsx
-#: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Đã chọn: {picked}"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Selection"
 msgstr "Lựa chọn"
 
@@ -17492,10 +17513,6 @@ msgstr "Đang thiết lập…"
 msgid "Settings"
 msgstr "Cài đặt"
 
-#: src/features/inbox/ChatList.tsx
-msgid "Settings ({mod},)"
-msgstr "Cài đặt ({mod},)"
-
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "Settings (JSON)"
@@ -17534,10 +17551,6 @@ msgstr "Hộp thư dùng chung cho nhóm của bạn"
 #: src/components/common/MailboxOwnerChoice.tsx
 msgid "Shared with the team"
 msgstr "Chia sẻ với nhóm"
-
-#: src/features/mail/MailPage.tsx
-msgid "Shared with you"
-msgstr "Chia sẻ với bạn"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -18166,6 +18179,7 @@ msgstr "Host SMTP"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
@@ -18365,6 +18379,10 @@ msgid "Stage"
 msgstr "Giai đoạn"
 
 #: src/features/mail/MailList.tsx
+msgid "star"
+msgstr "gắn sao"
+
+#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Star"
@@ -18552,6 +18570,7 @@ msgstr "Trạng thái khi ngừng"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 #: src/features/migrations/MapStep.tsx
@@ -18935,7 +18954,6 @@ msgstr "ID nhóm"
 
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/workspace/FocusForm.tsx
 #: src/features/setup/SetupHub.tsx
@@ -21021,7 +21039,6 @@ msgid "Tracker"
 msgstr "Tracker"
 
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/parts.tsx
 msgid "Trash"
@@ -21996,10 +22013,6 @@ msgstr "Đang chờ"
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "Đang chờ giới hạn của {provider}; tiếp tục lúc {waiting}."
 
-#: src/features/inbox/ChatList.tsx
-msgid "Waiting for a teammate"
-msgstr "Đang chờ đồng nghiệp rảnh"
-
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Waiting for an available teammate since {since}"
@@ -22394,10 +22407,6 @@ msgstr "Khi bộ lọc của hộp thư nêu tên bạn cho một thư đã đ�
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "Khi tin nhắn đã hẹn giờ vẫn là thư nháp vì bị từ chối."
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "When a new message arrives, it will be in the list."
-msgstr "Khi có tin nhắn mới đến, nó sẽ nằm trong danh sách."
-
 #: src/features/settings/notifications/events.ts
 msgid "When a teammate adds you to a note with @."
 msgstr "Khi đồng nghiệp thêm bạn vào ghi chú bằng @."
@@ -22432,6 +22441,7 @@ msgstr "Khi tắt, khóa API chỉ viết được bản nháp, và một thành
 msgid "When should it come back?"
 msgstr "Khi nào nên quay lại?"
 
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "When should they come back?"
 msgstr "Khi nào chúng nên quay lại?"
@@ -22907,10 +22917,6 @@ msgstr "Bạn có thể đọc hộp thư này nhưng không thể thay đổi. 
 msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
 msgstr "Bạn có thể khôi phục từ Thùng rác trong 30 ngày, sau đó thư bị xóa vĩnh viễn cùng tin nhắn và tệp."
 
-#: src/features/mail/MailList.tsx
-msgid "You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
-msgstr "Bạn có thể khôi phục chúng từ Thùng rác trong 30 ngày, sau đó chúng bị xóa vĩnh viễn cùng tin nhắn và tệp."
-
 #: src/features/account/ConnectPage.tsx
 msgid "You can then write, vote and follow discussions there. The team behind {host} sees your name and e-mail address when you write; other readers see only your name."
 msgstr "Sau đó bạn có thể viết, bình chọn và theo dõi các cuộc thảo luận ở đó. Nhóm đứng sau {host} thấy tên và địa chỉ email của bạn khi bạn viết; những người đọc khác chỉ thấy tên."
@@ -23120,10 +23126,6 @@ msgstr "Nhà cung cấp thư của bạn hoặc máy chủ SMTP của chính b�
 
 #: src/features/migrations/Wizard.tsx
 msgid "Your mailbox"
-msgstr "Hộp thư của bạn"
-
-#: src/features/mail/MailPage.tsx
-msgid "Your mailboxes"
 msgstr "Hộp thư của bạn"
 
 #: src/features/migrations/text.ts

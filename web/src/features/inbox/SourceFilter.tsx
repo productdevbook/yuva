@@ -1,14 +1,15 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { CheckIcon, ChevronDownIcon, ListFilterIcon, MegaphoneIcon } from "lucide-react"
+import { CheckIcon, ListFilterIcon, MegaphoneIcon } from "lucide-react"
 import { useCallback, useMemo, useSyncExternalStore } from "react"
 import { useSearchParams } from "react-router"
 
 import { hostOf, SOURCE_FILTERS, SourceIcon, useSlaText, useSourceText } from "@/components/common"
+import { filterButton, filterButtonOn } from "@/components/common/ListBox"
+import { Button } from "@/components/ui/button"
 import { popupClass } from "@/components/ui/dropdown-menu"
 import { Item } from "@/components/ui/item"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Separator } from "@/components/ui/separator"
-import { look } from "@/features/inbox/PageFrame"
 import { FieldFilterSection, fieldFilterText } from "@/features/fields/FieldFilter"
 import { useConversationFieldList } from "@/features/fields/ConversationFields"
 import { useBroadcasts } from "@/features/broadcasts/broadcastQueries"
@@ -234,11 +235,11 @@ function BroadcastChoices({
 export function SourceFilter({
   inboxId,
   onChange,
-  placeholder,
+  types = true,
 }: {
   inboxId: string
   onChange: () => void
-  placeholder?: React.ReactNode
+  types?: boolean
 }) {
   const { t } = useLingui()
   const text = useSourceText()
@@ -252,11 +253,11 @@ export function SourceFilter({
     set(next)
     onChange()
   }
-  const active = !!origin || !!v.source || !!v.site || !!v.broadcast || !!v.field || !!v.sla
+  const active = !!origin || (types && !!v.source) || !!v.site || !!v.broadcast || !!v.field || !!v.sla
   const picked = v.field && fields.find((f) => f.key === v.field?.key)
   const summary = [
     origin && originText[origin],
-    v.source && text[v.source],
+    types && v.source && text[v.source],
     v.site && hostOf(v.site),
     v.broadcast?.name,
     picked && v.field && fieldFilterText(picked, v.field.value, t`Yes`, t`No`),
@@ -268,51 +269,51 @@ export function SourceFilter({
     <Popover>
       <PopoverTrigger
         render={
-          <button
-            type="button"
-            className={
-              placeholder
-                ? cn(active ? look.listChipOn : look.listChip, "min-w-0 max-w-44")
-                : cn(
-                    "inline-flex h-8 max-w-40 min-w-0 shrink items-center gap-1.5 rounded-lg border px-2.5 text-small transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                    active
-                      ? "border-brand/40 bg-brand-wash font-medium text-brand"
-                      : "border-dashed border-input text-muted-foreground hover:border-faint hover:text-foreground"
-                  )
-            }
+          <Button
+            variant="outline"
+            size="sm"
+            className={cn(filterButton, "max-w-56 min-w-0 shrink bg-card", active && filterButtonOn)}
           />
         }
         aria-label={t`Filter by type, site, broadcast and SLA`}
         title={t`Filter by type, site, broadcast and SLA`}
         data-testid="source-filter"
       >
-        <ListFilterIcon className="size-3.5 shrink-0" />
-        <span className="truncate">{active ? summary : (placeholder ?? <Trans>Filter</Trans>)}</span>
-        {placeholder && <ChevronDownIcon className="size-3.5 shrink-0 text-faint" />}
+        <ListFilterIcon className="shrink-0" />
+        <span className="truncate">{active ? summary : <Trans>Filter</Trans>}</span>
       </PopoverTrigger>
       <PopoverContent
         align="start"
         sideOffset={6}
         className={cn(
           popupClass,
-          "max-h-[70svh] w-[280px] max-w-[calc(100vw-32px)] gap-0 overflow-y-auto rounded-xl p-1.5 ring-0"
+          "max-h-[70svh] w-[280px] max-w-[calc(100vw-32px)] gap-0 overflow-y-auto rounded-xl p-1.5 ring-0 [&>[data-slot=separator]:first-child]:hidden"
         )}
         data-testid="source-filter-popup"
       >
-        <p className="px-2.5 pt-1.5 pb-1 text-caption font-medium text-faint">
-          <Trans>Type</Trans>
-        </p>
-        <Choice active={!v.source} onClick={() => update({ ...v, source: undefined })} testId="source-any">
-          <span className="flex-1 text-start">
-            <Trans>Every type</Trans>
-          </span>
-        </Choice>
-        {SOURCE_FILTERS.map((s) => (
-          <Choice key={s} active={v.source === s} onClick={() => update({ ...v, source: s })} testId={`source-${s}`}>
-            <SourceIcon source={s} className="size-4 text-muted-foreground" />
-            <span className="flex-1 text-start">{text[s]}</span>
-          </Choice>
-        ))}
+        {types && (
+          <>
+            <p className="px-2.5 pt-1.5 pb-1 text-caption font-medium text-faint">
+              <Trans>Type</Trans>
+            </p>
+            <Choice active={!v.source} onClick={() => update({ ...v, source: undefined })} testId="source-any">
+              <span className="flex-1 text-start">
+                <Trans>Every type</Trans>
+              </span>
+            </Choice>
+            {SOURCE_FILTERS.map((s) => (
+              <Choice
+                key={s}
+                active={v.source === s}
+                onClick={() => update({ ...v, source: s })}
+                testId={`source-${s}`}
+              >
+                <SourceIcon source={s} className="size-4 text-muted-foreground" />
+                <span className="flex-1 text-start">{text[s]}</span>
+              </Choice>
+            ))}
+          </>
+        )}
         {sites.length > 0 && (
           <>
             <Separator className="mx-1.5 my-1 w-auto" />

@@ -9,7 +9,6 @@ import { SidebarProvider } from "@/components/ui/sidebar"
 import { ContactsColumn } from "@/features/contact/ContactsColumn"
 import { FeedbackList } from "@/features/feedback/FeedbackList"
 import { AssistantsPanel } from "@/features/inbox/AssistantsPage"
-import { ChatList, rememberChip, rememberInbox, useRememberedChip, useRememberedInbox } from "@/features/inbox/ChatList"
 import { setRailView } from "@/features/inbox/railView"
 import { MentionsPanel } from "@/features/inbox/SidePanels"
 import { useIsPhone } from "@/hooks/use-media-query"
@@ -19,35 +18,12 @@ import { cn } from "@/lib/utils"
 const HelpColumn = lazy(() => import("@/features/help/HelpColumn"))
 const AnalyticsColumn = lazy(() => import("@/features/analytics/AnalyticsColumn"))
 
-const COLUMNS: Section[] = ["conversations", "mentions", "assistants", "feedback", "contacts", "knowledge", "analytics"]
-
-function PhoneList() {
-  const navigate = useNavigate()
-  const { search } = useLocation()
-  const currentId = useMatch("/conversations/:conversationId")?.params.conversationId ?? null
-  const open = useCallback((id: string) => navigate(`/conversations/${id}${search}`), [navigate, search])
-  const chip = useRememberedChip()
-  const inbox = useRememberedInbox()
-  return (
-    <div className="flex min-h-0 flex-1 flex-col">
-      <ChatList
-        currentId={currentId}
-        onOpen={open}
-        chip={chip}
-        onChip={rememberChip}
-        inbox={inbox}
-        onInbox={rememberInbox}
-        active
-      />
-    </div>
-  )
-}
+const COLUMNS: Section[] = ["mentions", "assistants", "feedback", "contacts", "knowledge", "analytics"]
 
 function PhoneColumn({ section }: { section: Section }) {
   const navigate = useNavigate()
   const feedbackId = useMatch("/feedback/:conversationId")?.params.conversationId ?? null
   const openFeedback = useCallback((id: string) => navigate(`/feedback/${id}`), [navigate])
-  if (section === "conversations") return <PhoneList />
   if (section === "feedback") return <FeedbackList currentId={feedbackId} onOpen={openFeedback} />
   if (section === "mentions") return <MentionsPanel />
   if (section === "assistants") return <AssistantsPanel />

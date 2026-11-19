@@ -2,41 +2,30 @@ import { Trans, useLingui } from "@lingui/react/macro"
 import {
   BookUserIcon,
   BotIcon,
-  CheckIcon,
   ChevronDownIcon,
   ClockIcon,
-  MegaphoneIcon,
-  PinIcon,
   CommandIcon,
-  EllipsisVerticalIcon,
+  EllipsisIcon,
   InboxIcon,
   KeyboardIcon,
-  ListChecksIcon,
-  MessageSquarePlusIcon,
+  MegaphoneIcon,
+  PinIcon,
   ReplyIcon,
   SearchIcon,
   SettingsIcon,
-  SquareCheckBigIcon,
   Trash2Icon,
   XIcon,
 } from "lucide-react"
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react"
-import { Link, useNavigate } from "react-router"
+import { useNavigate } from "react-router"
 
 import { SearchError, isSearchError } from "@/components/common/SearchError"
 import { useShell } from "@/app/shell"
-import { TeamMenu } from "@/app/TeamMenu"
 import {
-  ContactAvatar,
   Dot,
   ErrorLine,
-  FlatEmpty,
-  FlatRow,
-  FlatTag,
   FlatTime,
-  ListGroup,
   ImportedChip,
-  isVisitor,
   Kbd,
   MemberAvatar,
   placeOf,
@@ -45,21 +34,43 @@ import {
   toast,
   useContactName,
   useSourceText,
-  VisitorAvatar,
 } from "@/components/common"
+import {
+  boxRowClass,
+  BulkBar,
+  bulkButton,
+  FilterRow,
+  filterButton,
+  filterButtonOn,
+  KeyHints,
+  ListBox,
+  ListBoxEmpty,
+  ListBoxSkeleton,
+  RowCheckbox,
+} from "@/components/common/ListBox"
 import { keyLabel, mod, SHORTCUTS } from "@/components/common/ShortcutSheet"
-import { formatDateTime, formatDuration, formatShort, useErrorText, usePreviewText } from "@/components/common/text"
+import {
+  formatDateTime,
+  formatDuration,
+  formatShort,
+  useEnumText,
+  useErrorText,
+  usePreviewText,
+} from "@/components/common/text"
 import { useLatest } from "@/hooks/use-latest"
 import { useNow } from "@/hooks/use-now"
 import { useConfirm } from "@/components/common/ConfirmDialog"
 import { Alert } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
+import { ButtonGroup } from "@/components/ui/button-group"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuCheckboxItem,
+  DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
@@ -70,10 +81,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group"
-import { Skeleton } from "@/components/ui/skeleton"
+import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { NewConversationDialog } from "@/features/contact/ContactDetails"
 import { ContactSearch } from "@/features/contact/ContactSearch"
 import { useDraftText } from "@/features/conversation/actions"
+import { useSnoozeTimes } from "@/features/conversation/HeaderActions"
 import { TrashLine } from "@/features/conversation/Trash"
 import { TrashStrip, useTrashTools } from "@/features/conversation/TrashBulk"
 import { useLiveIds } from "@/features/conversation/liveness"
@@ -84,8 +97,6 @@ import { useListCursor } from "@/features/inbox/listCursor"
 import { LinkIncidentDialog } from "@/features/status/LinkIncidentDialog"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { ImportBanner } from "@/features/migrations/ImportBanner"
-import { InboxChip } from "@/features/inbox/InboxPicker"
-import { ViewChips } from "@/features/inbox/ListHead"
 import { useActiveView } from "@/features/inbox/views/useActiveView"
 import { ViewsMenu } from "@/features/inbox/views/ViewsMenu"
 import { ProductTag } from "@/features/inbox/ProductTag"
@@ -94,20 +105,14 @@ import { useListActions } from "@/features/inbox/memberState"
 import { setListQuery, useListSearch } from "@/features/inbox/listSearch"
 import { BulkFailuresDialog } from "@/features/fields/BulkFailures"
 import { SourceFilter, sourceFilters, useOpenOnly, useOrigin, useSourceFilter } from "@/features/inbox/SourceFilter"
-import {
-  useBulkTeam,
-  useBulkUpdateConversations,
-  useConversations,
-  useCounts,
-  useLoadedCount,
-} from "@/features/inbox/queries"
-import type { ConversationBulkFailure, Contact, ConversationListItem, ConversationStatus } from "@/lib/api"
+import { useBulkTeam, useBulkUpdateConversations, useConversations, useCounts } from "@/features/inbox/queries"
+import type { ChannelKind, ConversationBulkFailure, Contact, ConversationListItem, ConversationStatus } from "@/lib/api"
 import type { ConversationFilters } from "@/lib/keys"
 import { useSetAvailability } from "@/lib/availability"
 import { useSession } from "@/lib/session"
 import { useTyping } from "@/lib/typing"
 import { cn } from "@/lib/utils"
-import { useChannelMap, useInboxes, useLabels, useMemberMap, useMyTeams, useTeams } from "@/lib/workspace"
+import { useChannelMap, useLabels, useMemberMap, useMyTeams, useTeams } from "@/lib/workspace"
 
 export type Chip = "waiting" | "all" | "mine" | "teams" | "unassigned" | "snoozed" | "done" | "spam" | "trash"
 export const PAGE_CHIPS: Chip[] = ["waiting", "all", "mine", "teams", "unassigned", "snoozed", "done"]
@@ -240,315 +245,6 @@ function Preview({
   )
 }
 
-function Row({
-  c,
-  current,
-  cursor,
-  live,
-  selecting,
-  checked,
-  onOpen,
-}: {
-  c: ConversationListItem
-  current: boolean
-  cursor: boolean
-  live: boolean
-  selecting: boolean
-  checked: boolean
-  onOpen: (range: boolean) => void
-}) {
-  const { t, i18n } = useLingui()
-  const channel = useChannelMap().get(c.channel_id ?? "")
-  const members = useMemberMap()
-  const assignee = c.assignee_id ? members.get(c.assignee_id) : undefined
-  const contactName = useContactName()
-  const visitor = isVisitor(c.contact.name, c.contact.email)
-  const name = contactName(c, channel, c.contact.name, c.contact.email)
-  const source = sourceOf(c, channel)
-  const sourceText = useSourceText()
-  const place = placeOf(c, channel)
-  const rating = currentRating(c)
-  const labels = useLabels().data ?? []
-  const chips = labels.filter((l) => c.labels.includes(l.id))
-  const waiting = isWaiting(c)
-  const now = useNow(60_000)
-  const subject = c.subject.trim()
-  const since = c.assign_waiting_since ? formatDateTime(c.assign_waiting_since, i18n.locale) : ""
-  const urgent = c.priority === "urgent"
-  return (
-    <button
-      type="button"
-      onClick={(e) => onOpen(e.shiftKey)}
-      className={cn(
-        "group relative mx-2 flex w-[calc(100%-1rem)] items-start gap-3 rounded-xl px-2.5 py-2.5 text-start outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
-        current ? "bg-card shadow-[0_1px_2px_rgb(0_0_0/0.05),0_0_0_1px_var(--border)]" : "hover:bg-muted/60",
-        cursor && !current && "bg-muted/60",
-        (current || cursor) &&
-          "before:absolute before:inset-y-3 before:-start-2 before:w-[3px] before:rounded-e-[3px] before:bg-brand",
-        checked && "bg-brand/7 shadow-[0_0_0_1px_color-mix(in_srgb,var(--brand)_30%,var(--border))]"
-      )}
-      aria-current={current || undefined}
-      aria-pressed={selecting ? checked : undefined}
-      data-checked={checked || undefined}
-      data-testid="list-row"
-      data-conversation-id={c.id}
-      data-unread={c.unread || undefined}
-      data-pinned={c.pinned_at ? true : undefined}
-    >
-      {selecting && (
-        <span
-          aria-hidden
-          className={cn(
-            "mt-2.5 grid size-[18px] shrink-0 place-items-center rounded-[5px] border-[1.5px]",
-            checked ? "border-foreground bg-foreground text-background" : "border-input bg-card"
-          )}
-          data-testid="row-check"
-        >
-          {checked && <CheckIcon className="size-3.5" strokeWidth={3} />}
-        </span>
-      )}
-      <span className="relative shrink-0">
-        {visitor ? (
-          <VisitorAvatar className="size-[38px]" />
-        ) : (
-          <ContactAvatar id={c.contact.id} name={name} className="size-[38px] font-semibold" />
-        )}
-        {live && (
-          <span
-            className="absolute -end-0.5 bottom-0 size-3 rounded-full border-2 border-background bg-success"
-            title={t`Online now`}
-            data-testid="row-live"
-          />
-        )}
-      </span>
-      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-        <span className="flex min-w-0 items-center gap-1.5">
-          {c.pinned_at && (
-            <PinIcon className="size-3 shrink-0 rotate-45 text-faint" aria-label={t`Pinned`} data-testid="row-pinned" />
-          )}
-          <span
-            className={cn(
-              "min-w-0 truncate text-body",
-              c.unread ? "font-semibold text-foreground" : "font-medium text-foreground/80"
-            )}
-          >
-            {name}
-          </span>
-          {c.unread && (
-            <span className="size-2 shrink-0 rounded-full bg-brand" aria-label={t`Unread`} data-testid="row-unread" />
-          )}
-          {urgent && (
-            <span className="shrink-0 rounded-full bg-destructive/10 px-1.5 text-[11px] leading-[18px] font-semibold text-destructive">
-              <Trans>Urgent</Trans>
-            </span>
-          )}
-        </span>
-        <span className="flex min-w-0 items-center gap-1.5 text-body text-muted-foreground">
-          {c.trashed_at && <Trash2Icon className="size-3.5 shrink-0 text-faint" aria-label={t`Trash`} />}
-          {c.status === "snoozed" && <ClockIcon className="size-3.5 shrink-0 text-faint" aria-label={t`Snoozed`} />}
-          <span className="flex min-w-0 flex-1">
-            <Preview
-              c={c}
-              current={current}
-              subject={subject}
-              receipts={channel?.kind === "chat" || channel?.kind === "app"}
-            />
-          </span>
-        </span>
-        {c.trashed_at && <TrashLine c={c} />}
-        <span className="mt-0.5 flex min-w-0 items-center gap-1.5 text-caption" data-testid="row-source">
-          <ProductTag id={c.inbox_id} />
-          {c.imported && <ImportedChip at={c.imported.at} />}
-          {source && <span className="shrink-0 text-faint">{sourceText[source]}</span>}
-          {c.broadcast_id && (
-            <MegaphoneIcon
-              className="size-3.5 shrink-0 text-brand"
-              aria-label={t`Reply to a broadcast`}
-              data-testid="row-broadcast"
-            />
-          )}
-          {place && <span className="min-w-0 truncate text-faint">{place}</span>}
-          {chips.map((l) => (
-            <LabelTag key={l.id} name={l.name} />
-          ))}
-          <span className="flex-1" />
-          {c.sla && <SlaBadge sla={c.sla} />}
-          {rating && <RatingMark rating={rating.rating} comment={rating.comment} />}
-          {!assignee && c.assign_waiting_since && (
-            <span
-              className="inline-flex shrink-0 items-center gap-1 text-warning"
-              title={t`Waiting for an available teammate since ${since}`}
-              data-testid="row-assign-waiting"
-            >
-              <ClockIcon className="size-3" />
-              <Trans>Waiting for a teammate</Trans>
-            </span>
-          )}
-        </span>
-      </span>
-      <span className="flex shrink-0 flex-col items-end gap-1.5 pt-px">
-        <time
-          className={cn(
-            "font-mono text-[12px] whitespace-nowrap tabular-nums",
-            waiting ? "font-medium text-brand" : "text-faint"
-          )}
-          dateTime={c.last_activity_at}
-        >
-          {waiting
-            ? formatDuration(Math.max(60, (now - Date.parse(c.last_activity_at)) / 1000), i18n.locale)
-            : formatShort(c.last_activity_at, i18n.locale)}
-        </time>
-        {assignee && (
-          <span title={t`Assigned to ${assignee.name || assignee.email}`} data-testid="row-assignee">
-            <MemberAvatar name={assignee.name || assignee.email} className="size-5 text-[9px]" />
-          </span>
-        )}
-      </span>
-    </button>
-  )
-}
-
-function FlatChatRow({
-  c,
-  current,
-  cursor,
-  live,
-  selecting,
-  checked,
-  onOpen,
-}: {
-  c: ConversationListItem
-  current: boolean
-  cursor: boolean
-  live: boolean
-  selecting: boolean
-  checked: boolean
-  onOpen: (range: boolean) => void
-}) {
-  const { t, i18n } = useLingui()
-  const channel = useChannelMap().get(c.channel_id ?? "")
-  const members = useMemberMap()
-  const inbox = useInboxes().data?.find((i) => i.id === c.inbox_id)
-  const assignee = c.assignee_id ? members.get(c.assignee_id) : undefined
-  const contactName = useContactName()
-  const name = contactName(c, channel, c.contact.name, c.contact.email)
-  const source = sourceOf(c, channel)
-  const sourceText = useSourceText()
-  const rating = currentRating(c)
-  const labels = useLabels().data ?? []
-  const chips = labels.filter((l) => c.labels.includes(l.id))
-  const waiting = isWaiting(c)
-  const now = useNow(60_000)
-  const subject = c.subject.trim()
-  const since = c.assign_waiting_since ? formatDateTime(c.assign_waiting_since, i18n.locale) : ""
-  return (
-    <FlatRow
-      color={inbox?.branding.color}
-      current={current}
-      cursor={cursor}
-      checked={checked}
-      button={{
-        onClick: (e) => onOpen(e.shiftKey),
-        "aria-current": current || undefined,
-        "aria-pressed": selecting ? checked : undefined,
-        "data-checked": checked || undefined,
-        "data-testid": "list-row",
-        "data-conversation-id": c.id,
-        "data-unread": c.unread || undefined,
-        "data-pinned": c.pinned_at ? true : undefined,
-        title: inbox?.name,
-      }}
-      lead={
-        selecting ? (
-          <span
-            aria-hidden
-            className={cn(
-              "grid size-[18px] place-items-center rounded-[5px] border-[1.5px]",
-              checked ? "border-foreground bg-foreground text-background" : "border-input bg-card"
-            )}
-            data-testid="row-check"
-          >
-            {checked && <CheckIcon className="size-3.5" strokeWidth={3} />}
-          </span>
-        ) : undefined
-      }
-      who={
-        <>
-          {c.pinned_at && (
-            <PinIcon className="size-3 shrink-0 rotate-45 text-faint" aria-label={t`Pinned`} data-testid="row-pinned" />
-          )}
-          <span className={cn("min-w-0 truncate", c.unread && "font-semibold text-foreground")}>{name}</span>
-          {live && (
-            <span className="size-2 shrink-0 rounded-full bg-success" title={t`Online now`} data-testid="row-live" />
-          )}
-        </>
-      }
-      end={
-        <>
-          {c.priority === "urgent" && (
-            <span className="shrink-0 rounded-full bg-destructive/10 px-1.5 text-[11px] leading-[18px] font-semibold text-destructive">
-              <Trans>Urgent</Trans>
-            </span>
-          )}
-          <span className="flex min-w-0 items-center gap-1.5 @max-3xl/list:hidden" data-testid="row-source">
-            {c.imported && <ImportedChip at={c.imported.at} />}
-            {c.broadcast_id && (
-              <MegaphoneIcon
-                className="size-3.5 shrink-0 text-brand"
-                aria-label={t`Reply to a broadcast`}
-                data-testid="row-broadcast"
-              />
-            )}
-            {chips.slice(0, 2).map((l) => (
-              <LabelTag key={l.id} name={l.name} />
-            ))}
-            {source && <FlatTag>{sourceText[source]}</FlatTag>}
-          </span>
-          {c.sla && <SlaBadge sla={c.sla} />}
-          {rating && <RatingMark rating={rating.rating} comment={rating.comment} />}
-          {!assignee && c.assign_waiting_since && (
-            <ClockIcon
-              className="size-3.5 shrink-0 text-warning"
-              aria-label={t`Waiting for an available teammate since ${since}`}
-              data-testid="row-assign-waiting"
-            />
-          )}
-          {assignee && (
-            <span
-              className="shrink-0 @max-2xl/list:hidden"
-              title={t`Assigned to ${assignee.name || assignee.email}`}
-              data-testid="row-assignee"
-            >
-              <MemberAvatar name={assignee.name || assignee.email} className="size-5 text-[9px]" />
-            </span>
-          )}
-          {c.unread && (
-            <span className="size-2 shrink-0 rounded-full bg-brand" aria-label={t`Unread`} data-testid="row-unread" />
-          )}
-          <FlatTime iso={c.last_activity_at} className={cn(waiting && "font-medium text-brand")}>
-            {waiting
-              ? formatDuration(Math.max(60, (now - Date.parse(c.last_activity_at)) / 1000), i18n.locale)
-              : formatShort(c.last_activity_at, i18n.locale)}
-          </FlatTime>
-        </>
-      }
-    >
-      <span className="flex min-w-0 items-center gap-1.5">
-        {c.trashed_at && <Trash2Icon className="size-3.5 shrink-0 text-faint" aria-label={t`Trash`} />}
-        {c.status === "snoozed" && <ClockIcon className="size-3.5 shrink-0 text-faint" aria-label={t`Snoozed`} />}
-        {subject && (
-          <span className={cn("shrink-0 truncate text-foreground", c.unread && "font-semibold", "max-w-[60%]")}>
-            {subject}
-          </span>
-        )}
-        <span className="flex min-w-0 flex-1 text-muted-foreground">
-          <Preview c={c} current={current} receipts={channel?.kind === "chat" || channel?.kind === "app"} />
-        </span>
-      </span>
-    </FlatRow>
-  )
-}
-
 function AwayBanner() {
   const { me } = useSession()
   const set = useSetAvailability()
@@ -677,7 +373,7 @@ export function ListMenu({ className }: { className?: string }) {
         title={t`Menu`}
         data-testid="list-menu"
       >
-        <EllipsisVerticalIcon />
+        <EllipsisIcon />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-56">
         <DropdownMenuItem onClick={() => navigate("/contacts")} data-testid="open-contacts">
@@ -712,41 +408,21 @@ export function ListMenu({ className }: { className?: string }) {
   )
 }
 
-function PhoneHeader({ children }: { children: React.ReactNode }) {
-  const { t } = useLingui()
-  const [starting, setStarting] = useState(false)
-  return (
-    <div className="flex shrink-0 flex-col border-b">
-      <div className="flex h-15 shrink-0 items-center gap-1 ps-2 pe-1.5">
-        <span className="flex-1" />
-        <TeamMenu />
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          onClick={() => setStarting(true)}
-          aria-label={t`New conversation`}
-          title={t`New conversation`}
-          data-testid="new-conversation"
-        >
-          <MessageSquarePlusIcon />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          render={<Link to="/settings" />}
-          aria-label={t`Settings`}
-          title={t`Settings (${mod},)`}
-          data-testid="open-settings"
-        >
-          <SettingsIcon />
-        </Button>
-        <ListMenu />
-      </div>
-      <div className="px-3 [&>[role=toolbar]]:mt-0">{children}</div>
-      <StartConversation open={starting} onOpenChange={setStarting} />
-    </div>
-  )
+function statusGroups(prev: ConversationListItem[]) {
+  const groups = new Map<string, { status: ConversationStatus; until?: string; ids: string[] }>()
+  for (const c of prev) {
+    const until =
+      c.status === "snoozed" && c.snooze_until && Date.parse(c.snooze_until) > Date.now() ? c.snooze_until : undefined
+    const status: ConversationStatus = c.status === "snoozed" && !until ? "open" : c.status
+    const key = `${status}|${until ?? ""}`
+    const g = groups.get(key) ?? { status, until, ids: [] }
+    g.ids.push(c.id)
+    groups.set(key, g)
+  }
+  return groups.values()
 }
+
+export type ListShown = { shown: number; unread: number; more: boolean }
 
 type Order = "newest" | "oldest" | "sla_due"
 
@@ -766,14 +442,16 @@ function OrderChip({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        render={<button type="button" className={cn(unreadOnly ? look.listChipOn : look.listChip, "ms-auto")} />}
+        render={
+          <Button variant="outline" size="sm" className={cn(filterButton, "max-w-52", unreadOnly && filterButtonOn)} />
+        }
         aria-label={t`Order and view`}
         data-testid="list-order"
       >
         <span className="truncate">{unreadOnly ? t`Unread · ${names[order]}` : names[order]}</span>
-        <ChevronDownIcon className="size-3.5 shrink-0 text-faint" />
+        <ChevronDownIcon className="text-muted-foreground" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="min-w-52">
+      <DropdownMenuContent align="end" className="min-w-52">
         <DropdownMenuRadioGroup value={order} onValueChange={(v) => onOrder(v as Order)}>
           <DropdownMenuRadioItem value="newest" data-testid="list-order-newest">
             {names.newest}
@@ -794,106 +472,175 @@ function OrderChip({
   )
 }
 
-function LabelChip({ value, onChange }: { value: string; onChange: (id: string) => void }) {
-  const { t } = useLingui()
+function ConversationRow({
+  c,
+  current,
+  cursor,
+  live,
+  checked,
+  onOpen,
+  onToggle,
+}: {
+  c: ConversationListItem
+  current: boolean
+  cursor: boolean
+  live: boolean
+  checked: boolean
+  onOpen: () => void
+  onToggle: (range: boolean) => void
+}) {
+  const { t, i18n } = useLingui()
+  const channel = useChannelMap().get(c.channel_id ?? "")
+  const members = useMemberMap()
+  const assignee = c.assignee_id ? members.get(c.assignee_id) : undefined
+  const contactName = useContactName()
+  const name = contactName(c, channel, c.contact.name, c.contact.email)
+  const source = sourceOf(c, channel)
+  const sourceText = useSourceText()
+  const place = placeOf(c, channel)
+  const rating = currentRating(c)
   const labels = useLabels().data ?? []
-  const current = labels.find((l) => l.id === value)
-  if (labels.length === 0) return null
+  const chips = labels.filter((l) => c.labels.includes(l.id))
+  const waiting = isWaiting(c)
+  const now = useNow(60_000)
+  const subject = c.subject.trim()
+  const since = c.assign_waiting_since ? formatDateTime(c.assign_waiting_since, i18n.locale) : ""
+  const receipts = channel?.kind === "chat" || channel?.kind === "app"
+  const where = [source && sourceText[source], place].filter(Boolean).join(" · ")
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        render={<button type="button" className={current ? look.listChipOn : look.listChip} />}
-        aria-label={t`Filter by label`}
-        title={t`Filter by label`}
-        data-testid="label-filter"
+    <div
+      data-row
+      className={boxRowClass({ current, cursor, checked })}
+      data-conversation-id={c.id}
+      data-checked={checked || undefined}
+    >
+      <RowCheckbox checked={checked} name={name} onToggle={onToggle} />
+      <button
+        type="button"
+        onClick={onOpen}
+        className="grid min-w-0 flex-1 grid-cols-[8px_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 py-2.5 pe-3 text-start text-body leading-5 outline-none [grid-template-areas:'dot_who_time'_'._main_main'_'._meta_meta'] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset @2xl/list:grid-cols-[8px_minmax(0,190px)_minmax(0,1fr)_auto_auto] @2xl/list:[grid-template-areas:'dot_who_main_meta_time']"
+        aria-current={current || undefined}
+        data-testid="list-row"
+        data-unread={c.unread || undefined}
+        data-pinned={c.pinned_at ? true : undefined}
       >
-        {current ? (
-          <>
-            <Dot color={current.color} className="size-2" />
-            <span className="max-w-24 truncate">{current.name}</span>
-          </>
-        ) : (
-          <Trans>Label</Trans>
-        )}
-        <ChevronDownIcon className="size-3.5 shrink-0 text-faint" />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="max-h-[60svh] min-w-48">
-        <DropdownMenuRadioGroup value={value} onValueChange={(v) => onChange(String(v))}>
-          <DropdownMenuRadioItem value="">
-            <Trans>Any label</Trans>
-          </DropdownMenuRadioItem>
-          {labels.map((l) => (
-            <DropdownMenuRadioItem key={l.id} value={l.id}>
-              <Dot color={l.color} />
-              <span className="truncate">{l.name}</span>
-            </DropdownMenuRadioItem>
-          ))}
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        <span
+          className={cn("size-2 rounded-full bg-brand [grid-area:dot]", !c.unread && "invisible")}
+          aria-label={c.unread ? t`Unread` : undefined}
+          data-testid={c.unread ? "row-unread" : undefined}
+        />
+        <span className="flex min-w-0 flex-col [grid-area:who]">
+          <span className="flex min-w-0 items-center gap-1.5">
+            {c.pinned_at && (
+              <PinIcon
+                className="size-3 shrink-0 rotate-45 text-faint"
+                aria-label={t`Pinned`}
+                data-testid="row-pinned"
+              />
+            )}
+            <span className={cn("min-w-0 truncate", c.unread ? "font-semibold text-foreground" : "font-medium")}>
+              {name}
+            </span>
+            {live && (
+              <span className="size-2 shrink-0 rounded-full bg-success" title={t`Online now`} data-testid="row-live" />
+            )}
+          </span>
+          <span
+            className="flex min-w-0 items-center gap-1.5 text-caption text-muted-foreground"
+            data-testid="row-source"
+          >
+            <ProductTag id={c.inbox_id} className="h-4 px-1 text-[10.5px]" />
+            {c.imported && <ImportedChip at={c.imported.at} />}
+            {c.broadcast_id && (
+              <MegaphoneIcon
+                className="size-3.5 shrink-0 text-brand"
+                aria-label={t`Reply to a broadcast`}
+                data-testid="row-broadcast"
+              />
+            )}
+            <span className="min-w-0 truncate">{where}</span>
+          </span>
+        </span>
+        <span className="flex min-w-0 flex-col [grid-area:main]">
+          {subject && (
+            <span className="flex min-w-0 items-center gap-1.5">
+              {c.trashed_at && <Trash2Icon className="size-3.5 shrink-0 text-faint" aria-label={t`Trash`} />}
+              {c.status === "snoozed" && <ClockIcon className="size-3.5 shrink-0 text-faint" aria-label={t`Snoozed`} />}
+              <span className={cn("min-w-0 truncate text-foreground", c.unread ? "font-semibold" : "font-medium")}>
+                {subject}
+              </span>
+            </span>
+          )}
+          <span className="flex min-w-0 text-muted-foreground">
+            <Preview c={c} current={current} receipts={receipts} />
+          </span>
+          {c.trashed_at && <TrashLine c={c} />}
+        </span>
+        <span className="flex min-w-0 items-center gap-2 [grid-area:meta] empty:hidden @2xl/list:justify-end">
+          {c.priority === "urgent" && (
+            <span className="shrink-0 rounded-full bg-destructive/10 px-1.5 text-[11px] leading-[18px] font-semibold text-destructive">
+              <Trans>Urgent</Trans>
+            </span>
+          )}
+          {chips.length > 0 && (
+            <span className="hidden min-w-0 items-center gap-1 @3xl/list:flex">
+              {chips.slice(0, 2).map((l) => (
+                <LabelTag key={l.id} name={l.name} />
+              ))}
+            </span>
+          )}
+          {c.sla && <SlaBadge sla={c.sla} className="@2xl/list:max-w-48" />}
+          {rating && <RatingMark rating={rating.rating} comment={rating.comment} />}
+          {!assignee && c.assign_waiting_since && (
+            <ClockIcon
+              className="size-3.5 shrink-0 text-warning"
+              aria-label={t`Waiting for an available teammate since ${since}`}
+              data-testid="row-assign-waiting"
+            />
+          )}
+          <span
+            className="shrink-0"
+            title={assignee ? t`Assigned to ${assignee.name || assignee.email}` : t`Unassigned`}
+            data-testid={assignee ? "row-assignee" : undefined}
+          >
+            {assignee ? (
+              <MemberAvatar name={assignee.name || assignee.email} className="size-5 text-[9px]" />
+            ) : (
+              <span className="grid size-5 place-items-center rounded-full border border-dashed border-input text-[10px] text-faint">
+                –
+              </span>
+            )}
+          </span>
+        </span>
+        <FlatTime
+          iso={c.last_activity_at}
+          className={cn(
+            "justify-self-end [grid-area:time] @2xl/list:w-16 @2xl/list:text-end",
+            waiting && "font-medium text-brand"
+          )}
+        >
+          {waiting
+            ? formatDuration(Math.max(60, (now - Date.parse(c.last_activity_at)) / 1000), i18n.locale)
+            : formatShort(c.last_activity_at, i18n.locale)}
+        </FlatTime>
+      </button>
+    </div>
   )
 }
 
-function TeamChip({ value, onChange }: { value: string; onChange: (id: string) => void }) {
-  const { t } = useLingui()
-  const teams = useTeams().data ?? []
-  const current = teams.find((x) => x.id === value)
-  if (teams.length === 0) return null
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        render={<button type="button" className={current ? look.listChipOn : look.listChip} />}
-        aria-label={t`Filter by team`}
-        title={t`Filter by team`}
-        data-testid="team-filter"
-      >
-        {current ? <span className="max-w-24 truncate">{current.name}</span> : <Trans>Team</Trans>}
-        <ChevronDownIcon className="size-3.5 shrink-0 text-faint" />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="max-h-[60svh] min-w-48">
-        <DropdownMenuRadioGroup value={value} onValueChange={(v) => onChange(String(v))}>
-          <DropdownMenuRadioItem value="">
-            <Trans>Any team</Trans>
-          </DropdownMenuRadioItem>
-          {teams.map((team) => (
-            <DropdownMenuRadioItem key={team.id} value={team.id}>
-              <span className="truncate">{team.name}</span>
-            </DropdownMenuRadioItem>
-          ))}
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
+type StatusPick = ConversationStatus | "any"
 
-function statusGroups(prev: ConversationListItem[]) {
-  const groups = new Map<string, { status: ConversationStatus; until?: string; ids: string[] }>()
-  for (const c of prev) {
-    const until =
-      c.status === "snoozed" && c.snooze_until && Date.parse(c.snooze_until) > Date.now() ? c.snooze_until : undefined
-    const status: ConversationStatus = c.status === "snoozed" && !until ? "open" : c.status
-    const key = `${status}|${until ?? ""}`
-    const g = groups.get(key) ?? { status, until, ids: [] }
-    g.ids.push(c.id)
-    groups.set(key, g)
-  }
-  return groups.values()
-}
+const STATUS_PICKS: StatusPick[] = ["any", "open", "pending", "snoozed", "closed"]
 
-export type ListShown = { shown: number; unread: number; more: boolean }
-
-type FlatGroup = "mine" | "unassigned" | "team"
+const CHANNELS: ("all" | ChannelKind)[] = ["all", "email", "chat", "app"]
 
 export function ChatList({
   currentId,
   onOpen,
   active = true,
   chip: controlledChip,
-  onChip,
   inbox: controlledInbox,
   onInbox,
-  embedded = false,
-  flat = false,
   hidden = false,
   head,
 }: {
@@ -901,33 +648,30 @@ export function ChatList({
   onOpen: (id: string) => void
   active?: boolean
   chip?: Chip
-  onChip?: (c: Chip) => void
   inbox?: string
   onInbox?: (id: string) => void
-  embedded?: boolean
-  flat?: boolean
   hidden?: boolean
   head?: React.ReactNode | ((shown: ListShown) => React.ReactNode)
 }) {
   const { t } = useLingui()
   const errorText = useErrorText()
+  const enumText = useEnumText()
+  const sourceText = useSourceText()
   const { canManage, membership } = useSession()
   const [confirm, confirmDialog] = useConfirm()
-  const tabs = useChips()
   const initialChip = useRememberedChip()
   const { query, focus, select } = useListSearch()
   const q = useDebounced(query.trim(), 250)
   const [sidebarInbox] = useInboxFilter()
   const [ownInbox, setOwnInbox] = useState("")
   const chipInbox = controlledInbox ?? ownInbox
-  const locked = !!sidebarInbox
   const inboxId = sidebarInbox || chipInbox
-  const [ownChip, setOwnChip] = useState<Chip>(initialChip)
-  const chip = controlledChip ?? ownChip
+  const chip = controlledChip ?? initialChip
   const [order, setOrder] = useState<Order | null>(null)
   const [unreadOnly, setUnreadOnly] = useState(false)
   const [labelId, setLabelId] = useState("")
   const [teamId, setTeamId] = useState("")
+  const [statusPick, setStatusPick] = useState<StatusPick | null>(null)
   const search = useRef<HTMLInputElement>(null)
   const scroller = useRef<HTMLDivElement>(null)
   const sentinel = useRef<HTMLDivElement>(null)
@@ -952,8 +696,11 @@ export function ChatList({
     !!source.sla ||
     !!labelId ||
     !!teamId ||
+    statusPick !== null ||
     !!chipInbox
   const own = { ...sourceFilters(source), origin }
+  const picked: Pick<ConversationFilters, "status"> =
+    statusPick === null ? {} : { status: statusPick === "any" ? undefined : [statusPick] }
   const filters: ConversationFilters = view.base
     ? {
         kind: ["conversation"],
@@ -966,6 +713,7 @@ export function ChatList({
             team_id: teamId || undefined,
           }).filter(([, v]) => v !== undefined)
         ),
+        ...picked,
         fields: view.base.fields || own.fields ? { ...view.base.fields, ...own.fields } : undefined,
         sort: sort === "sla_due" ? "sla_due" : undefined,
         q: q || undefined,
@@ -975,6 +723,7 @@ export function ChatList({
         kind: ["conversation"],
         ...(openOnly ? { status: ["open" as const] } : chipFilters[chip]),
         ...own,
+        ...picked,
         inbox_id: inboxId || undefined,
         label_id: labelId || undefined,
         team_id: teamId || undefined,
@@ -987,23 +736,15 @@ export function ChatList({
   const loaded = useMemo(() => list.data?.pages.flatMap((p) => p.items) ?? [], [list.data])
   const pinnedLoaded = useMemo(() => pinnedList.data?.pages.flatMap((p) => p.items) ?? [], [pinnedList.data])
   const keep = (c: ConversationListItem) =>
-    (!unreadOnly || c.unread) && (view.id !== null || openOnly || chip !== "waiting" || isWaiting(c))
+    (!unreadOnly || c.unread) &&
+    (view.id !== null || openOnly || statusPick !== null || chip !== "waiting" || isWaiting(c))
   const byTime = (a: ConversationListItem, b: ConversationListItem) =>
     (a.last_activity_at < b.last_activity_at ? 1 : -1) * (sort === "oldest" ? -1 : 1)
   const pinnedRows = [...pinnedLoaded, ...loaded.filter((c) => c.pinned_at && !pinnedLoaded.some((x) => x.id === c.id))]
     .filter((c) => c.pinned_at && keep(c))
     .sort(sort === "sla_due" ? () => 0 : byTime)
-  const sortedRows = loaded.filter((c) => !c.pinned_at && keep(c))
-  if (sort === "oldest") sortedRows.sort(byTime)
-  const me = membership.member_id
-  const groupOf = (c: ConversationListItem): FlatGroup =>
-    c.assignee_id === me ? "mine" : c.assignee_id ? "team" : "unassigned"
-  const flatGroups = flat
-    ? (["mine", "unassigned", "team"] as const)
-        .map((g) => ({ key: g, items: sortedRows.filter((c) => groupOf(c) === g) }))
-        .filter((g) => g.items.length > 0)
-    : []
-  const mainRows = flat ? flatGroups.flatMap((g) => g.items) : sortedRows
+  const mainRows = loaded.filter((c) => !c.pinned_at && keep(c))
+  if (sort === "oldest") mainRows.sort(byTime)
   const rows = [...pinnedRows, ...mainRows]
   const live = useLiveIds(rows.filter((c) => c.status !== "closed"))
   const { cursorId, setCursorId, moveCursor, openCursor } = useListCursor(
@@ -1013,12 +754,9 @@ export function ChatList({
     active,
     scroller,
     !hidden,
-    !!flat && !hidden
+    !hidden
   )
-  const toTop = () => {
-    if (flat) window.scrollTo({ top: 0 })
-    else scroller.current?.scrollTo({ top: 0 })
-  }
+  const toTop = () => window.scrollTo({ top: 0 })
 
   const scope = [
     origin,
@@ -1028,6 +766,7 @@ export function ChatList({
     inboxId,
     labelId,
     teamId,
+    statusPick,
     unreadOnly,
     source.source,
     source.site,
@@ -1049,46 +788,34 @@ export function ChatList({
     if (next) onOpen(next)
   })
 
-  const toggle = (id: string, range = false) => {
-    setSelecting(true)
-    const ids = rows.map((c) => c.id)
-    const from = anchor.current ? ids.indexOf(anchor.current) : -1
-    const to = ids.indexOf(id)
-    setSelected((s) => {
-      const next = new Set(s)
-      if (range && from >= 0 && to >= 0) {
-        for (let i = Math.min(from, to); i <= Math.max(from, to); i++) next.add(ids[i])
-      } else if (!next.delete(id)) next.add(id)
-      return next
-    })
-    anchor.current = id
-  }
   const stopSelecting = () => {
     setSelecting(false)
     setSelected(new Set())
     anchor.current = null
   }
-  const linkKey = keyLabel(SHORTCUTS.linkSelected).join("")
+  const toggle = (id: string, range = false) => {
+    const ids = rows.map((c) => c.id)
+    const from = anchor.current ? ids.indexOf(anchor.current) : -1
+    const to = ids.indexOf(id)
+    const next = new Set(selected)
+    if (range && from >= 0 && to >= 0) {
+      for (let i = Math.min(from, to); i <= Math.max(from, to); i++) next.add(ids[i])
+    } else if (!next.delete(id)) next.add(id)
+    anchor.current = id
+    setSelected(next)
+    setSelecting(next.size > 0)
+  }
   const chosenRows = rows.filter((c) => selected.has(c.id))
   const allPicked = rows.length > 0 && chosenRows.length === rows.length
   const chosen = chosenRows.map((c) => c.id)
-  const picked = chosen.length
-  useHotkeys(
-    {
-      [SHORTCUTS.select]: () => {
-        const id = cursorId ?? currentId
-        if (id) toggle(id)
-        else setSelecting(true)
-      },
-      ...(selecting
-        ? {
-            Escape: stopSelecting,
-            ...(chosen.length > 0 ? { [SHORTCUTS.linkSelected]: () => setLinking(true) } : {}),
-          }
-        : {}),
-    },
-    active && !hidden
-  )
+  const none = chosen.length === 0
+  const toggleAll = () => {
+    if (allPicked) stopSelecting()
+    else {
+      setSelected(new Set(rows.map((c) => c.id)))
+      setSelecting(true)
+    }
+  }
 
   const [selectSeen, setSelectSeen] = useState(select)
   if (select !== selectSeen) {
@@ -1104,15 +831,13 @@ export function ChatList({
 
   useEffect(() => {
     const el = sentinel.current
-    const root = scroller.current
-    if (!el || !root || typeof IntersectionObserver === "undefined") return
+    if (!el || typeof IntersectionObserver === "undefined") return
     const io = new IntersectionObserver((entries) => setNearEnd(entries.some((e) => e.isIntersecting)), {
-      root: flat ? null : root,
       rootMargin: "400px",
     })
     io.observe(el)
     return () => io.disconnect()
-  }, [flat])
+  }, [])
   const { hasNextPage, isFetchingNextPage, fetchNextPage } = list
   useEffect(() => {
     if (nearEnd && hasNextPage && !isFetchingNextPage) void fetchNextPage()
@@ -1135,18 +860,11 @@ export function ChatList({
     setOrder(null)
     setLabelId("")
     setTeamId("")
+    setStatusPick(null)
     setUnreadOnly(false)
     changeView.current()
-    if (flat) window.scrollTo({ top: 0 })
-    else scroller.current?.scrollTo({ top: 0 })
-  }, [view.id, changeView, flat])
-  const setChip = (c: Chip) => {
-    view.clear(!view.id)
-    rememberChip(c)
-    setOwnChip(c)
-    onChip?.(c)
-    reset()
-  }
+    window.scrollTo({ top: 0 })
+  }, [view.id, changeView])
   const setInbox = (id: string) => {
     setOwnInbox(id)
     onInbox?.(id)
@@ -1155,14 +873,13 @@ export function ChatList({
   const [shownChip, setShownChip] = useState(chip)
   if (shownChip !== chip) {
     setShownChip(chip)
+    setStatusPick(null)
     setCursorId(null)
   }
   useEffect(() => {
-    if (flat) window.scrollTo({ top: 0 })
-    else scroller.current?.scrollTo({ top: 0 })
-  }, [chip, flat])
+    window.scrollTo({ top: 0 })
+  }, [chip])
 
-  const labels = useChipLabels()
   const empty: Record<Chip, React.ReactNode> = {
     waiting: <Trans>Nobody is waiting for a reply.</Trans>,
     all: <Trans>No conversations yet.</Trans>,
@@ -1179,6 +896,7 @@ export function ChatList({
     setListQuery("")
     setLabelId("")
     setTeamId("")
+    setStatusPick(null)
     setSource({})
     setUnreadOnly(false)
     setInbox("")
@@ -1187,21 +905,65 @@ export function ChatList({
 
   const bulk = useBulkUpdateConversations()
   const memberActions = useListActions()
+  const times = useSnoozeTimes()
   const failed = (e: unknown) => toast(errorText(e))
   const restoreStatus = (prev: ConversationListItem[]) => {
     for (const g of statusGroups(prev))
       bulk.mutate({ conversation_ids: g.ids, status: g.status, snooze_until: g.until }, { onError: failed })
   }
   const [failures, setFailures] = useState<ConversationBulkFailure[]>([])
-  const closeChosen = () => {
-    const prev = chosenRows.filter((c) => c.status !== "closed").slice(0, 100)
+  const changeStatus = (
+    prev: ConversationListItem[],
+    change: { status: ConversationStatus; snooze_until?: string },
+    done: (n: number) => string
+  ) => {
     if (prev.length === 0) return
     bulk.mutate(
-      { conversation_ids: prev.map((c) => c.id), status: "closed" },
+      { conversation_ids: prev.map((c) => c.id), ...change },
       {
         onSuccess: (r) => {
-          const done = new Set(r.updated.map((c) => c.id))
-          if (done.size > 0) toast(t`${done.size} closed`, () => restoreStatus(prev.filter((c) => done.has(c.id))))
+          const ids = new Set(r.updated.map((c) => c.id))
+          if (ids.size > 0) toast(done(ids.size), () => restoreStatus(prev.filter((c) => ids.has(c.id))))
+          if (r.failed.length > 0) setFailures(r.failed)
+          stopSelecting()
+        },
+        onError: failed,
+      }
+    )
+  }
+  const closeChosen = () =>
+    changeStatus(
+      chosenRows.filter((c) => c.status !== "closed").slice(0, 100),
+      { status: "closed" },
+      (n) => t`${n} closed`
+    )
+  const snoozeChosen = (at: Date, when: string) =>
+    changeStatus(
+      chosenRows.slice(0, 100),
+      { status: "snoozed", snooze_until: at.toISOString() },
+      (n) => t`${n} snoozed, back ${when}`
+    )
+  const me = membership.member_id
+  const allMine = chosenRows.length > 0 && chosenRows.every((c) => c.assignee_id === me)
+  const assignChosen = () => {
+    const prev = chosenRows.filter((c) => c.assignee_id !== me).slice(0, 100)
+    if (prev.length === 0) return
+    bulk.mutate(
+      { conversation_ids: prev.map((c) => c.id), assignee_id: me },
+      {
+        onSuccess: (r) => {
+          const ids = new Set(r.updated.map((c) => c.id))
+          const n = ids.size
+          const back = new Map<string | null, string[]>()
+          for (const c of prev.filter((x) => ids.has(x.id))) {
+            const key = c.assignee_id ?? null
+            back.set(key, [...(back.get(key) ?? []), c.id])
+          }
+          if (n > 0)
+            toast(t`${n} assigned to you`, () => {
+              for (const [assignee, list] of back)
+                bulk.mutate({ conversation_ids: list, assignee_id: assignee }, { onError: failed })
+            })
           if (r.failed.length > 0) setFailures(r.failed)
           stopSelecting()
         },
@@ -1213,6 +975,7 @@ export function ChatList({
   const readChosen = () => {
     const ids = chosenRows.filter((c) => c.unread === anyUnread).map((c) => c.id)
     const n = ids.length
+    if (n === 0) return
     for (const id of ids) {
       if (anyUnread) memberActions.markRead(id)
       else memberActions.markUnread(id)
@@ -1247,9 +1010,9 @@ export function ChatList({
   const allTeams = useTeams().data ?? []
   const bulkTeam = useBulkTeam()
   const teamsForAll = allTeams.filter((team) => chosenRows.every((c) => team.inbox_ids.includes(c.inbox_id)))
-  const teamChosen = (teamId: string | null) =>
+  const teamChosen = (id: string | null) =>
     bulkTeam.mutate(
-      { ids: chosen.slice(0, 100), teamId },
+      { ids: chosen.slice(0, 100), teamId: id },
       {
         onSuccess: () => {
           toast(t`Team changed`)
@@ -1321,21 +1084,33 @@ export function ChatList({
   const deleteChosen = () =>
     trashTools.deleteForever([...chosen], (id) => chosenRows.find((c) => c.id === id)?.subject || id, stopSelecting)
   useHotkeys(
-    selecting && chosen.length > 0
-      ? {
-          ...(canManage && !inSpam
-            ? { [inTrash ? SHORTCUTS.restore : SHORTCUTS.trash]: inTrash ? restoreChosen : trashChosen }
-            : {}),
-          ...(canManage && inSpam ? { [SHORTCUTS.trash]: trashChosen } : {}),
-          ...(inSpam ? { [SHORTCUTS.spam]: notSpamChosen } : {}),
-          ...(canManage && inTrash ? { [SHORTCUTS.deleteForever]: deleteChosen } : {}),
-        }
-      : {},
+    {
+      [SHORTCUTS.select]: () => {
+        const id = cursorId ?? currentId
+        if (id) toggle(id)
+        else setSelecting(true)
+      },
+      ...(selecting ? { Escape: stopSelecting } : {}),
+      ...(selecting && !none
+        ? {
+            [SHORTCUTS.linkSelected]: () => setLinking(true),
+            ...(!inTrash && !inSpam
+              ? { [SHORTCUTS.close]: closeChosen, [SHORTCUTS.unread]: readChosen, [SHORTCUTS.hand]: assignChosen }
+              : {}),
+            ...(canManage && !inSpam
+              ? { [inTrash ? SHORTCUTS.restore : SHORTCUTS.trash]: inTrash ? restoreChosen : trashChosen }
+              : {}),
+            ...(canManage && inSpam ? { [SHORTCUTS.trash]: trashChosen } : {}),
+            ...(inSpam ? { [SHORTCUTS.spam]: notSpamChosen } : {}),
+            ...(canManage && inTrash ? { [SHORTCUTS.deleteForever]: deleteChosen } : {}),
+          }
+        : {}),
+    },
     active && !hidden
   )
 
   const searchBox = (
-    <InputGroup className="h-8 min-w-0 flex-1 rounded-[9px] border-input bg-card shadow-none focus-within:border-faint">
+    <InputGroup className="h-8 min-w-48 flex-[1_1_240px] rounded-md border-input bg-card shadow-none focus-within:border-faint">
       <InputGroupAddon>
         <SearchIcon className="size-[15px] text-faint" />
       </InputGroupAddon>
@@ -1359,7 +1134,7 @@ export function ChatList({
             else e.currentTarget.blur()
           }
         }}
-        placeholder={t`Search`}
+        placeholder={t`Search people, subjects, messages`}
         aria-label={t`Search conversations`}
         data-testid="list-search"
       />
@@ -1375,454 +1150,377 @@ export function ChatList({
     </InputGroup>
   )
 
-  const searchRow = (
-    <div className="flex shrink-0 flex-wrap items-center gap-1.5 px-3 pt-3 pb-2">
+  const viewStatus = (view.base?.status ?? (openOnly ? ["open"] : chipFilters[chip].status)) as
+    | ConversationStatus[]
+    | undefined
+  const statusValue: StatusPick = statusPick ?? (viewStatus?.length === 1 ? viewStatus[0] : "any")
+  const statusNames: Record<StatusPick, string> = { any: t`Any status`, ...enumText.status }
+  const channel = source.source ?? "all"
+  const filterRow = (
+    <FilterRow testId="chips">
       {searchBox}
-      <Button
+      <ToggleGroup
+        value={[channel]}
+        onValueChange={(v) => {
+          const next = v[0] as (typeof CHANNELS)[number] | undefined
+          if (!next) return
+          setSource({ ...source, source: next === "all" ? undefined : next })
+          reset()
+        }}
+        aria-label={t`Channel`}
+        size="sm"
+        spacing={0}
         variant="outline"
-        className={cn("h-8 w-8 rounded-[9px] border-input bg-card px-0 font-normal", selecting && "bg-muted")}
-        onClick={() => (selecting ? stopSelecting() : setSelecting(true))}
-        aria-pressed={selecting}
-        aria-label={t`Select conversations`}
-        title={t`Select conversations`}
-        data-testid="select-conversations"
+        className="bg-card"
+        data-testid="channel-filter"
       >
-        <SquareCheckBigIcon />
-      </Button>
+        {CHANNELS.map((k) => (
+          <ToggleGroupItem
+            key={k}
+            value={k}
+            className="h-8 px-2.5 font-normal aria-pressed:bg-muted aria-pressed:font-medium aria-pressed:text-foreground"
+            data-testid={`channel-${k}`}
+          >
+            {k === "all" ? <Trans>All</Trans> : sourceText[k]}
+          </ToggleGroupItem>
+        ))}
+      </ToggleGroup>
+      {!inTrash && !inSpam && (
+        <NativeSelect
+          size="sm"
+          value={statusValue}
+          onChange={(e) => {
+            setStatusPick(e.target.value as StatusPick)
+            reset()
+          }}
+          aria-label={t`Status`}
+          className={cn("bg-card", statusPick !== null && "[&>select]:border-brand/40 [&>select]:text-brand")}
+          data-testid="status-filter"
+        >
+          {STATUS_PICKS.map((s) => (
+            <NativeSelectOption key={s} value={s}>
+              {statusNames[s]}
+            </NativeSelectOption>
+          ))}
+        </NativeSelect>
+      )}
+      {allLabels.length > 0 && (
+        <NativeSelect
+          size="sm"
+          value={labelId}
+          onChange={(e) => {
+            setLabelId(e.target.value)
+            reset()
+          }}
+          aria-label={t`Filter by label`}
+          className={cn("bg-card", labelId && "[&>select]:border-brand/40 [&>select]:text-brand")}
+          data-testid="label-filter"
+        >
+          <NativeSelectOption value="">{t`Any label`}</NativeSelectOption>
+          {allLabels.map((l) => (
+            <NativeSelectOption key={l.id} value={l.id}>
+              {l.name}
+            </NativeSelectOption>
+          ))}
+        </NativeSelect>
+      )}
+      {allTeams.length > 0 && (
+        <NativeSelect
+          size="sm"
+          value={teamId}
+          onChange={(e) => {
+            setTeamId(e.target.value)
+            reset()
+          }}
+          aria-label={t`Filter by team`}
+          className={cn("bg-card", teamId && "[&>select]:border-brand/40 [&>select]:text-brand")}
+          data-testid="team-filter"
+        >
+          <NativeSelectOption value="">{t`Any team`}</NativeSelectOption>
+          {allTeams.map((team) => (
+            <NativeSelectOption key={team.id} value={team.id}>
+              {team.name}
+            </NativeSelectOption>
+          ))}
+        </NativeSelect>
+      )}
+      <SourceFilter inboxId={inboxId} onChange={reset} types={false} />
+      <span className="flex items-center gap-2 @2xl/list:ms-auto">
+        <OrderChip
+          order={sort}
+          unreadOnly={unreadOnly}
+          onOrder={(o) => {
+            setOrder(o)
+            reset()
+          }}
+          onUnread={(on) => {
+            setUnreadOnly(on)
+            reset()
+          }}
+        />
+        <ViewsMenu filters={filters} active={active} />
+      </span>
       <SearchError error={list.error} className="w-full" />
-    </div>
+    </FilterRow>
   )
 
-  const none = picked === 0
-  const bb =
-    "h-[34px] rounded-lg px-2.5 font-normal text-background hover:bg-background/15 hover:text-background aria-expanded:bg-background/15 aria-expanded:text-background disabled:opacity-40"
-  const selection = (
-    <div
-      className="relative mx-2.5 mb-2.5 flex shrink-0 items-center gap-0.5 rounded-xl bg-foreground p-1.5 text-background shadow-[0_12px_32px_rgb(0_0_0/0.18)]"
-      role="toolbar"
-      aria-label={t`Selection`}
-      data-testid="selection-bar"
-    >
+  const bb = bulkButton()
+  const busy = bulk.isPending || bulkTeam.isPending
+  const bulkActions = inTrash ? (
+    <ButtonGroup>
       <Button
-        variant="ghost"
-        className={cn(bb, "w-[34px] px-0")}
-        onClick={stopSelecting}
-        aria-label={t`Cancel`}
-        title={t`Clear the selection (Esc)`}
-        data-testid="cancel-selection"
+        variant="outline"
+        className={bb}
+        disabled={none || busy}
+        onClick={restoreChosen}
+        data-testid="restore-selected"
       >
-        <XIcon />
+        <Trans>Restore</Trans>
       </Button>
-      <span className="me-auto min-w-0 truncate pe-1.5 text-small font-semibold" aria-live="polite">
-        {none ? <Trans>Pick conversations</Trans> : <Trans>{picked} selected</Trans>}
-      </span>
+      {canManage && (
+        <Button
+          variant="outline"
+          className={bulkButton(true)}
+          disabled={none || trashTools.pending}
+          onClick={deleteChosen}
+          title={t`Delete for good (${SHORTCUTS.deleteForever})`}
+          data-testid="delete-forever-selected"
+        >
+          <Trans>Delete forever</Trans>
+        </Button>
+      )}
+    </ButtonGroup>
+  ) : inSpam ? (
+    <ButtonGroup>
       <Button
-        variant="ghost"
-        className={cn(bb, "w-[34px] shrink-0 px-0", allPicked && "bg-background/15")}
-        disabled={rows.length === 0}
-        onClick={() => setSelected(allPicked ? new Set() : new Set(rows.map((c) => c.id)))}
-        aria-pressed={allPicked}
-        aria-label={t`Select all`}
-        title={t`Select all`}
-        data-testid="select-all"
+        variant="outline"
+        className={bb}
+        disabled={none || busy}
+        onClick={notSpamChosen}
+        title={t`Not spam (${SHORTCUTS.spam})`}
+        data-testid="not-spam-selected"
       >
-        <ListChecksIcon />
+        <Trans>Not spam</Trans>
       </Button>
-      {inTrash ? (
-        <>
-          <Button
-            variant="ghost"
-            className={cn(bb, "shrink-0")}
-            disabled={none || bulk.isPending}
-            onClick={restoreChosen}
-            data-testid="restore-selected"
+      {canManage && (
+        <Button
+          variant="outline"
+          className={bulkButton(true)}
+          disabled={none || busy}
+          onClick={trashChosen}
+          title={t`Move to the Trash (${SHORTCUTS.trash})`}
+          data-testid="trash-selected"
+        >
+          <Trans>Move to the Trash</Trans>
+        </Button>
+      )}
+    </ButtonGroup>
+  ) : (
+    <>
+      <ButtonGroup>
+        <Button
+          variant="outline"
+          className={bb}
+          disabled={none || busy || allMine}
+          onClick={assignChosen}
+          title={t`Assign to me (${SHORTCUTS.hand})`}
+          data-testid="assign-selected"
+        >
+          <Trans>Assign to me</Trans>
+        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={<Button variant="outline" className={bb} disabled={none || busy} />}
+            data-testid="snooze-selected"
           >
-            <Trans>Restore</Trans>
-          </Button>
-          {canManage && (
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                render={<Button variant="ghost" className={cn(bb, "w-[34px] shrink-0 px-0")} disabled={none} />}
-                aria-label={t`More`}
-                title={t`More`}
-                data-testid="more-selected"
-              >
-                <EllipsisVerticalIcon />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="min-w-52">
-                <DropdownMenuItem
-                  variant="destructive"
-                  disabled={trashTools.pending}
-                  onClick={deleteChosen}
-                  title={t`Delete for good (${SHORTCUTS.deleteForever})`}
-                  data-testid="delete-forever-selected"
-                >
-                  <Trans>Delete forever</Trans>
+            <Trans>Snooze</Trans>
+            <ChevronDownIcon className="text-muted-foreground" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="min-w-56">
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>
+                <Trans>When should they come back?</Trans>
+              </DropdownMenuLabel>
+              {times.map((o) => (
+                <DropdownMenuItem key={o.label} onClick={() => snoozeChosen(o.at, o.when)}>
+                  <span className="flex-1">{o.label}</span>
+                  {o.detail && <span className="text-caption text-faint">{o.detail}</span>}
                 </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-        </>
-      ) : inSpam ? (
-        <>
-          <Button
-            variant="ghost"
-            className={cn(bb, "shrink-0")}
-            disabled={none || bulk.isPending}
-            onClick={notSpamChosen}
-            title={t`Not spam (${SHORTCUTS.spam})`}
-            data-testid="not-spam-selected"
+              ))}
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <Button
+          variant="outline"
+          className={bb}
+          disabled={none || busy}
+          onClick={closeChosen}
+          title={t`Close (${SHORTCUTS.close})`}
+          data-testid="close-selected"
+        >
+          <Trans>Close</Trans>
+        </Button>
+      </ButtonGroup>
+      <ButtonGroup>
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={<Button variant="outline" className={bb} disabled={none || busy} />}
+            data-testid="label-selected"
           >
-            <Trans>Not spam</Trans>
-          </Button>
-          {canManage && (
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                render={<Button variant="ghost" className={cn(bb, "w-[34px] shrink-0 px-0")} disabled={none} />}
-                aria-label={t`More`}
-                title={t`More`}
-                data-testid="more-selected"
+            <Trans>Label</Trans>
+            <ChevronDownIcon className="text-muted-foreground" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="max-h-[60svh] min-w-48 overflow-y-auto">
+            {allLabels.length === 0 && (
+              <p className="px-2.5 py-1.5 text-body text-muted-foreground">
+                <Trans>No labels yet. Add them in settings.</Trans>
+              </p>
+            )}
+            {allLabels.map((l) => (
+              <DropdownMenuCheckboxItem
+                key={l.id}
+                checked={chosenRows.length > 0 && chosenRows.every((c) => c.labels.includes(l.id))}
+                onCheckedChange={() => labelChosen(l.id)}
               >
-                <EllipsisVerticalIcon />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="min-w-52">
-                <DropdownMenuItem
-                  disabled={bulk.isPending}
-                  onClick={trashChosen}
-                  title={t`Move to the Trash (${SHORTCUTS.trash})`}
-                  data-testid="trash-selected"
-                >
-                  <Trans>Move to the Trash</Trans>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-        </>
-      ) : (
-        <>
-          <Button
-            variant="ghost"
-            className={cn(bb, "shrink-0")}
-            disabled={none || bulk.isPending}
-            onClick={closeChosen}
-            data-testid="close-selected"
+                <Dot color={l.color} />
+                {l.name}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <Button
+          variant="outline"
+          className={bb}
+          disabled={none}
+          onClick={readChosen}
+          title={t`Mark as read or unread (${SHORTCUTS.unread})`}
+          data-testid="read-selected"
+        >
+          {anyUnread || none ? <Trans>Mark as read</Trans> : <Trans>Mark as unread</Trans>}
+        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={<Button variant="outline" size="icon-sm" className="bg-card" disabled={none} />}
+            aria-label={t`More`}
+            title={t`More`}
+            data-testid="more-selected"
           >
-            <Trans>Close</Trans>
-          </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              render={<Button variant="ghost" className={cn(bb, "w-[34px] shrink-0 px-0")} disabled={none} />}
-              aria-label={t`More`}
-              title={t`More`}
-              data-testid="more-selected"
-            >
-              <EllipsisVerticalIcon />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="min-w-52">
-              <DropdownMenuItem onClick={readChosen} data-testid="read-selected">
-                {anyUnread ? <Trans>Mark as read</Trans> : <Trans>Mark as unread</Trans>}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
+            <EllipsisIcon />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="min-w-52">
+            {allTeams.length > 0 && (
               <DropdownMenuSub>
-                <DropdownMenuSubTrigger data-testid="label-selected" disabled={bulk.isPending}>
+                <DropdownMenuSubTrigger data-testid="team-selected" disabled={bulkTeam.isPending}>
                   <span className="flex-1">
-                    <Trans>Label</Trans>
+                    <Trans>Team</Trans>
                   </span>
                 </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent className="max-h-[60svh] min-w-48 overflow-y-auto">
-                  {allLabels.length === 0 && (
+                  {teamsForAll.length === 0 && (
                     <p className="px-2.5 py-1.5 text-body text-muted-foreground">
-                      <Trans>No labels yet. Add them in settings.</Trans>
+                      <Trans>No team covers all the selected inboxes.</Trans>
                     </p>
                   )}
-                  {allLabels.map((l) => (
-                    <DropdownMenuCheckboxItem
-                      key={l.id}
-                      checked={chosenRows.length > 0 && chosenRows.every((c) => c.labels.includes(l.id))}
-                      onCheckedChange={() => labelChosen(l.id)}
-                    >
-                      <Dot color={l.color} />
-                      {l.name}
-                    </DropdownMenuCheckboxItem>
+                  {teamsForAll.map((team) => (
+                    <DropdownMenuItem key={team.id} onClick={() => teamChosen(team.id)}>
+                      {team.name}
+                    </DropdownMenuItem>
                   ))}
+                  {teamsForAll.length > 0 && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => teamChosen(null)}>
+                        <Trans>Remove the team</Trans>
+                      </DropdownMenuItem>
+                    </>
+                  )}
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
-              {allTeams.length > 0 && (
-                <DropdownMenuSub>
-                  <DropdownMenuSubTrigger data-testid="team-selected" disabled={bulkTeam.isPending}>
-                    <span className="flex-1">
-                      <Trans>Team</Trans>
-                    </span>
-                  </DropdownMenuSubTrigger>
-                  <DropdownMenuSubContent className="max-h-[60svh] min-w-48 overflow-y-auto">
-                    {teamsForAll.length === 0 && (
-                      <p className="px-2.5 py-1.5 text-body text-muted-foreground">
-                        <Trans>No team covers all the selected inboxes.</Trans>
-                      </p>
-                    )}
-                    {teamsForAll.map((team) => (
-                      <DropdownMenuItem key={team.id} onClick={() => teamChosen(team.id)}>
-                        {team.name}
-                      </DropdownMenuItem>
-                    ))}
-                    {teamsForAll.length > 0 && (
-                      <>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => teamChosen(null)}>
-                          <Trans>Remove the team</Trans>
-                        </DropdownMenuItem>
-                      </>
-                    )}
-                  </DropdownMenuSubContent>
-                </DropdownMenuSub>
-              )}
-              <DropdownMenuItem onClick={() => setLinking(true)} data-testid="link-selected">
-                <Trans>Link to an incident</Trans>
-                <DropdownMenuShortcut>{linkKey}</DropdownMenuShortcut>
-              </DropdownMenuItem>
-              {canManage && (
-                <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    variant="destructive"
-                    disabled={bulk.isPending}
-                    onClick={trashChosen}
-                    data-testid="trash-selected"
-                  >
-                    <Trans>Delete</Trans>
-                  </DropdownMenuItem>
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </>
-      )}
-    </div>
-  )
-
-  const chipItems = (
-    <>
-      <InboxChip value={sidebarInbox || chipInbox} locked={locked} onChange={setInbox} />
-      <SourceFilter inboxId={inboxId} onChange={reset} placeholder={<Trans>Filter</Trans>} />
-      <LabelChip
-        value={labelId}
-        onChange={(id) => {
-          setLabelId(id)
-          reset()
-        }}
-      />
-      <TeamChip
-        value={teamId}
-        onChange={(id) => {
-          setTeamId(id)
-          reset()
-        }}
-      />
-      <OrderChip
-        order={sort}
-        unreadOnly={unreadOnly}
-        onOrder={(o) => {
-          setOrder(o)
-          reset()
-        }}
-        onUnread={(on) => {
-          setUnreadOnly(on)
-          reset()
-        }}
-      />
-      <ViewsMenu filters={filters} active={active} />
+            )}
+            <DropdownMenuItem onClick={() => setLinking(true)} data-testid="link-selected">
+              <Trans>Link to an incident</Trans>
+              <DropdownMenuShortcut>{keyLabel(SHORTCUTS.linkSelected).join("")}</DropdownMenuShortcut>
+            </DropdownMenuItem>
+            {canManage && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  variant="destructive"
+                  disabled={bulk.isPending}
+                  onClick={trashChosen}
+                  data-testid="trash-selected"
+                >
+                  <Trans>Delete</Trans>
+                  <DropdownMenuShortcut>{SHORTCUTS.trash}</DropdownMenuShortcut>
+                </DropdownMenuItem>
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </ButtonGroup>
     </>
   )
-  const chips = (
-    <div className="flex shrink-0 flex-wrap items-center gap-1.5 px-3 pb-2.5" data-testid="chips">
-      {chipItems}
-    </div>
-  )
 
-  const counts = useCounts(["conversation"]).data
-  const unassignedHere = useLoadedCount({
-    kind: ["conversation"],
-    purpose: "support",
-    inbox_id: inboxId || undefined,
-    status: ["open"],
-    assignee: "unassigned",
-  })
-  const waitingHere = useLoadedCount(
-    { kind: ["conversation"], purpose: "support", inbox_id: inboxId || undefined, status: ["open"] },
-    isWaiting
-  )
-
-  const groupLabels: Record<FlatGroup, string> = {
-    mine: t`Assigned to you`,
-    unassigned: t`Unassigned`,
-    team: t`Rest of the team`,
-  }
-  const flatRow = (c: ConversationListItem) => (
-    <FlatChatRow
+  const row = (c: ConversationListItem) => (
+    <ConversationRow
       key={c.id}
       c={c}
       current={c.id === currentId}
       cursor={c.id === cursorId}
       live={live.has(c.id)}
-      selecting={selecting}
       checked={selected.has(c.id)}
-      onOpen={(range) => (selecting ? toggle(c.id, range) : onOpen(c.id))}
+      onOpen={() => onOpen(c.id)}
+      onToggle={(range) => toggle(c.id, range)}
     />
   )
-
-  if (flat) {
-    return (
-      <nav
-        aria-label={t`Conversations`}
-        className={cn("@container/list flex min-w-0 flex-col", hidden && "hidden")}
-        data-testid="chat-list"
-      >
-        {typeof head === "function"
-          ? head({ shown: rows.length, unread: rows.filter((c) => c.unread).length, more: !!hasNextPage })
-          : head}
-        <div className="mt-5 flex flex-wrap items-center gap-1.5" data-testid="chips">
-          <div className="flex min-w-48 flex-[1_1_240px] items-center gap-1.5">
-            {searchBox}
-            <Button
-              variant="outline"
-              className={cn("h-8 w-8 rounded-[9px] border-input bg-card px-0 font-normal", selecting && "bg-muted")}
-              onClick={() => (selecting ? stopSelecting() : setSelecting(true))}
-              aria-pressed={selecting}
-              aria-label={t`Select conversations`}
-              title={t`Select conversations`}
-              data-testid="select-conversations"
-            >
-              <SquareCheckBigIcon />
-            </Button>
-          </div>
-          {chipItems}
-          <SearchError error={list.error} className="w-full" />
-        </div>
-        <div className="mt-3 flex flex-col gap-2 empty:hidden">
-          <AwayBanner />
-          {!view.id && !openOnly && chip === "waiting" && <CleanupBanner inboxId={inboxId} />}
-          {inTrash && canManage && <TrashStrip onEmpty={(n) => trashTools.emptyTrash(n)} busy={trashTools.pending} />}
-          <ImportBanner />
-        </div>
-        {trashTools.dialogs}
-        <div ref={scroller} data-testid="list">
-          {list.isPending ? (
-            <div className="mt-7 flex flex-col gap-3">
-              {[0, 1, 2, 3, 4].map((i) => (
-                <Skeleton key={i} className="h-5 w-full" />
-              ))}
-            </div>
-          ) : rows.length === 0 && !hasNextPage ? (
-            <FlatEmpty testId="list-empty">
-              <p className="m-0">
-                {q ? (
-                  <Trans>Nothing matches your search here.</Trans>
-                ) : narrowed || unreadOnly ? (
-                  <Trans>Nothing matches these filters.</Trans>
-                ) : (
-                  empty[view.id ? "all" : chip]
-                )}
-              </p>
-              {filtered && (
-                <Button
-                  variant="outline"
-                  className="h-8 rounded-[9px] border-input bg-card px-3 font-normal"
-                  onClick={clearFilters}
-                  data-testid="clear-filters"
-                >
-                  <Trans>Clear search and filters</Trans>
-                </Button>
-              )}
-            </FlatEmpty>
-          ) : (
-            <div className="mt-7">
-              {pinnedRows.length > 0 && (
-                <ListGroup
-                  label={
-                    <span className="flex items-center gap-1.5" data-testid="pinned-heading">
-                      <PinIcon className="size-3 rotate-45" />
-                      <Trans>Pinned</Trans>
-                    </span>
-                  }
-                >
-                  {pinnedRows.map(flatRow)}
-                </ListGroup>
-              )}
-              {flatGroups.map((g) => (
-                <ListGroup key={g.key} label={groupLabels[g.key]}>
-                  {g.items.map(flatRow)}
-                </ListGroup>
-              ))}
-            </div>
-          )}
-          <div ref={sentinel} className="h-px" />
-          {isFetchingNextPage && <Skeleton className="mt-2 h-5 w-1/2" />}
-          <ErrorLine error={isSearchError(list.error) ? null : list.error} className="py-2" />
-        </div>
-        {selecting && <div className="sticky bottom-4 z-20 mt-4 [&>div]:mx-0 [&>div]:mb-0">{selection}</div>}
-        {confirmDialog}
-        <BulkFailuresDialog failures={failures} rows={rows} onClose={() => setFailures([])} />
-        {linking && (
-          <LinkIncidentDialog conversationIds={chosen} onClose={() => setLinking(false)} onDone={stopSelecting} />
-        )}
-      </nav>
-    )
-  }
 
   return (
     <nav
       aria-label={t`Conversations`}
-      className="@container/list flex h-full min-h-0 flex-col bg-surface"
+      className={cn("@container/list flex min-w-0 flex-col", hidden && "hidden")}
       data-testid="chat-list"
     >
-      {embedded && (typeof head === "function" ? null : head)}
-      {!embedded && (
-        <PhoneHeader>
-          <ViewChips
-            value={view.id || openOnly ? null : chip}
-            onChange={setChip}
-            label={t`Filter`}
-            items={tabs.map((k) => ({
-              value: k,
-              label: labels[k],
-              count:
-                k === "waiting"
-                  ? waitingHere
-                  : k === "unassigned"
-                    ? inboxId
-                      ? unassignedHere
-                      : counts?.unassigned
-                    : k === "teams"
-                      ? counts?.mine_teams
-                      : undefined,
-              testId: `chip-${k}`,
-            }))}
-          />
-        </PhoneHeader>
-      )}
-      {searchRow}
-      {chips}
-      <AwayBanner />
-      {!view.id && !openOnly && chip === "waiting" && <CleanupBanner inboxId={inboxId} />}
-      {inTrash && canManage && <TrashStrip onEmpty={(n) => trashTools.emptyTrash(n)} busy={trashTools.pending} />}
+      {typeof head === "function"
+        ? head({ shown: rows.length, unread: rows.filter((c) => c.unread).length, more: !!hasNextPage })
+        : head}
+      {filterRow}
+      <div className="mt-3 flex flex-col gap-2 empty:hidden [&>*]:mx-0 [&>*]:mb-0">
+        <AwayBanner />
+        {!view.id && !openOnly && chip === "waiting" && <CleanupBanner inboxId={inboxId} />}
+        {inTrash && canManage && <TrashStrip onEmpty={(n) => trashTools.emptyTrash(n)} busy={trashTools.pending} />}
+        <ImportBanner />
+      </div>
       {trashTools.dialogs}
-      <ImportBanner />
-      <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto pb-3" data-testid="list">
-        {list.isPending ? (
-          <div className="grid gap-1 p-3">
-            {[0, 1, 2, 3].map((i) => (
-              <div key={i} className="flex items-center gap-3 py-1.5">
-                <Skeleton className="size-9 rounded-full" />
-                <div className="flex flex-1 flex-col gap-2">
-                  <Skeleton className="h-4 w-1/2" />
-                  <Skeleton className="h-3 w-3/4" />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : rows.length === 0 && !hasNextPage ? (
-          <div className="flex flex-col items-start gap-3 px-6 py-10" data-testid="list-empty">
-            <p className="text-body text-muted-foreground">
+      <div ref={scroller} data-testid="list">
+        <ListBox
+          bar={
+            selecting && (
+              <BulkBar
+                picked={chosen.length}
+                total={rows.length}
+                onToggleAll={toggleAll}
+                onCancel={stopSelecting}
+                busy={busy}
+              >
+                {bulkActions}
+              </BulkBar>
+            )
+          }
+          testId="list-box"
+        >
+          {list.isPending ? (
+            <ListBoxSkeleton />
+          ) : rows.length === 0 && !hasNextPage ? (
+            <ListBoxEmpty
+              testId="list-empty"
+              action={
+                filtered && (
+                  <Button variant="outline" size="sm" onClick={clearFilters} data-testid="clear-filters">
+                    <Trans>Clear search and filters</Trans>
+                  </Button>
+                )
+              }
+            >
               {q ? (
                 <Trans>Nothing matches your search here.</Trans>
               ) : narrowed || unreadOnly ? (
@@ -1830,63 +1528,29 @@ export function ChatList({
               ) : (
                 empty[view.id ? "all" : chip]
               )}
-            </p>
-            {filtered && (
-              <Button
-                variant="outline"
-                className="h-8 rounded-[9px] border-input bg-card px-3 font-normal"
-                onClick={clearFilters}
-                data-testid="clear-filters"
-              >
-                <Trans>Clear search and filters</Trans>
-              </Button>
-            )}
-          </div>
-        ) : (
-          <>
-            {pinnedRows.length > 0 && (
-              <div className={cn(look.over, "flex items-center gap-1.5 px-5 pt-3 pb-1.5")} data-testid="pinned-heading">
-                <PinIcon className="size-3 rotate-45" />
-                <Trans>Pinned</Trans>
-              </div>
-            )}
-            {pinnedRows.map((c) => (
-              <Row
-                key={c.id}
-                c={c}
-                current={c.id === currentId}
-                cursor={c.id === cursorId}
-                live={live.has(c.id)}
-                selecting={selecting}
-                checked={selected.has(c.id)}
-                onOpen={(range) => (selecting ? toggle(c.id, range) : onOpen(c.id))}
-              />
-            ))}
-            {pinnedRows.length > 0 && mainRows.length > 0 && <div className="h-2" role="separator" />}
-            {mainRows.map((c) => (
-              <Row
-                key={c.id}
-                c={c}
-                current={c.id === currentId}
-                cursor={c.id === cursorId}
-                live={live.has(c.id)}
-                selecting={selecting}
-                checked={selected.has(c.id)}
-                onOpen={(range) => (selecting ? toggle(c.id, range) : onOpen(c.id))}
-              />
-            ))}
-          </>
-        )}
+            </ListBoxEmpty>
+          ) : (
+            rows.map(row)
+          )}
+          {isFetchingNextPage && <ListBoxSkeleton rows={1} />}
+        </ListBox>
         <div ref={sentinel} className="h-px" />
-        {isFetchingNextPage && (
-          <div className="flex items-center gap-3 px-3 py-2">
-            <Skeleton className="size-9 rounded-full" />
-            <Skeleton className="h-4 w-1/2" />
-          </div>
-        )}
-        <ErrorLine error={isSearchError(list.error) ? null : list.error} className="px-4 py-2" />
+        <ErrorLine error={isSearchError(list.error) ? null : list.error} className="py-2" />
       </div>
-      {selecting && selection}
+      <KeyHints
+        items={[
+          [[SHORTCUTS.next, SHORTCUTS.previous], <Trans key="move">move</Trans>],
+          [
+            ["↵"],
+            <Trans key="open" context="keyboard hint">
+              open
+            </Trans>,
+          ],
+          [[SHORTCUTS.select], <Trans key="select">select</Trans>],
+          [[SHORTCUTS.close], <Trans key="close">close the selected</Trans>],
+          [[SHORTCUTS.search], <Trans key="search">search</Trans>],
+        ]}
+      />
       {confirmDialog}
       <BulkFailuresDialog failures={failures} rows={rows} onClose={() => setFailures([])} />
       {linking && (

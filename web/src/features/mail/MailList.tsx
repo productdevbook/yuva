@@ -1,38 +1,36 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import {
-  CheckIcon,
   ChevronDownIcon,
   ClockIcon,
-  ListChecksIcon,
+  MailIcon,
+  MailOpenIcon,
   PaperclipIcon,
   SearchIcon,
-  SquareCheckBigIcon,
   StarIcon,
+  Trash2Icon,
   XIcon,
 } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
 
+import { ErrorLine, FlatTag, FlatTime, Kbd, toast } from "@/components/common"
 import {
-  ContactAvatar,
-  dayOf,
-  ErrorLine,
-  FlatEmpty,
-  FlatRow,
-  FlatTag,
-  FlatTime,
-  groupRuns,
-  Kbd,
-  ListGroup,
-  toast,
-  useDayLabel,
-} from "@/components/common"
+  boxRowClass,
+  BulkBar,
+  bulkButton,
+  FilterRow,
+  KeyHints,
+  ListBox,
+  ListBoxEmpty,
+  ListBoxSkeleton,
+  RowCheckbox,
+} from "@/components/common/ListBox"
 import { SearchError, isSearchError } from "@/components/common/SearchError"
 import { MAIL_KEYS, SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { formatWhen } from "@/components/common/SendLater"
 import { formatShort, useErrorText, usePreviewText } from "@/components/common/text"
-import { useConfirm } from "@/components/common/ConfirmDialog"
 import { TrashStrip, useTrashTools } from "@/features/conversation/TrashBulk"
 import { Button } from "@/components/ui/button"
+import { ButtonGroup } from "@/components/ui/button-group"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,7 +40,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group"
-import { Skeleton } from "@/components/ui/skeleton"
 import { useDraftText } from "@/features/conversation/actions"
 import { useSnoozeTimes } from "@/features/conversation/HeaderActions"
 import { useListActions } from "@/features/inbox/memberState"
@@ -70,27 +67,27 @@ function sender(c: ConversationListItem) {
   return c.contact.name || c.contact.email || ""
 }
 
-function Row({
+function MailRow({
   c,
   folder,
   current,
   cursor,
-  selecting,
   checked,
   showInbox,
   scheduledAt,
   onOpen,
+  onToggle,
   onStar,
 }: {
   c: ConversationListItem
   folder: Folder
   current: boolean
   cursor: boolean
-  selecting: boolean
   checked: boolean
   showInbox: boolean
   scheduledAt?: string
-  onOpen: (range: boolean) => void
+  onOpen: () => void
+  onToggle: (range: boolean) => void
   onStar: () => void
 }) {
   const { t, i18n } = useLingui()
@@ -101,124 +98,22 @@ function Row({
   const subject = c.subject.trim() || t`(no subject)`
   const line = c.last_message ? previewText(c.last_message) : ""
   const starred = !!c.starred
+  const name = folder === "sent" || folder === "scheduled" ? t`To: ${who}` : who
   return (
     <div
-      className={cn(
-        "group relative mx-2 flex w-[calc(100%-1rem)] items-start rounded-xl transition-colors",
-        current ? "bg-card shadow-[0_1px_2px_rgb(0_0_0/0.05),0_0_0_1px_var(--border)]" : "hover:bg-muted/60",
-        cursor && !current && "bg-muted/60",
-        (current || cursor) &&
-          "before:absolute before:inset-y-3 before:-start-2 before:w-[3px] before:rounded-e-[3px] before:bg-brand",
-        checked && "bg-brand/7 shadow-[0_0_0_1px_color-mix(in_srgb,var(--brand)_30%,var(--border))]"
-      )}
+      data-row
+      className={boxRowClass({ current, cursor, checked })}
       data-testid="mail-row"
       data-conversation-id={c.id}
       data-unread={c.unread || undefined}
       data-checked={checked || undefined}
     >
-      <button
-        type="button"
-        onClick={(e) => onOpen(e.shiftKey)}
-        className="flex min-w-0 flex-1 items-start gap-3 rounded-xl px-2.5 py-2.5 text-start outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        aria-current={current || undefined}
-        aria-pressed={selecting ? checked : undefined}
-        data-testid="mail-open"
-      >
-        {selecting && (
-          <span
-            aria-hidden
-            className={cn(
-              "mt-2.5 grid size-[18px] shrink-0 place-items-center rounded-[5px] border-[1.5px]",
-              checked ? "border-foreground bg-foreground text-background" : "border-input bg-card"
-            )}
-            data-testid="row-check"
-          >
-            {checked && <CheckIcon className="size-3" strokeWidth={3} />}
-          </span>
-        )}
-        <ContactAvatar id={c.contact.id} name={who} className="size-[38px] font-semibold" />
-        <span className="flex min-w-0 flex-1 flex-col gap-px">
-          <span className="flex min-w-0 items-center gap-1.5">
-            {c.unread && (
-              <span className="size-2 shrink-0 rounded-full bg-brand" aria-label={t`Unread`} data-testid="row-unread" />
-            )}
-            <span
-              className={cn(
-                "min-w-0 truncate text-body",
-                c.unread ? "font-semibold text-foreground" : "font-medium text-foreground/80"
-              )}
-              data-testid="mail-sender"
-            >
-              {folder === "sent" || folder === "scheduled" ? t`To: ${who}` : who}
-            </span>
-          </span>
-          <span
-            className={cn(
-              "min-w-0 truncate text-body",
-              c.unread ? "font-semibold text-foreground" : "text-foreground/85"
-            )}
-            data-testid="mail-subject"
-          >
-            {subject}
-          </span>
-          <span className="min-w-0 truncate text-small text-faint">
-            {draft && !current ? (
-              <>
-                <span className="font-semibold text-destructive">
-                  <Trans>Draft:</Trans>
-                </span>{" "}
-                {draft}
-              </>
-            ) : (
-              <span className={cn(c.last_message?.redacted && "italic")} data-testid="mail-line">
-                {line}
-              </span>
-            )}
-          </span>
-          {showInbox && inbox && (
-            <span className="mt-1 flex min-w-0">
-              <span className="max-w-full truncate rounded-full bg-muted px-2 text-[11px] leading-[18px] text-muted-foreground">
-                {inbox.name}
-              </span>
-            </span>
-          )}
-        </span>
-        <span className="flex shrink-0 flex-col items-end gap-1.5 pt-px">
-          {scheduledAt ? (
-            <time
-              className="flex items-center gap-1 font-mono text-[12px] whitespace-nowrap text-warning"
-              dateTime={scheduledAt}
-              data-testid="mail-scheduled-at"
-            >
-              <ClockIcon className="size-3" />
-              {formatWhen(scheduledAt, i18n.locale)}
-            </time>
-          ) : (
-            <time
-              className={cn(
-                "font-mono text-[12px] whitespace-nowrap tabular-nums",
-                c.unread ? "font-medium text-foreground" : "text-faint"
-              )}
-              dateTime={c.last_activity_at}
-            >
-              {formatShort(c.last_activity_at, i18n.locale)}
-            </time>
-          )}
-          <span className="flex h-6 items-center gap-1.5 pe-7 text-faint">
-            {c.status === "snoozed" && folder !== "snoozed" && (
-              <ClockIcon className="size-3.5" aria-label={t`Snoozed`} />
-            )}
-            {c.has_attachments && (
-              <PaperclipIcon className="size-3.5" aria-label={t`Has attachments`} data-testid="mail-attachment" />
-            )}
-          </span>
-        </span>
-      </button>
+      <RowCheckbox checked={checked} name={who} onToggle={onToggle} className="mt-[13px]" />
       <button
         type="button"
         onClick={onStar}
         className={cn(
-          "absolute end-2 bottom-2 grid size-7 shrink-0 place-items-center rounded-md outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring",
+          "order-last -ms-2 me-1.5 mt-1.5 grid size-7 shrink-0 place-items-center rounded-md outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring @2xl/list:order-none @2xl/list:ms-[-6px] @2xl/list:me-[-6px]",
           starred ? "text-warning" : "text-faint"
         )}
         aria-pressed={starred}
@@ -228,80 +123,52 @@ function Row({
       >
         <StarIcon className={cn("size-4", starred && "fill-current")} />
       </button>
-    </div>
-  )
-}
-
-function FlatMailRow({
-  c,
-  folder,
-  current,
-  cursor,
-  selecting,
-  checked,
-  showInbox,
-  scheduledAt,
-  onOpen,
-  onStar,
-}: {
-  c: ConversationListItem
-  folder: Folder
-  current: boolean
-  cursor: boolean
-  selecting: boolean
-  checked: boolean
-  showInbox: boolean
-  scheduledAt?: string
-  onOpen: (range: boolean) => void
-  onStar: () => void
-}) {
-  const { t, i18n } = useLingui()
-  const previewText = usePreviewText()
-  const draft = useDraftText(c.id)
-  const inbox = useInboxes().data?.find((i) => i.id === c.inbox_id)
-  const who = sender(c) || t`Unknown sender`
-  const subject = c.subject.trim() || t`(no subject)`
-  const line = c.last_message ? previewText(c.last_message) : ""
-  const starred = !!c.starred
-  return (
-    <FlatRow
-      color={inbox?.branding.color}
-      current={current}
-      cursor={cursor}
-      checked={checked}
-      data-testid="mail-row"
-      data-conversation-id={c.id}
-      data-unread={c.unread || undefined}
-      data-checked={checked || undefined}
-      button={{
-        onClick: (e) => onOpen(e.shiftKey),
-        "aria-current": current || undefined,
-        "aria-pressed": selecting ? checked : undefined,
-        "data-testid": "mail-open",
-        title: inbox?.name,
-      }}
-      lead={
-        selecting ? (
-          <span
-            aria-hidden
-            className={cn(
-              "grid size-[18px] place-items-center rounded-[5px] border-[1.5px]",
-              checked ? "border-foreground bg-foreground text-background" : "border-input bg-card"
-            )}
-            data-testid="row-check"
-          >
-            {checked && <CheckIcon className="size-3" strokeWidth={3} />}
-          </span>
-        ) : undefined
-      }
-      who={
-        <span className={cn("min-w-0 truncate", c.unread && "font-semibold text-foreground")} data-testid="mail-sender">
-          {folder === "sent" || folder === "scheduled" ? t`To: ${who}` : who}
+      <button
+        type="button"
+        onClick={onOpen}
+        className="grid min-w-0 flex-1 grid-cols-[8px_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-0.5 py-2.5 pe-2 text-start text-body leading-5 outline-none [grid-template-areas:'dot_who_time'_'._main_main'] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset @2xl/list:grid-cols-[8px_minmax(0,180px)_minmax(0,1fr)_auto] @2xl/list:pe-3 @2xl/list:[grid-template-areas:'dot_who_main_time']"
+        aria-current={current || undefined}
+        title={inbox?.name}
+        data-testid="mail-open"
+      >
+        <span
+          className={cn("size-2 rounded-full bg-brand [grid-area:dot]", !c.unread && "invisible")}
+          aria-label={c.unread ? t`Unread` : undefined}
+          data-testid={c.unread ? "row-unread" : undefined}
+        />
+        <span
+          className={cn(
+            "min-w-0 truncate [grid-area:who]",
+            c.unread ? "font-semibold text-foreground" : "font-medium text-foreground/85"
+          )}
+          data-testid="mail-sender"
+        >
+          {name}
         </span>
-      }
-      end={
-        <>
-          {showInbox && inbox && <FlatTag className="@max-2xl/list:hidden">{inbox.name}</FlatTag>}
+        <span className="flex min-w-0 items-center gap-2 [grid-area:main]">
+          {showInbox && inbox && <FlatTag className="shrink-0">{inbox.name}</FlatTag>}
+          <span className="min-w-0 truncate">
+            <span className={cn("text-foreground", c.unread && "font-semibold")} data-testid="mail-subject">
+              {subject}
+            </span>
+            <span className="text-muted-foreground">
+              {" · "}
+              {draft && !current ? (
+                <>
+                  <span className="font-semibold text-destructive">
+                    <Trans>Draft:</Trans>
+                  </span>{" "}
+                  {draft}
+                </>
+              ) : (
+                <span className={cn(c.last_message?.redacted && "italic")} data-testid="mail-line">
+                  {line}
+                </span>
+              )}
+            </span>
+          </span>
+        </span>
+        <span className="flex items-center justify-end gap-2 [grid-area:time]">
           {c.status === "snoozed" && folder !== "snoozed" && (
             <ClockIcon className="size-3.5 shrink-0 text-muted2" aria-label={t`Snoozed`} />
           )}
@@ -312,57 +179,22 @@ function FlatMailRow({
               data-testid="mail-attachment"
             />
           )}
-          {c.unread && (
-            <span className="size-2 shrink-0 rounded-full bg-brand" aria-label={t`Unread`} data-testid="row-unread" />
-          )}
           {scheduledAt ? (
             <FlatTime iso={scheduledAt} className="flex items-center gap-1 text-warning">
               <ClockIcon className="size-3" />
               <span data-testid="mail-scheduled-at">{formatWhen(scheduledAt, i18n.locale)}</span>
             </FlatTime>
           ) : (
-            <FlatTime iso={c.last_activity_at} className={cn(c.unread && "font-medium text-foreground")}>
+            <FlatTime
+              iso={c.last_activity_at}
+              className={cn("@2xl/list:w-16 @2xl/list:text-end", c.unread && "font-medium text-foreground")}
+            >
               {formatShort(c.last_activity_at, i18n.locale)}
             </FlatTime>
           )}
-        </>
-      }
-      after={
-        <button
-          type="button"
-          onClick={onStar}
-          className={cn(
-            "me-0.5 grid size-7 shrink-0 place-items-center rounded-md outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring",
-            starred ? "text-warning" : "text-muted2"
-          )}
-          aria-pressed={starred}
-          aria-label={starred ? t`Remove the star` : t`Star`}
-          title={starred ? t`Remove the star (S)` : t`Star (S)`}
-          data-testid="mail-star"
-        >
-          <StarIcon className={cn("size-4", starred && "fill-current")} />
-        </button>
-      }
-    >
-      <span className={cn("text-foreground", c.unread && "font-semibold")} data-testid="mail-subject">
-        {subject}
-      </span>
-      <span className="text-muted-foreground">
-        {"  "}
-        {draft && !current ? (
-          <>
-            <span className="font-semibold text-destructive">
-              <Trans>Draft:</Trans>
-            </span>{" "}
-            {draft}
-          </>
-        ) : (
-          <span className={cn(c.last_message?.redacted && "italic")} data-testid="mail-line">
-            {line}
-          </span>
-        )}
-      </span>
-    </FlatRow>
+        </span>
+      </button>
+    </div>
   )
 }
 
@@ -386,7 +218,6 @@ export function MailList({
   currentId,
   onOpen,
   active,
-  flat = false,
   hidden = false,
   head,
 }: {
@@ -395,14 +226,12 @@ export function MailList({
   currentId: string | null
   onOpen: (id: string) => void
   active: boolean
-  flat?: boolean
   hidden?: boolean
   head?: React.ReactNode
 }) {
   const { t } = useLingui()
   const errorText = useErrorText()
   const { canManage } = useSession()
-  const [confirm, confirmDialog] = useConfirm()
   const [query, setQuery] = useState("")
   const q = useDebounced(query.trim(), 250)
   const scroller = useRef<HTMLDivElement>(null)
@@ -420,9 +249,8 @@ export function MailList({
     active,
     scroller,
     !hidden,
-    !!flat && !hidden
+    !hidden
   )
-  const dayLabel = useDayLabel()
   const star = useStar()
   const bulk = useBulkUpdateConversations()
   const memberActions = useListActions()
@@ -438,39 +266,34 @@ export function MailList({
     setQuery("")
   }
   useEffect(() => {
-    if (flat) window.scrollTo({ top: 0 })
-    else scroller.current?.scrollTo({ top: 0 })
-  }, [box, folder, flat])
+    window.scrollTo({ top: 0 })
+  }, [box, folder])
 
   useEffect(() => {
     const el = sentinel.current
-    const root = scroller.current
-    if (!el || !root || typeof IntersectionObserver === "undefined") return
+    if (!el || typeof IntersectionObserver === "undefined") return
     const io = new IntersectionObserver((entries) => setNearEnd(entries.some((e) => e.isIntersecting)), {
-      root: flat ? null : root,
       rootMargin: "400px",
     })
     io.observe(el)
     return () => io.disconnect()
-  }, [flat])
+  }, [])
   const { hasNextPage, isFetchingNextPage, fetchNextPage } = list
   useEffect(() => {
     if (nearEnd && hasNextPage && !isFetchingNextPage) void fetchNextPage()
   }, [nearEnd, hasNextPage, isFetchingNextPage, fetchNextPage, rows.length])
 
   const toggle = (id: string, range = false) => {
-    setSelecting(true)
     const ids = rows.map((c) => c.id)
     const from = anchor.current ? ids.indexOf(anchor.current) : -1
     const to = ids.indexOf(id)
-    setSelected((s) => {
-      const next = new Set(s)
-      if (range && from >= 0 && to >= 0) {
-        for (let i = Math.min(from, to); i <= Math.max(from, to); i++) next.add(ids[i])
-      } else if (!next.delete(id)) next.add(id)
-      return next
-    })
+    const next = new Set(selected)
+    if (range && from >= 0 && to >= 0) {
+      for (let i = Math.min(from, to); i <= Math.max(from, to); i++) next.add(ids[i])
+    } else if (!next.delete(id)) next.add(id)
     anchor.current = id
+    setSelected(next)
+    setSelecting(next.size > 0)
   }
   const stopSelecting = () => {
     setSelecting(false)
@@ -525,20 +348,22 @@ export function MailList({
     )
   }
   const anyUnread = chosenRows.some((c) => c.unread)
-  const readChosen = () => {
-    const ids = chosenRows.filter((c) => c.unread === anyUnread).map((c) => c.id)
+  const anyRead = chosenRows.some((c) => !c.unread)
+  const markChosen = (read: boolean) => {
+    const ids = chosenRows.filter((c) => c.unread === read).map((c) => c.id)
     const n = ids.length
     if (n === 0) return
-    const apply = (read: boolean) => {
+    const apply = (to: boolean) => {
       for (const id of ids) {
-        if (read) memberActions.markRead(id)
+        if (to) memberActions.markRead(id)
         else memberActions.markUnread(id)
       }
     }
-    apply(anyUnread)
-    toast(anyUnread ? t`${n} marked as read` : t`${n} marked as unread`, () => apply(!anyUnread))
+    apply(read)
+    toast(read ? t`${n} marked as read` : t`${n} marked as unread`, () => apply(!read))
     stopSelecting()
   }
+  const readChosen = () => markChosen(anyUnread)
   const allStarred = chosenRows.length > 0 && chosenRows.every((c) => c.starred)
   const starChosen = () => {
     const ids = chosenRows.filter((c) => !!c.starred === allStarred).map((c) => c.id)
@@ -560,20 +385,10 @@ export function MailList({
   const trashChosen = () => {
     const ids = [...chosen]
     if (ids.length === 0) return
-    confirm({
-      title: <Trans>Move {ids.length} to the Trash?</Trans>,
-      description: (
-        <Trans>
-          You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files.
-        </Trans>
-      ),
-      confirm: <Trans>Move to the Trash</Trans>,
-      run: () =>
-        void setTrashed(ids, true).then((done) => {
-          if (done.length === 0) return
-          toast(t`${done.length} moved to the Trash`, () => void setTrashed(done, false))
-          stopSelecting()
-        }),
+    void setTrashed(ids, true).then((done) => {
+      if (done.length === 0) return
+      toast(t`${done.length} moved to the Trash`, () => void setTrashed(done, false))
+      stopSelecting()
     })
   }
   const restoreChosen = () => {
@@ -593,7 +408,6 @@ export function MailList({
     [MAIL_KEYS.select]: () => {
       const id = cursorId ?? currentId
       if (id) toggle(id)
-      else setSelecting(true)
     },
   }
   const selectionKeys: Record<string, () => void> =
@@ -612,7 +426,7 @@ export function MailList({
   const searchInput = useRef<HTMLInputElement>(null)
   const suggest = useOperatorSuggest(query, setQuery, searchInput)
   const searchBox = (
-    <InputGroup className="h-8 min-w-0 flex-1 rounded-[9px] border-input bg-card shadow-none focus-within:border-faint">
+    <InputGroup className="h-8 min-w-48 flex-[1_1_240px] rounded-md border-input bg-card shadow-none focus-within:border-faint">
       <InputGroupAddon>
         <SearchIcon className="size-[15px] text-faint" />
       </InputGroupAddon>
@@ -656,144 +470,135 @@ export function MailList({
     </InputGroup>
   )
 
-  const bb =
-    "h-[34px] shrink-0 rounded-lg px-2.5 font-normal text-background hover:bg-background/15 hover:text-background aria-expanded:bg-background/15 aria-expanded:text-background disabled:opacity-40"
-  const selection = (
-    <div
-      className="relative mx-2.5 mb-2.5 flex shrink-0 flex-wrap items-center gap-0.5 rounded-xl bg-foreground p-1.5 text-background shadow-[0_12px_32px_rgb(0_0_0/0.18)]"
-      role="toolbar"
-      aria-label={t`Selection`}
-      data-testid="selection-bar"
-    >
+  const bb = bulkButton()
+  const busy = bulk.isPending
+  const bulkActions = inTrash ? (
+    <ButtonGroup>
       <Button
-        variant="ghost"
-        className={cn(bb, "w-[34px] px-0")}
-        onClick={stopSelecting}
-        aria-label={t`Cancel`}
-        title={t`Clear the selection (Esc)`}
+        variant="outline"
+        className={bb}
+        disabled={none || busy}
+        onClick={restoreChosen}
+        title={t`Restore (Z)`}
+        data-testid="restore-selected"
       >
-        <XIcon />
+        <Trans>Restore</Trans>
       </Button>
-      <span className="me-auto min-w-0 truncate pe-1.5 text-small font-semibold" aria-live="polite">
-        {none ? <Trans>Pick mails</Trans> : <Trans>Selected: {picked}</Trans>}
-      </span>
       <Button
-        variant="ghost"
-        className={cn(bb, "w-[34px] shrink-0 px-0", allPicked && "bg-background/15")}
-        disabled={rows.length === 0}
-        onClick={() => setSelected(allPicked ? new Set() : new Set(rows.map((c) => c.id)))}
-        aria-pressed={allPicked}
-        aria-label={t`Select all`}
-        title={t`Select all`}
-        data-testid="select-all"
+        variant="outline"
+        className={bulkButton(true)}
+        disabled={none || trashTools.pending}
+        onClick={deleteChosen}
+        title={t`Delete for good (${MAIL_KEYS.deleteForever})`}
+        data-testid="delete-forever-selected"
       >
-        <ListChecksIcon />
+        <Trans>Delete forever</Trans>
       </Button>
-      {inTrash ? (
-        <>
+    </ButtonGroup>
+  ) : (
+    <>
+      <ButtonGroup>
+        {folder === "archive" ? (
           <Button
-            variant="ghost"
+            variant="outline"
             className={bb}
-            disabled={none || bulk.isPending}
-            onClick={restoreChosen}
-            title={t`Restore (Z)`}
-            data-testid="restore-selected"
+            disabled={none || busy}
+            onClick={inboxChosen}
+            title={t`Move to the Inbox (E)`}
+            data-testid="inbox-selected"
           >
-            <Trans>Restore</Trans>
+            <Trans>Move to the Inbox</Trans>
           </Button>
+        ) : (
           <Button
-            variant="ghost"
+            variant="outline"
             className={bb}
-            disabled={none || trashTools.pending}
-            onClick={deleteChosen}
-            title={t`Delete for good (${MAIL_KEYS.deleteForever})`}
-            data-testid="delete-forever-selected"
+            disabled={none || busy}
+            onClick={archiveChosen}
+            title={t`Archive (E)`}
+            data-testid="archive-selected"
           >
-            <Trans>Delete forever</Trans>
+            <Trans>Archive</Trans>
           </Button>
-        </>
-      ) : (
-        <>
-          {folder === "archive" ? (
-            <Button
-              variant="ghost"
-              className={bb}
-              disabled={none || bulk.isPending}
-              onClick={inboxChosen}
-              title={t`Move to the Inbox (E)`}
-              data-testid="inbox-selected"
-            >
-              <Trans>Move to the Inbox</Trans>
-            </Button>
-          ) : (
-            <Button
-              variant="ghost"
-              className={bb}
-              disabled={none || bulk.isPending}
-              onClick={archiveChosen}
-              title={t`Archive (E)`}
-              data-testid="archive-selected"
-            >
-              <Trans>Archive</Trans>
-            </Button>
-          )}
-          <Button
-            variant="ghost"
-            className={bb}
-            disabled={none}
-            onClick={starChosen}
-            title={t`Star or unstar (S)`}
-            data-testid="star-selected"
+        )}
+        <Button
+          variant="outline"
+          className={bb}
+          disabled={!anyUnread}
+          onClick={() => markChosen(true)}
+          title={t`Mark as read (U)`}
+          aria-label={t`Mark as read`}
+          data-testid="read-selected"
+        >
+          <MailOpenIcon />
+          <span className="hidden @lg/list:inline">
+            <Trans>Mark as read</Trans>
+          </span>
+        </Button>
+        <Button
+          variant="outline"
+          className={bb}
+          disabled={!anyRead}
+          onClick={() => markChosen(false)}
+          title={t`Mark as unread (U)`}
+          aria-label={t`Mark as unread`}
+          data-testid="unread-selected"
+        >
+          <MailIcon />
+          <span className="hidden @lg/list:inline">
+            <Trans>Mark as unread</Trans>
+          </span>
+        </Button>
+      </ButtonGroup>
+      <ButtonGroup>
+        <Button
+          variant="outline"
+          className={bb}
+          disabled={none}
+          onClick={starChosen}
+          title={t`Star or unstar (S)`}
+          data-testid="star-selected"
+        >
+          <StarIcon className={cn(allStarred && "fill-current text-warning")} />
+          {allStarred ? <Trans>Remove the star</Trans> : <Trans>Star</Trans>}
+        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={<Button variant="outline" className={bb} disabled={none || busy} />}
+            data-testid="snooze-selected"
           >
-            {allStarred ? <Trans>Remove the star</Trans> : <Trans>Star</Trans>}
-          </Button>
-          <Button
-            variant="ghost"
-            className={bb}
-            disabled={none}
-            onClick={readChosen}
-            title={t`Mark as read or unread (U)`}
-            data-testid="read-selected"
-          >
-            {anyUnread || none ? <Trans>Mark as read</Trans> : <Trans>Mark as unread</Trans>}
-          </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              render={<Button variant="ghost" className={bb} disabled={none || bulk.isPending} />}
-              data-testid="snooze-selected"
-            >
-              <Trans>Snooze</Trans>
-              <ChevronDownIcon className="opacity-70" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" side="top" className="min-w-56">
-              <DropdownMenuGroup>
-                <DropdownMenuLabel>
-                  <Trans>When should they come back?</Trans>
-                </DropdownMenuLabel>
-                {times.map((o) => (
-                  <DropdownMenuItem key={o.label} onClick={() => snoozeChosen(o.at, o.when)}>
-                    <span className="flex-1">{o.label}</span>
-                    {o.detail && <span className="text-caption text-faint">{o.detail}</span>}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          {canManage && (
-            <Button
-              variant="ghost"
-              className={bb}
-              disabled={none || bulk.isPending}
-              onClick={trashChosen}
-              title={t`Move to the Trash (#)`}
-              data-testid="trash-selected"
-            >
-              <Trans>Trash</Trans>
-            </Button>
-          )}
-        </>
+            <Trans>Snooze</Trans>
+            <ChevronDownIcon className="text-muted-foreground" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="min-w-56">
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>
+                <Trans>When should they come back?</Trans>
+              </DropdownMenuLabel>
+              {times.map((o) => (
+                <DropdownMenuItem key={o.label} onClick={() => snoozeChosen(o.at, o.when)}>
+                  <span className="flex-1">{o.label}</span>
+                  {o.detail && <span className="text-caption text-faint">{o.detail}</span>}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </ButtonGroup>
+      {canManage && (
+        <Button
+          variant="outline"
+          className={bulkButton(true)}
+          disabled={none || busy}
+          onClick={trashChosen}
+          title={t`Move to the Trash (#)`}
+          data-testid="trash-selected"
+        >
+          <Trash2Icon />
+          <Trans>Delete</Trans>
+        </Button>
       )}
-    </div>
+    </>
   )
 
   const empty: Record<Folder, React.ReactNode> = {
@@ -808,149 +613,84 @@ export function MailList({
   }
 
   const mailRow = (c: ConversationListItem) => (
-    <FlatMailRow
+    <MailRow
       key={c.id}
       c={c}
       folder={folder}
       current={c.id === currentId}
       cursor={c.id === cursorId}
-      selecting={selecting}
       checked={selected.has(c.id)}
       showInbox={box === "all"}
       scheduledAt={folder === "scheduled" ? c.scheduled_at : undefined}
-      onOpen={(range) => (selecting ? toggle(c.id, range) : onOpen(c.id))}
+      onOpen={() => onOpen(c.id)}
+      onToggle={(range) => toggle(c.id, range)}
       onStar={() => star([c.id], !c.starred)}
     />
   )
 
-  if (flat) {
-    return (
-      <nav
-        aria-label={t`Mail`}
-        className={cn("@container/list flex min-w-0 flex-col", hidden && "hidden")}
-        data-testid="mail-list"
-      >
-        {head}
-        <div className="relative mt-5 flex flex-wrap items-center gap-1.5">
-          {searchBox}
-          <Button
-            variant="outline"
-            className={cn("h-8 w-8 rounded-[9px] border-input bg-card px-0 font-normal", selecting && "bg-muted")}
-            onClick={() => (selecting ? stopSelecting() : setSelecting(true))}
-            aria-pressed={selecting}
-            aria-label={t`Select mails`}
-            title={t`Select mails (X)`}
-            data-testid="select-mails"
-          >
-            <SquareCheckBigIcon />
-          </Button>
-          <OperatorList s={suggest} />
-          <SearchError error={list.error} className="w-full" />
-        </div>
-        {inTrash && (
-          <div className="mt-3">
-            <TrashStrip onEmpty={(n) => trashTools.emptyTrash(n)} busy={trashTools.pending} />
-          </div>
-        )}
-        <div ref={scroller} data-testid="list">
-          {list.isPending ? (
-            <div className="mt-7 flex flex-col gap-3">
-              {[0, 1, 2, 3, 4].map((i) => (
-                <Skeleton key={i} className="h-5 w-full" />
-              ))}
-            </div>
-          ) : rows.length === 0 && !hasNextPage ? (
-            <FlatEmpty testId="list-empty">
-              <p className="m-0">{q ? <Trans>No mail matches your search.</Trans> : empty[folder]}</p>
-            </FlatEmpty>
-          ) : (
-            <div className="mt-7">
-              {groupRuns(rows, (c) => dayOf(c.last_activity_at)).map((g) => (
-                <ListGroup key={g.key} label={dayLabel(g.items[0].last_activity_at)}>
-                  {g.items.map(mailRow)}
-                </ListGroup>
-              ))}
-            </div>
-          )}
-          <div ref={sentinel} className="h-px" />
-          {isFetchingNextPage && <Skeleton className="mt-2 h-5 w-1/2" />}
-          <ErrorLine error={isSearchError(list.error) ? null : list.error} className="py-2" />
-        </div>
-        {selecting && <div className="sticky bottom-4 z-20 mt-4 [&>div]:mx-0 [&>div]:mb-0">{selection}</div>}
-        {confirmDialog}
-        {trashTools.dialogs}
-      </nav>
-    )
-  }
-
   return (
-    <nav aria-label={t`Mail`} className="flex h-full min-h-0 flex-col bg-surface" data-testid="mail-list">
+    <nav
+      aria-label={t`Mail`}
+      className={cn("@container/list flex min-w-0 flex-col", hidden && "hidden")}
+      data-testid="mail-list"
+    >
       {head}
-      <div className="relative flex shrink-0 flex-wrap items-center gap-1.5 px-3 pt-1 pb-2">
+      <FilterRow>
         {searchBox}
-        <Button
-          variant="outline"
-          className={cn("h-8 w-8 rounded-[9px] border-input bg-card px-0 font-normal", selecting && "bg-muted")}
-          onClick={() => (selecting ? stopSelecting() : setSelecting(true))}
-          aria-pressed={selecting}
-          aria-label={t`Select mails`}
-          title={t`Select mails (X)`}
-          data-testid="select-mails"
-        >
-          <SquareCheckBigIcon />
-        </Button>
         <OperatorList s={suggest} />
         <SearchError error={list.error} className="w-full" />
-      </div>
-      {inTrash && <TrashStrip onEmpty={(n) => trashTools.emptyTrash(n)} busy={trashTools.pending} />}
-      <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto pb-3" data-testid="list">
-        {list.isPending ? (
-          <div className="grid gap-1.5 px-4 py-2">
-            {[0, 1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="flex items-start gap-3 py-2">
-                <Skeleton className="size-9 rounded-full" />
-                <div className="flex flex-1 flex-col gap-1.5">
-                  <Skeleton className="h-3 w-[45%]" />
-                  <Skeleton className="h-3 w-4/5" />
-                  <Skeleton className="h-3 w-[95%]" />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : rows.length === 0 && !hasNextPage ? (
-          <div className="flex flex-col items-start gap-1.5 px-6 py-10" data-testid="list-empty">
-            <p className="text-body text-muted-foreground">
+      </FilterRow>
+      {inTrash && (
+        <div className="mt-3 [&>*]:mx-0">
+          <TrashStrip onEmpty={(n) => trashTools.emptyTrash(n)} busy={trashTools.pending} />
+        </div>
+      )}
+      <div ref={scroller} data-testid="list">
+        <ListBox
+          bar={
+            selecting && (
+              <BulkBar
+                picked={picked}
+                total={rows.length}
+                onToggleAll={() => (allPicked ? stopSelecting() : setSelected(new Set(rows.map((c) => c.id))))}
+                onCancel={stopSelecting}
+                busy={busy}
+              >
+                {bulkActions}
+              </BulkBar>
+            )
+          }
+          testId="list-box"
+        >
+          {list.isPending ? (
+            <ListBoxSkeleton />
+          ) : rows.length === 0 && !hasNextPage ? (
+            <ListBoxEmpty testId="list-empty">
               {q ? <Trans>No mail matches your search.</Trans> : empty[folder]}
-            </p>
-          </div>
-        ) : (
-          rows.map((c) => (
-            <Row
-              key={c.id}
-              c={c}
-              folder={folder}
-              current={c.id === currentId}
-              cursor={c.id === cursorId}
-              selecting={selecting}
-              checked={selected.has(c.id)}
-              showInbox={box === "all"}
-              scheduledAt={folder === "scheduled" ? c.scheduled_at : undefined}
-              onOpen={(range) => (selecting ? toggle(c.id, range) : onOpen(c.id))}
-              onStar={() => star([c.id], !c.starred)}
-            />
-          ))
-        )}
+            </ListBoxEmpty>
+          ) : (
+            rows.map(mailRow)
+          )}
+          {isFetchingNextPage && <ListBoxSkeleton rows={1} />}
+        </ListBox>
         <div ref={sentinel} className="h-px" />
-        {isFetchingNextPage && (
-          <div className="flex items-center gap-3 px-5 py-2">
-            <Skeleton className="size-9 rounded-full" />
-            <Skeleton className="h-4 w-1/2" />
-          </div>
-        )}
-        <ErrorLine error={isSearchError(list.error) ? null : list.error} className="px-4 py-2" />
+        <ErrorLine error={isSearchError(list.error) ? null : list.error} className="py-2" />
       </div>
-      {selecting && selection}
-      {confirmDialog}
+      <KeyHints
+        items={[
+          [[SHORTCUTS.next, SHORTCUTS.previous], <Trans key="move">move</Trans>],
+          [
+            ["↵"],
+            <Trans key="open" context="keyboard hint">
+              open
+            </Trans>,
+          ],
+          [[MAIL_KEYS.select], <Trans key="select">select</Trans>],
+          [[MAIL_KEYS.archive], <Trans key="archive">archive</Trans>],
+          [[MAIL_KEYS.star], <Trans key="star">star</Trans>],
+          [[MAIL_KEYS.compose], <Trans key="compose">new mail</Trans>],
+        ]}
+      />
       {trashTools.dialogs}
     </nav>
   )

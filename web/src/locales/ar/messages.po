@@ -48,6 +48,11 @@ msgstr "«هل كانت هذه الصفحة مفيدة؟» والملاحظات 
 msgid "(no subject)"
 msgstr "(بلا موضوع)"
 
+#. placeholder {0}: u.count
+#: src/features/home/HomeWork.tsx
+msgid "{0, plural, one {{name} · # waiting} other {{name} · # waiting}}"
+msgstr "{0, plural, one {{name} · بانتظار الرد: #} other {{name} · بانتظار الرد: #}}"
+
 #. placeholder {0}: msg.attachments
 #: src/features/migrations/ReviewStep.tsx
 msgid "{0, plural, one {# attachment} other {# attachments}}"
@@ -148,7 +153,6 @@ msgid "{0} active today"
 msgstr "{0} نشط اليوم"
 
 #. placeholder {0}: done.length
-#. placeholder {0}: done.size
 #: src/features/inbox/ChatList.tsx
 msgid "{0} closed"
 msgstr "{0} مغلقة"
@@ -733,6 +737,10 @@ msgstr "{n} في اليوم"
 msgid "{n} archived"
 msgstr "تمت أرشفة {n}"
 
+#: src/features/inbox/ChatList.tsx
+msgid "{n} assigned to you"
+msgstr "أُسندت إليك: {n}"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "{n} attempts"
 msgstr "{n} محاولات"
@@ -740,6 +748,10 @@ msgstr "{n} محاولات"
 #: src/features/broadcasts/Overview.tsx
 msgid "{n} broadcasts"
 msgstr "{n} رسالة جماعية"
+
+#: src/features/inbox/ChatList.tsx
+msgid "{n} closed"
+msgstr "أُغلقت: {n}"
 
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatsPage.tsx
@@ -772,6 +784,7 @@ msgstr "أُعيد {n} إلى صندوق الوارد"
 msgid "{n} reports"
 msgstr "{n} بلاغ"
 
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "{n} snoozed, back {when}"
 msgstr "تم تأجيل {n}، يعود {when}"
@@ -961,7 +974,7 @@ msgstr "{percent}%، {sent} من {size}"
 msgid "{person} left the workspace by deleting their account"
 msgstr "غادر {person} مساحة العمل بحذف حسابه"
 
-#: src/features/inbox/ChatList.tsx
+#: src/components/common/ListBox.tsx
 msgid "{picked} selected"
 msgstr "{picked} محدد"
 
@@ -2520,6 +2533,7 @@ msgid "All imports"
 msgstr "كل عمليات الاستيراد"
 
 #: src/app/Palette.tsx
+#: src/features/inbox/ChatsPage.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
@@ -2575,7 +2589,6 @@ msgstr "كل المنتجات"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
@@ -3127,6 +3140,10 @@ msgid "Any state"
 msgstr "أي حالة"
 
 #: src/features/inbox/ChatList.tsx
+msgid "Any status"
+msgstr "أي حالة"
+
+#: src/features/inbox/ChatList.tsx
 msgid "Any team"
 msgstr "أي فريق"
 
@@ -3269,6 +3286,10 @@ msgstr "الموافقة على المنشور المحدد"
 msgid "Approved"
 msgstr "تمت الموافقة"
 
+#: src/features/mail/MailList.tsx
+msgid "archive"
+msgstr "أرشفة"
+
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
@@ -3405,6 +3426,10 @@ msgid "Assign or hand to a teammate"
 msgstr "إسناد أو تسليم إلى زميل"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Assign the selected conversations to me"
+msgstr "إسناد المحادثات المحددة إليّ"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Assign the selected waiting conversation to you"
 msgstr "أسند المحادثة المنتظرة المحددة إليك"
 
@@ -3424,8 +3449,14 @@ msgstr "إسناد إلى فريق"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Assign to me"
 msgstr "إسناد إليّ"
+
+#. placeholder {0}: SHORTCUTS.hand
+#: src/features/inbox/ChatList.tsx
+msgid "Assign to me ({0})"
+msgstr "إسناد إليّ ({0})"
 
 #: src/features/conversation/messages/EventLine.tsx
 msgid "Assigned automatically to {assignee}"
@@ -3445,7 +3476,6 @@ msgid "Assigned to {assignee}, kept by name"
 msgstr "مسندة إلى {assignee}، محفوظ بالاسم"
 
 #: src/features/home/HomePage.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 msgid "Assigned to you"
 msgstr "أُسندت إليك"
@@ -4049,6 +4079,7 @@ msgstr "اسم الحملة"
 #: src/app/Palette.tsx
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
@@ -4072,9 +4103,7 @@ msgstr "اسم الحملة"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/fields/RequiredFieldsHost.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/AddProductDialog.tsx
@@ -4334,6 +4363,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "تغيير نطاق الإرسال يوقف توقيع DKIM حتى تفعّله مجددًا للنطاق الجديد."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
@@ -4554,7 +4584,6 @@ msgid "Choose a workspace"
 msgstr "اختر مساحة عمل"
 
 #: src/features/feedback/FeedbackList.tsx
-#: src/features/inbox/ChatsPage.tsx
 msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
 msgstr "اختر واحدًا من القائمة، أو تنقّل بالسهمين ↑ ↓ وافتحه بـ Enter."
 
@@ -4621,9 +4650,8 @@ msgstr "مسح البحث"
 msgid "Clear the selection"
 msgstr "مسح التحديد"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
 msgstr "مسح التحديد (Esc)"
 
@@ -4690,6 +4718,11 @@ msgctxt "conversation"
 msgid "Close"
 msgstr "إغلاق"
 
+#. placeholder {0}: SHORTCUTS.close
+#: src/features/inbox/ChatList.tsx
+msgid "Close ({0})"
+msgstr "إغلاق ({0})"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Close (E)"
 msgstr "إغلاق (E)"
@@ -4739,6 +4772,14 @@ msgstr "إغلاق البحث"
 msgid "Close the search (Esc)"
 msgstr "إغلاق البحث (Esc)"
 
+#: src/features/inbox/ChatList.tsx
+msgid "close the selected"
+msgstr "إغلاق المحدد"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Close the selected conversations"
+msgstr "إغلاق المحادثات المحددة"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -4755,7 +4796,6 @@ msgstr "أُغلقت قبل الرد"
 msgid "Closed conversations"
 msgstr "المحادثات المغلقة"
 
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "closed today"
 msgstr "أُغلقت اليوم"
@@ -5862,6 +5902,7 @@ msgstr "المفوَّضون"
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
+#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
@@ -7282,7 +7323,6 @@ msgstr "سيتم تسجيل الخروج من جميع المتصفحات وال
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
 msgstr "كل المنتجات"
@@ -7325,10 +7365,6 @@ msgstr "يعرض كل موقع وتطبيق زواره في الرئيسية و�
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
 msgstr "الجميع"
-
-#: src/features/inbox/ChatsPage.tsx
-msgid "Everyone has been answered."
-msgstr "تم الرد على الجميع."
 
 #: src/features/broadcasts/Import.tsx
 msgid "Everyone in this file agreed to receive {listName} from {inboxName}, and I can show how and when if asked."
@@ -7629,7 +7665,6 @@ msgstr "مملوء بقيم نموذجية."
 msgid "Filled with the values of {who}"
 msgstr "مملوء بقيم {who}"
 
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter"
 msgstr "تصفية"
@@ -7664,7 +7699,6 @@ msgstr "تصفية الرسائل المشابهة لهذه"
 
 #: src/app/places.tsx
 #: src/features/mail/MailFiltersPage.tsx
-#: src/features/mail/MailPage.tsx
 msgid "Filters"
 msgstr "المرشّحات"
 
@@ -7803,7 +7837,6 @@ msgid "Fix the address or the channel's SMTP settings, then send the reply again
 msgstr "أصلح العنوان أو إعدادات SMTP للقناة، ثم أرسل الرد مجددًا."
 
 #: src/app/places.tsx
-#: src/features/mail/MailPage.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "Folders"
@@ -10352,10 +10385,6 @@ msgstr "صندوق البريد"
 msgid "Mailbox address"
 msgstr "عنوان صندوق البريد"
 
-#: src/features/mail/MailPage.tsx
-msgid "Mailbox: {name}"
-msgstr "صندوق البريد: {name}"
-
 #: src/app/places.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -10493,8 +10522,13 @@ msgid "Mark as read"
 msgstr "تمييز كمقروء"
 
 #: src/features/mail/MailList.tsx
-msgid "Mark as read or unread (U)"
-msgstr "تمييز كمقروء أو غير مقروء (U)"
+msgid "Mark as read (U)"
+msgstr "تمييز كمقروء (U)"
+
+#. placeholder {0}: SHORTCUTS.unread
+#: src/features/inbox/ChatList.tsx
+msgid "Mark as read or unread ({0})"
+msgstr "تمييز كمقروء أو غير مقروء ({0})"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/docs/discussions/Bulk.tsx
@@ -10509,6 +10543,7 @@ msgstr "تمييز كرسالة غير مرغوبة"
 msgid "Mark as unread"
 msgstr "تمييز كغير مقروء"
 
+#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Mark as unread (U)"
 msgstr "تمييز كغير مقروء (U)"
@@ -10524,6 +10559,10 @@ msgstr "تمييز كرسالة غير مرغوبة أو إلغاء التميي
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected conversations as not spam, in Spam"
 msgstr "وضع علامة «ليس رسالة غير مرغوبة» على المحادثات المحددة في الرسائل غير المرغوبة"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Mark the selected conversations as read or unread"
+msgstr "تمييز المحادثات المحددة كمقروءة أو غير مقروءة"
 
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Mark the selected discussions as spam ({n})?"
@@ -10618,10 +10657,6 @@ msgstr "الوسيط"
 #: src/features/status/IncidentDetail.tsx
 msgid "median {median}"
 msgstr "الوسيط {median}"
-
-#: src/features/inbox/ChatsPage.tsx
-msgid "median first reply"
-msgstr "الوسيط للرد الأول"
 
 #: src/features/reports/ReportPages.tsx
 msgid "median today"
@@ -10988,9 +11023,13 @@ msgstr "الأكثر تقييمًا ثم الملاحظات المفتوحة ث�
 msgid "Most votes"
 msgstr "الأكثر تصويتًا"
 
-#. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+msgid "move"
+msgstr "تنقل"
+
+#. placeholder {0}: ids.length
+#: src/features/inbox/ChatList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "هل تريد نقل {0} إلى المهملات؟"
 
@@ -11126,7 +11165,6 @@ msgstr "النقل إلى المرحلة السابقة أو التالية"
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
@@ -11421,7 +11459,6 @@ msgstr "أُنشئت جهات اتصال جديدة"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactSheet.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/ChatsPage.tsx
 msgid "New conversation"
 msgstr "محادثة جديدة"
@@ -11535,13 +11572,16 @@ msgstr "قائمة جديدة"
 msgid "New macro"
 msgstr "ماكرو جديد"
 
+#: src/features/mail/MailList.tsx
+msgid "new mail"
+msgstr "رسالة جديدة"
+
 #: src/features/mail/Compose.tsx
 #: src/features/mail/MailPage.tsx
 msgid "New mail"
 msgstr "رسالة جديدة"
 
 #: src/app/places.tsx
-#: src/features/mail/MailPage.tsx
 msgid "New mailbox"
 msgstr "صندوق جديد"
 
@@ -13296,6 +13336,12 @@ msgstr "يراه فريقك فقط."
 msgid "open"
 msgstr "مفتوحة"
 
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "فتح"
+
 #: src/components/common/text.ts
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -14235,10 +14281,6 @@ msgstr "اختر لونًا"
 msgid "Pick a contact"
 msgstr "اختر جهة اتصال"
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "Pick a conversation"
-msgstr "اختر محادثة"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Pick a CSV file, or drop it here"
 msgstr "اختر ملف CSV، أو أفلته هنا"
@@ -14381,17 +14423,9 @@ msgstr "اختر نطاقًا واحدًا على الأقل."
 msgid "Pick at least one."
 msgstr "اختر واحدًا على الأقل."
 
-#: src/features/inbox/ChatList.tsx
-msgid "Pick conversations"
-msgstr "اختر محادثات"
-
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "اختر كل نطاق بنفسك."
-
-#: src/features/mail/MailList.tsx
-msgid "Pick mails"
-msgstr "اختر رسائل"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
@@ -15040,7 +15074,6 @@ msgstr "الوصول"
 msgid "Read"
 msgstr "قراءة"
 
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/ProductsPage.tsx
 msgctxt "mailbox access"
@@ -15051,7 +15084,6 @@ msgstr "قراءة"
 msgid "Read analytics properties and their numbers"
 msgstr "قراءة مواقع التحليلات وأرقامها"
 
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Read and send"
@@ -15753,7 +15785,6 @@ msgstr "الردود على الرسائل التي أرسلناها"
 msgid "Replies to this address are refused until you clear it."
 msgstr "تُرفض الردود على هذا العنوان إلى أن تمسحه."
 
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "replies today"
 msgstr "ردود اليوم"
@@ -16036,10 +16067,6 @@ msgstr "زمن الاستجابة، آخر 24 ساعة"
 #: src/features/reports/TrendsReport.tsx
 msgid "Response times"
 msgstr "أزمنة الرد"
-
-#: src/features/inbox/ChatList.tsx
-msgid "Rest of the team"
-msgstr "بقية الفريق"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -16348,10 +16375,6 @@ msgstr "الرضا"
 msgid "Satisfied"
 msgstr "راضون"
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "satisfied · 👍 {good} 👎 {bad}"
-msgstr "راضون · 👍 {good} 👎 {bad}"
-
 #: src/components/common/text.ts
 msgid "Saturday"
 msgstr "السبت"
@@ -16623,11 +16646,14 @@ msgstr "Screenshots attached"
 msgid "SDK"
 msgstr "SDK"
 
+#: src/features/inbox/ChatList.tsx
+msgid "search"
+msgstr "بحث"
+
 #: src/app/Palette.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
-#: src/features/inbox/ChatList.tsx
 msgid "Search"
 msgstr "بحث"
 
@@ -16727,6 +16753,10 @@ msgstr "ابحث عن أشخاص أو إجراءات أو إعدادات"
 msgid "Search people, actions or settings…"
 msgstr "ابحث عن أشخاص أو إجراءات أو إعدادات…"
 
+#: src/features/inbox/ChatList.tsx
+msgid "Search people, subjects, messages"
+msgstr "ابحث في الأشخاص والمواضيع والرسائل"
+
 #: src/features/broadcasts/Report.tsx
 msgid "Search recipients"
 msgstr "البحث في المستلمين"
@@ -16783,32 +16813,25 @@ msgstr "شوهد {seen}"
 msgid "Seen by the monitor"
 msgstr "رآه المراقب"
 
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "select"
+msgstr "تحديد"
+
 #: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "اختيار"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
 msgid "Select {name}"
 msgstr "تحديد {name}"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Select all"
 msgstr "تحديد الكل"
-
-#: src/features/inbox/ChatList.tsx
-msgid "Select conversations"
-msgstr "حدّد محادثات"
-
-#: src/features/mail/MailList.tsx
-msgid "Select mails"
-msgstr "تحديد رسائل"
-
-#: src/features/mail/MailList.tsx
-msgid "Select mails (X)"
-msgstr "تحديد رسائل (X)"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the contact under the cursor"
@@ -16827,13 +16850,11 @@ msgid "Select the previous or next block"
 msgstr "تحديد الكتلة السابقة أو التالية"
 
 #: src/components/common/Selection.tsx
-#: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "المحدد: {picked}"
 
+#: src/components/common/ListBox.tsx
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 msgid "Selection"
 msgstr "التحديد"
 
@@ -17492,10 +17513,6 @@ msgstr "جارٍ الإعداد…"
 msgid "Settings"
 msgstr "الإعدادات"
 
-#: src/features/inbox/ChatList.tsx
-msgid "Settings ({mod},)"
-msgstr "الإعدادات ({mod},)"
-
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "Settings (JSON)"
@@ -17534,10 +17551,6 @@ msgstr "صناديق بريد مشتركة لفريقك"
 #: src/components/common/MailboxOwnerChoice.tsx
 msgid "Shared with the team"
 msgstr "مشترك مع الفريق"
-
-#: src/features/mail/MailPage.tsx
-msgid "Shared with you"
-msgstr "مشترك معك"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -18166,6 +18179,7 @@ msgstr "مضيف SMTP"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
@@ -18365,6 +18379,10 @@ msgid "Stage"
 msgstr "المرحلة"
 
 #: src/features/mail/MailList.tsx
+msgid "star"
+msgstr "نجمة"
+
+#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Star"
@@ -18552,6 +18570,7 @@ msgstr "الحالة عند التوقف"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 #: src/features/migrations/MapStep.tsx
@@ -18935,7 +18954,6 @@ msgstr "معرّف الفريق"
 
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
-#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/workspace/FocusForm.tsx
 #: src/features/setup/SetupHub.tsx
@@ -21021,7 +21039,6 @@ msgid "Tracker"
 msgstr "Tracker"
 
 #: src/features/inbox/ChatList.tsx
-#: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/parts.tsx
 msgid "Trash"
@@ -21996,10 +22013,6 @@ msgstr "في الانتظار"
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "في انتظار حد {provider}؛ يتابع في {waiting}."
 
-#: src/features/inbox/ChatList.tsx
-msgid "Waiting for a teammate"
-msgstr "في انتظار زميل متاح"
-
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Waiting for an available teammate since {since}"
@@ -22394,10 +22407,6 @@ msgstr "عندما يذكرك مرشّح صندوق بريد في بريد وص�
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "عندما تبقى رسالة مجدولة مسودة لأنها رُفضت."
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "When a new message arrives, it will be in the list."
-msgstr "عندما تصل رسالة جديدة ستظهر في القائمة."
-
 #: src/features/settings/notifications/events.ts
 msgid "When a teammate adds you to a note with @."
 msgstr "عندما يذكرك زميل في ملاحظة بـ @."
@@ -22432,6 +22441,7 @@ msgstr "عند الإيقاف، لا تكتب مفاتيح API إلا المسو
 msgid "When should it come back?"
 msgstr "متى يجب أن تعود؟"
 
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "When should they come back?"
 msgstr "متى يجب أن تعود؟"
@@ -22907,10 +22917,6 @@ msgstr "يمكنك قراءة هذا الصندوق لكن لا يمكنك تغ�
 msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
 msgstr "يمكنك استعادتها من المهملات خلال 30 يومًا، ثم تُحذف نهائيًا مع رسائلها وملفاتها."
 
-#: src/features/mail/MailList.tsx
-msgid "You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
-msgstr "يمكنك استعادتها من المهملات خلال 30 يومًا، ثم تُحذف جميعها نهائيًا مع رسائلها وملفاتها."
-
 #: src/features/account/ConnectPage.tsx
 msgid "You can then write, vote and follow discussions there. The team behind {host} sees your name and e-mail address when you write; other readers see only your name."
 msgstr "يمكنك بعد ذلك الكتابة والتصويت ومتابعة النقاشات هناك. يرى الفريق وراء {host} اسمك وعنوان بريدك الإلكتروني عندما تكتب؛ ويرى القرّاء الآخرون اسمك فقط."
@@ -23121,10 +23127,6 @@ msgstr "مزوّد بريدك أو خادم SMTP الخاص بك"
 #: src/features/migrations/Wizard.tsx
 msgid "Your mailbox"
 msgstr "صندوق بريدك"
-
-#: src/features/mail/MailPage.tsx
-msgid "Your mailboxes"
-msgstr "صناديقك"
 
 #: src/features/migrations/text.ts
 msgid "Your Microsoft 365 organization lets only an admin consent to apps. Send your admin the link below; once they accept, sign in again."
