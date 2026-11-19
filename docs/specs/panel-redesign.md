@@ -214,9 +214,7 @@ Data, checked against the contract before M41.2:
 
 Each step is one session and one commit (or a few). Each step ends with:
 - the `web/` check from CLAUDE.md;
-- English, Turkish and German strings through Lingui;
-- device-tester screenshots at 1440 and 390 wide, in light and dark, of every page the step
-  touched.
+- English, Turkish and German strings through Lingui.
 
 - **M41.1 Shell.**
   - Header and section sidebar layout replace the rail and the list column, using the `Sidebar`

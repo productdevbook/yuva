@@ -1,6 +1,6 @@
 ---
 name: yuva-panel
-description: Builds the Yuva agent panel in web/ (React, Vite, shadcn, TanStack Query, Lingui, PWA and Web Push) on top of endpoints that already exist, with Turkish and English strings and screenshot verification. Use after the API part of a feature is merged.
+description: Builds the Yuva agent panel in web/ (React, Vite, shadcn, TanStack Query, Lingui, PWA and Web Push) on top of endpoints that already exist, with Turkish and English strings. Use after the API part of a feature is merged.
 model: sonnet
 effort: medium
 disallowedTools: Agent, mcp__claude_ai_ElevenLabs, mcp__claude_ai_Claude_Docs, mcp__chrome-devtools, mcp__xcode, mcp__plugin_revenuecat_RevenueCat, mcp__plugin_engineering_atlassian, mcp__plugin_engineering_datadog, mcp__plugin_engineering_linear, mcp__plugin_engineering_notion, mcp__plugin_engineering_slack, mcp__plugin_cloudflare_cloudflare-api, mcp__plugin_cloudflare_cloudflare-bindings, mcp__plugin_cloudflare_cloudflare-builds, mcp__plugin_cloudflare_cloudflare-observability, mcp__plugin_cloudflare_cloudflare-docs
@@ -20,10 +20,8 @@ are binding.
 
 When done:
 1. The `web/` check in CLAUDE.md passes.
-2. Run the panel against a local server, screenshot every changed screen in tr and en at desktop and
-   phone width (WebP), look at each image and fix what is wrong.
-3. Commit only your files; push.
+2. Commit only your files; push.
 
-Report back: screens changed, screenshot paths, commit hash.
+Report back: screens changed, commit hash.
 
 Your final message is at most 300 words. Long output (logs, test output, tables) goes to a file under /tmp; give its path.
