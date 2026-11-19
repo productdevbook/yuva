@@ -1448,7 +1448,7 @@ msgstr "Konverzace"
 msgid "A conversation can copy at most 100 people."
 msgstr "V konverzaci může být v kopii nejvýše 100 lidí."
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
 msgstr "Konverzaci nelze zavřít, dokud toto pole nemá hodnotu. Spam je vyňat."
 
@@ -1468,7 +1468,7 @@ msgstr "Konverzace je neaktivní"
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "Konverzace se bere celá, pokud byla naposledy aktualizována v rozsahu."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "A conversation must match every row you fill in. Leave a row empty to match anything."
 msgstr "Konverzace musí odpovídat každému vyplněnému řádku. Prázdný řádek odpovídá všemu."
 
@@ -1739,7 +1739,7 @@ msgstr "Procento vedle každé komponenty."
 msgid "A personal API key from Linear, under Settings, Account, Security and access."
 msgstr "A personal API key from Linear, under Settings, Account, Security and access."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "A policy that is off applies to nothing."
 msgstr "Vypnutá politika se nevztahuje na nic."
 
@@ -1799,7 +1799,7 @@ msgstr "Povinné pole je prázdné"
 msgid "A roadmap idea moved to another stage"
 msgstr "Nápad z plánu vývoje přešel do další fáze"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "A rule that is off never runs. Rules run in the order of the list."
 msgstr "Vypnuté pravidlo se nikdy nespustí. Pravidla se spouštějí v pořadí seznamu."
 
@@ -1974,10 +1974,6 @@ msgstr "Přístup k {provider}"
 msgid "Access to the mailbox"
 msgstr "Přístup ke schránce"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Access to your mailbox: none"
-msgstr "Přístup k vaší schránce: žádný"
-
 #: src/features/account/AccountPage.tsx
 msgid "Account"
 msgstr "Účet"
@@ -2002,7 +1998,7 @@ msgstr "Acme Support"
 msgid "ACS URL"
 msgstr "ACS URL"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Actions"
@@ -2017,6 +2013,7 @@ msgstr "Jen akce"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/text.ts
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
@@ -2032,7 +2029,7 @@ msgstr "Aktivita"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "Přidat"
@@ -2050,7 +2047,7 @@ msgstr "Přidat blok"
 msgid "Add a category"
 msgstr "Přidat kategorii"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Add a channel"
 msgstr "Přidat kanál"
 
@@ -2099,7 +2096,7 @@ msgstr "Přidat účastníka podle e-mailové adresy"
 msgid "Add a passkey"
 msgstr "Přidat přístupový klíč"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Add a product"
 msgstr "Přidat produkt"
 
@@ -2137,7 +2134,7 @@ msgstr "Přidejte chat na web v nastavení schránky"
 msgid "Add a website or app"
 msgstr "Přidat web nebo aplikaci"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Add an action"
 msgstr "Přidat akci"
 
@@ -2154,6 +2151,10 @@ msgstr "Přidejte na svém serveru adresu a vyberte události, o kterých ji má
 #: src/app/Palette.tsx
 msgid "Add an analytics property"
 msgstr "Přidat analytickou vlastnost"
+
+#: src/features/settings/channels/ApiChannelForm.tsx
+msgid "Add an API channel"
+msgstr "Přidat kanál API"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add an image"
@@ -2184,7 +2185,6 @@ msgstr "Přidat další"
 msgid "Add at least one origin."
 msgstr "Přidejte alespoň jeden origin."
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Add channel"
 msgstr "Přidat kanál"
@@ -2194,7 +2194,7 @@ msgstr "Přidat kanál"
 msgid "Add component"
 msgstr "Přidat komponentu"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Add condition"
 msgstr "Přidat podmínku"
 
@@ -2228,6 +2228,10 @@ msgstr "Add image"
 #: src/features/mail/Compose.tsx
 msgid "Add it back"
 msgstr "Add it back"
+
+#: src/features/settings/labels/LabelForm.tsx
+msgid "Add label"
+msgstr "Přidat štítek"
 
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
@@ -2386,6 +2390,7 @@ msgid "Address verified"
 msgstr "Adresa ověřena"
 
 #: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Addresses"
 msgstr "Adresy"
 
@@ -2496,6 +2501,7 @@ msgid "All good"
 msgstr "Vše v pořádku"
 
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/MigrationsPage.tsx
 msgid "All imports"
 msgstr "Všechny importy"
 
@@ -2881,10 +2887,6 @@ msgstr "Pozvánka se přijme, když se osoba přihlásí kódem zaslaným na tut
 msgid "An issue URL, owner/repo#12 or ENG-123."
 msgstr "An issue URL, owner/repo#12 or ENG-123."
 
-#: src/features/migrations/MigrationsPage.tsx
-msgid "An mbox export of a mailbox"
-msgstr "Export mbox poštovní schránky"
-
 #: src/features/team/TeamPage.tsx
 msgid "An owner cannot be removed. Change their role first."
 msgstr "Vlastníka nelze odebrat. Nejdřív mu změňte roli."
@@ -2960,7 +2962,7 @@ msgstr "Jiný účet"
 msgid "Another address this channel receives mail at. Forward a mailbox here, for example {own} at its provider; forwarding to {own} itself would loop."
 msgstr "Další adresa, na které tento kanál přijímá poštu. Přeposílejte sem schránku, například {own} u jejího poskytovatele; přeposílání na samotné {own} by vytvořilo smyčku."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 msgid "Another canned reply already uses this shortcut."
 msgstr "Tuto zkratku už používá jiná předpřipravená odpověď."
 
@@ -3092,7 +3094,7 @@ msgstr "Libovolné pole"
 msgid "Any label"
 msgstr "Libovolný štítek"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Any of the labels you pick."
 msgstr "Kterýkoli z vybraných štítků."
 
@@ -3137,15 +3139,11 @@ msgstr "Cokoli, co tento klíč používá, okamžitě přestane fungovat."
 msgid "API"
 msgstr "API"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "API & MCP"
 msgstr "API a MCP"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "API channel"
 msgstr "Kanál API"
 
@@ -3158,7 +3156,6 @@ msgstr "Klíč API"
 #: src/app/Palette.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "API keys"
 msgstr "Klíče API"
@@ -3222,8 +3219,8 @@ msgstr "ID aplikace (klienta)"
 msgid "Applied"
 msgstr "Použito"
 
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Applies to"
 msgstr "Platí pro"
 
@@ -3450,7 +3447,7 @@ msgstr "Přiřazeno vám"
 
 #: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Assignee"
 msgstr "Přiřazená osoba"
 
@@ -3486,7 +3483,7 @@ msgid "Assistants work in Yuva through MCP, acting as the member who connected t
 msgstr "Asistenti pracují v Yuvě přes MCP jako člen, který je připojil, a jen s přístupem, který tento člen schválil."
 
 #: src/components/common/text.ts
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Async"
 msgstr "Asynchronní"
 
@@ -3585,7 +3582,6 @@ msgid "Audience"
 msgstr "Publikum"
 
 #: src/app/Palette.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Audit log"
 msgstr "Auditní protokol"
@@ -3618,7 +3614,6 @@ msgstr "Automatické přiřazení"
 msgid "Automatic mail never triggers an automatic reply."
 msgstr "Automatická pošta nikdy nespustí automatickou odpověď."
 
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Automation"
 msgstr "Automatizace"
@@ -3766,7 +3761,7 @@ msgstr "Best regards,"
 msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
 msgstr "Od 1 do 500, počítáno v celém pracovním prostoru. Ruční přiřazení to ignoruje. Nechte prázdné pro bez limitu."
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Billing"
 msgstr "Fakturace"
@@ -3776,7 +3771,7 @@ msgstr "Fakturace"
 msgid "Billing bot"
 msgstr "Fakturační bot"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 msgid "Billing events"
 msgstr "Fakturační události"
 
@@ -3924,17 +3919,13 @@ msgstr "Porušeno"
 msgid "Breached, met late at {at}"
 msgstr "Porušeno, splněno se zpožděním v {at}"
 
-#: src/features/settings/SettingsFrame.tsx
-msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
-msgstr "Přeneste historii schránky z Gmailu, Yandexu nebo jakéhokoli serveru IMAP"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Bring subscribers who already agreed elsewhere. Each address is checked first and nothing is added until you start: invalid addresses, domains that take no mail, role addresses, duplicates and anyone who left or objected are left out."
 msgstr "Přeneste odběratele, kteří už souhlasili jinde. Každá adresa se nejprve zkontroluje a nic se nepřidá, dokud nezačnete: neplatné adresy, domény, které nepřijímají poštu, funkční adresy, duplicity a ti, kdo odešli nebo vznesli námitku, se vynechají."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Bring the history of a mailbox you answer from today, then switch its mail over. Yuva only reads the mailbox; nothing there is changed."
-msgstr "Přeneste historii schránky, ze které dnes odpovídáte, a pak přepněte její poštu. Yuva schránku jen čte; nic v ní se nezmění."
+msgid "Bring the history of a mailbox or help desk you answer from today, then switch its mail over. Yuva only reads the source; nothing there is changed."
+msgstr "Přeneste historii schránky nebo helpdesku, ze kterého dnes odpovídáte, a pak přesměrujte jeho poštu. Yuva zdroj jen čte; nic se v něm nemění."
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Bring your old mail"
@@ -3949,7 +3940,6 @@ msgstr "Hromadná zpráva"
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/settings/workspace/BroadcastsSettings.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Broadcast sending"
 msgstr "Hromadné odesílání"
 
@@ -4047,13 +4037,9 @@ msgstr "Název kampaně"
 #: src/features/docs/FromDocs.tsx
 #: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
-#: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -4136,8 +4122,6 @@ msgstr "Zrušeno. Co bylo přidáno dříve, zůstává."
 #: src/app/Palette.tsx
 #: src/features/conversation/composer/CannedMenu.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Canned replies"
 msgstr "Předpřipravené odpovědi"
 
@@ -4291,10 +4275,6 @@ msgstr "Změnil(a) webhook na {host}"
 msgid "Changelog settings"
 msgstr "Nastavení seznamu změn"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Changes made to {provider}: none"
-msgstr "Změny provedené u {provider}: žádné"
-
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
 msgstr "Změny členů, klíčů, webhooků a dalších citlivých nastavení se zobrazí zde."
@@ -4308,14 +4288,14 @@ msgstr "Změna odesílací domény vypne podepisování DKIM, dokud ho pro novou
 #: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
 msgid "Channel"
 msgstr "Kanál"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Channel added"
 msgstr "Kanál přidán"
 
@@ -4339,14 +4319,8 @@ msgstr "Kanál odebrán"
 msgid "Channel settings"
 msgstr "Nastavení kanálu"
 
-#: src/app/places.tsx
-#: src/components/common/SettingsStrip.tsx
-#: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Channels"
 msgstr "Kanály"
 
@@ -4450,7 +4424,7 @@ msgstr "Zkontrolováno {when}"
 msgid "Checked and waiting for an owner or admin to start it."
 msgstr "Zkontrolováno a čeká, až to vlastník nebo správce spustí."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Checked every 5 minutes, once per quiet period. Only open and pending conversations."
 msgstr "Kontroluje se každých 5 minut, jednou za klidové období. Jen otevřené a čekající konverzace."
 
@@ -4649,7 +4623,6 @@ msgstr "Hodiny se mění {date}; hodiny zůstávají {start}–{end} místního 
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -4689,7 +4662,7 @@ msgstr "Po odpovědi každou konverzaci zavřít"
 msgid "Close everything"
 msgstr "Zavřít všechno"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Close idle conversations"
 msgstr "Zavírat neaktivní konverzace"
 
@@ -4777,11 +4750,11 @@ msgstr "Sbalit"
 msgid "Collections"
 msgstr "Kolekce"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Color"
 msgstr "Barva"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/colors.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Colour"
@@ -4972,7 +4945,6 @@ msgstr "Connect a tracker"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
 msgid "Connect an assistant"
 msgstr "Připojit asistenta"
 
@@ -5038,12 +5010,10 @@ msgid "Connected {created}"
 msgstr "Připojeno {created}"
 
 #: src/app/Palette.tsx
-#: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
+#: src/features/settings/connected-apps/AssistantPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Connected apps"
 msgstr "Připojené aplikace"
 
@@ -5181,7 +5151,6 @@ msgstr "obsahuje"
 
 #: src/app/places.tsx
 #: src/features/broadcasts/Composer.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Content"
 msgstr "Obsah"
 
@@ -5197,7 +5166,7 @@ msgstr "Obsah"
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
 #: src/features/setup/email/EmailReceiveStep.tsx
@@ -5256,7 +5225,6 @@ msgstr "Konverzace zahájena"
 msgid "conversations"
 msgstr "konverzací"
 
-#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
@@ -5271,6 +5239,7 @@ msgstr "konverzací"
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Conversations"
 msgstr "Konverzace"
@@ -5341,7 +5310,6 @@ msgstr "adresa v kopii"
 #: src/components/common/CopyButton.tsx
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/messages/MessageActions.tsx
-#: src/features/migrations/Wizard.tsx
 msgid "Copy"
 msgstr "Kopírovat"
 
@@ -5394,6 +5362,10 @@ msgstr "Zkopírovat podrobnosti zpětné vazby"
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Copy the feedback details (Y)"
 msgstr "Kopírovat podrobnosti zpětné vazby (Y)"
+
+#: src/features/migrations/Wizard.tsx
+msgid "Copy the history of a mailbox or help desk into Yuva."
+msgstr "Zkopírujte historii schránky nebo helpdesku do Yuvy."
 
 #: src/features/migrations/text.ts
 msgid "Copy the key under “Your API Key”. A Freshdesk key cannot be limited to reading; Yuva's connection only sends read requests."
@@ -5459,7 +5431,6 @@ msgid "Counts when a subscription becomes confirmed, not when it is still waitin
 msgstr "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/DeveloperTabs.tsx
 msgid "Create"
 msgstr "Vytvořit"
 
@@ -5492,7 +5463,7 @@ msgstr "Create an issue"
 msgid "Create an OAuth client in Zendesk"
 msgstr "Vytvořit klienta OAuth v Zendesk"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Create and add a channel"
 msgstr "Vytvořit a přidat kanál"
 
@@ -5516,11 +5487,11 @@ msgstr "Vytvořit kanál"
 msgid "Create draft"
 msgstr "Vytvořit koncept"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Create field"
 msgstr "Vytvořit pole"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Create filter"
 msgstr "Vytvořit filtr"
 
@@ -5554,11 +5525,11 @@ msgstr "Vytvořit klíč"
 msgid "Create list"
 msgstr "Vytvořit skupinu"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Create policy"
 msgstr "Vytvořit politiku"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Create rule"
 msgstr "Vytvořit pravidlo"
 
@@ -5619,9 +5590,7 @@ msgstr "Vytvářet, měnit, řadit a mazat pravidla automatizace"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Created"
 msgstr "Vytvořeno"
 
@@ -5690,11 +5659,6 @@ msgstr "Vlastní"
 msgid "Custom field"
 msgstr "Vlastní pole"
 
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "Custom fields"
-msgstr "Vlastní pole"
-
 #: src/features/contact/ContactsPage.tsx
 msgid "Customers"
 msgstr "Zákazníci"
@@ -5725,7 +5689,6 @@ msgid "Daily limit reached · continues at {time} {city} time"
 msgstr "Denní limit dosažen · pokračuje v {time} času {city}"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Danger zone"
 msgstr "Nebezpečná zóna"
 
@@ -6075,10 +6038,6 @@ msgstr "Smazat tým {name}?"
 msgid "Delete the view {name}?"
 msgstr "Smazat pohled {name}?"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-msgid "Delete this canned reply?"
-msgstr "Smazat tuto předpřipravenou odpověď?"
-
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Delete this DKIM key?"
 msgstr "Smazat tento klíč DKIM?"
@@ -6102,6 +6061,10 @@ msgstr "Smazat tuto poznámku"
 #: src/features/contact/ContactNotes.tsx
 msgid "Delete this note?"
 msgstr "Smazat tuto poznámku?"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "Delete this saved reply?"
+msgstr "Smazat tuto uloženou odpověď?"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete this subscription?"
@@ -6302,7 +6265,6 @@ msgstr "Oznámení na ploše jsou pro tento web zablokována v nastavení prohl�
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
@@ -6310,8 +6272,11 @@ msgstr "Oznámení na ploše jsou pro tento web zablokována v nastavení prohl�
 msgid "Details"
 msgstr "Podrobnosti"
 
-#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsFrame.tsx
+msgid "Developer"
+msgstr "Vývojář"
+
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Developers"
 msgstr "Vývojáři"
 
@@ -6519,7 +6484,7 @@ msgstr "Docs jsou stránky, které vedete na vlastním webu a sami hostujete. Ja
 msgid "Documentation pages"
 msgstr "Stránky dokumentace"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Documentation site"
 msgstr "Dokumentační web"
@@ -6555,7 +6520,6 @@ msgstr "hotovo"
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/fields/BulkFailures.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -6738,7 +6702,7 @@ msgstr "Duplicity"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/notifications/EventsSection.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -6816,7 +6780,7 @@ msgstr "Kód poslaný e-mailem"
 msgid "E-mails to the people who signed up"
 msgstr "E-maily lidem, kteří se přihlásili"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
 msgstr "Každá akce jednou, nejvýše 10. Akce se provedou jako jedna změna; když jedna selže, neprovede se žádná."
 
@@ -6919,10 +6883,6 @@ msgstr "Upravit {name}"
 msgid "Edit API key"
 msgstr "Upravit klíč API"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-msgid "Edit canned reply"
-msgstr "Upravit předpřipravenou odpověď"
-
 #: src/features/status/ComponentForms.tsx
 msgid "Edit component"
 msgstr "Upravit komponentu"
@@ -6940,11 +6900,11 @@ msgstr "Upravit podrobnosti"
 msgid "Edit details ({editKey})"
 msgstr "Upravit podrobnosti ({editKey})"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Edit field"
 msgstr "Upravit pole"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Edit filter"
 msgstr "Upravit filtr"
 
@@ -6952,11 +6912,11 @@ msgstr "Upravit filtr"
 msgid "Edit help center collections and article drafts"
 msgstr "Úprava kolekcí centra nápovědy a konceptů článků"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Edit label"
 msgstr "Upravit štítek"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Edit macro"
 msgstr "Upravit makro"
 
@@ -6964,13 +6924,17 @@ msgstr "Upravit makro"
 msgid "Edit monitor"
 msgstr "Upravit monitor"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Edit policy"
 msgstr "Upravit politiku"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Edit rule"
 msgstr "Upravit pravidlo"
+
+#: src/features/settings/canned/CannedReplyForm.tsx
+msgid "Edit saved reply"
+msgstr "Upravit uloženou odpověď"
 
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Edit team"
@@ -7036,11 +7000,6 @@ msgstr "Úprava zprávy naplánované na {editingWhen}"
 msgid "Elevated API errors"
 msgstr "Zvýšený počet chyb API"
 
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "Elsewhere in settings"
-msgstr "Jinde v nastavení"
-
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Embed snippet"
 msgstr "Vkládací kód"
@@ -7070,8 +7029,8 @@ msgstr "Prázdné použije předmět v jazyce {baseLanguage}. Slučovací pole f
 msgid "Emptying the Trash: {0} are being deleted"
 msgstr "Koš se vysypává: maže se {0}"
 
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Enabled"
 msgstr "Zapnuto"
 
@@ -7243,7 +7202,7 @@ msgid "Every imported conversation is closed."
 msgstr "Každá importovaná konverzace je uzavřena."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Every inbox"
 msgstr "Každá schránka"
 
@@ -7319,7 +7278,7 @@ msgstr "Každý web a aplikace zobrazuje své návštěvníky na Domů a v Analy
 
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Everyone"
 msgstr "Všichni"
 
@@ -7469,7 +7428,6 @@ msgstr "Extra scopes"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/migrations/ConnectStep.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7584,6 +7542,7 @@ msgstr "Nejméně otevřených konverzací"
 
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Fields"
 msgstr "Pole"
 
@@ -7602,10 +7561,6 @@ msgstr "Soubor"
 #: src/features/broadcasts/Import.tsx
 msgid "File and consent"
 msgstr "Soubor a souhlas"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Files"
-msgstr "Soubory"
 
 #: src/features/fields/RequiredFieldsHost.tsx
 msgid "Fill in before closing"
@@ -7739,6 +7694,7 @@ msgstr "Dokončit bez kontroly"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/migrations/MigrationsPage.tsx
 msgid "Finished"
 msgstr "Dokončeno"
 
@@ -7766,7 +7722,7 @@ msgstr "první odpověď"
 #: src/features/home/HomeWork.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "First reply"
 msgstr "První odpověď"
 
@@ -7882,7 +7838,7 @@ msgid "For example Acme"
 msgstr "Například Acme"
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/setup/NameStep.tsx
 msgid "For example Fieldnote"
 msgstr "Například Fieldnote"
@@ -8071,15 +8027,15 @@ msgstr "Adresa odesílatele (volitelné)"
 msgid "From blocked contacts"
 msgstr "Od zablokovaných kontaktů"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From each later contact message to the reply."
 msgstr "Od každé další zprávy kontaktu do odpovědi."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From the contact's first message to the first public reply."
 msgstr "Od první zprávy kontaktu do první veřejné odpovědi."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From the start of the conversation to its first close."
 msgstr "Od začátku konverzace do jejího prvního uzavření."
 
@@ -8144,9 +8100,7 @@ msgstr "Dal(a) uživateli {person} přístup k {inbox}"
 msgid "Gave the team {team} access to {inbox}"
 msgstr "Dal(a) týmu {team} přístup k {inbox}"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/channels/sections.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "General"
@@ -8213,10 +8167,6 @@ msgstr "Gmail přeposílá jen novou poštu, která není spam. Pokud správce W
 #: src/features/migrations/ConnectStep.tsx
 msgid "Gmail lets other apps read about 1.5 GB a day over IMAP, so a mailbox of many gigabytes takes days. Google Takeout exports it as one file that uploads as fast as your connection allows. Import that first, then come back here with an app password for the newer mail and the switch."
 msgstr "Gmail nechá jiné aplikace číst asi 1,5 GB denně přes IMAP, takže schránka o mnoha gigabajtech trvá dny. Google Takeout ji exportuje jako jeden soubor, který se nahraje tak rychle, jak vaše připojení dovolí. Importujte ho nejdřív a pak se vraťte sem s heslem aplikace pro novější poštu a přepnutí."
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Gmail, Outlook, Yandex, any IMAP server"
-msgstr "Gmail, Outlook, Yandex, jakýkoli server IMAP"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "go back to operational when you post this"
@@ -8316,10 +8266,6 @@ msgstr "Groups attribute"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
 msgstr "Groups claim"
-
-#: src/features/settings/SettingsFrame.tsx
-msgid "Groups of members and the inboxes they cover"
-msgstr "Skupiny členů a schránky, které pokrývají"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -8436,10 +8382,6 @@ msgstr "Centrum nápovědy"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Help center settings"
 msgstr "Nastavení centra nápovědy"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Help desks"
-msgstr "Helpdesky"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Help report"
@@ -8580,7 +8522,7 @@ msgid "Hostname and certificate"
 msgstr "Název hostitele a certifikát"
 
 #: src/features/broadcasts/Trigger.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "hours"
 msgstr "hodiny"
 
@@ -8605,7 +8547,7 @@ msgstr "Jak souhlasili vaši odběratelé?"
 msgid "How do people sign up?"
 msgstr "Jak se lidé přihlašují?"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "How do you answer?"
 msgstr "Jak odpovídáte?"
 
@@ -8629,7 +8571,6 @@ msgstr "O kolik se signál smí zpozdit."
 msgid "How mail reaches Yuva"
 msgstr "Jak pošta dorazí do Yuvy"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "How messages arrive: chat, e-mail, apps"
 msgstr "Jak zprávy přicházejí: chat, e-mail, aplikace"
@@ -8641,10 +8582,6 @@ msgstr "Jak zprávy doputují ke každému produktu"
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "How should replies go out?"
 msgstr "Jak mají odpovědi odcházet?"
-
-#: src/components/common/SettingsStrip.tsx
-msgid "How software connects: keys, hooks, assistants"
-msgstr "Jak se připojuje software: klíče, webhooky, asistenti"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "How the chat opens"
@@ -8728,7 +8665,7 @@ msgstr "Neaktivní {idle} min"
 msgid "If {provider} mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "Pokud {provider} pošle na tuto adresu potvrzení, dorazí do této schránky jako konverzace; otevřete ji tam."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "If all of these match"
 msgstr "Pokud se shodují všechny tyto"
 
@@ -8821,11 +8758,11 @@ msgid "Import people"
 msgstr "Importovat lidi"
 
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Import steps"
 msgstr "Kroky importu"
 
 #: src/components/common/ImportedChip.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 msgid "Imported"
 msgstr "Importováno"
@@ -8856,6 +8793,8 @@ msgstr "Importuje se…"
 
 #: src/app/nav.tsx
 #: src/app/places.tsx
+#: src/features/migrations/Wizard.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Imports"
 msgstr "Importy"
 
@@ -9018,7 +8957,7 @@ msgstr "V Zoho Mail otevřete Settings › Mail accounts › IMAP access a zapn�
 #: src/features/docs/InstallDialog.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "Schránka"
@@ -9051,10 +8990,15 @@ msgstr "Schránka pro {name}"
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Inboxes"
 msgstr "Schránky"
+
+#: src/features/settings/ProductsPage.tsx
+#: src/features/settings/SettingsFrame.tsx
+msgid "Inboxes and channels"
+msgstr "Schránky a kanály"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Inboxes cut off subjects longer than 80 characters."
@@ -9477,7 +9421,7 @@ msgstr "Uchovává se u každého odběru z tohoto souboru jako záznam jejich s
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Key"
 msgstr "Klíč"
 
@@ -9517,12 +9461,6 @@ msgstr "Klíče a připojené aplikace"
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
 msgstr "Klíče, které se dostanou k tomuto produktu. Vytvářejte je a odvolávejte v API a MCP."
 
-#: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
-#: src/features/settings/webhooks/WebhooksPage.tsx
-msgid "Keys, webhooks and connected assistants"
-msgstr "Klíče, webhooky a připojení asistenti"
-
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Keyword"
 msgstr "Klíčové slovo"
@@ -9558,10 +9496,9 @@ msgstr "Jen štítek: jeho pošta pochází z Veškeré pošty a jeho konverzace
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Labels"
 msgstr "Štítky"
 
@@ -9762,7 +9699,7 @@ msgstr "Barva tlačítka chatu"
 msgid "Launcher position"
 msgstr "Umístění tlačítka chatu"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Leave as is"
 msgstr "Ponechat beze změny"
 
@@ -10075,7 +10012,7 @@ msgid "Live"
 msgstr "Živě"
 
 #: src/components/common/Source.tsx
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Live chat"
 msgstr "Živý chat"
 
@@ -10197,8 +10134,8 @@ msgstr "Nízká"
 msgid "Lowercase letters, digits and dashes, not at the start or end."
 msgstr "Malá písmena, číslice a pomlčky, ne na začátku ani na konci."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Lowercase letters, digits and dashes."
 msgstr "Malá písmena, číslice a pomlčky."
 
@@ -10213,7 +10150,6 @@ msgid "Macro"
 msgstr "Makro"
 
 #: src/app/Palette.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Macros"
 msgstr "Makra"
@@ -10345,7 +10281,6 @@ msgstr "Adresa schránky"
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
-#: src/features/migrations/MigrationsPage.tsx
 msgid "Mailboxes"
 msgstr "Schránky"
 
@@ -10452,10 +10387,6 @@ msgstr "Spravovat webhooky"
 #: src/features/settings/webhooks/parts.tsx
 msgid "manual"
 msgstr "ručně"
-
-#: src/features/migrations/Wizard.tsx
-msgid "Map"
-msgstr "Mapovat"
 
 #: src/app/Header.tsx
 #: src/features/account/AccountPage.tsx
@@ -10636,7 +10567,6 @@ msgstr "Člen"
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/teams/TeamsPage.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "Členové"
@@ -10827,10 +10757,6 @@ msgstr "Token Microsoftu uděluje víc než čtení pošty přes IMAP, takže ho
 msgid "Migration cancelled"
 msgstr "Migrace zrušena"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Migration steps"
-msgstr "Kroky migrace"
-
 #: src/features/inbox/ChatList.tsx
 msgid "Mine"
 msgstr "Moje"
@@ -10841,7 +10767,7 @@ msgstr "Malý"
 
 #: src/features/broadcasts/Trigger.tsx
 #: src/features/settings/automation/ActionRow.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "minutes"
 msgstr "minuty"
 
@@ -10849,7 +10775,7 @@ msgstr "minuty"
 msgid "Minutes"
 msgstr "Minuty"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Minutes before a due time. 0 sends no warning."
 msgstr "Minuty před termínem. 0 neposílá upozornění."
 
@@ -10858,7 +10784,7 @@ msgid "Missed beat"
 msgstr "Zmeškaný signál"
 
 #: src/components/common/text.ts
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/app/AppFields.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Mobile app"
@@ -11158,12 +11084,6 @@ msgstr "Přesunout do koše ({0})"
 msgid "Move to the Trash (#)"
 msgstr "Přesunout do koše (#)"
 
-#: src/features/migrations/Wizard.tsx
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "Move to Yuva"
-msgstr "Přejít na Yuvu"
-
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11202,8 +11122,8 @@ msgid "Moves the mail to the Trash. Runs after the other actions."
 msgstr "Přesune e-mail do koše. Spustí se po ostatních akcích."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
-msgstr "Přecházíte z Gmailu, Google Workspace, Yandexu, iCloudu, Zoho, Yahoo, Fastmailu, GMX nebo z jakéhokoli serveru IMAP? Yuva zkopíruje historii schránky do schránky, tiše a od nejnovější, zatímco váš tým dál pracuje. Pak poštu přesměrujete sem a mezitím se nic neztratí."
+msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX, any IMAP server or another help desk? Yuva copies the history into an inbox, newest first, while your team keeps working."
+msgstr "Přecházíte z Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX, jakéhokoli serveru IMAP nebo jiného helpdesku? Yuva zkopíruje historii do schránky, nejnovější nejdřív, zatímco váš tým dál pracuje."
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Moving the idea to Planned, In progress or Shipped sets this for linked feedback that has no progress yet."
@@ -11247,20 +11167,19 @@ msgstr "Moje pohledy"
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
-#: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -11300,6 +11219,10 @@ msgstr "Pojmenujte ji Yuva. V části <0>Connection</0> zvolte <1>Public endpoin
 #: src/features/migrations/MapStep.tsx
 msgid "Name of the new inbox"
 msgstr "Název nové schránky"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Name, closed conversations and broadcast sending"
+msgstr "Název, uzavřené konverzace a odesílání hromadných e-mailů"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Name, colour and the first thing the chat says"
@@ -11411,11 +11334,6 @@ msgstr "Nový článek"
 msgid "New broadcast"
 msgstr "Nová hromadná zpráva"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
-msgid "New canned reply"
-msgstr "Nová předpřipravená odpověď"
-
 #: src/components/common/ShortcutSheet.tsx
 msgid "New collection"
 msgstr "Nová kolekce"
@@ -11484,12 +11402,13 @@ msgstr "nové diskuse"
 msgid "New entry"
 msgstr "Nový záznam"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 msgid "New field"
 msgstr "Nové pole"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/mail/FilterDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New filter"
 msgstr "Nový filtr"
@@ -11508,6 +11427,8 @@ msgid "New identity secret"
 msgstr "Nový tajný klíč identity"
 
 #: src/app/places.tsx
+#: src/features/migrations/MigrationsPage.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "New import"
 msgstr "Nový import"
 
@@ -11532,7 +11453,7 @@ msgstr "Nový incident"
 msgid "New incident ({incidentKey})"
 msgstr "Nový incident ({incidentKey})"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "New label"
 msgstr "Nový štítek"
@@ -11546,7 +11467,7 @@ msgstr "Nový štítek „{folder}“"
 msgid "New list"
 msgstr "Nová skupina"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "New macro"
 msgstr "Nové makro"
@@ -11577,10 +11498,6 @@ msgstr "Nová zpráva v konverzaci přiřazené mně"
 msgid "New message in an unassigned conversation"
 msgstr "Nová zpráva v nepřiřazené konverzaci"
 
-#: src/features/migrations/MigrationsPage.tsx
-msgid "New migration"
-msgstr "Nová migrace"
-
 #: src/features/status/MonitorsPage.tsx
 msgid "new monitor"
 msgstr "nový monitor"
@@ -11601,7 +11518,7 @@ msgstr "Nový vlastník schránky {boxName}"
 msgid "New password"
 msgstr "Nové heslo"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "New policy"
 msgstr "Nová politika"
@@ -11610,10 +11527,15 @@ msgstr "Nová politika"
 msgid "New reply in <0>{title}</0>"
 msgstr "Nová odpověď v <0>{title}</0>"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "Nové pravidlo"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+msgid "New saved reply"
+msgstr "Nová uložená odpověď"
 
 #: src/features/settings/webhooks/sections.tsx
 msgid "New signing secret"
@@ -11720,7 +11642,7 @@ msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "Další zpráva {local} ({utc} UTC), tempem této hromadné zprávy."
 
 #: src/features/conversation/SlaPopover.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Next reply"
 msgstr "Další odpověď"
 
@@ -11731,10 +11653,6 @@ msgstr "Další odpověď {next}"
 #: src/features/feedback/Lightbox.tsx
 msgid "Next screenshot"
 msgstr "Další snímek obrazovky"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Next you pick the source and connect it. Nothing is copied until you start."
-msgstr "Potom vyberete zdroj a připojíte ho. Nic se nekopíruje, dokud nespustíte."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Next, choose what to bring. The scan reads the file once."
@@ -11825,10 +11743,6 @@ msgstr "Zatím nebylo odesláno žádné rozeslání."
 msgid "No broadcasts yet"
 msgstr "Zatím žádné hromadné zprávy"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-msgid "No canned replies yet"
-msgstr "Zatím žádné předpřipravené odpovědi"
-
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "No canned replies yet. Add them in settings."
 msgstr "Zatím žádné předpřipravené odpovědi. Přidejte je v nastavení."
@@ -11879,7 +11793,7 @@ msgstr "Zatím žádné komponenty. Na kartě Komponenty přidejte části produ
 msgid "No components yet. Add the parts of your product that customers depend on."
 msgstr "Zatím žádné komponenty. Přidejte části produktu, na kterých zákazníci závisejí."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "No conditions: the rule runs for every conversation the trigger fits."
 msgstr "Žádné podmínky: pravidlo se spustí pro každou konverzaci, na kterou spouštěč sedí."
 
@@ -12060,6 +11974,10 @@ msgstr "Zatím žádná ID. Tato osoba nebyla identifikována žádnou aplikací
 #: src/features/status/text.tsx
 msgid "No impact"
 msgstr "Bez dopadu"
+
+#: src/features/migrations/MigrationsPage.tsx
+msgid "No imports match this filter."
+msgstr "Tomuto filtru neodpovídá žádný import."
 
 #: src/features/broadcasts/Import.tsx
 msgid "No imports yet."
@@ -12244,6 +12162,10 @@ msgstr "Zatím žádná pravidla."
 #: src/features/settings/automation/RunLog.tsx
 msgid "No runs in the last 30 days."
 msgstr "Žádná spuštění za posledních 30 dnů."
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "No saved replies yet"
+msgstr "Zatím žádné uložené odpovědi"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "No secret yet. Make one, then paste it into GitHub."
@@ -12667,7 +12589,7 @@ msgstr "Nejde o totéž"
 msgid "Not there after a minute? Look in your spam or junk folder, or send a new code below."
 msgstr "Po minutě nedorazilo? Podívejte se do složky se spamem nebo si níže vyžádejte nový kód."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Not tracked"
 msgstr "Nesleduje se"
 
@@ -13034,11 +12956,6 @@ msgstr "V tarifech Team a Enterprise ho vlastník přidá jednou v <0>Organizati
 msgid "On the web"
 msgstr "Na webu"
 
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "On this page"
-msgstr "Na této stránce"
-
 #: src/components/common/SlaBadge.tsx
 msgid "On track"
 msgstr "V termínu"
@@ -13056,7 +12973,7 @@ msgstr "Až testovací zpráva dorazí, Yuva počká {hours} hodin. Pokud za tu 
 msgid "One e-mail a month about what is new."
 msgstr "Jeden e-mail měsíčně o novinkách."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "Jedna schránka"
@@ -13073,7 +12990,7 @@ msgstr "One mail to each person, a set time after they sign in"
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Jeden na řádek, 1 až 20. Widget mohou používat jen stránky z těchto originů."
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "One per line, all different, at most 100."
 msgstr "Jedna na řádek, všechny různé, nejvýše 100."
 
@@ -13200,7 +13117,7 @@ msgid "Only mail since {date}"
 msgstr "Jen pošta od {date}"
 
 #: src/features/inbox/views/ViewDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Only me"
 msgstr "Jen já"
 
@@ -13702,7 +13619,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "Volitelné. Prvních 64 KiB odpovědi ho musí obsahovat; záleží na velikosti písmen."
 
 #: src/features/broadcasts/Composer.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Options"
 msgstr "Možnosti"
 
@@ -13742,7 +13659,7 @@ msgstr "Nebo nahrajte exportní soubor"
 msgid "Order and view"
 msgstr "Pořadí a zobrazení"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Order number"
 msgstr "Číslo objednávky"
 
@@ -13839,7 +13756,6 @@ msgid "Own tenant"
 msgstr "Vlastní tenant"
 
 #: src/components/common/text.ts
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Owner"
 msgstr "Vlastník"
 
@@ -14241,7 +14157,7 @@ msgstr "Vyberte připravenou odpověď"
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "Vyberte chatový kanál produktu a vložte kód. Hodnocení a otázky přijdou do jeho schránky."
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Pick a color"
 msgstr "Vyberte barvu"
 
@@ -14345,7 +14261,7 @@ msgid "Pick an endpoint"
 msgstr "Vyberte koncový bod"
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Pick an inbox"
 msgstr "Vyberte schránku"
 
@@ -14436,7 +14352,7 @@ msgstr "Vyberte druhý kontakt. Sloučí se s tímto a poté se smaže."
 msgid "Pick the platforms; the next step shows the lines to add to each app."
 msgstr "Vyberte platformy; další krok ukáže řádky k přidání do každé aplikace."
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Pick the product and how customers reach it. The next steps set it up."
 msgstr "Vyberte produkt a jak se k němu zákazníci dostanou. Další kroky ho nastaví."
 
@@ -14607,7 +14523,7 @@ msgstr "Připravuje se"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/status/PreviewDialog.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Preview"
@@ -14671,12 +14587,12 @@ msgstr "Předchozí snímek obrazovky"
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Priority"
 msgstr "Priorita"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Priority customers"
 msgstr "Prioritní zákazníci"
 
@@ -14707,19 +14623,17 @@ msgstr "pro, tým"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageForm.tsx
 #: src/features/status/IncidentForm.tsx
 msgid "Product"
 msgstr "Produkt"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/setup/NameStep.tsx
 msgid "Product name"
 msgstr "Název produktu"
@@ -14729,7 +14643,6 @@ msgstr "Název produktu"
 msgid "Product news"
 msgstr "Novinky o produktu"
 
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Product settings"
@@ -14744,7 +14657,6 @@ msgstr "Produkce"
 msgid "Production backend"
 msgstr "Produkční backend"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomeSide.tsx
@@ -14755,7 +14667,6 @@ msgstr "Produkční backend"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Products"
 msgstr "Produkty"
@@ -14992,7 +14903,7 @@ msgstr "Ve frontě. Nový pokus se za okamžik zobrazí níže."
 msgid "Quick cleanup"
 msgstr "Rychlý úklid"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Quiet for (minutes)"
 msgstr "Klid po dobu (minuty)"
 
@@ -15165,11 +15076,6 @@ msgstr "Přečteno, aby se navrhly adresy vašeho týmu: jeho pošta pochází z
 msgid "Read What's new changelogs and their entries"
 msgstr "Číst přehledy Novinek a jejich záznamy"
 
-#: src/features/migrations/MigrationsPage.tsx
-#: src/features/migrations/Wizard.tsx
-msgid "Read-only"
-msgstr "Jen pro čtení"
-
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/account/ConnectPage.tsx
 msgid "Reader"
@@ -15327,11 +15233,11 @@ msgstr "Reference"
 msgid "Refresh"
 msgstr "Obnovit"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Refund"
 msgstr "Vrácení peněz"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Refund approved"
 msgstr "Vrácení peněz schváleno"
 
@@ -15379,7 +15285,7 @@ msgstr "Vzdálené obrázky mohou odesílateli prozradit, že jste zprávu otev�
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -15601,7 +15507,7 @@ msgstr "Odebral(a) poznámku z konverzace"
 msgid "Removed by {who}"
 msgstr "Odebral(a): {who}"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "Odebrané možnosti se vymažou ze všech konverzací, které je mají. Probíhá to na pozadí."
 
@@ -15854,6 +15760,10 @@ msgstr "Text odpovědi"
 msgid "Reply time"
 msgstr "Doba odpovědi"
 
+#: src/features/settings/SettingsFrame.tsx
+msgid "Reply times"
+msgstr "Doby odezvy"
+
 #: src/features/conversation/BroadcastLine.tsx
 msgid "Reply to {name}"
 msgstr "Odpovědět uživateli {name}"
@@ -15960,7 +15870,7 @@ msgstr "Dopad na reputaci"
 msgid "Require single sign-on"
 msgstr "Require single sign-on"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 msgid "Required to close"
 msgstr "Povinné k zavření"
@@ -15982,7 +15892,7 @@ msgid "Reset to defaults"
 msgstr "Obnovit výchozí"
 
 #: src/features/conversation/SlaPopover.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Resolution"
 msgstr "Vyřešení"
 
@@ -16122,7 +16032,6 @@ msgstr "Vrací vás na"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Import.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Review"
 msgstr "Přehled"
@@ -16203,7 +16112,6 @@ msgstr "Hned po přihlášení k odběru lidé dostanou krátkou zprávu, která
 msgid "Roadmap"
 msgstr "Plán vývoje"
 
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Role"
 msgstr "Role"
@@ -16294,7 +16202,6 @@ msgstr "Pravidlo {rule} se spustilo, nebylo co měnit"
 msgid "Rule {rule} ran: {done}"
 msgstr "Pravidlo {rule} se spustilo: {done}"
 
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Rules"
 msgstr "Pravidla"
@@ -16365,16 +16272,16 @@ msgstr "Sobota"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/channels/ApiChannelDialog.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/signature/SignaturePage.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/ui.tsx
@@ -16461,6 +16368,10 @@ msgstr "Uložit seznam jako pohled"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "Uloženo"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Saved replies"
+msgstr "Uložené odpovědi"
 
 #: src/app/ViewsGroup.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
@@ -17536,13 +17447,12 @@ msgstr "Nastavuje se…"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "Nastavení"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "Settings (JSON)"
 msgstr "Nastavení (JSON)"
@@ -17585,8 +17495,8 @@ msgstr "Sdílená s týmem"
 msgid "Shipped"
 msgstr "Dodáno"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Shortcut"
 msgstr "Zkratka"
 
@@ -17597,6 +17507,7 @@ msgstr "Zkratka"
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -18029,7 +17940,6 @@ msgstr "Jednoduché potvrzení"
 
 #: src/app/Palette.tsx
 #: src/features/settings/profile/Sessions.tsx
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
 msgstr "Single sign-on"
@@ -18131,11 +18041,6 @@ msgstr "SLA splněno"
 msgid "SLA met / breached"
 msgstr "SLA splněno / porušeno"
 
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "SLA policies"
-msgstr "Politiky SLA"
-
 #: src/features/conversation/SlaPopover.tsx
 msgid "SLA targets (W)"
 msgstr "Cíle SLA (W)"
@@ -18223,7 +18128,7 @@ msgstr "Odložit (B)"
 msgid "Snooze (S)"
 msgstr "Odložit (S)"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Snooze for (minutes)"
 msgstr "Odložit na (minuty)"
 
@@ -18411,6 +18316,10 @@ msgstr "SPF, DKIM nebo DMARC je třeba zkontrolovat"
 msgid "Split by"
 msgstr "Rozdělit podle"
 
+#: src/features/settings/SettingsFrame.tsx
+msgid "SSO"
+msgstr "SSO"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
 msgstr "Fáze"
@@ -18468,7 +18377,7 @@ msgstr "označeno vámi hvězdičkou"
 msgid "Stars the mail for you."
 msgstr "Označí e-mail hvězdičkou pro vás."
 
-#: src/features/migrations/MigrationsPage.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Start"
 msgstr "Začít"
 
@@ -18487,6 +18396,10 @@ msgstr "Zahájit diskusi"
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Start a mailing list"
 msgstr "Založit e-mailovou skupinu"
+
+#: src/features/migrations/MigrationsPage.tsx
+msgid "Start an import"
+msgstr "Zahájit import"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "Start conversation"
@@ -18570,7 +18483,6 @@ msgstr "Starts when a change to the person’s attributes makes them match, and 
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (port 587)"
 
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
@@ -18612,7 +18524,7 @@ msgstr "Stav při výpadku"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
 #: src/features/team/TeamPage.tsx
@@ -18874,10 +18786,6 @@ msgstr "Pozastaveno"
 msgid "Suspended broadcasts"
 msgstr "Pozastavil(a) hromadné zprávy"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Switch"
-msgstr "Přepnout"
-
 #: src/features/migrations/SwitchStep.tsx
 msgid "Switch your mail to Yuva"
 msgstr "Přepněte svou poštu do Yuvy"
@@ -18934,11 +18842,11 @@ msgstr "Znovu přijímá přihlášky a vrací seznam do výběru publika rozesl
 msgid "Taking the recipients: {prepared} so far"
 msgstr "Určují se příjemci: zatím {prepared}"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Targets"
 msgstr "Cíle"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Targets count in the business hours of the conversation's inbox, in its time zone. Leave one empty to not track it; at least one is required."
 msgstr "Cíle se počítají v pracovní době a časovém pásmu schránky konverzace. Jeden nechte prázdný, aby se nesledoval; alespoň jeden je povinný."
 
@@ -19031,7 +18939,6 @@ msgstr "kolega@firma.cz"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/features/conversation/HeaderActions.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -19075,9 +18982,9 @@ msgstr "Testy jdou jen členům pracovního prostoru, nejvýše pěti najednou, 
 
 #: src/features/fields/value.ts
 #: src/features/settings/automation/ConditionRow.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Text"
 msgstr "Text"
 
@@ -19089,7 +18996,7 @@ msgstr "Text naposledy uložil(a) {who}"
 msgid "Thanks for waiting. Your invoice is on its way."
 msgstr "Děkujeme za trpělivost. Vaše faktura je na cestě."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 msgid "Thanks for writing"
 msgstr "Děkujeme, že jste napsali"
 
@@ -19214,12 +19121,12 @@ msgstr "Chat se zobrazí v rohu každé stránky, která má úryvek."
 msgid "The chat bubble appears on these addresses:"
 msgstr "Chatovací bublina se zobrazuje na těchto adresách:"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "The chat shows when you usually reply"
 msgstr "Chat ukazuje, kdy obvykle odpovídáte"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "The chat shows who is available and typing"
 msgstr "Chat ukazuje, kdo je dostupný a píše"
@@ -19601,11 +19508,11 @@ msgstr "Klíč vidí jen tyto schránky a nemůže spravovat schránky, webhooky
 msgid "The key stops working at the end of this day."
 msgstr "Klíč přestane fungovat na konci tohoto dne."
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "The key, the object and the type cannot change after creation."
 msgstr "Klíč, objekt a typ nelze po vytvoření změnit."
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 msgid "The kind cannot be changed later."
 msgstr "Druh nelze později změnit."
 
@@ -19738,7 +19645,7 @@ msgstr "Migrace pokračuje tam, kde přestala."
 msgid "The migration moved on in the meantime. Look at its state and try again."
 msgstr "Migrace mezitím pokročila. Podívejte se na její stav a zkuste to znovu."
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "The next step adds its first channel: website chat, e-mail or a mobile app."
 msgstr "Další krok přidá jeho první kanál: webový chat, e-mail nebo mobilní aplikaci."
 
@@ -20203,10 +20110,6 @@ msgstr "Koncový bod webhooku je vypnutý nebo tu není dostupný"
 msgid "The What’s new count shows on the chat button while no messages are unread. The widget’s Home always shows it."
 msgstr "Počet novinek se zobrazí na tlačítku chatu, dokud nejsou žádné nepřečtené zprávy. Domovská obrazovka widgetu ho ukazuje vždy."
 
-#: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
-msgstr "Samotný pracovní prostor: název, uchování, štítky, hotové odpovědi, stěhování a auditní protokol"
-
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
 msgstr "Pracovní prostor zatím nesmí odesílat hromadné zprávy."
@@ -20214,11 +20117,6 @@ msgstr "Pracovní prostor zatím nesmí odesílat hromadné zprávy."
 #: src/features/status/Notices.tsx
 msgid "The workspace may not send bulk mail now"
 msgstr "Pracovní prostor teď nesmí rozesílat hromadnou poštu"
-
-#: src/components/common/SettingsStrip.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "The workspace: labels, replies, data"
-msgstr "Pracovní prostor: štítky, odpovědi, data"
 
 #: src/components/common/text.ts
 msgid "The zip cannot be read; it may be damaged or cut off. Make it again and upload it."
@@ -20272,7 +20170,7 @@ msgstr "Motiv"
 msgid "Theme and e-mail view on this device"
 msgstr "Motiv a zobrazení e-mailu na tomto zařízení"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Then"
 msgstr "Pak"
 
@@ -20614,7 +20512,7 @@ msgstr "Toto není soubor CSV. Uložte tabulku jako CSV a nahrajte ji."
 msgid "This is not a domain this page can use. Use a name like {example} that is not one of this server’s own addresses."
 msgstr "Tato stránka nemůže tuto doménu použít. Použijte název jako {example}, který není jednou z vlastních adres tohoto serveru."
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "This is not a JSON object."
 msgstr "Toto není objekt JSON."
@@ -20751,7 +20649,7 @@ msgstr "Tato vlastnost už má segment s tímto názvem."
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Tato odpověď se neodešle, dokud vlastník nebo správce neuloží jak toto pravidlo, tak připravenou odpověď {title}, nebo dokud boti nesmějí odesílat v nastavení klíčů API."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Tato odpověď se neodešle, dokud vlastník nebo správce neuloží připravenou odpověď {title}, nebo dokud boti nesmějí odesílat v nastavení klíčů API."
@@ -20966,7 +20864,7 @@ msgstr "Časový limit"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/status/IncidentForm.tsx
 msgid "Title"
 msgstr "Název"
@@ -21097,7 +20995,7 @@ msgstr "Trendy"
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Trigger"
 msgstr "Spouštěč"
 
@@ -21221,8 +21119,7 @@ msgid "TXT record"
 msgstr "Záznam TXT"
 
 #: src/features/inbox/SourceFilter.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Type"
 msgstr "Typ"
 
@@ -21271,7 +21168,7 @@ msgstr "Zrušit přiřazení"
 #: src/features/home/HomeWork.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Unassigned"
 msgstr "Nepřiřazeno"
 
@@ -21345,7 +21242,7 @@ msgid "Unfollowed"
 msgstr "Sledování ukončeno"
 
 #: src/features/broadcasts/Trigger.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Unit"
 msgstr "Jednotka"
 
@@ -21758,9 +21655,9 @@ msgstr "Použijte ho jako token bearer proti tomuto serveru."
 msgid "Use letters, digits, - and _, at most 64."
 msgstr "Použijte písmena, číslice, - a _, nejvýše 64."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Use lowercase letters, digits and single dashes."
 msgstr "Použijte malá písmena, číslice a jednoduché pomlčky."
 
@@ -21914,10 +21811,6 @@ msgstr "Verify"
 #: src/features/settings/webhooks/SignatureHint.tsx
 msgid "Verify every request before trusting it: the <0>webhook-signature</0> header follows the <1>Standard Webhooks</1> specification, so any of its libraries can check it with the endpoint's secret. Go backends can use the <2>sdk/go/webhook</2> package of the Yuva repository."
 msgstr "Každý požadavek ověřte, než mu uvěříte: hlavička <0>webhook-signature</0> se řídí specifikací <1>Standard Webhooks</1>, takže ji kterákoli její knihovna ověří tajným klíčem koncového bodu. Backendy v Go mohou použít balíček <2>sdk/go/webhook</2> z repozitáře Yuvy."
-
-#: src/features/settings/SettingsFrame.tsx
-msgid "Version"
-msgstr "Verze"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Versions"
@@ -22158,7 +22051,7 @@ msgstr "čeká na vás"
 msgid "Warn about the certificate"
 msgstr "Upozornit na certifikát"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Warn before it is due"
 msgstr "Upozornit před termínem"
 
@@ -22218,8 +22111,6 @@ msgstr "Webhook secret for {revealName}"
 
 #: src/app/Palette.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
@@ -22246,7 +22137,7 @@ msgstr "Web"
 msgid "Website addresses"
 msgstr "Adresy webů"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Website chat"
 msgstr "Chat na webu"
@@ -22368,7 +22259,7 @@ msgstr "Co zákazník vidí"
 msgid "What the import will do"
 msgstr "Co import udělá"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "What the team sees."
 msgstr "Co vidí tým."
 
@@ -22414,7 +22305,6 @@ msgstr "What your e-mailed replies end with, per inbox. Chat replies and notes c
 
 #: src/components/common/FocusChoice.tsx
 #: src/features/settings/workspace/FocusForm.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "What Yuva is for"
 msgstr "K čemu je Yuva"
 
@@ -22429,7 +22319,7 @@ msgid "What’s new entry"
 msgstr "Záznam novinek"
 
 #: src/features/broadcasts/ReviewPanel.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "When"
 msgstr "Kdy"
 
@@ -22552,7 +22442,7 @@ msgstr "Where new issues go when nobody picks a team, as a team key such as ENG.
 msgid "Where should Yuva send events?"
 msgstr "Kam má Yuva posílat události?"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
 msgstr "Kam API hodnotu ukládá. Malá písmena, číslice a podtržítka; nelze změnit."
 
@@ -22608,7 +22498,7 @@ msgstr "Kdo odpovídá, kde a kdo je online"
 msgid "Who can reply"
 msgstr "Kdo může odpovídat"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Who can use it"
 msgstr "Kdo ho může používat"
 
@@ -22645,7 +22535,6 @@ msgstr "Kdo odesílá a o čem?"
 msgid "Who should take it?"
 msgstr "Kdo to má převzít?"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Who you support: name, hours, team, sender"
 msgstr "Koho podporujete: název, provozní doba, tým, odesílatel"
@@ -22764,10 +22653,8 @@ msgstr "Pracuje se…"
 #: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/oauth/ConsentPage.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Workspace"
 msgstr "Pracovní prostor"
 
@@ -23074,7 +22961,6 @@ msgid "Your account is not in a group that may use Yuva. Ask your administrator 
 msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 
 #: src/features/settings/addresses/AddressesPage.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Your addresses"
 msgstr "Vaše adresy"
 
@@ -23167,6 +23053,10 @@ msgstr "Vaše organizace Microsoft 365 dovoluje aplikace schvalovat jen správci
 #: src/features/broadcasts/Composer.tsx
 msgid "Your name"
 msgstr "Vaše jméno"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Your name, photo, language and sign-in"
+msgstr "Vaše jméno, fotka, jazyk a přihlášení"
 
 #: src/features/home/HomeWork.tsx
 msgid "Your open conversations"
@@ -23273,10 +23163,6 @@ msgstr "Váš web"
 msgid "Your workspace asks for these fields on every conversation it closes."
 msgstr "Váš pracovní prostor tato pole vyžaduje u každé konverzace, kterou zavírá."
 
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."
-msgstr "Název vašeho pracovního prostoru, jak dlouho se uchovávají uzavřené konverzace a kdo smí odesílat hromadná rozeslání."
-
 #: src/features/account/AccountPage.tsx
 msgid "Your Yuva account"
 msgstr "Váš účet Yuva"
@@ -23367,10 +23253,6 @@ msgstr "Yuva neprovozuje poštovní server: pošta vaší domény se jí předá
 msgid "Yuva held back a command that would have changed the mailbox"
 msgstr "Yuva zadržela příkaz, který by změnil schránku"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Yuva inbox"
-msgstr "Schránka Yuva"
-
 #: src/features/migrations/SwitchStep.tsx
 msgid "Yuva mails {address} a short test message. When it reaches Yuva by the new route, the switch works."
 msgstr "Yuva pošle na {address} krátkou testovací zprávu. Až dorazí do Yuvy novou cestou, přepnutí funguje."
@@ -23402,10 +23284,6 @@ msgstr "Yuva helpdesk jen čte. Historie přichází tiše: žádná oznámení,
 #: src/features/migrations/Wizard.tsx
 msgid "Yuva only reads the mailbox. History arrives quietly: no notifications, no auto-replies."
 msgstr "Yuva schránku jen čte. Historie přichází tiše: žádná oznámení, žádné automatické odpovědi."
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Yuva only reads the source; nothing there is changed."
-msgstr "Yuva zdroj jen čte; nic se v něm nemění."
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Yuva only reads. Besides signing in, its connection sends {provider} nothing but read requests, so no ticket, customer or setting changes."
@@ -23478,7 +23356,3 @@ msgstr "Yuva, přejít na úvod"
 #: src/components/common/text.ts
 msgid "Yuva's own notes cannot be changed."
 msgstr "Vlastní poznámky Yuvy nelze měnit."
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"
-msgstr "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"

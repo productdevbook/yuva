@@ -2,10 +2,9 @@ import { Trans, useLingui } from "@lingui/react/macro"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 
+import { FormCard } from "@/components/common/FormCard"
 import { ErrorLine } from "@/components/common"
 import { useErrorText } from "@/components/common/text"
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
@@ -36,7 +35,7 @@ function parseOptions(text: string) {
     .filter(Boolean)
 }
 
-function Form({
+export function FieldForm({
   field,
   object,
   nextPosition,
@@ -105,12 +104,13 @@ function Form({
     (field.type === "select" && list.join("\n") !== field.options.join("\n"))
 
   return (
-    <form
-      className="flex flex-col gap-5"
-      onSubmit={(e) => {
-        e.preventDefault()
-        save.mutate()
-      }}
+    <FormCard
+      title={field ? <Trans>Edit field</Trans> : <Trans>New field</Trans>}
+      submit={field ? <Trans>Save</Trans> : <Trans>Create field</Trans>}
+      ready={!(save.isPending || name.trim() === "" || !keyValid || !optionsValid || !changed)}
+      onSubmit={() => save.mutate()}
+      onCancel={onClose}
+      testId="field-form"
     >
       <Field label={<Trans>Name</Trans>} htmlFor="field-name" hint={<Trans>What the team sees.</Trans>}>
         <Input
@@ -199,38 +199,6 @@ function Form({
         </ToggleRow>
       )}
       {!keyError && <ErrorLine error={error} />}
-      <DialogFooter>
-        <Button
-          type="submit"
-          disabled={save.isPending || name.trim() === "" || !keyValid || !optionsValid || !changed}
-          data-testid="field-save"
-        >
-          {field ? <Trans>Save</Trans> : <Trans>Create field</Trans>}
-        </Button>
-      </DialogFooter>
-    </form>
-  )
-}
-
-export function FieldDialog({
-  field,
-  object,
-  nextPosition,
-  onClose,
-}: {
-  field: CustomField | null
-  object: CustomFieldObject
-  nextPosition: number
-  onClose: () => void
-}) {
-  return (
-    <Dialog open onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-h-[90svh] overflow-y-auto sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>{field ? <Trans>Edit field</Trans> : <Trans>New field</Trans>}</DialogTitle>
-        </DialogHeader>
-        <Form field={field} object={object} nextPosition={nextPosition} onClose={onClose} />
-      </DialogContent>
-    </Dialog>
+    </FormCard>
   )
 }

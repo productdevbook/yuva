@@ -1,19 +1,16 @@
 import { useLingui } from "@lingui/react/macro"
 import { useQuery } from "@tanstack/react-query"
-import { createContext, useContext, useState } from "react"
-import { createPortal } from "react-dom"
-import { useLocation } from "react-router"
+import { useState } from "react"
 
-import { InfoSection, KV, SectionPage, TopSep, TopSlotProvider } from "@/components/common"
-import { useEnumText } from "@/components/common/text"
+import { PageLayout, TopSlotProvider } from "@/components/common"
 import { useIssueIntegrations } from "@/features/issues/queries"
 import { useMigrations } from "@/features/migrations/queries"
 import { useAutomationRules } from "@/features/settings/automation/queries"
 import { needsAttention } from "@/features/settings/channels/ChannelState"
 import { useGrants } from "@/features/settings/connected-apps/queries"
 import { useInboxChannels } from "@/features/settings/SettingsColumn"
-import { FlatSettingsProvider } from "@/features/settings/ui"
-import { api, unwrap, useVersion } from "@/lib/api"
+import { TitleSlotProvider } from "@/features/settings/ui"
+import { api, unwrap } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 import {
@@ -52,19 +49,32 @@ export type SettingsPlace =
   | "sso"
   | "audit-log"
 
-type GroupKey = "you" | "workspace" | "products" | "content" | "automation" | "developers" | "security"
-
-const GROUPS: [GroupKey, SettingsPlace[]][] = [
-  ["you", ["profile", "signature", "addresses", "notifications", "appearance"]],
-  ["workspace", ["workspace", "members", "teams", "migrations"]],
-  ["products", ["products", "channels"]],
-  ["content", ["labels", "canned-replies", "fields"]],
-  ["automation", ["automation", "macros", "sla"]],
-  ["developers", ["api-keys", "webhooks", "connected-apps", "issue-trackers", "slack"]],
-  ["security", ["sso", "audit-log"]],
+const PLACES: SettingsPlace[] = [
+  "profile",
+  "signature",
+  "addresses",
+  "notifications",
+  "appearance",
+  "workspace",
+  "members",
+  "teams",
+  "migrations",
+  "products",
+  "channels",
+  "labels",
+  "canned-replies",
+  "fields",
+  "automation",
+  "macros",
+  "sla",
+  "api-keys",
+  "webhooks",
+  "connected-apps",
+  "issue-trackers",
+  "slack",
+  "sso",
+  "audit-log",
 ]
-
-const PLACES = GROUPS.flatMap(([, items]) => items)
 
 export function placeOf(pathname: string, search: string): SettingsPlace {
   if (pathname.startsWith("/migrations")) return "migrations"
@@ -74,61 +84,54 @@ export function placeOf(pathname: string, search: string): SettingsPlace {
   return new URLSearchParams(search).get("view") === "channels" ? "channels" : "products"
 }
 
-function groupOf(place: SettingsPlace): GroupKey {
-  return GROUPS.find(([, items]) => items.includes(place))![0]
-}
-
 export function useSettingsNames() {
   const { t } = useLingui()
-  const { canManage } = useSession()
-  const group: Record<GroupKey, string> = {
-    you: t`You`,
+  const group = {
     workspace: t`Workspace`,
-    products: t`Products`,
-    content: t`Content`,
-    automation: t`Automation`,
-    developers: canManage ? t`Developers` : t`API & MCP`,
+    channels: t`Channels`,
+    conversations: t`Conversations`,
+    developer: t`Developer`,
     security: t`Security`,
+    you: t`You`,
   }
   const place: Record<SettingsPlace, string> = {
     profile: t`Profile`,
     signature: t`Signature`,
-    addresses: t`Your addresses`,
+    addresses: t`Addresses`,
     notifications: t`Notifications`,
     appearance: t`Appearance`,
     workspace: t`General`,
     members: t`Members`,
     teams: t`Teams`,
-    migrations: t`Move to Yuva`,
+    migrations: t`Imports`,
     products: t`Products`,
-    channels: t`Channels`,
+    channels: t`Inboxes and channels`,
     labels: t`Labels`,
-    "canned-replies": t`Canned replies`,
-    fields: t`Custom fields`,
-    automation: t`Rules`,
+    "canned-replies": t`Saved replies`,
+    fields: t`Fields`,
+    automation: t`Automation`,
     macros: t`Macros`,
-    sla: t`SLA policies`,
+    sla: t`Reply times`,
     "api-keys": t`API keys`,
     webhooks: t`Webhooks`,
     "connected-apps": t`Connected apps`,
     "issue-trackers": t`Issue trackers`,
     slack: t`Slack`,
-    sso: t`Single sign-on`,
+    sso: t`SSO`,
     "audit-log": t`Audit log`,
   }
   return { group, place }
 }
 
-function useAbout(): Partial<Record<SettingsPlace, string>> {
+export function useSettingsAbout(): Partial<Record<SettingsPlace, string>> {
   const { t } = useLingui()
   return {
+    profile: t`Your name, photo, language and sign-in`,
     signature: t`What your e-mailed replies end with`,
     addresses: t`Send mail from your own address`,
     notifications: t`When we let you know`,
     appearance: t`Theme and e-mail view on this device`,
-    workspace: t`The workspace: labels, replies, data`,
-    teams: t`Groups of members and the inboxes they cover`,
-    migrations: t`Bring a mailbox's history from Gmail, Yandex or any IMAP server`,
+    workspace: t`Name, closed conversations and broadcast sending`,
     products: t`Who you support: name, hours, team, sender`,
     channels: t`How messages arrive: chat, e-mail, apps`,
     labels: t`Sort conversations your way`,
@@ -254,75 +257,14 @@ export const SETTINGS_MANAGERS: SettingsPlace[] = [
 ]
 export const SETTINGS_OWNERS: SettingsPlace[] = ["sso", "audit-log"]
 
-const AsideSlot = createContext<HTMLElement | null>(null)
-
-export function SettingsAside({ children }: { children: React.ReactNode }) {
-  const slot = useContext(AsideSlot)
-  return slot ? createPortal(children, slot) : null
-}
-
-function Aside({ place, slot }: { place: SettingsPlace; slot: (el: HTMLElement | null) => void }) {
-  const { t, i18n } = useLingui()
-  const text = useEnumText()
-  const { membership } = useSession()
-  const names = useSettingsNames()
-  const about = useAbout()[place]
-  const members = useMembers().data
-  const version = useVersion().data?.version
-  const num = new Intl.NumberFormat(i18n.locale)
-  return (
-    <>
-      {about && (
-        <InfoSection title={names.place[place]} testId="settings-about">
-          <p className="m-0 text-small leading-5 text-muted-foreground">{about}</p>
-        </InfoSection>
-      )}
-      <div ref={slot} className="contents" />
-      <InfoSection title={t`Workspace`} testId="settings-workspace-info">
-        <KV label={t`Name`} value={membership.workspace.name} />
-        <KV label={t`Role`} value={text.role[membership.role]} />
-        {members && <KV label={t`Members`} value={num.format(members.length)} to="/team" />}
-        {version && <KV label={t`Version`} value={<span className="font-mono">{version}</span>} />}
-      </InfoSection>
-    </>
-  )
-}
-
-export function SettingsTrail({ place, name }: { place: SettingsPlace; name?: string }) {
-  const { t } = useLingui()
-  const names = useSettingsNames()
-  return (
-    <>
-      <span className="font-medium text-foreground">{t`Settings`}</span>
-      <TopSep />
-      <span className="truncate">{names.group[groupOf(place)]}</span>
-      <TopSep />
-      <span className="truncate">{names.place[place]}</span>
-      {name && (
-        <>
-          <TopSep />
-          <span className="truncate normal-case">{name}</span>
-        </>
-      )}
-    </>
-  )
-}
-
 export function SettingsLayout({ children }: { children: React.ReactNode }) {
   const { t } = useLingui()
-  const { pathname, search } = useLocation()
-  const place = placeOf(pathname, search)
   const [slot, setSlot] = useState<HTMLElement | null>(null)
-  const [top, setTop] = useState<HTMLElement | null>(null)
   return (
-    <SectionPage title={t`Settings`} aside={<Aside place={place} slot={setSlot} />} testId="settings-page">
-      <AsideSlot.Provider value={slot}>
-        <TopSlotProvider value={top}>
-          <FlatSettingsProvider value={{ trail: <SettingsTrail place={place} />, slot: setTop }}>
-            {children}
-          </FlatSettingsProvider>
-        </TopSlotProvider>
-      </AsideSlot.Provider>
-    </SectionPage>
+    <PageLayout testId="settings-page" label={t`Settings`}>
+      <TitleSlotProvider value={setSlot}>
+        <TopSlotProvider value={slot}>{children}</TopSlotProvider>
+      </TitleSlotProvider>
+    </PageLayout>
   )
 }

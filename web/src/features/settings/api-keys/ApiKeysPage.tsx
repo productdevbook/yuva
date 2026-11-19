@@ -5,7 +5,6 @@ import { Navigate } from "react-router"
 
 import { ErrorLine, useConfirm } from "@/components/common"
 import { EmptyBox } from "@/components/common/EmptyBox"
-import { SettingsStrip } from "@/components/common/SettingsStrip"
 import {
   API_KEY_PRESET_SCOPES,
   formatDate,
@@ -18,8 +17,8 @@ import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { ApiKeyDialog } from "@/features/settings/api-keys/ApiKeyDialog"
 import { useWorkspaceSettings } from "@/features/settings/connected-apps/queries"
-import { CreateMenu, DeveloperTabs, DeveloperTitle } from "@/features/settings/DeveloperTabs"
-import { Card, headButton, PageHeader, ProductTag, tableHeadClass, ToggleRow } from "@/features/settings/ui"
+import { DeveloperHeader } from "@/features/settings/DeveloperTabs"
+import { Card, headButton, ProductTag, tableHeadClass, ToggleRow } from "@/features/settings/ui"
 import { useNavigate, useLocation } from "react-router"
 import { api, unwrap, type ApiKey } from "@/lib/api"
 import { keys } from "@/lib/keys"
@@ -225,13 +224,7 @@ export function ApiKeysPage() {
   const nRevoked = revoked.length
   return (
     <>
-      <PageHeader
-        title={<DeveloperTitle />}
-        tabs={<DeveloperTabs current="api-keys" />}
-        description={<Trans>Keys, webhooks and connected assistants</Trans>}
-        action={<CreateMenu current="api-keys" />}
-      />
-      <SettingsStrip current="developer" />
+      <DeveloperHeader current="api-keys" />
       <BotSending />
       {list.data && all.length === 0 ? (
         <EmptyBox

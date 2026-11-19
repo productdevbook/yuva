@@ -2,9 +2,9 @@ import { Trans, useLingui } from "@lingui/react/macro"
 import { useState } from "react"
 
 import { MemberSelect } from "@/components/common/MemberSelect"
+import { RadioChoices } from "@/components/common/RadioChoices"
 import { Field } from "@/features/settings/ui"
 import { useSession } from "@/lib/session"
-import { cn } from "@/lib/utils"
 import { useMembers } from "@/lib/workspace"
 
 type Kind = "team" | "me" | "member"
@@ -54,42 +54,30 @@ export function MailboxOwnerChoice({
   ]
   return (
     <Field label={<Trans>Who reads it?</Trans>}>
-      <div className="flex flex-col gap-2" role="radiogroup" aria-label={t`Who reads it?`}>
-        {items.map((it) => (
-          <button
-            key={it.key}
-            type="button"
-            role="radio"
-            aria-checked={kind === it.key}
-            onClick={() => {
-              setKind(it.key)
-              it.run()
-            }}
-            className={cn(
-              "flex flex-col rounded-xl border px-3.5 py-2.5 text-start outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
-              kind === it.key ? "border-foreground bg-surface" : "hover:border-faint"
-            )}
-            data-testid={`owner-${it.key}`}
-          >
-            <span className="font-medium">{it.title}</span>
-            <span className="text-caption text-faint">{it.hint}</span>
-          </button>
-        ))}
-        {canManage && kind === "member" && (
-          <MemberSelect
-            value={other}
-            onChange={(id) => {
-              setOther(id)
-              onChange(id)
-            }}
-            exclude={[me]}
-            label={t`Member`}
-            placeholder={t`Pick a member`}
-            className="w-full"
-            testId="owner-member"
-          />
-        )}
-      </div>
+      <RadioChoices
+        id="owner"
+        value={kind}
+        onChange={(k) => {
+          setKind(k)
+          items.find((it) => it.key === k)?.run()
+        }}
+        label={t`Who reads it?`}
+        items={items.map((it) => ({ value: it.key, title: it.title, hint: it.hint, testId: `owner-${it.key}` }))}
+      />
+      {canManage && kind === "member" && (
+        <MemberSelect
+          value={other}
+          onChange={(id) => {
+            setOther(id)
+            onChange(id)
+          }}
+          exclude={[me]}
+          label={t`Member`}
+          placeholder={t`Pick a member`}
+          className="w-full"
+          testId="owner-member"
+        />
+      )}
     </Field>
   )
 }

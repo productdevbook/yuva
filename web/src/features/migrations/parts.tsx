@@ -2,7 +2,7 @@ import { Trans, useLingui } from "@lingui/react/macro"
 import { HistoryIcon } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 
-import { Notice, ProgressBar, useConfirm } from "@/components/common"
+import { Notice, useConfirm } from "@/components/common"
 import { formatDate, formatDateTime } from "@/components/common/text"
 import { useNumber } from "@/features/broadcasts/BroadcastParts"
 import {
@@ -13,7 +13,9 @@ import {
   useRemoveHistory,
 } from "@/features/migrations/queries"
 import { isHelpdesk, stateTones, useMigrationText } from "@/features/migrations/text"
-import { StatusTag } from "@/features/settings/ui"
+import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
+import { cn } from "@/lib/utils"
 import type { Migration, MigrationSkipped } from "@/lib/api"
 
 export function isWaiting(m: Migration) {
@@ -29,10 +31,20 @@ export function MigrationStateTag({ m }: { m: Migration }) {
     : m.state === "copying" && m.counts.total > 0
       ? t`Copying ${percent}%`
       : text.state[m.state]
+  const tone = stateTones[m.state]
   return (
-    <StatusTag tone={stateTones[m.state]} data-testid="migration-state" data-state={m.state}>
+    <Badge
+      variant={tone === "danger" ? "destructive" : tone === "muted" ? "secondary" : "outline"}
+      className={cn(
+        "rounded-md",
+        tone === "success" && "border-success/35 text-success",
+        tone === "warning" && "border-warning/40 text-warning"
+      )}
+      data-testid="migration-state"
+      data-state={m.state}
+    >
       {label}
-    </StatusTag>
+    </Badge>
   )
 }
 
@@ -44,19 +56,19 @@ export function MigrationBar({ m, thin }: { m: Migration; thin?: boolean }) {
   const total = num(c.total)
   const percent = percentOf(m)
   const desk = isHelpdesk(m.source)
+  const text =
+    c.total <= 0
+      ? t`Starting`
+      : desk
+        ? t`${percent}%, ${done} of ${total} conversations`
+        : t`${percent}%, ${done} of ${total} messages`
   return (
-    <ProgressBar
-      thin={thin}
-      value={c.total > 0 ? percent : undefined}
-      label={desk ? t`Conversations copied` : t`Messages copied`}
-      text={
-        c.total <= 0
-          ? t`Starting`
-          : desk
-            ? t`${percent}%, ${done} of ${total} conversations`
-            : t`${percent}%, ${done} of ${total} messages`
-      }
-      testId="migration-progress"
+    <Progress
+      value={c.total > 0 ? percent : null}
+      aria-label={desk ? t`Conversations copied` : t`Messages copied`}
+      getAriaValueText={() => text}
+      className={cn(thin && "[&_[data-slot=progress-track]]:h-1")}
+      data-testid="migration-progress"
     />
   )
 }

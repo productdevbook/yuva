@@ -4,17 +4,10 @@ import { useState } from "react"
 import { Navigate } from "react-router"
 
 import { CodeLine, ErrorLine, SecretDialog, toast, useConfirm } from "@/components/common"
+import { FormCard } from "@/components/common/FormCard"
 import { EmptyBox } from "@/components/common/EmptyBox"
 import { formatDateTime } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { PROVIDERS, providerName } from "@/features/issues/providers"
@@ -25,7 +18,7 @@ import { useSession } from "@/lib/session"
 
 type Reveal = { integration: IssueIntegration; secret: string }
 
-function ConnectDialog({ onClose, onSecret }: { onClose: () => void; onSecret: (r: Reveal) => void }) {
+function ConnectForm({ onClose, onSecret }: { onClose: () => void; onSecret: (r: Reveal) => void }) {
   const { t } = useLingui()
   const { connect } = useIssueIntegrationMutations()
   const [provider, setProvider] = useState<IssueProvider>("github")
@@ -52,112 +45,97 @@ function ConnectDialog({ onClose, onSecret }: { onClose: () => void; onSecret: (
       }
     )
   return (
-    <Dialog open onOpenChange={(o) => !o && !connect.isPending && onClose()}>
-      <DialogContent className="max-h-[90svh] overflow-y-auto sm:max-w-xl" data-testid="issue-connect-dialog">
-        <form
-          className="flex flex-col gap-5"
-          onSubmit={(e) => {
-            e.preventDefault()
-            if (token.trim() && !connect.isPending) submit()
-          }}
+    <FormCard
+      title={<Trans>Connect a tracker</Trans>}
+      description={
+        <Trans>
+          Yuva checks the token with the tracker, stores it encrypted and never shows it again. It needs to read and
+          write issues.
+        </Trans>
+      }
+      submit={<Trans>Connect</Trans>}
+      ready={!!token.trim()}
+      busy={connect.isPending}
+      error={connect.error}
+      onSubmit={submit}
+      onCancel={onClose}
+      testId="tracker-connect"
+    >
+      <Field label={<Trans>Tracker</Trans>} htmlFor="tracker-provider">
+        <ChoiceSelect
+          id="tracker-provider"
+          value={provider}
+          onChange={setProvider}
+          options={PROVIDERS.map((p) => [p, providerName(p)] as const)}
+          label={t`Tracker`}
+        />
+      </Field>
+      <Field
+        label={github ? <Trans>Fine-grained token</Trans> : <Trans>API key</Trans>}
+        htmlFor="tracker-token"
+        hint={
+          github ? (
+            <Trans>Limit it to the repositories issues go to, with read and write access to Issues.</Trans>
+          ) : (
+            <Trans>A personal API key from Linear, under Settings, Account, Security and access.</Trans>
+          )
+        }
+      >
+        <Input
+          id="tracker-token"
+          type="password"
+          required
+          autoFocus
+          autoComplete="off"
+          spellCheck={false}
+          value={token}
+          onChange={(e) => setToken(e.target.value)}
+          data-testid="tracker-token"
+        />
+      </Field>
+      {github && (
+        <Field
+          label={<Trans>GitHub Enterprise Server API</Trans>}
+          htmlFor="tracker-api-url"
+          hint={<Trans>Leave empty for github.com. Otherwise the server's API, https://host/api/v3.</Trans>}
         >
-          <DialogHeader>
-            <DialogTitle>
-              <Trans>Connect a tracker</Trans>
-            </DialogTitle>
-            <DialogDescription>
-              <Trans>
-                Yuva checks the token with the tracker, stores it encrypted and never shows it again. It needs to read
-                and write issues.
-              </Trans>
-            </DialogDescription>
-          </DialogHeader>
-          <Field label={<Trans>Tracker</Trans>} htmlFor="tracker-provider">
-            <ChoiceSelect
-              id="tracker-provider"
-              value={provider}
-              onChange={setProvider}
-              options={PROVIDERS.map((p) => [p, providerName(p)] as const)}
-              label={t`Tracker`}
-            />
-          </Field>
-          <Field
-            label={github ? <Trans>Fine-grained token</Trans> : <Trans>API key</Trans>}
-            htmlFor="tracker-token"
-            hint={
-              github ? (
-                <Trans>Limit it to the repositories issues go to, with read and write access to Issues.</Trans>
-              ) : (
-                <Trans>A personal API key from Linear, under Settings, Account, Security and access.</Trans>
-              )
-            }
-          >
-            <Input
-              id="tracker-token"
-              type="password"
-              required
-              autoFocus
-              autoComplete="off"
-              spellCheck={false}
-              value={token}
-              onChange={(e) => setToken(e.target.value)}
-              data-testid="tracker-token"
-            />
-          </Field>
-          {github && (
-            <Field
-              label={<Trans>GitHub Enterprise Server API</Trans>}
-              htmlFor="tracker-api-url"
-              hint={<Trans>Leave empty for github.com. Otherwise the server's API, https://host/api/v3.</Trans>}
-            >
-              <Input
-                id="tracker-api-url"
-                type="url"
-                value={apiUrl}
-                onChange={(e) => setApiUrl(e.target.value)}
-                placeholder="https://github.example.com/api/v3"
-                autoCapitalize="off"
-                spellCheck={false}
-                data-testid="tracker-api-url"
-              />
-            </Field>
-          )}
-          <Field
-            label={<Trans>Default target</Trans>}
-            htmlFor="tracker-target"
-            hint={
-              github ? (
-                <Trans>Where new issues go when nobody picks a repository, as owner/repo.</Trans>
-              ) : (
-                <Trans>Where new issues go when nobody picks a team, as a team key such as ENG.</Trans>
-              )
-            }
-          >
-            <Input
-              id="tracker-target"
-              value={target}
-              onChange={(e) => setTarget(e.target.value)}
-              placeholder={github ? "owner/repo" : "ENG"}
-              autoCapitalize="off"
-              spellCheck={false}
-              data-testid="tracker-target"
-            />
-          </Field>
-          <Field label={<Trans>Name</Trans>} htmlFor="tracker-name" hint={<Trans>Shown to your team. Optional.</Trans>}>
-            <Input id="tracker-name" value={name} onChange={(e) => setName(e.target.value)} maxLength={100} />
-          </Field>
-          <ErrorLine error={connect.error} />
-          <DialogFooter>
-            <Button type="button" variant="ghost" onClick={onClose}>
-              <Trans>Cancel</Trans>
-            </Button>
-            <Button type="submit" disabled={!token.trim() || connect.isPending} data-testid="tracker-connect-submit">
-              <Trans>Connect</Trans>
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+          <Input
+            id="tracker-api-url"
+            type="url"
+            value={apiUrl}
+            onChange={(e) => setApiUrl(e.target.value)}
+            placeholder="https://github.example.com/api/v3"
+            autoCapitalize="off"
+            spellCheck={false}
+            data-testid="tracker-api-url"
+          />
+        </Field>
+      )}
+      <Field
+        label={<Trans>Default target</Trans>}
+        htmlFor="tracker-target"
+        hint={
+          github ? (
+            <Trans>Where new issues go when nobody picks a repository, as owner/repo.</Trans>
+          ) : (
+            <Trans>Where new issues go when nobody picks a team, as a team key such as ENG.</Trans>
+          )
+        }
+      >
+        <Input
+          id="tracker-target"
+          value={target}
+          onChange={(e) => setTarget(e.target.value)}
+          placeholder={github ? "owner/repo" : "ENG"}
+          autoCapitalize="off"
+          spellCheck={false}
+          data-testid="tracker-target"
+        />
+      </Field>
+      <Field label={<Trans>Name</Trans>} htmlFor="tracker-name" hint={<Trans>Shown to your team. Optional.</Trans>}>
+        <Input id="tracker-name" value={name} onChange={(e) => setName(e.target.value)} maxLength={100} />
+      </Field>
+    </FormCard>
   )
 }
 
@@ -420,6 +398,7 @@ export function IssueTrackersPage() {
   return (
     <>
       <PageHeader
+        back={false}
         title={<Trans>Issue trackers</Trans>}
         description={
           <Trans>
@@ -428,12 +407,13 @@ export function IssueTrackersPage() {
           </Trans>
         }
         action={
-          <Button size="sm" onClick={() => setConnecting(true)} data-testid="tracker-connect">
+          <Button onClick={() => setConnecting(true)} disabled={connecting} data-testid="tracker-connect-open">
             <PlusIcon />
             <Trans>Connect a tracker</Trans>
           </Button>
         }
       />
+      {connecting && <ConnectForm onClose={() => setConnecting(false)} onSecret={setReveal} />}
       <Section>
         {list.isPending ? (
           <Skeleton className="h-40 w-full rounded-xl" />
@@ -450,7 +430,6 @@ export function IssueTrackersPage() {
         )}
         <ErrorLine error={list.error} />
       </Section>
-      {connecting && <ConnectDialog onClose={() => setConnecting(false)} onSecret={setReveal} />}
       <SecretDialog
         secret={reveal?.secret ?? null}
         title={<Trans>Webhook secret for {revealName}</Trans>}

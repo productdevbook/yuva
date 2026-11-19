@@ -1448,7 +1448,7 @@ msgstr "એક વાતચીત"
 msgid "A conversation can copy at most 100 people."
 msgstr "એક વાતચીતમાં વધુમાં વધુ 100 લોકોને કૉપિ કરી શકાય છે."
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
 msgstr "આ ફીલ્ડમાં મૂલ્ય ન હોય ત્યાં સુધી વાતચીત બંધ કરી શકાતી નથી. સ્પામ અપવાદ છે."
 
@@ -1468,7 +1468,7 @@ msgstr "વાતચીત નિષ્ક્રિય છે"
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "વાતચીત છેલ્લે શ્રેણીમાં અપડેટ થઈ હોય ત્યારે આખી લેવાય છે."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "A conversation must match every row you fill in. Leave a row empty to match anything."
 msgstr "વાતચીત તમે ભરેલી દરેક પંક્તિ સાથે મેળ ખાવી જોઈએ. ખાલી પંક્તિ બધા સાથે મેળ ખાય છે."
 
@@ -1739,7 +1739,7 @@ msgstr "દરેક ઘટકની બાજુમાં ટકાવારી
 msgid "A personal API key from Linear, under Settings, Account, Security and access."
 msgstr "A personal API key from Linear, under Settings, Account, Security and access."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "A policy that is off applies to nothing."
 msgstr "બંધ કરેલી નીતિ કશા પર લાગુ પડતી નથી."
 
@@ -1799,7 +1799,7 @@ msgstr "એક જરૂરી ફીલ્ડ ખાલી છે"
 msgid "A roadmap idea moved to another stage"
 msgstr "રોડમેપનો એક વિચાર બીજા તબક્કામાં ગયો"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "A rule that is off never runs. Rules run in the order of the list."
 msgstr "બંધ નિયમ ક્યારેય ચાલતો નથી. નિયમો યાદીના ક્રમમાં ચાલે છે."
 
@@ -1974,10 +1974,6 @@ msgstr "{provider} ની ઍક્સેસ"
 msgid "Access to the mailbox"
 msgstr "મેઇલબૉક્સની ઍક્સેસ"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Access to your mailbox: none"
-msgstr "તમારા મેઇલબૉક્સની ઍક્સેસ: નથી"
-
 #: src/features/account/AccountPage.tsx
 msgid "Account"
 msgstr "ખાતું"
@@ -2002,7 +1998,7 @@ msgstr "Acme સપોર્ટ"
 msgid "ACS URL"
 msgstr "ACS URL"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Actions"
@@ -2017,6 +2013,7 @@ msgstr "ફક્ત ક્રિયાઓ"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/text.ts
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
@@ -2032,7 +2029,7 @@ msgstr "પ્રવૃત્તિ"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "ઉમેરો"
@@ -2050,7 +2047,7 @@ msgstr "બ્લૉક ઉમેરો"
 msgid "Add a category"
 msgstr "શ્રેણી ઉમેરો"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Add a channel"
 msgstr "ચૅનલ ઉમેરો"
 
@@ -2099,7 +2096,7 @@ msgstr "ઇમેઇલ સરનામાથી સહભાગી ઉમેર
 msgid "Add a passkey"
 msgstr "પાસકી ઉમેરો"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Add a product"
 msgstr "પ્રોડક્ટ ઉમેરો"
 
@@ -2137,7 +2134,7 @@ msgstr "ઇનબૉક્સ સેટિંગ્સમાં વેબસા�
 msgid "Add a website or app"
 msgstr "વેબસાઇટ અથવા ઍપ ઉમેરો"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Add an action"
 msgstr "ક્રિયા ઉમેરો"
 
@@ -2154,6 +2151,10 @@ msgstr "તમારા સર્વર પર એક સરનામું ઉ�
 #: src/app/Palette.tsx
 msgid "Add an analytics property"
 msgstr "ઍનાલિટિક્સ પ્રૉપર્ટી ઉમેરો"
+
+#: src/features/settings/channels/ApiChannelForm.tsx
+msgid "Add an API channel"
+msgstr "API ચેનલ ઉમેરો"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add an image"
@@ -2184,7 +2185,6 @@ msgstr "બીજું ઉમેરો"
 msgid "Add at least one origin."
 msgstr "ઓછામાં ઓછું એક ઓરિજિન ઉમેરો."
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Add channel"
 msgstr "ચૅનલ ઉમેરો"
@@ -2194,7 +2194,7 @@ msgstr "ચૅનલ ઉમેરો"
 msgid "Add component"
 msgstr "ઘટક ઉમેરો"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Add condition"
 msgstr "શરત ઉમેરો"
 
@@ -2228,6 +2228,10 @@ msgstr "Add image"
 #: src/features/mail/Compose.tsx
 msgid "Add it back"
 msgstr "Add it back"
+
+#: src/features/settings/labels/LabelForm.tsx
+msgid "Add label"
+msgstr "લેબલ ઉમેરો"
 
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
@@ -2386,6 +2390,7 @@ msgid "Address verified"
 msgstr "સરનામું ચકાસાયું"
 
 #: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Addresses"
 msgstr "સરનામાં"
 
@@ -2496,6 +2501,7 @@ msgid "All good"
 msgstr "બધું બરાબર છે"
 
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/MigrationsPage.tsx
 msgid "All imports"
 msgstr "બધી આયાતો"
 
@@ -2881,10 +2887,6 @@ msgstr "વ્યક્તિ તે સરનામે મોકલેલા �
 msgid "An issue URL, owner/repo#12 or ENG-123."
 msgstr "An issue URL, owner/repo#12 or ENG-123."
 
-#: src/features/migrations/MigrationsPage.tsx
-msgid "An mbox export of a mailbox"
-msgstr "મેઇલબૉક્સનું mbox એક્સપોર્ટ"
-
 #: src/features/team/TeamPage.tsx
 msgid "An owner cannot be removed. Change their role first."
 msgstr "માલિકને દૂર કરી શકાતા નથી. પહેલાં તેમની ભૂમિકા બદલો."
@@ -2960,7 +2962,7 @@ msgstr "બીજું ખાતું"
 msgid "Another address this channel receives mail at. Forward a mailbox here, for example {own} at its provider; forwarding to {own} itself would loop."
 msgstr "બીજું સરનામું જ્યાં આ ચૅનલ મેઇલ મેળવે છે. અહીં મેઇલબૉક્સ ફૉરવર્ડ કરો, ઉદાહરણ તરીકે તેના પ્રદાતા પર {own}; {own} પર જ ફૉરવર્ડ કરવાથી લૂપ બનશે."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 msgid "Another canned reply already uses this shortcut."
 msgstr "બીજો તૈયાર જવાબ પહેલેથી આ શૉર્ટકટ વાપરે છે."
 
@@ -3092,7 +3094,7 @@ msgstr "કોઈપણ ફીલ્ડ"
 msgid "Any label"
 msgstr "કોઈપણ લેબલ"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Any of the labels you pick."
 msgstr "તમે પસંદ કરેલા લેબલમાંથી કોઈપણ."
 
@@ -3137,15 +3139,11 @@ msgstr "આ કી વાપરતું બધું તરત કામ કર
 msgid "API"
 msgstr "API"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "API & MCP"
 msgstr "API અને MCP"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "API channel"
 msgstr "API ચૅનલ"
 
@@ -3158,7 +3156,6 @@ msgstr "API કી"
 #: src/app/Palette.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "API keys"
 msgstr "API કી"
@@ -3222,8 +3219,8 @@ msgstr "ઍપ્લિકેશન (ક્લાયન્ટ) ID"
 msgid "Applied"
 msgstr "લાગુ કર્યું"
 
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Applies to"
 msgstr "આને લાગુ પડે છે"
 
@@ -3450,7 +3447,7 @@ msgstr "તમને સોંપાયું"
 
 #: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Assignee"
 msgstr "જવાબદાર વ્યક્તિ"
 
@@ -3486,7 +3483,7 @@ msgid "Assistants work in Yuva through MCP, acting as the member who connected t
 msgstr "આસિસ્ટન્ટ MCP દ્વારા Yuva માં કામ કરે છે, તેમને જોડનાર સભ્ય તરીકે અને ફક્ત તે સભ્યે મંજૂર કરેલી ઍક્સેસ સાથે."
 
 #: src/components/common/text.ts
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Async"
 msgstr "અસિંક"
 
@@ -3585,7 +3582,6 @@ msgid "Audience"
 msgstr "પ્રેક્ષકો"
 
 #: src/app/Palette.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Audit log"
 msgstr "ઓડિટ લૉગ"
@@ -3618,7 +3614,6 @@ msgstr "સ્વચાલિત સોંપણી"
 msgid "Automatic mail never triggers an automatic reply."
 msgstr "આપમેળે આવેલો મેઇલ ક્યારેય આપમેળે જવાબ શરૂ કરતો નથી."
 
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Automation"
 msgstr "ઓટોમેશન"
@@ -3766,7 +3761,7 @@ msgstr "Best regards,"
 msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
 msgstr "1 થી 500 વચ્ચે, આખા વર્કસ્પેસમાં ગણાય છે. હાથે સોંપણી આને અવગણે છે. મર્યાદા ન જોઈએ તો ખાલી છોડો."
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Billing"
 msgstr "બિલિંગ"
@@ -3776,7 +3771,7 @@ msgstr "બિલિંગ"
 msgid "Billing bot"
 msgstr "બિલિંગ બૉટ"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 msgid "Billing events"
 msgstr "બિલિંગ ઇવેન્ટ"
 
@@ -3924,17 +3919,13 @@ msgstr "ભંગ"
 msgid "Breached, met late at {at}"
 msgstr "ભંગ, {at} એ મોડું પૂર્ણ થયું"
 
-#: src/features/settings/SettingsFrame.tsx
-msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
-msgstr "Gmail, Yandex અથવા કોઈપણ IMAP સર્વરમાંથી મેઇલબૉક્સનો ઇતિહાસ લાવો"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Bring subscribers who already agreed elsewhere. Each address is checked first and nothing is added until you start: invalid addresses, domains that take no mail, role addresses, duplicates and anyone who left or objected are left out."
 msgstr "જેમણે બીજે પહેલેથી સંમતિ આપી છે તે સબ્સ્ક્રાઇબરને લાવો. દરેક સરનામું પહેલાં તપાસાય છે અને તમે શરૂ ન કરો ત્યાં સુધી કશું ઉમેરાતું નથી: અમાન્ય સરનામાં, મેઇલ ન લેતાં ડોમેન, રોલ સરનામાં, ડુપ્લિકેટ અને જેઓ નીકળી ગયા કે વાંધો લીધો તે બાકાત રહે છે."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Bring the history of a mailbox you answer from today, then switch its mail over. Yuva only reads the mailbox; nothing there is changed."
-msgstr "આજે તમે જેમાંથી જવાબ આપો છો તે મેઇલબૉક્સનો ઇતિહાસ લાવો, પછી તેનો મેઇલ સ્વિચ કરો. Yuva ફક્ત મેઇલબૉક્સ વાંચે છે; ત્યાં કશું બદલાતું નથી."
+msgid "Bring the history of a mailbox or help desk you answer from today, then switch its mail over. Yuva only reads the source; nothing there is changed."
+msgstr "આજે તમે જે મેઇલબોક્સ અથવા હેલ્પ ડેસ્કથી જવાબ આપો છો તેનો ઇતિહાસ લાવો, પછી તેનો મેઇલ અહીં ફેરવો. Yuva સ્રોત ફક્ત વાંચે છે; ત્યાં કંઈ બદલાતું નથી."
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Bring your old mail"
@@ -3949,7 +3940,6 @@ msgstr "બ્રૉડકાસ્ટ"
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/settings/workspace/BroadcastsSettings.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Broadcast sending"
 msgstr "બ્રૉડકાસ્ટ મોકલવું"
 
@@ -4047,13 +4037,9 @@ msgstr "કૅમ્પેઇનનું નામ"
 #: src/features/docs/FromDocs.tsx
 #: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
-#: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -4136,8 +4122,6 @@ msgstr "રદ થયું. પહેલાં જે ઉમેરાયું 
 #: src/app/Palette.tsx
 #: src/features/conversation/composer/CannedMenu.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Canned replies"
 msgstr "તૈયાર જવાબો"
 
@@ -4291,10 +4275,6 @@ msgstr "{host} નું વેબહૂક બદલ્યું"
 msgid "Changelog settings"
 msgstr "ચેન્જલૉગ સેટિંગ"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Changes made to {provider}: none"
-msgstr "{provider} માં કરેલા ફેરફાર: કોઈ નહીં"
-
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
 msgstr "સભ્યો, કી, વેબહૂક અને અન્ય સંવેદનશીલ સેટિંગમાં ફેરફાર અહીં દેખાય છે."
@@ -4308,14 +4288,14 @@ msgstr "મોકલવાનું ડોમેન બદલવાથી તમ
 #: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
 msgid "Channel"
 msgstr "ચૅનલ"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Channel added"
 msgstr "ચૅનલ ઉમેરાઈ"
 
@@ -4339,14 +4319,8 @@ msgstr "ચૅનલ દૂર કરાઈ"
 msgid "Channel settings"
 msgstr "ચેનલ સેટિંગ્સ"
 
-#: src/app/places.tsx
-#: src/components/common/SettingsStrip.tsx
-#: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Channels"
 msgstr "ચેનલ"
 
@@ -4450,7 +4424,7 @@ msgstr "{when} તપાસ્યું"
 msgid "Checked and waiting for an owner or admin to start it."
 msgstr "તપાસ્યું અને માલિક અથવા ઍડમિન તેને શરૂ કરે તેની રાહ જોવાય છે."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Checked every 5 minutes, once per quiet period. Only open and pending conversations."
 msgstr "દર 5 મિનિટે તપાસાય છે, દરેક શાંત સમયગાળામાં એક વાર. ફક્ત ખુલ્લી અને બાકી વાતચીતો."
 
@@ -4649,7 +4623,6 @@ msgstr "ઘડિયાળો {date}ના રોજ બદલાય છે; ક
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -4689,7 +4662,7 @@ msgstr "જવાબ આપ્યા પછી દરેક વાતચીત �
 msgid "Close everything"
 msgstr "બધું બંધ કરો"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Close idle conversations"
 msgstr "નિષ્ક્રિય વાતચીતો બંધ કરો"
 
@@ -4777,11 +4750,11 @@ msgstr "સંકેલો"
 msgid "Collections"
 msgstr "સંગ્રહ"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Color"
 msgstr "રંગ"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/colors.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Colour"
@@ -4972,7 +4945,6 @@ msgstr "Connect a tracker"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
 msgid "Connect an assistant"
 msgstr "આસિસ્ટન્ટ કનેક્ટ કરો"
 
@@ -5038,12 +5010,10 @@ msgid "Connected {created}"
 msgstr "{created} કનેક્ટ થયું"
 
 #: src/app/Palette.tsx
-#: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
+#: src/features/settings/connected-apps/AssistantPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Connected apps"
 msgstr "કનેક્ટ કરેલી ઍપ"
 
@@ -5181,7 +5151,6 @@ msgstr "સમાવે છે"
 
 #: src/app/places.tsx
 #: src/features/broadcasts/Composer.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Content"
 msgstr "સામગ્રી"
 
@@ -5197,7 +5166,7 @@ msgstr "સામગ્રી"
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
 #: src/features/setup/email/EmailReceiveStep.tsx
@@ -5256,7 +5225,6 @@ msgstr "વાતચીત શરૂ થઈ"
 msgid "conversations"
 msgstr "વાતચીતો"
 
-#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
@@ -5271,6 +5239,7 @@ msgstr "વાતચીતો"
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Conversations"
 msgstr "વાતચીતો"
@@ -5341,7 +5310,6 @@ msgstr "કૉપીમાંનું સરનામું"
 #: src/components/common/CopyButton.tsx
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/messages/MessageActions.tsx
-#: src/features/migrations/Wizard.tsx
 msgid "Copy"
 msgstr "કૉપિ કરો"
 
@@ -5394,6 +5362,10 @@ msgstr "ફીડબૅકની વિગતો કૉપિ કરો"
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Copy the feedback details (Y)"
 msgstr "ફીડબૅકની વિગતો કૉપિ કરો (Y)"
+
+#: src/features/migrations/Wizard.tsx
+msgid "Copy the history of a mailbox or help desk into Yuva."
+msgstr "મેઇલબોક્સ અથવા હેલ્પ ડેસ્કનો ઇતિહાસ Yuva માં કૉપિ કરો."
 
 #: src/features/migrations/text.ts
 msgid "Copy the key under “Your API Key”. A Freshdesk key cannot be limited to reading; Yuva's connection only sends read requests."
@@ -5459,7 +5431,6 @@ msgid "Counts when a subscription becomes confirmed, not when it is still waitin
 msgstr "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/DeveloperTabs.tsx
 msgid "Create"
 msgstr "બનાવો"
 
@@ -5492,7 +5463,7 @@ msgstr "Create an issue"
 msgid "Create an OAuth client in Zendesk"
 msgstr "Zendesk માં OAuth ક્લાયન્ટ બનાવો"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Create and add a channel"
 msgstr "બનાવો અને ચૅનલ ઉમેરો"
 
@@ -5516,11 +5487,11 @@ msgstr "ચૅનલ બનાવો"
 msgid "Create draft"
 msgstr "ડ્રાફ્ટ બનાવો"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Create field"
 msgstr "ફીલ્ડ બનાવો"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Create filter"
 msgstr "ફિલ્ટર બનાવો"
 
@@ -5554,11 +5525,11 @@ msgstr "કી બનાવો"
 msgid "Create list"
 msgstr "લિસ્ટ બનાવો"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Create policy"
 msgstr "નીતિ બનાવો"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Create rule"
 msgstr "નિયમ બનાવો"
 
@@ -5619,9 +5590,7 @@ msgstr "ઓટોમેશન નિયમો બનાવો, બદલો, ક
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Created"
 msgstr "બનાવ્યું"
 
@@ -5690,11 +5659,6 @@ msgstr "કસ્ટમ"
 msgid "Custom field"
 msgstr "કસ્ટમ ફીલ્ડ"
 
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "Custom fields"
-msgstr "કસ્ટમ ફીલ્ડ"
-
 #: src/features/contact/ContactsPage.tsx
 msgid "Customers"
 msgstr "ગ્રાહકો"
@@ -5725,7 +5689,6 @@ msgid "Daily limit reached · continues at {time} {city} time"
 msgstr "દૈનિક મર્યાદા પૂરી થઈ · {city} સમય મુજબ {time} વાગ્યે ચાલુ રહેશે"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Danger zone"
 msgstr "જોખમી ઝોન"
 
@@ -6075,10 +6038,6 @@ msgstr "ટીમ {name} કાઢી નાખવી?"
 msgid "Delete the view {name}?"
 msgstr "વ્યૂ {name} કાઢી નાખીએ?"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-msgid "Delete this canned reply?"
-msgstr "આ તૈયાર જવાબ કાઢી નાખવો છે?"
-
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Delete this DKIM key?"
 msgstr "આ DKIM કી કાઢી નાખવી છે?"
@@ -6102,6 +6061,10 @@ msgstr "આ નોંધ કાઢી નાખો"
 #: src/features/contact/ContactNotes.tsx
 msgid "Delete this note?"
 msgstr "આ નોંધ કાઢી નાખવી છે?"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "Delete this saved reply?"
+msgstr "આ સાચવેલો જવાબ કાઢી નાખીએ?"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete this subscription?"
@@ -6302,7 +6265,6 @@ msgstr "બ્રાઉઝરના સેટિંગ્સમાં આ સા
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
@@ -6310,8 +6272,11 @@ msgstr "બ્રાઉઝરના સેટિંગ્સમાં આ સા
 msgid "Details"
 msgstr "વિગતો"
 
-#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsFrame.tsx
+msgid "Developer"
+msgstr "ડેવલપર"
+
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Developers"
 msgstr "ડેવલપર"
 
@@ -6519,7 +6484,7 @@ msgstr "ડૉક્સ એ પેજ છે જે તમે તમારી �
 msgid "Documentation pages"
 msgstr "ડૉક્યુમેન્ટેશન પેજ"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Documentation site"
 msgstr "ડૉક્યુમેન્ટેશન સાઇટ"
@@ -6555,7 +6520,6 @@ msgstr "થઈ ગયું"
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/fields/BulkFailures.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -6738,7 +6702,7 @@ msgstr "ડુપ્લિકેટ"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/notifications/EventsSection.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -6816,7 +6780,7 @@ msgstr "ઇમેઇલથી આવેલો કોડ"
 msgid "E-mails to the people who signed up"
 msgstr "સાઇન અપ કરનાર લોકોને ઇમેઇલ"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
 msgstr "દરેક ક્રિયા એક વાર, વધુમાં વધુ 10. ક્રિયાઓ એક ફેરફાર તરીકે ચાલે છે; એક નિષ્ફળ જાય તો કોઈ લાગુ થતી નથી."
 
@@ -6919,10 +6883,6 @@ msgstr "{name} ફેરફાર કરો"
 msgid "Edit API key"
 msgstr "API કી સંપાદિત કરો"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-msgid "Edit canned reply"
-msgstr "તૈયાર જવાબ સંપાદિત કરો"
-
 #: src/features/status/ComponentForms.tsx
 msgid "Edit component"
 msgstr "ઘટક સંપાદિત કરો"
@@ -6940,11 +6900,11 @@ msgstr "વિગતો સંપાદિત કરો"
 msgid "Edit details ({editKey})"
 msgstr "વિગતો સંપાદિત કરો ({editKey})"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Edit field"
 msgstr "ફીલ્ડ સંપાદિત કરો"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Edit filter"
 msgstr "ફિલ્ટર સંપાદિત કરો"
 
@@ -6952,11 +6912,11 @@ msgstr "ફિલ્ટર સંપાદિત કરો"
 msgid "Edit help center collections and article drafts"
 msgstr "સહાય કેન્દ્રના સંગ્રહો અને લેખોના ડ્રાફ્ટ સંપાદિત કરો"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Edit label"
 msgstr "લેબલ સંપાદિત કરો"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Edit macro"
 msgstr "મેક્રો સંપાદિત કરો"
 
@@ -6964,13 +6924,17 @@ msgstr "મેક્રો સંપાદિત કરો"
 msgid "Edit monitor"
 msgstr "મોનિટર સંપાદિત કરો"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Edit policy"
 msgstr "નીતિ સંપાદિત કરો"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Edit rule"
 msgstr "નિયમ સંપાદિત કરો"
+
+#: src/features/settings/canned/CannedReplyForm.tsx
+msgid "Edit saved reply"
+msgstr "સાચવેલો જવાબ સંપાદિત કરો"
 
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Edit team"
@@ -7036,11 +7000,6 @@ msgstr "{editingWhen} માટે શેડ્યૂલ કરેલો સં�
 msgid "Elevated API errors"
 msgstr "API ભૂલો વધી છે"
 
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "Elsewhere in settings"
-msgstr "સેટિંગ્સમાં અન્યત્ર"
-
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Embed snippet"
 msgstr "એમ્બેડ સ્નિપેટ"
@@ -7070,8 +7029,8 @@ msgstr "ખાલી રાખો તો {baseLanguage} વિષય વપર�
 msgid "Emptying the Trash: {0} are being deleted"
 msgstr "ટ્રૅશ ખાલી થઈ રહ્યું છે: {0} કાઢી નંખાઈ રહ્યા છે"
 
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Enabled"
 msgstr "ચાલુ"
 
@@ -7243,7 +7202,7 @@ msgid "Every imported conversation is closed."
 msgstr "દરેક આયાત કરેલી વાતચીત બંધ છે."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Every inbox"
 msgstr "દરેક ઇનબૉક્સ"
 
@@ -7319,7 +7278,7 @@ msgstr "દરેક વેબસાઇટ અને ઍપ તેના મુ�
 
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Everyone"
 msgstr "બધા"
 
@@ -7469,7 +7428,6 @@ msgstr "Extra scopes"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/migrations/ConnectStep.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7584,6 +7542,7 @@ msgstr "સૌથી ઓછી ખુલ્લી વાતચીતો"
 
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Fields"
 msgstr "ફીલ્ડ"
 
@@ -7602,10 +7561,6 @@ msgstr "ફાઇલ"
 #: src/features/broadcasts/Import.tsx
 msgid "File and consent"
 msgstr "ફાઇલ અને સંમતિ"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Files"
-msgstr "ફાઇલો"
 
 #: src/features/fields/RequiredFieldsHost.tsx
 msgid "Fill in before closing"
@@ -7739,6 +7694,7 @@ msgstr "તપાસ્યા વિના પૂર્ણ કરો"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/migrations/MigrationsPage.tsx
 msgid "Finished"
 msgstr "પૂર્ણ થયું"
 
@@ -7766,7 +7722,7 @@ msgstr "પહેલો જવાબ"
 #: src/features/home/HomeWork.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "First reply"
 msgstr "પહેલો જવાબ"
 
@@ -7882,7 +7838,7 @@ msgid "For example Acme"
 msgstr "ઉદાહરણ તરીકે Acme"
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/setup/NameStep.tsx
 msgid "For example Fieldnote"
 msgstr "ઉદાહરણ તરીકે Fieldnote"
@@ -8071,15 +8027,15 @@ msgstr "From સરનામું (વૈકલ્પિક)"
 msgid "From blocked contacts"
 msgstr "અવરોધિત સંપર્કો તરફથી"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From each later contact message to the reply."
 msgstr "સંપર્કના દરેક પછીના સંદેશથી જવાબ સુધી."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From the contact's first message to the first public reply."
 msgstr "સંપર્કના પહેલા સંદેશથી પહેલા જાહેર જવાબ સુધી."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From the start of the conversation to its first close."
 msgstr "વાતચીતની શરૂઆતથી તેના પહેલા બંધ થવા સુધી."
 
@@ -8144,9 +8100,7 @@ msgstr "{person} ને {inbox} ની ઍક્સેસ આપી"
 msgid "Gave the team {team} access to {inbox}"
 msgstr "ટીમ {team} ને {inbox} ની ઍક્સેસ આપી"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/channels/sections.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "General"
@@ -8213,10 +8167,6 @@ msgstr "Gmail ફક્ત સ્પામ ન હોય તેવો નવો 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Gmail lets other apps read about 1.5 GB a day over IMAP, so a mailbox of many gigabytes takes days. Google Takeout exports it as one file that uploads as fast as your connection allows. Import that first, then come back here with an app password for the newer mail and the switch."
 msgstr "Gmail અન્ય ઍપને IMAP પર દિવસમાં લગભગ 1.5 GB વાંચવા દે છે, તેથી ઘણા ગીગાબાઇટનું મેઇલબૉક્સ દિવસો લે છે. Google Takeout તેને એક ફાઇલ તરીકે એક્સપોર્ટ કરે છે જે તમારા કનેક્શનની ઝડપે અપલોડ થાય છે. પહેલાં તે આયાત કરો, પછી નવા મેઇલ અને સ્વિચ માટે ઍપ પાસવર્ડ સાથે અહીં પાછા આવો."
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Gmail, Outlook, Yandex, any IMAP server"
-msgstr "Gmail, Outlook, Yandex, કોઈપણ IMAP સર્વર"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "go back to operational when you post this"
@@ -8316,10 +8266,6 @@ msgstr "Groups attribute"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
 msgstr "Groups claim"
-
-#: src/features/settings/SettingsFrame.tsx
-msgid "Groups of members and the inboxes they cover"
-msgstr "સભ્યોના જૂથ અને તેઓ સંભાળતા ઇનબૉક્સ"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -8436,10 +8382,6 @@ msgstr "મદદ કેન્દ્ર"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Help center settings"
 msgstr "મદદ કેન્દ્ર સેટિંગ્સ"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Help desks"
-msgstr "હેલ્પડેસ્ક"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Help report"
@@ -8580,7 +8522,7 @@ msgid "Hostname and certificate"
 msgstr "હોસ્ટનેમ અને પ્રમાણપત્ર"
 
 #: src/features/broadcasts/Trigger.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "hours"
 msgstr "કલાક"
 
@@ -8605,7 +8547,7 @@ msgstr "તમારા સબ્સ્ક્રાઇબર કેવી રી
 msgid "How do people sign up?"
 msgstr "લોકો કેવી રીતે સાઇન અપ કરે છે?"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "How do you answer?"
 msgstr "તમે કેવી રીતે જવાબ આપો છો?"
 
@@ -8629,7 +8571,6 @@ msgstr "સંકેત કેટલો મોડો આવી શકે."
 msgid "How mail reaches Yuva"
 msgstr "મેઇલ Yuva સુધી કેવી રીતે પહોંચે છે"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "How messages arrive: chat, e-mail, apps"
 msgstr "સંદેશા કેવી રીતે આવે છે: ચૅટ, ઇમેઇલ, ઍપ"
@@ -8641,10 +8582,6 @@ msgstr "સંદેશા દરેક પ્રોડક્ટ સુધી �
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "How should replies go out?"
 msgstr "જવાબો કેવી રીતે જવા જોઈએ?"
-
-#: src/components/common/SettingsStrip.tsx
-msgid "How software connects: keys, hooks, assistants"
-msgstr "સૉફ્ટવેર કેવી રીતે જોડાય છે: કી, વેબહૂક, આસિસ્ટન્ટ"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "How the chat opens"
@@ -8728,7 +8665,7 @@ msgstr "{idle} મિનિટથી નિષ્ક્રિય"
 msgid "If {provider} mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "જો {provider} તે સરનામે પુષ્ટિ મેઇલ કરે, તો તે આ ઇનબૉક્સમાં વાતચીત તરીકે આવે છે; ત્યાં ખોલો."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "If all of these match"
 msgstr "જો આ બધા મળે"
 
@@ -8821,11 +8758,11 @@ msgid "Import people"
 msgstr "લોકોને આયાત કરો"
 
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Import steps"
 msgstr "આયાતનાં પગલાં"
 
 #: src/components/common/ImportedChip.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 msgid "Imported"
 msgstr "આયાત કર્યું"
@@ -8856,6 +8793,8 @@ msgstr "આયાત થઈ રહ્યું છે…"
 
 #: src/app/nav.tsx
 #: src/app/places.tsx
+#: src/features/migrations/Wizard.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Imports"
 msgstr "આયાત"
 
@@ -9018,7 +8957,7 @@ msgstr "Zoho Mail માં Settings › Mail accounts › IMAP access ખોલ
 #: src/features/docs/InstallDialog.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "ઇનબૉક્સ"
@@ -9051,10 +8990,15 @@ msgstr "{name} માટે ઇનબૉક્સ"
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Inboxes"
 msgstr "ઇનબૉક્સ"
+
+#: src/features/settings/ProductsPage.tsx
+#: src/features/settings/SettingsFrame.tsx
+msgid "Inboxes and channels"
+msgstr "ઇનબોક્સ અને ચેનલો"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Inboxes cut off subjects longer than 80 characters."
@@ -9477,7 +9421,7 @@ msgstr "આ ફાઇલના દરેક સબ્સ્ક્રિપ્શ
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Key"
 msgstr "કી"
 
@@ -9517,12 +9461,6 @@ msgstr "કી અને જોડાયેલી ઍપ"
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
 msgstr "જે કી આ પ્રોડક્ટ સુધી પહોંચી શકે છે. તેમને API અને MCP માં બનાવો અને રદ કરો."
 
-#: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
-#: src/features/settings/webhooks/WebhooksPage.tsx
-msgid "Keys, webhooks and connected assistants"
-msgstr "કી, વેબહૂક અને જોડાયેલા આસિસ્ટન્ટ"
-
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Keyword"
 msgstr "કીવર્ડ"
@@ -9558,10 +9496,9 @@ msgstr "ફક્ત લેબલ: તેનો મેઇલ All mail માં�
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Labels"
 msgstr "લેબલ"
 
@@ -9762,7 +9699,7 @@ msgstr "લૉન્ચરનો રંગ"
 msgid "Launcher position"
 msgstr "લૉન્ચરની સ્થિતિ"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Leave as is"
 msgstr "જેમ છે તેમ રહેવા દો"
 
@@ -10075,7 +10012,7 @@ msgid "Live"
 msgstr "લાઇવ"
 
 #: src/components/common/Source.tsx
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Live chat"
 msgstr "લાઇવ ચૅટ"
 
@@ -10197,8 +10134,8 @@ msgstr "નીચું"
 msgid "Lowercase letters, digits and dashes, not at the start or end."
 msgstr "નાના અક્ષરો, અંકો અને ડૅશ, શરૂઆત કે અંતમાં નહીં."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Lowercase letters, digits and dashes."
 msgstr "નાના અક્ષરો, અંકો અને ડૅશ."
 
@@ -10213,7 +10150,6 @@ msgid "Macro"
 msgstr "મેક્રો"
 
 #: src/app/Palette.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Macros"
 msgstr "મેક્રો"
@@ -10345,7 +10281,6 @@ msgstr "મેઇલબૉક્સનું સરનામું"
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
-#: src/features/migrations/MigrationsPage.tsx
 msgid "Mailboxes"
 msgstr "મેઇલબૉક્સ"
 
@@ -10452,10 +10387,6 @@ msgstr "વેબહૂક મેનેજ કરો"
 #: src/features/settings/webhooks/parts.tsx
 msgid "manual"
 msgstr "મેન્યુઅલ"
-
-#: src/features/migrations/Wizard.tsx
-msgid "Map"
-msgstr "મૅપ"
 
 #: src/app/Header.tsx
 #: src/features/account/AccountPage.tsx
@@ -10636,7 +10567,6 @@ msgstr "સભ્ય"
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/teams/TeamsPage.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "સભ્યો"
@@ -10827,10 +10757,6 @@ msgstr "Microsoft નું ટોકન IMAP પર મેઇલ વાંચ�
 msgid "Migration cancelled"
 msgstr "માઇગ્રેશન રદ થયું"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Migration steps"
-msgstr "માઇગ્રેશનનાં પગલાં"
-
 #: src/features/inbox/ChatList.tsx
 msgid "Mine"
 msgstr "મારા"
@@ -10841,7 +10767,7 @@ msgstr "નાની"
 
 #: src/features/broadcasts/Trigger.tsx
 #: src/features/settings/automation/ActionRow.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "minutes"
 msgstr "મિનિટ"
 
@@ -10849,7 +10775,7 @@ msgstr "મિનિટ"
 msgid "Minutes"
 msgstr "મિનિટ"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Minutes before a due time. 0 sends no warning."
 msgstr "મુદતની કેટલી મિનિટ પહેલાં. 0 કોઈ ચેતવણી મોકલતું નથી."
 
@@ -10858,7 +10784,7 @@ msgid "Missed beat"
 msgstr "ચૂકી ગયેલો સંકેત"
 
 #: src/components/common/text.ts
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/app/AppFields.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Mobile app"
@@ -11158,12 +11084,6 @@ msgstr "ટ્રૅશમાં ખસેડો ({0})"
 msgid "Move to the Trash (#)"
 msgstr "કચરાપેટીમાં ખસેડો (#)"
 
-#: src/features/migrations/Wizard.tsx
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "Move to Yuva"
-msgstr "Yuva માં ખસેડો"
-
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11202,8 +11122,8 @@ msgid "Moves the mail to the Trash. Runs after the other actions."
 msgstr "મેલને ટ્રેશમાં ખસેડે છે. બીજી ક્રિયાઓ પછી ચાલે છે."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
-msgstr "Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX કે કોઈપણ IMAP સર્વરમાંથી ખસો છો? Yuva મેઇલબૉક્સનો ઇતિહાસ ઇનબૉક્સમાં શાંતિથી, નવો પહેલાં કૉપિ કરે છે, જ્યારે તમારી ટીમ કામ કરતી રહે છે. પછી તમે મેઇલબૉક્સને અહીં ફૉરવર્ડ કરો અને વચ્ચે કશું ખોવાતું નથી."
+msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX, any IMAP server or another help desk? Yuva copies the history into an inbox, newest first, while your team keeps working."
+msgstr "Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX, કોઈપણ IMAP સર્વર અથવા બીજા હેલ્પ ડેસ્કથી આવો છો? તમારી ટીમ કામ ચાલુ રાખે ત્યારે Yuva ઇતિહાસ ઇનબોક્સમાં કૉપિ કરે છે, નવા પહેલા."
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Moving the idea to Planned, In progress or Shipped sets this for linked feedback that has no progress yet."
@@ -11247,20 +11167,19 @@ msgstr "મારા વ્યૂ"
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
-#: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -11300,6 +11219,10 @@ msgstr "તેને Yuva નામ આપો. <0>Connection</0> હેઠળ <1
 #: src/features/migrations/MapStep.tsx
 msgid "Name of the new inbox"
 msgstr "નવા ઇનબૉક્સનું નામ"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Name, closed conversations and broadcast sending"
+msgstr "નામ, બંધ વાતચીત અને બ્રોડકાસ્ટ મોકલવું"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Name, colour and the first thing the chat says"
@@ -11411,11 +11334,6 @@ msgstr "નવો લેખ"
 msgid "New broadcast"
 msgstr "નવું બ્રૉડકાસ્ટ"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
-msgid "New canned reply"
-msgstr "નવો તૈયાર જવાબ"
-
 #: src/components/common/ShortcutSheet.tsx
 msgid "New collection"
 msgstr "નવો સંગ્રહ"
@@ -11484,12 +11402,13 @@ msgstr "નવી ચર્ચાઓ"
 msgid "New entry"
 msgstr "નવી એન્ટ્રી"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 msgid "New field"
 msgstr "નવું ફીલ્ડ"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/mail/FilterDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New filter"
 msgstr "નવું ફિલ્ટર"
@@ -11508,6 +11427,8 @@ msgid "New identity secret"
 msgstr "નવું આઇડેન્ટિટી સિક્રેટ"
 
 #: src/app/places.tsx
+#: src/features/migrations/MigrationsPage.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "New import"
 msgstr "નવી આયાત"
 
@@ -11532,7 +11453,7 @@ msgstr "નવી ઘટના"
 msgid "New incident ({incidentKey})"
 msgstr "નવી ઘટના ({incidentKey})"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "New label"
 msgstr "નવું લેબલ"
@@ -11546,7 +11467,7 @@ msgstr "નવું લેબલ “{folder}”"
 msgid "New list"
 msgstr "નવું લિસ્ટ"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "New macro"
 msgstr "નવો મેક્રો"
@@ -11577,10 +11498,6 @@ msgstr "મને સોંપાયેલી વાતચીતમાં નવ
 msgid "New message in an unassigned conversation"
 msgstr "ન સોંપાયેલી વાતચીતમાં નવો સંદેશ"
 
-#: src/features/migrations/MigrationsPage.tsx
-msgid "New migration"
-msgstr "નવું માઇગ્રેશન"
-
 #: src/features/status/MonitorsPage.tsx
 msgid "new monitor"
 msgstr "નવું મોનિટર"
@@ -11601,7 +11518,7 @@ msgstr "{boxName}ના નવા માલિક"
 msgid "New password"
 msgstr "નવો પાસવર્ડ"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "New policy"
 msgstr "નવી નીતિ"
@@ -11610,10 +11527,15 @@ msgstr "નવી નીતિ"
 msgid "New reply in <0>{title}</0>"
 msgstr "<0>{title}</0> માં નવો જવાબ"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "નવો નિયમ"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+msgid "New saved reply"
+msgstr "નવો સાચવેલો જવાબ"
 
 #: src/features/settings/webhooks/sections.tsx
 msgid "New signing secret"
@@ -11720,7 +11642,7 @@ msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "આગલો મેઇલ {local} ({utc} UTC) એ, આ બ્રૉડકાસ્ટની ગતિએ."
 
 #: src/features/conversation/SlaPopover.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Next reply"
 msgstr "આગલો જવાબ"
 
@@ -11731,10 +11653,6 @@ msgstr "આગલો જવાબ {next}"
 #: src/features/feedback/Lightbox.tsx
 msgid "Next screenshot"
 msgstr "આગળનો સ્ક્રીનશોટ"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Next you pick the source and connect it. Nothing is copied until you start."
-msgstr "પછી તમે સ્રોત પસંદ કરીને તેને જોડો છો. તમે શરૂ ન કરો ત્યાં સુધી કંઈ કૉપિ થતું નથી."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Next, choose what to bring. The scan reads the file once."
@@ -11825,10 +11743,6 @@ msgstr "હજી સુધી કોઈ બ્રોડકાસ્ટ મો�
 msgid "No broadcasts yet"
 msgstr "હજી કોઈ બ્રૉડકાસ્ટ નથી"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-msgid "No canned replies yet"
-msgstr "હજી કોઈ તૈયાર જવાબ નથી"
-
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "No canned replies yet. Add them in settings."
 msgstr "હજી કોઈ તૈયાર જવાબ નથી. સેટિંગ્સમાં ઉમેરો."
@@ -11879,7 +11793,7 @@ msgstr "હજી કોઈ ઘટક નથી. ગ્રાહકો જેન
 msgid "No components yet. Add the parts of your product that customers depend on."
 msgstr "હજી ઘટકો નથી. ગ્રાહકો જેના પર આધાર રાખે છે તે તમારા ઉત્પાદનના ભાગો ઉમેરો."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "No conditions: the rule runs for every conversation the trigger fits."
 msgstr "કોઈ શરત નથી: ટ્રિગર જે વાતચીતને લાગુ પડે તે દરેક પર નિયમ ચાલે છે."
 
@@ -12060,6 +11974,10 @@ msgstr "હજી કોઈ ID નથી. આ વ્યક્તિને કો
 #: src/features/status/text.tsx
 msgid "No impact"
 msgstr "કોઈ અસર નથી"
+
+#: src/features/migrations/MigrationsPage.tsx
+msgid "No imports match this filter."
+msgstr "આ ફિલ્ટર સાથે કોઈ ઇમ્પોર્ટ મેળ ખાતું નથી."
 
 #: src/features/broadcasts/Import.tsx
 msgid "No imports yet."
@@ -12244,6 +12162,10 @@ msgstr "હજી કોઈ નિયમ નથી."
 #: src/features/settings/automation/RunLog.tsx
 msgid "No runs in the last 30 days."
 msgstr "છેલ્લા 30 દિવસમાં કોઈ રન નથી."
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "No saved replies yet"
+msgstr "હજી કોઈ સાચવેલા જવાબ નથી"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "No secret yet. Make one, then paste it into GitHub."
@@ -12667,7 +12589,7 @@ msgstr "સમાન નથી"
 msgid "Not there after a minute? Look in your spam or junk folder, or send a new code below."
 msgstr "એક મિનિટ પછી પણ નથી? તમારા સ્પામ કે જંક ફોલ્ડરમાં જુઓ, અથવા નીચે નવો કોડ મોકલો."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Not tracked"
 msgstr "ટ્રૅક થતું નથી"
 
@@ -13034,11 +12956,6 @@ msgstr "Team અને Enterprise પ્લાન પર માલિક તે�
 msgid "On the web"
 msgstr "વેબ પર"
 
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "On this page"
-msgstr "આ પૃષ્ઠ પર"
-
 #: src/components/common/SlaBadge.tsx
 msgid "On track"
 msgstr "સમયસર"
@@ -13056,7 +12973,7 @@ msgstr "ટેસ્ટ સંદેશ આવ્યા પછી, Yuva {hours} 
 msgid "One e-mail a month about what is new."
 msgstr "નવું શું છે તે વિશે મહિને એક ઇમેઇલ."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "એક ઇનબૉક્સ"
@@ -13073,7 +12990,7 @@ msgstr "One mail to each person, a set time after they sign in"
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "લીટી દીઠ એક, 1 થી 20. ફક્ત આ ઓરિજિન પરનાં પેજ વિજેટ વાપરી શકે છે."
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "One per line, all different, at most 100."
 msgstr "દરેક લીટીમાં એક, બધા અલગ, વધુમાં વધુ 100."
 
@@ -13200,7 +13117,7 @@ msgid "Only mail since {date}"
 msgstr "ફક્ત {date} પછીનો મેઇલ"
 
 #: src/features/inbox/views/ViewDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Only me"
 msgstr "ફક્ત હું"
 
@@ -13702,7 +13619,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "વૈકલ્પિક. જવાબના પ્રથમ 64 KiB માં તે હોવો જોઈએ; મોટા અને નાના અક્ષરો અલગ ગણાય છે."
 
 #: src/features/broadcasts/Composer.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Options"
 msgstr "વિકલ્પો"
 
@@ -13742,7 +13659,7 @@ msgstr "અથવા એક્સપોર્ટ ફાઇલ અપલોડ �
 msgid "Order and view"
 msgstr "ક્રમ અને દૃશ્ય"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Order number"
 msgstr "ઑર્ડર નંબર"
 
@@ -13839,7 +13756,6 @@ msgid "Own tenant"
 msgstr "પોતાનું ટેનન્ટ"
 
 #: src/components/common/text.ts
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Owner"
 msgstr "માલિક"
 
@@ -14241,7 +14157,7 @@ msgstr "તૈયાર જવાબ પસંદ કરો"
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "ઉત્પાદનની એક ચેટ ચેનલ પસંદ કરો અને કોડ પેસ્ટ કરો. રેટિંગ અને પ્રશ્નો તેના ઇનબૉક્સમાં આવે છે."
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Pick a color"
 msgstr "રંગ પસંદ કરો"
 
@@ -14345,7 +14261,7 @@ msgid "Pick an endpoint"
 msgstr "એન્ડપોઇન્ટ પસંદ કરો"
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Pick an inbox"
 msgstr "ઇનબૉક્સ પસંદ કરો"
 
@@ -14436,7 +14352,7 @@ msgstr "બીજો સંપર્ક પસંદ કરો. તે આમા
 msgid "Pick the platforms; the next step shows the lines to add to each app."
 msgstr "પ્લૅટફૉર્મ પસંદ કરો; આગળનું પગલું દરેક ઍપમાં ઉમેરવાની લીટીઓ બતાવે છે."
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Pick the product and how customers reach it. The next steps set it up."
 msgstr "પ્રોડક્ટ અને ગ્રાહકો તેના સુધી કેવી રીતે પહોંચે છે તે પસંદ કરો. આગળનાં પગલાં તેને સેટ કરે છે."
 
@@ -14607,7 +14523,7 @@ msgstr "તૈયારી ચાલુ"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/status/PreviewDialog.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Preview"
@@ -14671,12 +14587,12 @@ msgstr "પાછલો સ્ક્રીનશોટ"
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Priority"
 msgstr "અગ્રતા"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Priority customers"
 msgstr "પ્રાથમિકતા ગ્રાહકો"
 
@@ -14707,19 +14623,17 @@ msgstr "pro, team"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageForm.tsx
 #: src/features/status/IncidentForm.tsx
 msgid "Product"
 msgstr "ઉત્પાદન"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/setup/NameStep.tsx
 msgid "Product name"
 msgstr "ઉત્પાદનનું નામ"
@@ -14729,7 +14643,6 @@ msgstr "ઉત્પાદનનું નામ"
 msgid "Product news"
 msgstr "ઉત્પાદન સમાચાર"
 
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Product settings"
@@ -14744,7 +14657,6 @@ msgstr "પ્રોડક્શન"
 msgid "Production backend"
 msgstr "પ્રોડક્શન બૅકએન્ડ"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomeSide.tsx
@@ -14755,7 +14667,6 @@ msgstr "પ્રોડક્શન બૅકએન્ડ"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Products"
 msgstr "પ્રોડક્ટ"
@@ -14992,7 +14903,7 @@ msgstr "કતારમાં. નવો પ્રયાસ થોડી વા�
 msgid "Quick cleanup"
 msgstr "ઝડપી સફાઈ"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Quiet for (minutes)"
 msgstr "આટલા સમય સુધી શાંત (મિનિટ)"
 
@@ -15165,11 +15076,6 @@ msgstr "તમારી ટીમનાં સરનામાં સૂચવવ
 msgid "Read What's new changelogs and their entries"
 msgstr "\"નવું શું છે\" ચેન્જલોગ અને તેમની એન્ટ્રીઓ વાંચો"
 
-#: src/features/migrations/MigrationsPage.tsx
-#: src/features/migrations/Wizard.tsx
-msgid "Read-only"
-msgstr "ફક્ત વાંચવા માટે"
-
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/account/ConnectPage.tsx
 msgid "Reader"
@@ -15327,11 +15233,11 @@ msgstr "સંદર્ભ"
 msgid "Refresh"
 msgstr "રિફ્રેશ કરો"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Refund"
 msgstr "રિફંડ"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Refund approved"
 msgstr "રિફંડ મંજૂર"
 
@@ -15379,7 +15285,7 @@ msgstr "રિમોટ ઇમેજ મોકલનારને જણાવી
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -15601,7 +15507,7 @@ msgstr "વાતચીતમાંથી એક નોંધ દૂર કર�
 msgid "Removed by {who}"
 msgstr "{who} દ્વારા દૂર કરાયો"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "કાઢેલા વિકલ્પો તે ધરાવતી બધી વાતચીતમાંથી સાફ થાય છે. આ બૅકગ્રાઉન્ડમાં ચાલે છે."
 
@@ -15854,6 +15760,10 @@ msgstr "જવાબનું લખાણ"
 msgid "Reply time"
 msgstr "જવાબ સમય"
 
+#: src/features/settings/SettingsFrame.tsx
+msgid "Reply times"
+msgstr "જવાબનો સમય"
+
 #: src/features/conversation/BroadcastLine.tsx
 msgid "Reply to {name}"
 msgstr "{name} ને જવાબ આપો"
@@ -15960,7 +15870,7 @@ msgstr "પ્રતિષ્ઠા પર અસર"
 msgid "Require single sign-on"
 msgstr "Require single sign-on"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 msgid "Required to close"
 msgstr "બંધ કરવા માટે જરૂરી"
@@ -15982,7 +15892,7 @@ msgid "Reset to defaults"
 msgstr "ડિફૉલ્ટ પર રીસેટ કરો"
 
 #: src/features/conversation/SlaPopover.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Resolution"
 msgstr "ઉકેલ"
 
@@ -16122,7 +16032,6 @@ msgstr "તમને આના પર પાછા લઈ જાય છે"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Import.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Review"
 msgstr "સમીક્ષા"
@@ -16203,7 +16112,6 @@ msgstr "સબ્સ્ક્રાઇબ કર્યા પછી તરત, �
 msgid "Roadmap"
 msgstr "રોડમેપ"
 
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Role"
 msgstr "ભૂમિકા"
@@ -16294,7 +16202,6 @@ msgstr "નિયમ {rule} ચાલ્યો, કંઈ બદલવાનુ�
 msgid "Rule {rule} ran: {done}"
 msgstr "નિયમ {rule} ચાલ્યો: {done}"
 
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Rules"
 msgstr "નિયમો"
@@ -16365,16 +16272,16 @@ msgstr "શનિવાર"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/channels/ApiChannelDialog.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/signature/SignaturePage.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/ui.tsx
@@ -16461,6 +16368,10 @@ msgstr "યાદીને વ્યૂ તરીકે સાચવો"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "સાચવ્યું"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Saved replies"
+msgstr "સાચવેલા જવાબ"
 
 #: src/app/ViewsGroup.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
@@ -17536,13 +17447,12 @@ msgstr "સેટ થઈ રહ્યું છે…"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "સેટિંગ્સ"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "Settings (JSON)"
 msgstr "સેટિંગ્સ (JSON)"
@@ -17585,8 +17495,8 @@ msgstr "ટીમ સાથે શેર કરેલું"
 msgid "Shipped"
 msgstr "રિલીઝ થયું"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Shortcut"
 msgstr "શૉર્ટકટ"
 
@@ -17597,6 +17507,7 @@ msgstr "શૉર્ટકટ"
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -18029,7 +17940,6 @@ msgstr "સિંગલ ઑપ્ટ-ઇન"
 
 #: src/app/Palette.tsx
 #: src/features/settings/profile/Sessions.tsx
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
 msgstr "Single sign-on"
@@ -18131,11 +18041,6 @@ msgstr "SLA પૂર્ણ"
 msgid "SLA met / breached"
 msgstr "SLA પૂર્ણ / ભંગ"
 
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "SLA policies"
-msgstr "SLA નીતિઓ"
-
 #: src/features/conversation/SlaPopover.tsx
 msgid "SLA targets (W)"
 msgstr "SLA લક્ષ્યો (W)"
@@ -18223,7 +18128,7 @@ msgstr "સ્નૂઝ કરો (B)"
 msgid "Snooze (S)"
 msgstr "સ્નૂઝ કરો (S)"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Snooze for (minutes)"
 msgstr "સ્નૂઝનો સમય (મિનિટ)"
 
@@ -18411,6 +18316,10 @@ msgstr "SPF, DKIM કે DMARC તપાસવાની જરૂર છે"
 msgid "Split by"
 msgstr "આ મુજબ વિભાજિત કરો"
 
+#: src/features/settings/SettingsFrame.tsx
+msgid "SSO"
+msgstr "SSO"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
 msgstr "તબક્કો"
@@ -18468,7 +18377,7 @@ msgstr "તમે તારો મૂક્યો હોય તે"
 msgid "Stars the mail for you."
 msgstr "તમારા માટે મેલ પર તારો લગાવે છે."
 
-#: src/features/migrations/MigrationsPage.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Start"
 msgstr "શરૂ કરો"
 
@@ -18487,6 +18396,10 @@ msgstr "ચર્ચા શરૂ કરો"
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Start a mailing list"
 msgstr "મેઇલિંગ લિસ્ટ શરૂ કરો"
+
+#: src/features/migrations/MigrationsPage.tsx
+msgid "Start an import"
+msgstr "ઇમ્પોર્ટ શરૂ કરો"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "Start conversation"
@@ -18570,7 +18483,6 @@ msgstr "Starts when a change to the person’s attributes makes them match, and 
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (પોર્ટ 587)"
 
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
@@ -18612,7 +18524,7 @@ msgstr "બંધ થાય ત્યારે સ્થિતિ"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
 #: src/features/team/TeamPage.tsx
@@ -18874,10 +18786,6 @@ msgstr "સસ્પેન્ડ કર્યું"
 msgid "Suspended broadcasts"
 msgstr "બ્રોડકાસ્ટ સ્થગિત કર્યા"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Switch"
-msgstr "સ્વિચ કરો"
-
 #: src/features/migrations/SwitchStep.tsx
 msgid "Switch your mail to Yuva"
 msgstr "તમારો મેઇલ Yuva ને સ્વિચ કરો"
@@ -18934,11 +18842,11 @@ msgstr "ફરી સાઇન-અપ લે છે અને સૂચિને
 msgid "Taking the recipients: {prepared} so far"
 msgstr "પ્રાપ્તકર્તાઓ લેવાઈ રહ્યા છે: અત્યાર સુધી {prepared}"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Targets"
 msgstr "લક્ષ્યો"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Targets count in the business hours of the conversation's inbox, in its time zone. Leave one empty to not track it; at least one is required."
 msgstr "લક્ષ્યો વાતચીતના ઇનબૉક્સના કામના કલાકો અને ટાઇમ ઝોનમાં ગણાય છે. ટ્રૅક ન કરવા માટે એકને ખાલી રાખો; ઓછામાં ઓછું એક જરૂરી છે."
 
@@ -19031,7 +18939,6 @@ msgstr "teammate@company.com"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/features/conversation/HeaderActions.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -19075,9 +18982,9 @@ msgstr "ટેસ્ટ ફક્ત વર્કસ્પેસના સભ્
 
 #: src/features/fields/value.ts
 #: src/features/settings/automation/ConditionRow.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Text"
 msgstr "ટેક્સ્ટ"
 
@@ -19089,7 +18996,7 @@ msgstr "ટેક્સ્ટ છેલ્લે {who} એ સાચવ્યો
 msgid "Thanks for waiting. Your invoice is on its way."
 msgstr "રાહ જોવા બદલ આભાર. તમારું ઇન્વૉઇસ રસ્તામાં છે."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 msgid "Thanks for writing"
 msgstr "લખવા બદલ આભાર"
 
@@ -19214,12 +19121,12 @@ msgstr "સ્નિપેટ ધરાવતા દરેક પેજના �
 msgid "The chat bubble appears on these addresses:"
 msgstr "ચૅટ બબલ આ સરનામાં પર દેખાય છે:"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "The chat shows when you usually reply"
 msgstr "ચૅટ તમે સામાન્ય રીતે ક્યારે જવાબ આપો છો તે બતાવે છે"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "The chat shows who is available and typing"
 msgstr "ચૅટ કોણ ઉપલબ્ધ છે અને ટાઇપ કરી રહ્યું છે તે બતાવે છે"
@@ -19601,11 +19508,11 @@ msgstr "આ કી ફક્ત આ ઇનબૉક્સ જોઈ શકે �
 msgid "The key stops working at the end of this day."
 msgstr "કી આ દિવસના અંતે કામ કરવાનું બંધ કરે છે."
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "The key, the object and the type cannot change after creation."
 msgstr "કી, ઑબ્જેક્ટ અને પ્રકાર બનાવ્યા પછી બદલી શકાતા નથી."
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 msgid "The kind cannot be changed later."
 msgstr "પ્રકાર પછી બદલી શકાતો નથી."
 
@@ -19738,7 +19645,7 @@ msgstr "માઇગ્રેશન જ્યાં અટક્યું હત
 msgid "The migration moved on in the meantime. Look at its state and try again."
 msgstr "આ દરમિયાન માઇગ્રેશન આગળ વધ્યું. તેની સ્થિતિ જુઓ અને ફરી પ્રયાસ કરો."
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "The next step adds its first channel: website chat, e-mail or a mobile app."
 msgstr "આગલું પગલું તેની પહેલી ચેનલ ઉમેરે છે: વેબ ચૅટ, ઇમેઇલ કે મોબાઇલ ઍપ."
 
@@ -20203,10 +20110,6 @@ msgstr "વેબહૂક એન્ડપોઇન્ટ બંધ છે અ�
 msgid "The What’s new count shows on the chat button while no messages are unread. The widget’s Home always shows it."
 msgstr "જ્યાં સુધી કોઈ સંદેશ વણવાંચ્યો ન હોય ત્યાં સુધી ચેટ બટન પર નવા અપડેટની સંખ્યા દેખાય છે. વિજેટનું હોમ તેને હંમેશા બતાવે છે."
 
-#: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
-msgstr "વર્કસ્પેસ પોતે: નામ, સાચવણી, લેબલ, તૈયાર જવાબો, સ્થળાંતર અને ઓડિટ લૉગ"
-
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
 msgstr "વર્કસ્પેસ હાલ બ્રૉડકાસ્ટ મોકલી શકતું નથી."
@@ -20214,11 +20117,6 @@ msgstr "વર્કસ્પેસ હાલ બ્રૉડકાસ્ટ મ
 #: src/features/status/Notices.tsx
 msgid "The workspace may not send bulk mail now"
 msgstr "વર્કસ્પેસ હમણાં બલ્ક મેઇલ મોકલી શકતું નથી"
-
-#: src/components/common/SettingsStrip.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "The workspace: labels, replies, data"
-msgstr "વર્કસ્પેસ: લેબલ, જવાબો, ડેટા"
 
 #: src/components/common/text.ts
 msgid "The zip cannot be read; it may be damaged or cut off. Make it again and upload it."
@@ -20272,7 +20170,7 @@ msgstr "થીમ"
 msgid "Theme and e-mail view on this device"
 msgstr "આ ઉપકરણ પર થીમ અને ઇમેઇલ વ્યૂ"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Then"
 msgstr "પછી"
 
@@ -20614,7 +20512,7 @@ msgstr "આ CSV ફાઇલ નથી. સ્પ્રેડશીટને CSV
 msgid "This is not a domain this page can use. Use a name like {example} that is not one of this server’s own addresses."
 msgstr "આ પેજ આ ડોમેનનો ઉપયોગ કરી શકતું નથી. {example} જેવું નામ વાપરો જે આ સર્વરના પોતાના સરનામાંમાંનું ન હોય."
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "This is not a JSON object."
 msgstr "આ JSON ઑબ્જેક્ટ નથી."
@@ -20751,7 +20649,7 @@ msgstr "આ પ્રૉપર્ટીમાં આ નામનું સે�
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "માલિક અથવા એડમિન આ નિયમ અને તૈયાર જવાબ {title} બંને સાચવે નહીં, અથવા API કી સેટિંગ્સમાં બૉટને મોકલવાની પરવાનગી ન મળે ત્યાં સુધી આ જવાબ મોકલાશે નહીં."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "માલિક અથવા એડમિન તૈયાર જવાબ {title} સાચવે નહીં, અથવા API કી સેટિંગ્સમાં બૉટને મોકલવાની પરવાનગી ન મળે ત્યાં સુધી આ જવાબ મોકલાશે નહીં."
@@ -20966,7 +20864,7 @@ msgstr "ટાઇમઆઉટ"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/status/IncidentForm.tsx
 msgid "Title"
 msgstr "શીર્ષક"
@@ -21097,7 +20995,7 @@ msgstr "વલણો"
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Trigger"
 msgstr "ટ્રિગર"
 
@@ -21221,8 +21119,7 @@ msgid "TXT record"
 msgstr "TXT રેકોર્ડ"
 
 #: src/features/inbox/SourceFilter.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Type"
 msgstr "પ્રકાર"
 
@@ -21271,7 +21168,7 @@ msgstr "સોંપણી દૂર કરો"
 #: src/features/home/HomeWork.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Unassigned"
 msgstr "ન સોંપેલું"
 
@@ -21345,7 +21242,7 @@ msgid "Unfollowed"
 msgstr "અનુસરવાનું બંધ કર્યું"
 
 #: src/features/broadcasts/Trigger.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Unit"
 msgstr "એકમ"
 
@@ -21758,9 +21655,9 @@ msgstr "આ સર્વર સામે તેને બિયરર ટોક�
 msgid "Use letters, digits, - and _, at most 64."
 msgstr "અક્ષરો, અંકો, - અને _ વાપરો, વધુમાં વધુ 64."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Use lowercase letters, digits and single dashes."
 msgstr "નાના અક્ષરો, અંકો અને એકલા હાઇફનનો ઉપયોગ કરો."
 
@@ -21914,10 +21811,6 @@ msgstr "Verify"
 #: src/features/settings/webhooks/SignatureHint.tsx
 msgid "Verify every request before trusting it: the <0>webhook-signature</0> header follows the <1>Standard Webhooks</1> specification, so any of its libraries can check it with the endpoint's secret. Go backends can use the <2>sdk/go/webhook</2> package of the Yuva repository."
 msgstr "વિશ્વાસ કરતાં પહેલાં દરેક વિનંતી ચકાસો: <0>webhook-signature</0> હેડર <1>Standard Webhooks</1> સ્પેસિફિકેશનને અનુસરે છે, તેથી તેની કોઈપણ લાઇબ્રેરી એન્ડપૉઇન્ટના સિક્રેટથી તે તપાસી શકે છે. Go બૅકએન્ડ Yuva રિપોઝિટરીનું <2>sdk/go/webhook</2> પૅકેજ વાપરી શકે છે."
-
-#: src/features/settings/SettingsFrame.tsx
-msgid "Version"
-msgstr "આવૃત્તિ"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Versions"
@@ -22158,7 +22051,7 @@ msgstr "તમારી રાહ જુએ છે"
 msgid "Warn about the certificate"
 msgstr "પ્રમાણપત્ર વિશે ચેતવો"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Warn before it is due"
 msgstr "મુદત પહેલાં ચેતવણી આપો"
 
@@ -22218,8 +22111,6 @@ msgstr "Webhook secret for {revealName}"
 
 #: src/app/Palette.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
@@ -22246,7 +22137,7 @@ msgstr "વેબસાઇટ"
 msgid "Website addresses"
 msgstr "વેબસાઇટ સરનામાં"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Website chat"
 msgstr "વેબસાઇટ ચૅટ"
@@ -22368,7 +22259,7 @@ msgstr "ગ્રાહક શું જુએ છે"
 msgid "What the import will do"
 msgstr "આયાત શું કરશે"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "What the team sees."
 msgstr "ટીમને જે દેખાય છે."
 
@@ -22414,7 +22305,6 @@ msgstr "What your e-mailed replies end with, per inbox. Chat replies and notes c
 
 #: src/components/common/FocusChoice.tsx
 #: src/features/settings/workspace/FocusForm.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "What Yuva is for"
 msgstr "Yuva શેના માટે છે"
 
@@ -22429,7 +22319,7 @@ msgid "What’s new entry"
 msgstr "નવું શું છે એન્ટ્રી"
 
 #: src/features/broadcasts/ReviewPanel.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "When"
 msgstr "ક્યારે"
 
@@ -22552,7 +22442,7 @@ msgstr "Where new issues go when nobody picks a team, as a team key such as ENG.
 msgid "Where should Yuva send events?"
 msgstr "Yuva એ ઇવેન્ટ ક્યાં મોકલવી જોઈએ?"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
 msgstr "જ્યાં API મૂલ્ય સંગ્રહે છે. નાના અક્ષરો, અંકો અને અંડરસ્કોર; બદલી શકાતું નથી."
 
@@ -22608,7 +22498,7 @@ msgstr "કોણ જવાબ આપે છે, ક્યાં, અને ક�
 msgid "Who can reply"
 msgstr "કોણ જવાબ આપી શકે"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Who can use it"
 msgstr "કોણ વાપરી શકે"
 
@@ -22645,7 +22535,6 @@ msgstr "કોણ મોકલે છે, અને શેના વિશે?"
 msgid "Who should take it?"
 msgstr "કોણે તે લેવું જોઈએ?"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Who you support: name, hours, team, sender"
 msgstr "તમે કોને સહાય કરો છો: નામ, સમય, ટીમ, મોકલનાર"
@@ -22764,10 +22653,8 @@ msgstr "કામ ચાલુ…"
 #: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/oauth/ConsentPage.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Workspace"
 msgstr "વર્કસ્પેસ"
 
@@ -23074,7 +22961,6 @@ msgid "Your account is not in a group that may use Yuva. Ask your administrator 
 msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 
 #: src/features/settings/addresses/AddressesPage.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Your addresses"
 msgstr "તમારા સરનામાં"
 
@@ -23167,6 +23053,10 @@ msgstr "તમારી Microsoft 365 સંસ્થા ફક્ત ઍડમ�
 #: src/features/broadcasts/Composer.tsx
 msgid "Your name"
 msgstr "તમારું નામ"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Your name, photo, language and sign-in"
+msgstr "તમારું નામ, ફોટો, ભાષા અને સાઇન-ઇન"
 
 #: src/features/home/HomeWork.tsx
 msgid "Your open conversations"
@@ -23273,10 +23163,6 @@ msgstr "તમારી વેબસાઇટ"
 msgid "Your workspace asks for these fields on every conversation it closes."
 msgstr "તમારી વર્કસ્પેસ બંધ થતી દરેક વાતચીતમાં આ ફીલ્ડ માંગે છે."
 
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."
-msgstr "તમારા વર્કસ્પેસનું નામ, બંધ વાતચીત કેટલા સમય સુધી રખાય છે, અને બ્રૉડકાસ્ટ કોણ મોકલી શકે."
-
 #: src/features/account/AccountPage.tsx
 msgid "Your Yuva account"
 msgstr "તમારું Yuva ખાતું"
@@ -23367,10 +23253,6 @@ msgstr "Yuva મેઇલ સર્વર ચલાવતું નથી: ત�
 msgid "Yuva held back a command that would have changed the mailbox"
 msgstr "Yuva એ મેઇલબૉક્સ બદલી નાખે તેવો આદેશ અટકાવ્યો"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Yuva inbox"
-msgstr "Yuva ઇનબૉક્સ"
-
 #: src/features/migrations/SwitchStep.tsx
 msgid "Yuva mails {address} a short test message. When it reaches Yuva by the new route, the switch works."
 msgstr "Yuva {address} ને ટૂંકો ટેસ્ટ સંદેશ મેઇલ કરે છે. તે નવા માર્ગે Yuva સુધી પહોંચે ત્યારે સ્વિચ કામ કરે છે."
@@ -23402,10 +23284,6 @@ msgstr "Yuva ફક્ત હેલ્પ ડેસ્ક વાંચે છે
 #: src/features/migrations/Wizard.tsx
 msgid "Yuva only reads the mailbox. History arrives quietly: no notifications, no auto-replies."
 msgstr "Yuva ફક્ત મેઇલબૉક્સ વાંચે છે. ઇતિહાસ શાંતિથી આવે છે: કોઈ સૂચના નહીં, કોઈ ઑટો-રિપ્લાય નહીં."
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Yuva only reads the source; nothing there is changed."
-msgstr "Yuva ફક્ત સ્રોત વાંચે છે; ત્યાં કંઈ બદલાતું નથી."
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Yuva only reads. Besides signing in, its connection sends {provider} nothing but read requests, so no ticket, customer or setting changes."
@@ -23478,7 +23356,3 @@ msgstr "Yuva, હોમ પર જાઓ"
 #: src/components/common/text.ts
 msgid "Yuva's own notes cannot be changed."
 msgstr "Yuva ની પોતાની નોંધો બદલી શકાતી નથી."
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"
-msgstr "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"

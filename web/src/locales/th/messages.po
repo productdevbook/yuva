@@ -1448,7 +1448,7 @@ msgstr "การสนทนาหนึ่งรายการ"
 msgid "A conversation can copy at most 100 people."
 msgstr "การสนทนาหนึ่งสามารถสำเนาถึงได้สูงสุด 100 คน"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
 msgstr "ปิดการสนทนาไม่ได้จนกว่าฟิลด์นี้จะมีค่า สแปมได้รับยกเว้น"
 
@@ -1468,7 +1468,7 @@ msgstr "การสนทนาไม่มีความเคลื่อน
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "การสนทนาจะถูกเลือกทั้งหมดเมื่อมีการอัปเดตล่าสุดอยู่ในช่วงเวลา"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "A conversation must match every row you fill in. Leave a row empty to match anything."
 msgstr "การสนทนาต้องตรงกับทุกแถวที่คุณกรอก แถวที่ว่างจะตรงกับทุกอย่าง"
 
@@ -1739,7 +1739,7 @@ msgstr "เปอร์เซ็นต์ข้างส่วนประกอ
 msgid "A personal API key from Linear, under Settings, Account, Security and access."
 msgstr "A personal API key from Linear, under Settings, Account, Security and access."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "A policy that is off applies to nothing."
 msgstr "นโยบายที่ปิดอยู่จะไม่มีผลกับสิ่งใด"
 
@@ -1799,7 +1799,7 @@ msgstr "ช่องที่จำเป็นว่างอยู่"
 msgid "A roadmap idea moved to another stage"
 msgstr "ไอเดียในโรดแมปย้ายไปยังขั้นอื่น"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "A rule that is off never runs. Rules run in the order of the list."
 msgstr "กฎที่ปิดอยู่จะไม่ทำงานเลย กฎทำงานตามลำดับในรายการ"
 
@@ -1974,10 +1974,6 @@ msgstr "การเข้าถึง {provider}"
 msgid "Access to the mailbox"
 msgstr "การเข้าถึงกล่องจดหมาย"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Access to your mailbox: none"
-msgstr "การเข้าถึงกล่องจดหมายของคุณ: ไม่มี"
-
 #: src/features/account/AccountPage.tsx
 msgid "Account"
 msgstr "บัญชี"
@@ -2002,7 +1998,7 @@ msgstr "Acme Support"
 msgid "ACS URL"
 msgstr "ACS URL"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Actions"
@@ -2017,6 +2013,7 @@ msgstr "เฉพาะการดำเนินการ"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/text.ts
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
@@ -2032,7 +2029,7 @@ msgstr "กิจกรรม"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "เพิ่ม"
@@ -2050,7 +2047,7 @@ msgstr "เพิ่มบล็อก"
 msgid "Add a category"
 msgstr "เพิ่มหมวดหมู่"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Add a channel"
 msgstr "เพิ่มช่องทาง"
 
@@ -2099,7 +2096,7 @@ msgstr "เพิ่มผู้เข้าร่วมด้วยที่อ
 msgid "Add a passkey"
 msgstr "เพิ่มพาสคีย์"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Add a product"
 msgstr "เพิ่มผลิตภัณฑ์"
 
@@ -2137,7 +2134,7 @@ msgstr "เพิ่มแชตบนเว็บไซต์ในการต
 msgid "Add a website or app"
 msgstr "เพิ่มเว็บไซต์หรือแอป"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Add an action"
 msgstr "เพิ่มการดำเนินการ"
 
@@ -2154,6 +2151,10 @@ msgstr "เพิ่มที่อยู่บนเซิร์ฟเวอร
 #: src/app/Palette.tsx
 msgid "Add an analytics property"
 msgstr "เพิ่มพร็อพเพอร์ตีการวิเคราะห์"
+
+#: src/features/settings/channels/ApiChannelForm.tsx
+msgid "Add an API channel"
+msgstr "เพิ่มช่องทาง API"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add an image"
@@ -2184,7 +2185,6 @@ msgstr "เพิ่มอีก"
 msgid "Add at least one origin."
 msgstr "เพิ่มอย่างน้อยหนึ่ง origin"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Add channel"
 msgstr "เพิ่มช่องทาง"
@@ -2194,7 +2194,7 @@ msgstr "เพิ่มช่องทาง"
 msgid "Add component"
 msgstr "เพิ่มส่วนประกอบ"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Add condition"
 msgstr "เพิ่มเงื่อนไข"
 
@@ -2228,6 +2228,10 @@ msgstr "Add image"
 #: src/features/mail/Compose.tsx
 msgid "Add it back"
 msgstr "Add it back"
+
+#: src/features/settings/labels/LabelForm.tsx
+msgid "Add label"
+msgstr "เพิ่มป้ายกำกับ"
 
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
@@ -2386,6 +2390,7 @@ msgid "Address verified"
 msgstr "ยืนยันที่อยู่แล้ว"
 
 #: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Addresses"
 msgstr "ที่อยู่"
 
@@ -2496,6 +2501,7 @@ msgid "All good"
 msgstr "ปกติดี"
 
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/MigrationsPage.tsx
 msgid "All imports"
 msgstr "การนำเข้าทั้งหมด"
 
@@ -2881,10 +2887,6 @@ msgstr "คำเชิญจะได้รับการยอมรับเ
 msgid "An issue URL, owner/repo#12 or ENG-123."
 msgstr "An issue URL, owner/repo#12 or ENG-123."
 
-#: src/features/migrations/MigrationsPage.tsx
-msgid "An mbox export of a mailbox"
-msgstr "การส่งออก mbox ของกล่องจดหมาย"
-
 #: src/features/team/TeamPage.tsx
 msgid "An owner cannot be removed. Change their role first."
 msgstr "ไม่สามารถลบเจ้าของได้ โปรดเปลี่ยนบทบาทของเขาก่อน"
@@ -2960,7 +2962,7 @@ msgstr "บัญชีอื่น"
 msgid "Another address this channel receives mail at. Forward a mailbox here, for example {own} at its provider; forwarding to {own} itself would loop."
 msgstr "อีกที่อยู่หนึ่งที่ช่องทางนี้รับอีเมล ส่งต่อกล่องจดหมายมาที่นี่ เช่น {own} ที่ผู้ให้บริการของกล่องนั้น การส่งต่อไปยัง {own} เองจะวนซ้ำ"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 msgid "Another canned reply already uses this shortcut."
 msgstr "คำตอบสำเร็จรูปอื่นใช้ทางลัดนี้อยู่แล้ว"
 
@@ -3092,7 +3094,7 @@ msgstr "ฟิลด์ใดก็ได้"
 msgid "Any label"
 msgstr "ป้ายกำกับใดก็ได้"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Any of the labels you pick."
 msgstr "ป้ายกำกับใดก็ได้ที่คุณเลือก"
 
@@ -3137,15 +3139,11 @@ msgstr "ทุกอย่างที่ใช้คีย์นี้จะห
 msgid "API"
 msgstr "API"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "API & MCP"
 msgstr "API และ MCP"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "API channel"
 msgstr "ช่องทาง API"
 
@@ -3158,7 +3156,6 @@ msgstr "คีย์ API"
 #: src/app/Palette.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "API keys"
 msgstr "คีย์ API"
@@ -3222,8 +3219,8 @@ msgstr "Application (client) ID"
 msgid "Applied"
 msgstr "นำไปใช้แล้ว"
 
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Applies to"
 msgstr "ใช้กับ"
 
@@ -3450,7 +3447,7 @@ msgstr "มอบหมายให้คุณแล้ว"
 
 #: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Assignee"
 msgstr "ผู้รับผิดชอบ"
 
@@ -3486,7 +3483,7 @@ msgid "Assistants work in Yuva through MCP, acting as the member who connected t
 msgstr "ผู้ช่วยทำงานใน Yuva ผ่าน MCP ในนามสมาชิกที่เชื่อมต่อพวกเขา และใช้เฉพาะสิทธิ์ที่สมาชิกคนนั้นอนุมัติ"
 
 #: src/components/common/text.ts
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Async"
 msgstr "อะซิงก์"
 
@@ -3585,7 +3582,6 @@ msgid "Audience"
 msgstr "กลุ่มเป้าหมาย"
 
 #: src/app/Palette.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Audit log"
 msgstr "บันทึกการตรวจสอบ"
@@ -3618,7 +3614,6 @@ msgstr "การมอบหมายอัตโนมัติ"
 msgid "Automatic mail never triggers an automatic reply."
 msgstr "อีเมลอัตโนมัติจะไม่กระตุ้นการตอบกลับอัตโนมัติ"
 
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Automation"
 msgstr "ระบบอัตโนมัติ"
@@ -3766,7 +3761,7 @@ msgstr "Best regards,"
 msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
 msgstr "ระหว่าง 1 ถึง 500 นับทั้งพื้นที่ทำงาน การมอบหมายด้วยมือไม่สนใจค่านี้ เว้นว่างไว้หากไม่จำกัด"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Billing"
 msgstr "การเรียกเก็บเงิน"
@@ -3776,7 +3771,7 @@ msgstr "การเรียกเก็บเงิน"
 msgid "Billing bot"
 msgstr "บอทการเรียกเก็บเงิน"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 msgid "Billing events"
 msgstr "เหตุการณ์การเรียกเก็บเงิน"
 
@@ -3924,17 +3919,13 @@ msgstr "ละเมิด"
 msgid "Breached, met late at {at}"
 msgstr "ละเมิด บรรลุล่าช้าเมื่อ {at}"
 
-#: src/features/settings/SettingsFrame.tsx
-msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
-msgstr "นำประวัติของกล่องจดหมายจาก Gmail, Yandex หรือเซิร์ฟเวอร์ IMAP ใดก็ได้เข้ามา"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Bring subscribers who already agreed elsewhere. Each address is checked first and nothing is added until you start: invalid addresses, domains that take no mail, role addresses, duplicates and anyone who left or objected are left out."
 msgstr "นำผู้สมัครรับที่ยินยอมไว้ที่อื่นแล้วเข้ามา แต่ละที่อยู่จะถูกตรวจสอบก่อน และจะไม่มีการเพิ่มอะไรจนกว่าคุณจะเริ่ม ที่อยู่ที่ไม่ถูกต้อง โดเมนที่ไม่รับอีเมล ที่อยู่แบบบทบาท รายการซ้ำ และผู้ที่ออกไปหรือคัดค้านจะถูกข้าม"
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Bring the history of a mailbox you answer from today, then switch its mail over. Yuva only reads the mailbox; nothing there is changed."
-msgstr "นำประวัติของกล่องจดหมายที่คุณตอบอยู่ในปัจจุบันเข้ามา แล้วสลับอีเมลของกล่องนั้นมา Yuva อ่านกล่องจดหมายเท่านั้น ไม่มีอะไรที่นั่นถูกเปลี่ยนแปลง"
+msgid "Bring the history of a mailbox or help desk you answer from today, then switch its mail over. Yuva only reads the source; nothing there is changed."
+msgstr "นำประวัติของกล่องจดหมายหรือ help desk ที่คุณใช้ตอบอยู่วันนี้เข้ามา แล้วจึงย้ายอีเมลมาที่นี่ Yuva อ่านต้นทางเท่านั้น ไม่มีอะไรถูกเปลี่ยนที่นั่น"
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Bring your old mail"
@@ -3949,7 +3940,6 @@ msgstr "บรอดคาสต์"
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/settings/workspace/BroadcastsSettings.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Broadcast sending"
 msgstr "การส่งบรอดคาสต์"
 
@@ -4047,13 +4037,9 @@ msgstr "ชื่อแคมเปญ"
 #: src/features/docs/FromDocs.tsx
 #: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
-#: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -4136,8 +4122,6 @@ msgstr "ยกเลิกแล้ว สิ่งที่เพิ่มไ�
 #: src/app/Palette.tsx
 #: src/features/conversation/composer/CannedMenu.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Canned replies"
 msgstr "คำตอบสำเร็จรูป"
 
@@ -4291,10 +4275,6 @@ msgstr "เปลี่ยน webhook ไปยัง {host}"
 msgid "Changelog settings"
 msgstr "การตั้งค่าบันทึกการเปลี่ยนแปลง"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Changes made to {provider}: none"
-msgstr "การเปลี่ยนแปลงที่ทำกับ {provider}: ไม่มี"
-
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
 msgstr "การเปลี่ยนแปลงสมาชิก คีย์ webhook และการตั้งค่าที่ละเอียดอ่อนอื่น ๆ จะแสดงที่นี่"
@@ -4308,14 +4288,14 @@ msgstr "การเปลี่ยนโดเมนที่ส่งจะป
 #: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
 msgid "Channel"
 msgstr "ช่องทาง"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Channel added"
 msgstr "เพิ่มช่องทางแล้ว"
 
@@ -4339,14 +4319,8 @@ msgstr "ลบช่องทางแล้ว"
 msgid "Channel settings"
 msgstr "การตั้งค่าช่อง"
 
-#: src/app/places.tsx
-#: src/components/common/SettingsStrip.tsx
-#: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Channels"
 msgstr "ช่องทาง"
 
@@ -4450,7 +4424,7 @@ msgstr "ตรวจสอบ {when}"
 msgid "Checked and waiting for an owner or admin to start it."
 msgstr "ตรวจสอบแล้วและรอเจ้าของหรือผู้ดูแลเริ่ม"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Checked every 5 minutes, once per quiet period. Only open and pending conversations."
 msgstr "ตรวจสอบทุก 5 นาที หนึ่งครั้งต่อช่วงที่เงียบ เฉพาะการสนทนาที่เปิดอยู่และรอดำเนินการ"
 
@@ -4649,7 +4623,6 @@ msgstr "นาฬิกาเปลี่ยนในวันที่ {date} �
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -4689,7 +4662,7 @@ msgstr "ปิดทุกการสนทนาหลังตอบกลั
 msgid "Close everything"
 msgstr "ปิดทุกอย่าง"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Close idle conversations"
 msgstr "ปิดการสนทนาที่ไม่มีความเคลื่อนไหว"
 
@@ -4777,11 +4750,11 @@ msgstr "ยุบ"
 msgid "Collections"
 msgstr "คอลเลกชัน"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Color"
 msgstr "สี"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/colors.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Colour"
@@ -4972,7 +4945,6 @@ msgstr "Connect a tracker"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
 msgid "Connect an assistant"
 msgstr "เชื่อมต่อผู้ช่วย"
 
@@ -5038,12 +5010,10 @@ msgid "Connected {created}"
 msgstr "เชื่อมต่อเมื่อ {created}"
 
 #: src/app/Palette.tsx
-#: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
+#: src/features/settings/connected-apps/AssistantPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Connected apps"
 msgstr "แอปที่เชื่อมต่อ"
 
@@ -5181,7 +5151,6 @@ msgstr "มีคำว่า"
 
 #: src/app/places.tsx
 #: src/features/broadcasts/Composer.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Content"
 msgstr "เนื้อหา"
 
@@ -5197,7 +5166,7 @@ msgstr "เนื้อหา"
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
 #: src/features/setup/email/EmailReceiveStep.tsx
@@ -5256,7 +5225,6 @@ msgstr "เริ่มการสนทนาแล้ว"
 msgid "conversations"
 msgstr "การสนทนา"
 
-#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
@@ -5271,6 +5239,7 @@ msgstr "การสนทนา"
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Conversations"
 msgstr "การสนทนา"
@@ -5341,7 +5310,6 @@ msgstr "ที่อยู่ที่สำเนาถึง"
 #: src/components/common/CopyButton.tsx
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/messages/MessageActions.tsx
-#: src/features/migrations/Wizard.tsx
 msgid "Copy"
 msgstr "คัดลอก"
 
@@ -5394,6 +5362,10 @@ msgstr "คัดลอกรายละเอียดความคิดเ
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Copy the feedback details (Y)"
 msgstr "คัดลอกรายละเอียดความคิดเห็น (Y)"
+
+#: src/features/migrations/Wizard.tsx
+msgid "Copy the history of a mailbox or help desk into Yuva."
+msgstr "คัดลอกประวัติของกล่องจดหมายหรือ help desk เข้า Yuva"
 
 #: src/features/migrations/text.ts
 msgid "Copy the key under “Your API Key”. A Freshdesk key cannot be limited to reading; Yuva's connection only sends read requests."
@@ -5459,7 +5431,6 @@ msgid "Counts when a subscription becomes confirmed, not when it is still waitin
 msgstr "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/DeveloperTabs.tsx
 msgid "Create"
 msgstr "สร้าง"
 
@@ -5492,7 +5463,7 @@ msgstr "Create an issue"
 msgid "Create an OAuth client in Zendesk"
 msgstr "สร้างไคลเอนต์ OAuth ใน Zendesk"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Create and add a channel"
 msgstr "สร้างและเพิ่มช่องทาง"
 
@@ -5516,11 +5487,11 @@ msgstr "สร้างช่องทาง"
 msgid "Create draft"
 msgstr "สร้างฉบับร่าง"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Create field"
 msgstr "สร้างฟิลด์"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Create filter"
 msgstr "สร้างตัวกรอง"
 
@@ -5554,11 +5525,11 @@ msgstr "สร้างคีย์"
 msgid "Create list"
 msgstr "สร้างรายชื่อ"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Create policy"
 msgstr "สร้างนโยบาย"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Create rule"
 msgstr "สร้างกฎ"
 
@@ -5619,9 +5590,7 @@ msgstr "สร้าง เปลี่ยน จัดลำดับใหม�
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Created"
 msgstr "สร้างแล้ว"
 
@@ -5690,11 +5659,6 @@ msgstr "กำหนดเอง"
 msgid "Custom field"
 msgstr "ฟิลด์กำหนดเอง"
 
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "Custom fields"
-msgstr "ฟิลด์กำหนดเอง"
-
 #: src/features/contact/ContactsPage.tsx
 msgid "Customers"
 msgstr "ลูกค้า"
@@ -5725,7 +5689,6 @@ msgid "Daily limit reached · continues at {time} {city} time"
 msgstr "ถึงขีดจำกัดรายวันแล้ว · จะส่งต่อเวลา {time} ตามเวลา{city}"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Danger zone"
 msgstr "โซนอันตราย"
 
@@ -6075,10 +6038,6 @@ msgstr "ลบทีม {name} ไหม"
 msgid "Delete the view {name}?"
 msgstr "ลบมุมมอง {name} ไหม"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-msgid "Delete this canned reply?"
-msgstr "ลบคำตอบสำเร็จรูปนี้ไหม"
-
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Delete this DKIM key?"
 msgstr "ลบคีย์ DKIM นี้ไหม"
@@ -6102,6 +6061,10 @@ msgstr "ลบบันทึกนี้"
 #: src/features/contact/ContactNotes.tsx
 msgid "Delete this note?"
 msgstr "ลบบันทึกนี้ไหม"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "Delete this saved reply?"
+msgstr "ลบคำตอบที่บันทึกไว้นี้ไหม"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete this subscription?"
@@ -6302,7 +6265,6 @@ msgstr "การแจ้งเตือนบนเดสก์ท็อปถ
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
@@ -6310,8 +6272,11 @@ msgstr "การแจ้งเตือนบนเดสก์ท็อปถ
 msgid "Details"
 msgstr "รายละเอียด"
 
-#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsFrame.tsx
+msgid "Developer"
+msgstr "นักพัฒนา"
+
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Developers"
 msgstr "นักพัฒนา"
 
@@ -6519,7 +6484,7 @@ msgstr "เอกสารคือหน้าที่คุณดูแลบ
 msgid "Documentation pages"
 msgstr "หน้าเอกสาร"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Documentation site"
 msgstr "ไซต์เอกสาร"
@@ -6555,7 +6520,6 @@ msgstr "เสร็จแล้ว"
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/fields/BulkFailures.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -6738,7 +6702,7 @@ msgstr "รายการซ้ำ"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/notifications/EventsSection.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -6816,7 +6780,7 @@ msgstr "รหัสทางอีเมล"
 msgid "E-mails to the people who signed up"
 msgstr "อีเมลถึงผู้ที่สมัครไว้"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
 msgstr "แต่ละการดำเนินการหนึ่งครั้ง สูงสุด 10 รายการ การดำเนินการทำงานเป็นการเปลี่ยนแปลงเดียว หากรายการใดล้มเหลว จะไม่มีรายการใดถูกนำไปใช้"
 
@@ -6919,10 +6883,6 @@ msgstr "แก้ไข {name}"
 msgid "Edit API key"
 msgstr "แก้ไขคีย์ API"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-msgid "Edit canned reply"
-msgstr "แก้ไขคำตอบสำเร็จรูป"
-
 #: src/features/status/ComponentForms.tsx
 msgid "Edit component"
 msgstr "แก้ไขส่วนประกอบ"
@@ -6940,11 +6900,11 @@ msgstr "แก้ไขรายละเอียด"
 msgid "Edit details ({editKey})"
 msgstr "แก้ไขรายละเอียด ({editKey})"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Edit field"
 msgstr "แก้ไขฟิลด์"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Edit filter"
 msgstr "แก้ไขตัวกรอง"
 
@@ -6952,11 +6912,11 @@ msgstr "แก้ไขตัวกรอง"
 msgid "Edit help center collections and article drafts"
 msgstr "แก้ไขคอลเลกชันของศูนย์ช่วยเหลือและร่างบทความ"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Edit label"
 msgstr "แก้ไขป้ายกำกับ"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Edit macro"
 msgstr "แก้ไขมาโคร"
 
@@ -6964,13 +6924,17 @@ msgstr "แก้ไขมาโคร"
 msgid "Edit monitor"
 msgstr "แก้ไขมอนิเตอร์"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Edit policy"
 msgstr "แก้ไขนโยบาย"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Edit rule"
 msgstr "แก้ไขกฎ"
+
+#: src/features/settings/canned/CannedReplyForm.tsx
+msgid "Edit saved reply"
+msgstr "แก้ไขคำตอบที่บันทึกไว้"
 
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Edit team"
@@ -7036,11 +7000,6 @@ msgstr "กำลังแก้ไขข้อความที่ตั้ง
 msgid "Elevated API errors"
 msgstr "ข้อผิดพลาดของ API เพิ่มสูงขึ้น"
 
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "Elsewhere in settings"
-msgstr "ที่อื่นในการตั้งค่า"
-
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Embed snippet"
 msgstr "โค้ดสำหรับฝัง"
@@ -7070,8 +7029,8 @@ msgstr "ถ้าเว้นว่างจะใช้หัวเรื่อ
 msgid "Emptying the Trash: {0} are being deleted"
 msgstr "กำลังล้างถังขยะ: กำลังลบ {0} รายการ"
 
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Enabled"
 msgstr "เปิดใช้งาน"
 
@@ -7243,7 +7202,7 @@ msgid "Every imported conversation is closed."
 msgstr "ทุกการสนทนาที่นำเข้าถูกปิดแล้ว"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Every inbox"
 msgstr "ทุกกล่องข้อความ"
 
@@ -7319,7 +7278,7 @@ msgstr "ทุกเว็บไซต์และแอปแสดงผู้
 
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Everyone"
 msgstr "ทุกคน"
 
@@ -7469,7 +7428,6 @@ msgstr "Extra scopes"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/migrations/ConnectStep.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7584,6 +7542,7 @@ msgstr "มีการสนทนาที่เปิดอยู่น้อ
 
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Fields"
 msgstr "ฟิลด์"
 
@@ -7602,10 +7561,6 @@ msgstr "ไฟล์"
 #: src/features/broadcasts/Import.tsx
 msgid "File and consent"
 msgstr "ไฟล์และความยินยอม"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Files"
-msgstr "ไฟล์"
 
 #: src/features/fields/RequiredFieldsHost.tsx
 msgid "Fill in before closing"
@@ -7739,6 +7694,7 @@ msgstr "เสร็จสิ้นโดยไม่ตรวจสอบ"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/migrations/MigrationsPage.tsx
 msgid "Finished"
 msgstr "เสร็จสิ้นแล้ว"
 
@@ -7766,7 +7722,7 @@ msgstr "การตอบกลับครั้งแรก"
 #: src/features/home/HomeWork.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "First reply"
 msgstr "การตอบครั้งแรก"
 
@@ -7882,7 +7838,7 @@ msgid "For example Acme"
 msgstr "เช่น Acme"
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/setup/NameStep.tsx
 msgid "For example Fieldnote"
 msgstr "เช่น Fieldnote"
@@ -8071,15 +8027,15 @@ msgstr "ที่อยู่ From (ไม่บังคับ)"
 msgid "From blocked contacts"
 msgstr "จากผู้ติดต่อที่ถูกบล็อก"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From each later contact message to the reply."
 msgstr "ตั้งแต่ข้อความถัดไปแต่ละข้อความจากผู้ติดต่อจนถึงการตอบกลับ"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From the contact's first message to the first public reply."
 msgstr "ตั้งแต่ข้อความแรกของผู้ติดต่อจนถึงการตอบกลับสาธารณะครั้งแรก"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From the start of the conversation to its first close."
 msgstr "ตั้งแต่เริ่มการสนทนาจนถึงการปิดครั้งแรก"
 
@@ -8144,9 +8100,7 @@ msgstr "ให้ {person} เข้าถึง {inbox}"
 msgid "Gave the team {team} access to {inbox}"
 msgstr "ให้ทีม {team} เข้าถึง {inbox}"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/channels/sections.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "General"
@@ -8213,10 +8167,6 @@ msgstr "Gmail ส่งต่อเฉพาะอีเมลใหม่ที
 #: src/features/migrations/ConnectStep.tsx
 msgid "Gmail lets other apps read about 1.5 GB a day over IMAP, so a mailbox of many gigabytes takes days. Google Takeout exports it as one file that uploads as fast as your connection allows. Import that first, then come back here with an app password for the newer mail and the switch."
 msgstr "Gmail ให้แอปอื่นอ่านได้ประมาณ 1.5 GB ต่อวันผ่าน IMAP กล่องจดหมายขนาดหลายกิกะไบต์จึงใช้เวลาหลายวัน Google Takeout ส่งออกเป็นไฟล์เดียวที่อัปโหลดได้เร็วเท่าที่การเชื่อมต่อของคุณอนุญาต นำเข้าไฟล์นั้นก่อน แล้วกลับมาที่นี่พร้อมรหัสผ่านแอปสำหรับอีเมลที่ใหม่กว่าและการสลับ"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Gmail, Outlook, Yandex, any IMAP server"
-msgstr "Gmail, Outlook, Yandex, เซิร์ฟเวอร์ IMAP ใดก็ได้"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "go back to operational when you post this"
@@ -8316,10 +8266,6 @@ msgstr "Groups attribute"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
 msgstr "Groups claim"
-
-#: src/features/settings/SettingsFrame.tsx
-msgid "Groups of members and the inboxes they cover"
-msgstr "กลุ่มสมาชิกและกล่องข้อความที่ดูแล"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -8436,10 +8382,6 @@ msgstr "ศูนย์ช่วยเหลือ"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Help center settings"
 msgstr "การตั้งค่าศูนย์ช่วยเหลือ"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Help desks"
-msgstr "เฮลป์เดสก์"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Help report"
@@ -8580,7 +8522,7 @@ msgid "Hostname and certificate"
 msgstr "ชื่อโฮสต์และใบรับรอง"
 
 #: src/features/broadcasts/Trigger.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "hours"
 msgstr "ชั่วโมง"
 
@@ -8605,7 +8547,7 @@ msgstr "ผู้สมัครรับของคุณยินยอมอ
 msgid "How do people sign up?"
 msgstr "ผู้คนสมัครอย่างไร"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "How do you answer?"
 msgstr "คุณตอบอย่างไร"
 
@@ -8629,7 +8571,6 @@ msgstr "สัญญาณมาช้าได้นานเท่าใด"
 msgid "How mail reaches Yuva"
 msgstr "อีเมลมาถึง Yuva อย่างไร"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "How messages arrive: chat, e-mail, apps"
 msgstr "ข้อความมาถึงอย่างไร: แชต อีเมล แอป"
@@ -8641,10 +8582,6 @@ msgstr "ข้อความไปถึงแต่ละผลิตภัณ
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "How should replies go out?"
 msgstr "การตอบกลับควรส่งออกอย่างไร"
-
-#: src/components/common/SettingsStrip.tsx
-msgid "How software connects: keys, hooks, assistants"
-msgstr "ซอฟต์แวร์เชื่อมต่ออย่างไร: คีย์ เว็บฮุก ผู้ช่วย"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "How the chat opens"
@@ -8728,7 +8665,7 @@ msgstr "ไม่มีความเคลื่อนไหว {idle} นา�
 msgid "If {provider} mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "หาก {provider} ส่งอีเมลยืนยันไปที่ที่อยู่นั้น อีเมลจะมาถึงกล่องข้อความนี้เป็นการสนทนา เปิดดูที่นั่น"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "If all of these match"
 msgstr "หากทั้งหมดนี้ตรงกัน"
 
@@ -8821,11 +8758,11 @@ msgid "Import people"
 msgstr "นำเข้าผู้คน"
 
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Import steps"
 msgstr "ขั้นตอนการนำเข้า"
 
 #: src/components/common/ImportedChip.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 msgid "Imported"
 msgstr "นำเข้าแล้ว"
@@ -8856,6 +8793,8 @@ msgstr "กำลังนำเข้า…"
 
 #: src/app/nav.tsx
 #: src/app/places.tsx
+#: src/features/migrations/Wizard.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Imports"
 msgstr "การนำเข้า"
 
@@ -9018,7 +8957,7 @@ msgstr "ใน Zoho Mail เปิด Settings › Mail accounts › IMAP access
 #: src/features/docs/InstallDialog.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "กล่องข้อความ"
@@ -9051,10 +8990,15 @@ msgstr "กล่องข้อความสำหรับ {name}"
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Inboxes"
 msgstr "กล่องข้อความ"
+
+#: src/features/settings/ProductsPage.tsx
+#: src/features/settings/SettingsFrame.tsx
+msgid "Inboxes and channels"
+msgstr "กล่องข้อความและช่องทาง"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Inboxes cut off subjects longer than 80 characters."
@@ -9477,7 +9421,7 @@ msgstr "เก็บไว้กับทุกการสมัครรับ
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Key"
 msgstr "คีย์"
 
@@ -9517,12 +9461,6 @@ msgstr "คีย์และแอปที่เชื่อมต่อ"
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
 msgstr "คีย์ที่เข้าถึงผลิตภัณฑ์นี้ได้ สร้างและเพิกถอนได้ใน API และ MCP"
 
-#: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
-#: src/features/settings/webhooks/WebhooksPage.tsx
-msgid "Keys, webhooks and connected assistants"
-msgstr "คีย์ เว็บฮุก และผู้ช่วยที่เชื่อมต่อ"
-
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Keyword"
 msgstr "คีย์เวิร์ด"
@@ -9558,10 +9496,9 @@ msgstr "เป็นป้ายกำกับเท่านั้น อี�
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Labels"
 msgstr "ป้ายกำกับ"
 
@@ -9762,7 +9699,7 @@ msgstr "สีปุ่มเปิดแชต"
 msgid "Launcher position"
 msgstr "ตำแหน่งปุ่มเปิดแชต"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Leave as is"
 msgstr "ไม่เปลี่ยน"
 
@@ -10075,7 +10012,7 @@ msgid "Live"
 msgstr "สด"
 
 #: src/components/common/Source.tsx
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Live chat"
 msgstr "แชตสด"
 
@@ -10197,8 +10134,8 @@ msgstr "ต่ำ"
 msgid "Lowercase letters, digits and dashes, not at the start or end."
 msgstr "ตัวพิมพ์เล็ก ตัวเลข และขีดกลาง ไม่อยู่ต้นหรือท้าย"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Lowercase letters, digits and dashes."
 msgstr "ตัวพิมพ์เล็ก ตัวเลข และขีดกลาง"
 
@@ -10213,7 +10150,6 @@ msgid "Macro"
 msgstr "มาโคร"
 
 #: src/app/Palette.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Macros"
 msgstr "มาโคร"
@@ -10345,7 +10281,6 @@ msgstr "ที่อยู่กล่องจดหมาย"
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
-#: src/features/migrations/MigrationsPage.tsx
 msgid "Mailboxes"
 msgstr "กล่องจดหมาย"
 
@@ -10452,10 +10387,6 @@ msgstr "จัดการเว็บฮุก"
 #: src/features/settings/webhooks/parts.tsx
 msgid "manual"
 msgstr "ด้วยตนเอง"
-
-#: src/features/migrations/Wizard.tsx
-msgid "Map"
-msgstr "จับคู่"
 
 #: src/app/Header.tsx
 #: src/features/account/AccountPage.tsx
@@ -10636,7 +10567,6 @@ msgstr "สมาชิก"
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/teams/TeamsPage.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "สมาชิก"
@@ -10827,10 +10757,6 @@ msgstr "โทเค็นของ Microsoft ให้สิทธิ์มา�
 msgid "Migration cancelled"
 msgstr "ยกเลิกการย้ายแล้ว"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Migration steps"
-msgstr "ขั้นตอนการย้าย"
-
 #: src/features/inbox/ChatList.tsx
 msgid "Mine"
 msgstr "ของฉัน"
@@ -10841,7 +10767,7 @@ msgstr "ต่ำ"
 
 #: src/features/broadcasts/Trigger.tsx
 #: src/features/settings/automation/ActionRow.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "minutes"
 msgstr "นาที"
 
@@ -10849,7 +10775,7 @@ msgstr "นาที"
 msgid "Minutes"
 msgstr "นาที"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Minutes before a due time. 0 sends no warning."
 msgstr "กี่นาทีก่อนครบกำหนด ค่า 0 จะไม่ส่งคำเตือน"
 
@@ -10858,7 +10784,7 @@ msgid "Missed beat"
 msgstr "สัญญาณที่พลาด"
 
 #: src/components/common/text.ts
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/app/AppFields.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Mobile app"
@@ -11158,12 +11084,6 @@ msgstr "ย้ายไปที่ถังขยะ ({0})"
 msgid "Move to the Trash (#)"
 msgstr "ย้ายไปที่ถังขยะ (#)"
 
-#: src/features/migrations/Wizard.tsx
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "Move to Yuva"
-msgstr "ย้ายมา Yuva"
-
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11202,8 +11122,8 @@ msgid "Moves the mail to the Trash. Runs after the other actions."
 msgstr "ย้ายอีเมลไปที่ถังขยะ ทำงานหลังการดำเนินการอื่น"
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
-msgstr "ย้ายมาจาก Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX หรือเซิร์ฟเวอร์ IMAP ใดก็ได้ใช่ไหม Yuva คัดลอกประวัติของกล่องจดหมายเข้ากล่องข้อความอย่างเงียบ ๆ ใหม่สุดก่อน ขณะที่ทีมของคุณทำงานต่อ จากนั้นคุณส่งต่อกล่องจดหมายมาที่นี่ และไม่มีอะไรสูญหายระหว่างนั้น"
+msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX, any IMAP server or another help desk? Yuva copies the history into an inbox, newest first, while your team keeps working."
+msgstr "ย้ายมาจาก Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX เซิร์ฟเวอร์ IMAP ใดก็ได้ หรือ help desk อื่นใช่ไหม Yuva จะคัดลอกประวัติเข้ากล่องข้อความ โดยเริ่มจากล่าสุด ขณะที่ทีมของคุณทำงานต่อได้ตามปกติ"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Moving the idea to Planned, In progress or Shipped sets this for linked feedback that has no progress yet."
@@ -11247,20 +11167,19 @@ msgstr "มุมมองของฉัน"
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
-#: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -11300,6 +11219,10 @@ msgstr "ตั้งชื่อ Yuva ใต้ <0>Connection</0> เลือ�
 #: src/features/migrations/MapStep.tsx
 msgid "Name of the new inbox"
 msgstr "ชื่อของกล่องข้อความใหม่"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Name, closed conversations and broadcast sending"
+msgstr "ชื่อ บทสนทนาที่ปิดแล้ว และการส่งบรอดแคสต์"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Name, colour and the first thing the chat says"
@@ -11411,11 +11334,6 @@ msgstr "บทความใหม่"
 msgid "New broadcast"
 msgstr "บรอดคาสต์ใหม่"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
-msgid "New canned reply"
-msgstr "คำตอบสำเร็จรูปใหม่"
-
 #: src/components/common/ShortcutSheet.tsx
 msgid "New collection"
 msgstr "คอลเลกชันใหม่"
@@ -11484,12 +11402,13 @@ msgstr "กระทู้ใหม่"
 msgid "New entry"
 msgstr "รายการใหม่"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 msgid "New field"
 msgstr "ฟิลด์ใหม่"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/mail/FilterDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New filter"
 msgstr "ตัวกรองใหม่"
@@ -11508,6 +11427,8 @@ msgid "New identity secret"
 msgstr "Identity secret ใหม่"
 
 #: src/app/places.tsx
+#: src/features/migrations/MigrationsPage.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "New import"
 msgstr "นำเข้าใหม่"
 
@@ -11532,7 +11453,7 @@ msgstr "เหตุการณ์ใหม่"
 msgid "New incident ({incidentKey})"
 msgstr "เหตุการณ์ใหม่ ({incidentKey})"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "New label"
 msgstr "ป้ายกำกับใหม่"
@@ -11546,7 +11467,7 @@ msgstr "ป้ายกำกับใหม่ “{folder}”"
 msgid "New list"
 msgstr "รายชื่อใหม่"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "New macro"
 msgstr "มาโครใหม่"
@@ -11577,10 +11498,6 @@ msgstr "ข้อความใหม่ในการสนทนาที่
 msgid "New message in an unassigned conversation"
 msgstr "ข้อความใหม่ในการสนทนาที่ยังไม่มอบหมาย"
 
-#: src/features/migrations/MigrationsPage.tsx
-msgid "New migration"
-msgstr "การย้ายใหม่"
-
 #: src/features/status/MonitorsPage.tsx
 msgid "new monitor"
 msgstr "มอนิเตอร์ใหม่"
@@ -11601,7 +11518,7 @@ msgstr "เจ้าของใหม่ของ {boxName}"
 msgid "New password"
 msgstr "รหัสผ่านใหม่"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "New policy"
 msgstr "นโยบายใหม่"
@@ -11610,10 +11527,15 @@ msgstr "นโยบายใหม่"
 msgid "New reply in <0>{title}</0>"
 msgstr "การตอบกลับใหม่ใน <0>{title}</0>"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "กฎใหม่"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+msgid "New saved reply"
+msgstr "คำตอบที่บันทึกไว้ใหม่"
 
 #: src/features/settings/webhooks/sections.tsx
 msgid "New signing secret"
@@ -11720,7 +11642,7 @@ msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "อีเมลถัดไปเมื่อ {local} ({utc} UTC) ตามความเร็วของบรอดคาสต์นี้"
 
 #: src/features/conversation/SlaPopover.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Next reply"
 msgstr "การตอบกลับครั้งถัดไป"
 
@@ -11731,10 +11653,6 @@ msgstr "การตอบกลับครั้งถัดไป {next}"
 #: src/features/feedback/Lightbox.tsx
 msgid "Next screenshot"
 msgstr "ภาพหน้าจอถัดไป"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Next you pick the source and connect it. Nothing is copied until you start."
-msgstr "จากนั้นคุณเลือกแหล่งที่มาแล้วเชื่อมต่อ จะไม่มีการคัดลอกอะไรจนกว่าคุณจะเริ่ม"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Next, choose what to bring. The scan reads the file once."
@@ -11825,10 +11743,6 @@ msgstr "ยังไม่มีการส่งใดออกไป"
 msgid "No broadcasts yet"
 msgstr "ยังไม่มีบรอดคาสต์"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-msgid "No canned replies yet"
-msgstr "ยังไม่มีคำตอบสำเร็จรูป"
-
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "No canned replies yet. Add them in settings."
 msgstr "ยังไม่มีคำตอบสำเร็จรูป เพิ่มในการตั้งค่า"
@@ -11879,7 +11793,7 @@ msgstr "ยังไม่มีส่วนประกอบ เพิ่ม�
 msgid "No components yet. Add the parts of your product that customers depend on."
 msgstr "ยังไม่มีส่วนประกอบ เพิ่มส่วนของผลิตภัณฑ์ที่ลูกค้าพึ่งพา"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "No conditions: the rule runs for every conversation the trigger fits."
 msgstr "ไม่มีเงื่อนไข: กฎทำงานกับทุกการสนทนาที่ตัวกระตุ้นครอบคลุม"
 
@@ -12060,6 +11974,10 @@ msgstr "ยังไม่มีรหัส ยังไม่มีแอป�
 #: src/features/status/text.tsx
 msgid "No impact"
 msgstr "ไม่มีผลกระทบ"
+
+#: src/features/migrations/MigrationsPage.tsx
+msgid "No imports match this filter."
+msgstr "ไม่มีการนำเข้าที่ตรงกับตัวกรองนี้"
 
 #: src/features/broadcasts/Import.tsx
 msgid "No imports yet."
@@ -12244,6 +12162,10 @@ msgstr "ยังไม่มีกฎ"
 #: src/features/settings/automation/RunLog.tsx
 msgid "No runs in the last 30 days."
 msgstr "ไม่มีการทำงานใน 30 วันที่ผ่านมา"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "No saved replies yet"
+msgstr "ยังไม่มีคำตอบที่บันทึกไว้"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "No secret yet. Make one, then paste it into GitHub."
@@ -12667,7 +12589,7 @@ msgstr "ไม่ใช่คนเดียวกัน"
 msgid "Not there after a minute? Look in your spam or junk folder, or send a new code below."
 msgstr "ผ่านไปหนึ่งนาทียังไม่เห็นใช่ไหม ดูในโฟลเดอร์สแปมหรือจดหมายขยะ หรือส่งรหัสใหม่ด้านล่าง"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Not tracked"
 msgstr "ไม่ติดตาม"
 
@@ -13034,11 +12956,6 @@ msgstr "ในแพ็กเกจ Team และ Enterprise เจ้าขอ
 msgid "On the web"
 msgstr "บนเว็บ"
 
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "On this page"
-msgstr "ในหน้านี้"
-
 #: src/components/common/SlaBadge.tsx
 msgid "On track"
 msgstr "เป็นไปตามแผน"
@@ -13056,7 +12973,7 @@ msgstr "เมื่ออีเมลทดสอบมาถึง Yuva จะ
 msgid "One e-mail a month about what is new."
 msgstr "หนึ่งอีเมลต่อเดือนเกี่ยวกับสิ่งใหม่"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "หนึ่งกล่องข้อความ"
@@ -13073,7 +12990,7 @@ msgstr "One mail to each person, a set time after they sign in"
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "หนึ่งรายการต่อบรรทัด 1 ถึง 20 เฉพาะหน้าบน origin เหล่านี้เท่านั้นที่ใช้วิดเจ็ตได้"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "One per line, all different, at most 100."
 msgstr "บรรทัดละหนึ่งตัวเลือก ต้องไม่ซ้ำกัน สูงสุด 100"
 
@@ -13200,7 +13117,7 @@ msgid "Only mail since {date}"
 msgstr "เฉพาะอีเมลตั้งแต่ {date}"
 
 #: src/features/inbox/views/ViewDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Only me"
 msgstr "เฉพาะฉัน"
 
@@ -13702,7 +13619,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "ไม่บังคับ 64 KiB แรกของคำตอบต้องมีคำนี้ และตัวพิมพ์เล็กใหญ่มีผล"
 
 #: src/features/broadcasts/Composer.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Options"
 msgstr "ตัวเลือก"
 
@@ -13742,7 +13659,7 @@ msgstr "หรืออัปโหลดไฟล์ส่งออก"
 msgid "Order and view"
 msgstr "ลำดับและมุมมอง"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Order number"
 msgstr "หมายเลขคำสั่งซื้อ"
 
@@ -13839,7 +13756,6 @@ msgid "Own tenant"
 msgstr "tenant ของตัวเอง"
 
 #: src/components/common/text.ts
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Owner"
 msgstr "เจ้าของ"
 
@@ -14241,7 +14157,7 @@ msgstr "เลือกคำตอบสำเร็จรูป"
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "เลือกช่องทางแชทของผลิตภัณฑ์แล้ววางโค้ด คะแนนและคำถามจะเข้ากล่องข้อความของช่องทางนั้น"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Pick a color"
 msgstr "เลือกสี"
 
@@ -14345,7 +14261,7 @@ msgid "Pick an endpoint"
 msgstr "เลือกปลายทาง"
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Pick an inbox"
 msgstr "เลือกกล่องข้อความ"
 
@@ -14436,7 +14352,7 @@ msgstr "เลือกผู้ติดต่ออีกราย ระบ�
 msgid "Pick the platforms; the next step shows the lines to add to each app."
 msgstr "เลือกแพลตฟอร์ม ขั้นตอนถัดไปจะแสดงบรรทัดที่ต้องเพิ่มในแต่ละแอป"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Pick the product and how customers reach it. The next steps set it up."
 msgstr "เลือกผลิตภัณฑ์และวิธีที่ลูกค้าติดต่อ ขั้นตอนถัดไปจะตั้งค่าให้"
 
@@ -14607,7 +14523,7 @@ msgstr "กำลังเตรียม"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/status/PreviewDialog.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Preview"
@@ -14671,12 +14587,12 @@ msgstr "ภาพหน้าจอก่อนหน้า"
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Priority"
 msgstr "ลำดับความสำคัญ"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Priority customers"
 msgstr "ลูกค้าสำคัญ"
 
@@ -14707,19 +14623,17 @@ msgstr "pro, team"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageForm.tsx
 #: src/features/status/IncidentForm.tsx
 msgid "Product"
 msgstr "ผลิตภัณฑ์"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/setup/NameStep.tsx
 msgid "Product name"
 msgstr "ชื่อผลิตภัณฑ์"
@@ -14729,7 +14643,6 @@ msgstr "ชื่อผลิตภัณฑ์"
 msgid "Product news"
 msgstr "ข่าวผลิตภัณฑ์"
 
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Product settings"
@@ -14744,7 +14657,6 @@ msgstr "โปรดักชัน"
 msgid "Production backend"
 msgstr "แบ็กเอนด์โปรดักชัน"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomeSide.tsx
@@ -14755,7 +14667,6 @@ msgstr "แบ็กเอนด์โปรดักชัน"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Products"
 msgstr "ผลิตภัณฑ์"
@@ -14992,7 +14903,7 @@ msgstr "อยู่ในคิวแล้ว ความพยายาม�
 msgid "Quick cleanup"
 msgstr "ล้างอย่างรวดเร็ว"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Quiet for (minutes)"
 msgstr "เงียบเป็นเวลา (นาที)"
 
@@ -15165,11 +15076,6 @@ msgstr "อ่านเพื่อแนะนำที่อยู่ของ
 msgid "Read What's new changelogs and their entries"
 msgstr "อ่านบันทึกการเปลี่ยนแปลงของ \"มีอะไรใหม่\" และรายการในนั้น"
 
-#: src/features/migrations/MigrationsPage.tsx
-#: src/features/migrations/Wizard.tsx
-msgid "Read-only"
-msgstr "อ่านอย่างเดียว"
-
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/account/ConnectPage.tsx
 msgid "Reader"
@@ -15327,11 +15233,11 @@ msgstr "อ้างอิง"
 msgid "Refresh"
 msgstr "รีเฟรช"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Refund"
 msgstr "คืนเงิน"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Refund approved"
 msgstr "อนุมัติการคืนเงินแล้ว"
 
@@ -15379,7 +15285,7 @@ msgstr "รูปภาพระยะไกลอาจบอกผู้ส่
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -15601,7 +15507,7 @@ msgstr "ลบบันทึกออกจากการสนทนา"
 msgid "Removed by {who}"
 msgstr "ลบโดย {who}"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "ตัวเลือกที่เอาออกจะถูกล้างจากทุกการสนทนาที่มีตัวเลือกนั้น ทำงานในเบื้องหลัง"
 
@@ -15854,6 +15760,10 @@ msgstr "ข้อความตอบกลับ"
 msgid "Reply time"
 msgstr "เวลาตอบกลับ"
 
+#: src/features/settings/SettingsFrame.tsx
+msgid "Reply times"
+msgstr "เวลาตอบกลับ"
+
 #: src/features/conversation/BroadcastLine.tsx
 msgid "Reply to {name}"
 msgstr "ตอบกลับ {name}"
@@ -15960,7 +15870,7 @@ msgstr "ผลต่อชื่อเสียง"
 msgid "Require single sign-on"
 msgstr "Require single sign-on"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 msgid "Required to close"
 msgstr "จำเป็นเพื่อปิด"
@@ -15982,7 +15892,7 @@ msgid "Reset to defaults"
 msgstr "รีเซ็ตเป็นค่าเริ่มต้น"
 
 #: src/features/conversation/SlaPopover.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Resolution"
 msgstr "การแก้ไข"
 
@@ -16122,7 +16032,6 @@ msgstr "พาคุณกลับไปที่"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Import.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Review"
 msgstr "ตรวจทาน"
@@ -16203,7 +16112,6 @@ msgstr "ทันทีหลังสมัครรับ ผู้คนไ�
 msgid "Roadmap"
 msgstr "แผนงาน"
 
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Role"
 msgstr "บทบาท"
@@ -16294,7 +16202,6 @@ msgstr "กฎ {rule} ทำงานแล้ว ไม่มีอะไรต
 msgid "Rule {rule} ran: {done}"
 msgstr "กฎ {rule} ทำงานแล้ว: {done}"
 
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Rules"
 msgstr "กฎ"
@@ -16365,16 +16272,16 @@ msgstr "วันเสาร์"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/channels/ApiChannelDialog.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/signature/SignaturePage.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/ui.tsx
@@ -16461,6 +16368,10 @@ msgstr "บันทึกรายการเป็นมุมมอง"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "บันทึกแล้ว"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Saved replies"
+msgstr "คำตอบที่บันทึกไว้"
 
 #: src/app/ViewsGroup.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
@@ -17536,13 +17447,12 @@ msgstr "กำลังตั้งค่า…"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "การตั้งค่า"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "Settings (JSON)"
 msgstr "การตั้งค่า (JSON)"
@@ -17585,8 +17495,8 @@ msgstr "แชร์กับทีม"
 msgid "Shipped"
 msgstr "ส่งมอบแล้ว"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Shortcut"
 msgstr "แป้นพิมพ์ลัด"
 
@@ -17597,6 +17507,7 @@ msgstr "แป้นพิมพ์ลัด"
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -18029,7 +17940,6 @@ msgstr "ยืนยันขั้นเดียว"
 
 #: src/app/Palette.tsx
 #: src/features/settings/profile/Sessions.tsx
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
 msgstr "Single sign-on"
@@ -18131,11 +18041,6 @@ msgstr "SLA บรรลุ"
 msgid "SLA met / breached"
 msgstr "SLA บรรลุ / ละเมิด"
 
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "SLA policies"
-msgstr "นโยบาย SLA"
-
 #: src/features/conversation/SlaPopover.tsx
 msgid "SLA targets (W)"
 msgstr "เป้าหมาย SLA (W)"
@@ -18223,7 +18128,7 @@ msgstr "เลื่อนไว้ก่อน (B)"
 msgid "Snooze (S)"
 msgstr "เลื่อนไว้ก่อน (S)"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Snooze for (minutes)"
 msgstr "เลื่อนเตือนเป็นเวลา (นาที)"
 
@@ -18411,6 +18316,10 @@ msgstr "ต้องตรวจ SPF, DKIM หรือ DMARC"
 msgid "Split by"
 msgstr "แบ่งตาม"
 
+#: src/features/settings/SettingsFrame.tsx
+msgid "SSO"
+msgstr "SSO"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
 msgstr "ขั้น"
@@ -18468,7 +18377,7 @@ msgstr "ที่คุณติดดาว"
 msgid "Stars the mail for you."
 msgstr "ติดดาวอีเมลให้คุณ"
 
-#: src/features/migrations/MigrationsPage.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Start"
 msgstr "เริ่ม"
 
@@ -18487,6 +18396,10 @@ msgstr "เริ่มกระทู้"
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Start a mailing list"
 msgstr "สร้างรายชื่อผู้รับจดหมาย"
+
+#: src/features/migrations/MigrationsPage.tsx
+msgid "Start an import"
+msgstr "เริ่มการนำเข้า"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "Start conversation"
@@ -18570,7 +18483,6 @@ msgstr "Starts when a change to the person’s attributes makes them match, and 
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (พอร์ต 587)"
 
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
@@ -18612,7 +18524,7 @@ msgstr "สถานะเมื่อล่ม"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
 #: src/features/team/TeamPage.tsx
@@ -18874,10 +18786,6 @@ msgstr "ถูกระงับ"
 msgid "Suspended broadcasts"
 msgstr "ระงับบรอดแคสต์"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Switch"
-msgstr "สลับ"
-
 #: src/features/migrations/SwitchStep.tsx
 msgid "Switch your mail to Yuva"
 msgstr "สลับอีเมลของคุณมาที่ Yuva"
@@ -18934,11 +18842,11 @@ msgstr "กลับมารับการสมัครอีกครั้
 msgid "Taking the recipients: {prepared} so far"
 msgstr "กำลังเลือกผู้รับ: ตอนนี้ได้ {prepared}"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Targets"
 msgstr "เป้าหมาย"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Targets count in the business hours of the conversation's inbox, in its time zone. Leave one empty to not track it; at least one is required."
 msgstr "เป้าหมายนับตามเวลาทำการและเขตเวลาของกล่องข้อความของการสนทนา เว้นว่างหนึ่งรายการเพื่อไม่ติดตาม ต้องมีอย่างน้อยหนึ่งรายการ"
 
@@ -19031,7 +18939,6 @@ msgstr "teammate@company.com"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/features/conversation/HeaderActions.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -19075,9 +18982,9 @@ msgstr "การทดสอบส่งถึงสมาชิกของพ
 
 #: src/features/fields/value.ts
 #: src/features/settings/automation/ConditionRow.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Text"
 msgstr "ข้อความ"
 
@@ -19089,7 +18996,7 @@ msgstr "ข้อความบันทึกล่าสุดโดย {who}
 msgid "Thanks for waiting. Your invoice is on its way."
 msgstr "ขอบคุณที่รอ ใบแจ้งหนี้ของคุณกำลังส่งไป"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 msgid "Thanks for writing"
 msgstr "ขอบคุณที่เขียนมา"
 
@@ -19214,12 +19121,12 @@ msgstr "แชตแสดงที่มุมของทุกหน้าท
 msgid "The chat bubble appears on these addresses:"
 msgstr "ฟองแชตแสดงบนที่อยู่เหล่านี้:"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "The chat shows when you usually reply"
 msgstr "แชตแสดงว่าคุณมักตอบเมื่อใด"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "The chat shows who is available and typing"
 msgstr "แชตแสดงว่าใครพร้อมและกำลังพิมพ์"
@@ -19601,11 +19508,11 @@ msgstr "คีย์นี้เห็นเฉพาะกล่องจดห
 msgid "The key stops working at the end of this day."
 msgstr "คีย์หยุดทำงานเมื่อสิ้นสุดวันนี้"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "The key, the object and the type cannot change after creation."
 msgstr "คีย์ ออบเจ็กต์ และชนิดเปลี่ยนไม่ได้หลังสร้าง"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 msgid "The kind cannot be changed later."
 msgstr "เปลี่ยนประเภทภายหลังไม่ได้"
 
@@ -19738,7 +19645,7 @@ msgstr "การย้ายดำเนินต่อจากจุดที
 msgid "The migration moved on in the meantime. Look at its state and try again."
 msgstr "การย้ายเดินหน้าไปในระหว่างนั้น ดูสถานะของการย้ายแล้วลองอีกครั้ง"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "The next step adds its first channel: website chat, e-mail or a mobile app."
 msgstr "ขั้นตอนถัดไปจะเพิ่มช่องทางแรก: เว็บแชต อีเมล หรือแอปมือถือ"
 
@@ -20203,10 +20110,6 @@ msgstr "ปลายทางเว็บฮุกปิดอยู่หรื
 msgid "The What’s new count shows on the chat button while no messages are unread. The widget’s Home always shows it."
 msgstr "จำนวนอัปเดตใหม่จะแสดงบนปุ่มแชตตราบที่ไม่มีข้อความที่ยังไม่ได้อ่าน หน้าแรกของวิดเจ็ตแสดงเสมอ"
 
-#: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
-msgstr "ตัวพื้นที่ทำงานเอง: ชื่อ การเก็บรักษา ป้ายกำกับ คำตอบสำเร็จรูป การย้าย และบันทึกการตรวจสอบ"
-
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
 msgstr "พื้นที่ทำงานส่งบรอดคาสต์ไม่ได้ในขณะนี้"
@@ -20214,11 +20117,6 @@ msgstr "พื้นที่ทำงานส่งบรอดคาสต์
 #: src/features/status/Notices.tsx
 msgid "The workspace may not send bulk mail now"
 msgstr "ขณะนี้เวิร์กสเปซไม่ได้รับอนุญาตให้ส่งอีเมลจำนวนมาก"
-
-#: src/components/common/SettingsStrip.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "The workspace: labels, replies, data"
-msgstr "พื้นที่ทำงาน: ป้ายกำกับ คำตอบ ข้อมูล"
 
 #: src/components/common/text.ts
 msgid "The zip cannot be read; it may be damaged or cut off. Make it again and upload it."
@@ -20272,7 +20170,7 @@ msgstr "ธีม"
 msgid "Theme and e-mail view on this device"
 msgstr "ธีมและมุมมองอีเมลบนอุปกรณ์นี้"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Then"
 msgstr "แล้ว"
 
@@ -20614,7 +20512,7 @@ msgstr "นี่ไม่ใช่ไฟล์ CSV บันทึกสเป�
 msgid "This is not a domain this page can use. Use a name like {example} that is not one of this server’s own addresses."
 msgstr "หน้านี้ใช้โดเมนนี้ไม่ได้ ใช้ชื่อเช่น {example} ที่ไม่ใช่ที่อยู่ของเซิร์ฟเวอร์นี้เอง"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "This is not a JSON object."
 msgstr "นี่ไม่ใช่ออบเจกต์ JSON"
@@ -20751,7 +20649,7 @@ msgstr "พร็อพเพอร์ตีนี้มีเซกเมนต
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "การตอบกลับนี้จะไม่ถูกส่งจนกว่าเจ้าของหรือผู้ดูแลจะบันทึกทั้งกฎนี้และคำตอบสำเร็จรูป {title} หรือบอทได้รับอนุญาตให้ส่งในการตั้งค่าคีย์ API"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "การตอบกลับนี้จะไม่ถูกส่งจนกว่าเจ้าของหรือผู้ดูแลจะบันทึกคำตอบสำเร็จรูป {title} หรือบอทได้รับอนุญาตให้ส่งในการตั้งค่าคีย์ API"
@@ -20966,7 +20864,7 @@ msgstr "หมดเวลา"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/status/IncidentForm.tsx
 msgid "Title"
 msgstr "ชื่อเรื่อง"
@@ -21097,7 +20995,7 @@ msgstr "แนวโน้ม"
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Trigger"
 msgstr "ตัวกระตุ้น"
 
@@ -21221,8 +21119,7 @@ msgid "TXT record"
 msgstr "เรคคอร์ด TXT"
 
 #: src/features/inbox/SourceFilter.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Type"
 msgstr "ประเภท"
 
@@ -21271,7 +21168,7 @@ msgstr "ยกเลิกการมอบหมาย"
 #: src/features/home/HomeWork.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Unassigned"
 msgstr "ยังไม่มอบหมาย"
 
@@ -21345,7 +21242,7 @@ msgid "Unfollowed"
 msgstr "เลิกติดตามแล้ว"
 
 #: src/features/broadcasts/Trigger.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Unit"
 msgstr "หน่วย"
 
@@ -21758,9 +21655,9 @@ msgstr "ใช้เป็นโทเค็น bearer กับเซิร์�
 msgid "Use letters, digits, - and _, at most 64."
 msgstr "ใช้ตัวอักษร ตัวเลข - และ _ ไม่เกิน 64"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Use lowercase letters, digits and single dashes."
 msgstr "ใช้ตัวพิมพ์เล็ก ตัวเลข และขีดกลางเดี่ยว"
 
@@ -21914,10 +21811,6 @@ msgstr "Verify"
 #: src/features/settings/webhooks/SignatureHint.tsx
 msgid "Verify every request before trusting it: the <0>webhook-signature</0> header follows the <1>Standard Webhooks</1> specification, so any of its libraries can check it with the endpoint's secret. Go backends can use the <2>sdk/go/webhook</2> package of the Yuva repository."
 msgstr "ตรวจสอบทุกคำขอก่อนเชื่อถือ: เฮดเดอร์ <0>webhook-signature</0> เป็นไปตามข้อกำหนด <1>Standard Webhooks</1> ไลบรารีใดก็ได้จึงตรวจสอบด้วย secret ของเอนด์พอยต์ได้ แบ็กเอนด์ Go ใช้แพ็กเกจ <2>sdk/go/webhook</2> ของที่เก็บ Yuva ได้"
-
-#: src/features/settings/SettingsFrame.tsx
-msgid "Version"
-msgstr "เวอร์ชัน"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Versions"
@@ -22158,7 +22051,7 @@ msgstr "รอคุณ"
 msgid "Warn about the certificate"
 msgstr "เตือนเรื่องใบรับรอง"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Warn before it is due"
 msgstr "เตือนก่อนครบกำหนด"
 
@@ -22218,8 +22111,6 @@ msgstr "Webhook secret for {revealName}"
 
 #: src/app/Palette.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
@@ -22246,7 +22137,7 @@ msgstr "เว็บไซต์"
 msgid "Website addresses"
 msgstr "ที่อยู่เว็บไซต์"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Website chat"
 msgstr "แชตบนเว็บไซต์"
@@ -22368,7 +22259,7 @@ msgstr "สิ่งที่ลูกค้าเห็น"
 msgid "What the import will do"
 msgstr "การนำเข้าจะทำอะไร"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "What the team sees."
 msgstr "สิ่งที่ทีมเห็น"
 
@@ -22414,7 +22305,6 @@ msgstr "What your e-mailed replies end with, per inbox. Chat replies and notes c
 
 #: src/components/common/FocusChoice.tsx
 #: src/features/settings/workspace/FocusForm.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "What Yuva is for"
 msgstr "Yuva ใช้ทำอะไร"
 
@@ -22429,7 +22319,7 @@ msgid "What’s new entry"
 msgstr "รายการมีอะไรใหม่"
 
 #: src/features/broadcasts/ReviewPanel.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "When"
 msgstr "เมื่อ"
 
@@ -22552,7 +22442,7 @@ msgstr "Where new issues go when nobody picks a team, as a team key such as ENG.
 msgid "Where should Yuva send events?"
 msgstr "Yuva ควรส่งเหตุการณ์ไปที่ใด"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
 msgstr "ที่ที่ API เก็บค่า ตัวพิมพ์เล็ก ตัวเลข และขีดล่าง เปลี่ยนไม่ได้"
 
@@ -22608,7 +22498,7 @@ msgstr "ใครตอบที่ไหน และใครออนไล�
 msgid "Who can reply"
 msgstr "ใครตอบกลับได้"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Who can use it"
 msgstr "ใครใช้ได้บ้าง"
 
@@ -22645,7 +22535,6 @@ msgstr "ใครส่ง และเกี่ยวกับอะไร"
 msgid "Who should take it?"
 msgstr "ใครควรรับเรื่องนี้"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Who you support: name, hours, team, sender"
 msgstr "คุณดูแลใคร: ชื่อ เวลาทำการ ทีม ผู้ส่ง"
@@ -22764,10 +22653,8 @@ msgstr "กำลังทำงาน…"
 #: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/oauth/ConsentPage.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Workspace"
 msgstr "พื้นที่ทำงาน"
 
@@ -23074,7 +22961,6 @@ msgid "Your account is not in a group that may use Yuva. Ask your administrator 
 msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 
 #: src/features/settings/addresses/AddressesPage.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Your addresses"
 msgstr "ที่อยู่ของคุณ"
 
@@ -23167,6 +23053,10 @@ msgstr "องค์กร Microsoft 365 ของคุณอนุญาตใ
 #: src/features/broadcasts/Composer.tsx
 msgid "Your name"
 msgstr "ชื่อของคุณ"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Your name, photo, language and sign-in"
+msgstr "ชื่อ รูปภาพ ภาษา และการลงชื่อเข้าใช้ของคุณ"
 
 #: src/features/home/HomeWork.tsx
 msgid "Your open conversations"
@@ -23273,10 +23163,6 @@ msgstr "เว็บไซต์ของคุณ"
 msgid "Your workspace asks for these fields on every conversation it closes."
 msgstr "พื้นที่ทำงานของคุณขอให้กรอกฟิลด์เหล่านี้ในทุกการสนทนาที่ปิด"
 
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."
-msgstr "ชื่อพื้นที่ทำงานของคุณ ระยะเวลาเก็บการสนทนาที่ปิดแล้ว และใครส่งการส่งเป็นชุดได้"
-
 #: src/features/account/AccountPage.tsx
 msgid "Your Yuva account"
 msgstr "บัญชี Yuva ของคุณ"
@@ -23367,10 +23253,6 @@ msgstr "Yuva ไม่ได้รันเซิร์ฟเวอร์อี�
 msgid "Yuva held back a command that would have changed the mailbox"
 msgstr "Yuva ระงับคำสั่งที่จะเปลี่ยนแปลงกล่องจดหมาย"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Yuva inbox"
-msgstr "กล่องข้อความ Yuva"
-
 #: src/features/migrations/SwitchStep.tsx
 msgid "Yuva mails {address} a short test message. When it reaches Yuva by the new route, the switch works."
 msgstr "Yuva ส่งอีเมลทดสอบสั้น ๆ ไปที่ {address} เมื่อมาถึง Yuva ทางเส้นทางใหม่ แสดงว่าการสลับใช้งานได้"
@@ -23402,10 +23284,6 @@ msgstr "Yuva อ่านเฉพาะเฮลป์เดสก์ ประ
 #: src/features/migrations/Wizard.tsx
 msgid "Yuva only reads the mailbox. History arrives quietly: no notifications, no auto-replies."
 msgstr "Yuva อ่านเฉพาะกล่องจดหมาย ประวัติเข้ามาอย่างเงียบ ๆ ไม่มีการแจ้งเตือน ไม่มีการตอบกลับอัตโนมัติ"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Yuva only reads the source; nothing there is changed."
-msgstr "Yuva อ่านแหล่งที่มาเท่านั้น จะไม่มีอะไรเปลี่ยนแปลงที่นั่น"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Yuva only reads. Besides signing in, its connection sends {provider} nothing but read requests, so no ticket, customer or setting changes."
@@ -23478,7 +23356,3 @@ msgstr "Yuva ไปที่หน้าแรก"
 #: src/components/common/text.ts
 msgid "Yuva's own notes cannot be changed."
 msgstr "เปลี่ยนบันทึกของ Yuva เองไม่ได้"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"
-msgstr "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"

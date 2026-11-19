@@ -594,7 +594,7 @@ const SETTINGS_GROUPS: [string, SettingsPlace[]][] = [
   ["workspace", ["workspace", "products"]],
   ["channels", ["channels", "addresses"]],
   ["conversations", ["labels", "canned-replies", "macros", "automation", "sla", "fields", "signature"]],
-  ["developers", ["api-keys", "webhooks", "connected-apps", "issue-trackers", "slack"]],
+  ["developer", ["api-keys", "webhooks", "connected-apps", "issue-trackers", "slack"]],
   ["security", ["sso", "audit-log"]],
   ["you", ["profile", "notifications", "appearance"]],
 ]
@@ -609,19 +609,11 @@ function useSettingsPlaces(): SectionPlaces {
   const attention = counts.attention ?? 0
   const allowed = (p: SettingsPlace) =>
     SETTINGS_OWNERS.includes(p) ? isOwner : SETTINGS_MANAGERS.includes(p) ? canManage : true
-  const titles: Record<string, string> = {
-    workspace: names.group.workspace,
-    channels: t`Channels`,
-    conversations: t`Conversations`,
-    developers: names.group.developers,
-    security: names.group.security,
-    you: names.group.you,
-  }
   return {
     label: t`Settings`,
     groups: SETTINGS_GROUPS.map(([key, places]) => ({
       key,
-      title: titles[key],
+      title: names.group[key as keyof typeof names.group],
       items: places.filter(allowed).map((p) => ({
         key: p,
         label: names.place[p],

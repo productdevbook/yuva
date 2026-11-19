@@ -2,12 +2,11 @@ import { Trans, useLingui } from "@lingui/react/macro"
 import { useQuery } from "@tanstack/react-query"
 import { ArrowUpRightIcon, CircleCheckIcon, GlobeIcon, MessageSquareDashedIcon, SendIcon } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
-import { Link, useNavigate } from "react-router"
+import { Link } from "react-router"
 
 import { CodeBlock, CodeLine, ErrorLine, Notice } from "@/components/common"
 import { formatDateTime, useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import {
   ASSISTANTS,
   grantsFor,
@@ -21,7 +20,7 @@ import {
   useAssistantName,
 } from "@/features/settings/connected-apps/assistants"
 import { useGrants } from "@/features/settings/connected-apps/queries"
-import { Card, Row, Rows, Section } from "@/features/settings/ui"
+import { Card, PageHeader, Row, Rows, Section } from "@/features/settings/ui"
 import { api, unwrap, type OAuthGrant } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
@@ -396,10 +395,10 @@ function useFreshGrants(grants: OAuthGrant[] | undefined) {
   return fresh
 }
 
-export function AssistantSheet({ id }: { id: AssistantId }) {
+export function AssistantDetail({ id }: { id: AssistantId }) {
+  const { t } = useLingui()
   const text = useEnumText()
   const nameOf = useAssistantName()
-  const navigate = useNavigate()
   const a = ASSISTANTS.find((x) => x.id === id)
   const { membership } = useSession()
   const grants = useGrants()
@@ -427,77 +426,76 @@ export function AssistantSheet({ id }: { id: AssistantId }) {
     other: <Trans>Any client that speaks MCP over HTTP. It acts as you, with the access you allow.</Trans>,
   }
   return (
-    <Sheet open onOpenChange={(open) => !open && navigate("/settings/connected-apps")}>
-      <SheetContent className="w-[min(36rem,100vw)]" data-testid="assistant-page" data-assistant={a.id}>
-        <SheetHeader>
-          <SheetTitle className="flex items-center gap-3 text-[18px] font-semibold">
-            <span className="grid size-10 shrink-0 place-items-center rounded-xl border bg-surface text-muted-foreground">
+    <div className="flex flex-col gap-6" data-testid="assistant-page" data-assistant={a.id}>
+      <PageHeader
+        back={{ to: "/settings/connected-apps", label: t`Connected apps` }}
+        title={
+          <span className="flex items-center gap-3">
+            <span className="grid size-9 shrink-0 place-items-center rounded-xl border bg-surface text-muted-foreground">
               <Icon className="size-5" />
             </span>
             {name}
-          </SheetTitle>
-          <SheetDescription>{descriptions[a.id]}</SheetDescription>
-        </SheetHeader>
-        <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto p-5">
-          <Status grants={mine} clientName={name} />
-          <ErrorLine error={grants.error} />
-          {a.cloud && !reachableFromCloud() && (
-            <Notice tone="warning" icon={GlobeIcon} data-testid="assistant-unreachable">
-              <p>
-                <Trans>
-                  {name} connects from its vendor's cloud, so it needs this server at a public https address. The panel
-                  is open at {url}, which it probably cannot reach.
-                </Trans>
-              </p>
-            </Notice>
-          )}
-          <Section title={<Trans>Server URL</Trans>}>
-            <Card>
-              <CodeLine value={url} testId="assistant-url" />
-            </Card>
-          </Section>
-          <Section
-            title={<Trans>Steps</Trans>}
-            action={
-              <a
-                href={a.docs}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-1 text-small text-faint transition-colors hover:text-foreground"
-                data-testid="assistant-docs"
-              >
-                {a.id === "other" ? <Trans>Setup guide</Trans> : <Trans>{name} docs</Trans>}
-                <ArrowUpRightIcon className="size-3.5 rtl:-scale-x-100" />
-              </a>
-            }
+          </span>
+        }
+        description={descriptions[a.id]}
+      />
+      <Status grants={mine} clientName={name} />
+      <ErrorLine error={grants.error} />
+      {a.cloud && !reachableFromCloud() && (
+        <Notice tone="warning" icon={GlobeIcon} data-testid="assistant-unreachable">
+          <p>
+            <Trans>
+              {name} connects from its vendor's cloud, so it needs this server at a public https address. The panel is
+              open at {url}, which it probably cannot reach.
+            </Trans>
+          </p>
+        </Notice>
+      )}
+      <Section title={<Trans>Server URL</Trans>}>
+        <Card>
+          <CodeLine value={url} testId="assistant-url" />
+        </Card>
+      </Section>
+      <Section
+        title={<Trans>Steps</Trans>}
+        action={
+          <a
+            href={a.docs}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 text-small text-faint transition-colors hover:text-foreground"
+            data-testid="assistant-docs"
           >
-            <Card>
-              <Steps>{[...steps, ...consent]}</Steps>
-            </Card>
-          </Section>
-          <Section
-            title={<Trans>Suggested scopes</Trans>}
-            description={
-              <Trans>
-                The consent page ticks what the client asks for. Leave out what you do not want it to do; it never gets
-                more than your role allows.
-              </Trans>
-            }
-          >
-            <Card flush>
-              <Rows>
-                {SUGGESTED_SCOPES.map((s) => (
-                  <Row key={s} className="min-h-0 py-2.5" data-testid="assistant-scope">
-                    <span className="min-w-0 flex-1 text-body">{text.scope[s]}</span>
-                    <code className="shrink-0 font-mono text-caption text-faint phone:hidden">{s}</code>
-                  </Row>
-                ))}
-              </Rows>
-            </Card>
-          </Section>
-          <SendingNote />
-        </div>
-      </SheetContent>
-    </Sheet>
+            {a.id === "other" ? <Trans>Setup guide</Trans> : <Trans>{name} docs</Trans>}
+            <ArrowUpRightIcon className="size-3.5 rtl:-scale-x-100" />
+          </a>
+        }
+      >
+        <Card>
+          <Steps>{[...steps, ...consent]}</Steps>
+        </Card>
+      </Section>
+      <Section
+        title={<Trans>Suggested scopes</Trans>}
+        description={
+          <Trans>
+            The consent page ticks what the client asks for. Leave out what you do not want it to do; it never gets more
+            than your role allows.
+          </Trans>
+        }
+      >
+        <Card flush>
+          <Rows>
+            {SUGGESTED_SCOPES.map((s) => (
+              <Row key={s} className="min-h-0 py-2.5" data-testid="assistant-scope">
+                <span className="min-w-0 flex-1 text-body">{text.scope[s]}</span>
+                <code className="shrink-0 font-mono text-caption text-faint phone:hidden">{s}</code>
+              </Row>
+            ))}
+          </Rows>
+        </Card>
+      </Section>
+      <SendingNote />
+    </div>
   )
 }

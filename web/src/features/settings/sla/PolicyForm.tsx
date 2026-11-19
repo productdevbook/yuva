@@ -2,11 +2,10 @@ import { Trans, useLingui } from "@lingui/react/macro"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 
+import { FormCard } from "@/components/common/FormCard"
 import { ErrorLine } from "@/components/common"
 import { ChipMulti } from "@/components/common/ChipMulti"
 import { useEnumText } from "@/components/common/text"
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { ChoiceSelect, Field, ToggleRow } from "@/features/settings/ui"
@@ -93,7 +92,7 @@ function AmountInput({
   )
 }
 
-function Form({ policy, onClose }: { policy: SlaPolicy | null; onClose: () => void }) {
+export function PolicyForm({ policy, onClose }: { policy: SlaPolicy | null; onClose: () => void }) {
   const { t } = useLingui()
   const enums = useEnumText()
   const qc = useQueryClient()
@@ -172,12 +171,13 @@ function Form({ policy, onClose }: { policy: SlaPolicy | null; onClose: () => vo
   })
 
   return (
-    <form
-      className="flex flex-col gap-5"
-      onSubmit={(e) => {
-        e.preventDefault()
-        save.mutate()
-      }}
+    <FormCard
+      title={policy ? <Trans>Edit policy</Trans> : <Trans>New policy</Trans>}
+      submit={policy ? <Trans>Save</Trans> : <Trans>Create policy</Trans>}
+      ready={!(save.isPending || !valid || !changed)}
+      onSubmit={() => save.mutate()}
+      onCancel={onClose}
+      testId="sla-form"
     >
       <Field label={<Trans>Name</Trans>} htmlFor="sla-name">
         <Input
@@ -287,24 +287,6 @@ function Form({ policy, onClose }: { policy: SlaPolicy | null; onClose: () => vo
         </Field>
       </fieldset>
       <ErrorLine error={save.error} />
-      <DialogFooter>
-        <Button type="submit" disabled={save.isPending || !valid || !changed} data-testid="sla-save">
-          {policy ? <Trans>Save</Trans> : <Trans>Create policy</Trans>}
-        </Button>
-      </DialogFooter>
-    </form>
-  )
-}
-
-export function PolicyDialog({ policy, onClose }: { policy: SlaPolicy | null; onClose: () => void }) {
-  return (
-    <Dialog open onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-h-[90svh] overflow-y-auto sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>{policy ? <Trans>Edit policy</Trans> : <Trans>New policy</Trans>}</DialogTitle>
-        </DialogHeader>
-        <Form policy={policy} onClose={onClose} />
-      </DialogContent>
-    </Dialog>
+    </FormCard>
   )
 }

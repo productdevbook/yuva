@@ -91,7 +91,7 @@ Feedback has its own place (M18). It stays a conversation, so replies, notes, as
 fallback, events and webhooks are the ones every conversation has; only where it is shown and what it
 is called change. Decisions:
 
-- **Panel.** A Feedback entry in the rail (`/feedback`, its own shortcut, a badge with open feedback
+- **Panel.** A Feedback entry in the pages menu (`/feedback`, its own shortcut, a badge with open feedback
   from the `feedback` count) opens a list with Open and Resolved tabs and category tabs with their
   open counts (All, then the inbox categories, Bug, Idea, Praise and Other by default), filtered by inbox like the inbox. A row is a triage
   line, not a chat preview: category, the first line of the text, the contact, app version, OS and
@@ -1923,8 +1923,9 @@ remote images, http(s)):
 
 - Which e-mail view opens first is a per-device preference next to the theme (Settings ›
   Appearance: Original or Reading, Original by default); each message can still be switched.
-- Setup: a full-screen, two-column page in the sign-in design (steps and form on the left, a live
-  preview on the right) takes an owner or admin from an empty workspace to its first
+- Setup: a full-screen page with no app header or sidebar (a step line, one plain form per step,
+  and the live preview below the form behind "Show the preview", open by itself where it is the
+  point, as on the first message) takes an owner or admin from an empty workspace to its first
   conversation: name the inbox, pick a channel (website chat, e-mail, app or documentation site),
   install it (snippet, forwarding address, SDK lines or the documentation elements), then wait live
   for the first message, which the preview's own chat widget can send. A documentation site asks
@@ -1943,7 +1944,7 @@ remote images, http(s)):
   in component state and never in the draft, and an `email_address_taken` answer sends the user back
   to Address. From Receiving on the channel exists, earlier steps are unreachable and Cancel reads
   "Finish later"; Test reuses the deliverability check, the SES tenant status and the DKIM section.
-  The inbox settings' "+ E-mail" opens this flow; only "+ API channel" is still a dialog.
+  The inbox settings' "+ E-mail" opens this flow; "+ API channel" is an inline form.
   Adding a webhook endpoint is a three-step wizard (`/setup/webhook`, `?inbox=` locks the inbox:
   Endpoint, Events, Done) with a per-tab draft; the endpoint is created when Events is submitted
   (a private or invalid URL sends the user back to Endpoint), and the signing secret is shown once
@@ -1963,7 +1964,7 @@ remote images, http(s)):
   ChatGPT, Cursor, VS Code, other MCP clients) with the server's own `/mcp` URL, a copyable command
   or config, install links where the client has them, and the steps; a new grant shows up there live.
 - Main screen (M41, `docs/specs/panel-redesign.md`): every page except setup, the OAuth consent
-  page and an import's own steps lives in one shell, built from shadcn components. A 40px header
+  page lives in one shell, built from shadcn components. A 40px header
   that does not stick holds the Yuva mark (to Home), the workspace and product selector, "/", the
   current page as a menu of every page in three groups (Work: Home, Inbox, Mail, People; Reach:
   Broadcasts, Analytics, Feedback and roadmap, Help center, Status; Workspace: Reports, Team,
@@ -1979,8 +1980,19 @@ remote images, http(s)):
   Waiting, My teams, Snoozed, Done, All, Spam, Trash as the role allows, with the counts from
   `/v1/conversations/counts`), replies to mail we sent, Mentions, Assistants (pending drafts from
   `/v1/drafts`), the saved views and one item per support inbox; Mail its folders and mailboxes;
-  Settings its places in Workspace, Channels, Conversations, Developers, Security and You; Home
-  has none. Below 900px the sidebar is a horizontal strip under the header. Contacts
+  Settings its places in Workspace, Channels, Conversations, Developer, Security and You; Imports
+  the list and New import; Home has none. A Settings place is a plain page: its title and one line
+  on what it holds, then forms with the label above each 36px field, help below it and the buttons
+  at the bottom. Adding a product, channel, API channel, label, saved reply, macro, field,
+  reply-time policy, automation rule or issue tracker opens an inline form above the list, never a
+  dialog (Mail's "Filter messages like this" keeps its dialog); API keys and webhook endpoints keep
+  their setup steps. A product, channel, webhook endpoint or assistant opens as a page with a back
+  arrow in the header; a product's and a channel's own tabs are the only tab rows. Imports
+  (`/settings/migrations`) is one bordered list filtered by All, Active or Finished, each row with
+  its source, product, state, progress and menu; a new import walks "1. Source · 2. Connect ·
+  3. Choose · 4. Start" (Map is part of Choose, Review is Start) with the read-only notice on every
+  step, and from Copy on an import is a detail page with its facts and its step's actions, all
+  inside the shell. Below 900px the sidebar is a horizontal strip under the header. Contacts
   (`/contacts`), Team (`/team`: each member's presence, what they are looking at and their open
   load from `assignees` in `/v1/conversations/counts`), Reports (`/reports`: today's `/v1/stats`,
   trends, ratings, per member) and Settings open their pages in the main area at the same URLs as
@@ -2075,7 +2087,7 @@ remote images, http(s)):
   for apps; settings for API channels; remove for all). Each card saves on its own and sends
   only its fields on top of the latest stored channel, so another card's unsaved text and the
   stored SMTP passwords are untouched; cards with only switches save on change. The inbox page
-  lists channels as links to it; the add dialog is only for creating.
+  lists channels as links to it; adding a channel is an inline form.
   A webhook endpoint page works the same way: endpoint (URL, description), events, sending,
   signing secret, deliveries, attempts, how to verify and remove, each saved on its own.
 - Installable PWA with Web Push (VAPID), so members get notifications on phones without a native
@@ -3304,7 +3316,7 @@ incident before a customer writes, and the conversations an outage brings are an
     404. `/robots.txt`, `/sitemap.xml` (home pages only: status pages carry no listing flag),
     `/favicon.svg`, `/og.png` and `/fonts/` are served on the same origin. Own domains keep `/` for
     their page.
-- **Panel.** A Status entry in the rail (`/status`, shortcut `g s`) follows the inbox filter: the page of each
+- **Panel.** A Status entry in the pages menu (`/status`, shortcut `g s`) follows the inbox filter: the page of each
   visible inbox, or "Create status page" for owners and admins on an inbox without one. A page opens at
   `/status-pages/{id}` (not under `/status/`, which the server answers with the public page) with Incidents,
   Components, Monitors (`/status-pages/{id}/monitors`, where member notifications about a monitor going
@@ -4033,7 +4045,7 @@ posts, votes, follows, moderation, reader accounts, rendering and notifications 
   - The panel's roadmap screens have their own Lingui catalog, `roadmap`, in every panel language.
   - The widget's Roadmap app uses the `apps` catalog.
 - **Panel.**
-  - **Navigation.** A Roadmap entry in the rail (`/board`, shortcut `g p`; `/roadmap` is the public pages' path and `g r` is Reports) follows the inbox filter:
+  - **Navigation.** A Roadmap entry in the pages menu (`/board`, shortcut `g p`; `/roadmap` is the public pages' path and `g r` is Reports) follows the inbox filter:
     each visible inbox's board, or "Create board" for owners and admins.
   - **The board.** It opens as columns per stage. Cards show votes, linked feedback count and the
     pending mark. Dragging a card or using its stage select moves the stage, after a confirmation that
@@ -4328,7 +4340,7 @@ appear in help search. Writing, rendering and translating are M20's.
   `changelog`, in every panel language. The widget's app uses the `apps` catalog. The broadcast takes
   the template's words in the entry's locale.
 - **Panel.**
-  - **Navigation.** A What's new entry in the rail (`/updates`, shortcut `g w`) follows the inbox
+  - **Navigation.** A What's new entry in the pages menu (`/updates`, shortcut `g w`) follows the inbox
     filter: each visible inbox's changelog, or "Create" for owners and admins.
   - **The list.** Entries with state, labels, date and translation marks.
   - **The editor.** M20's Markdown editor and side-by-side translation, the label chips, an image picker

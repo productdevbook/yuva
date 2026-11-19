@@ -1,6 +1,6 @@
 import { Plural, Trans, useLingui } from "@lingui/react/macro"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { PencilIcon, TagIcon, Trash2Icon } from "lucide-react"
+import { PencilIcon, PlusIcon, TagIcon, Trash2Icon } from "lucide-react"
 import { useState } from "react"
 
 import { ErrorLine, useConfirm } from "@/components/common"
@@ -8,8 +8,8 @@ import { EmptyBox } from "@/components/common/EmptyBox"
 import { Button } from "@/components/ui/button"
 import { useCounts } from "@/features/inbox/queries"
 import { GeneralHeader, Intro } from "@/features/settings/GeneralTabs"
-import { LabelDialog } from "@/features/settings/labels/LabelDialog"
-import { Card, headButton, mix, Row, Rows } from "@/features/settings/ui"
+import { LabelForm } from "@/features/settings/labels/LabelForm"
+import { Card, mix, Row, Rows } from "@/features/settings/ui"
 import { api, unwrap, type Label } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
@@ -29,18 +29,26 @@ export function LabelsPage() {
     onSuccess: () => qc.invalidateQueries({ queryKey: keys.labels(ws) }),
   })
   const add = canManage && (
-    <Button className={headButton.primary} onClick={() => setEditing("new")} data-testid="label-new">
+    <Button onClick={() => setEditing("new")} disabled={!!editing} data-testid="label-new">
+      <PlusIcon />
       <Trans>New label</Trans>
     </Button>
   )
   return (
     <>
-      <GeneralHeader current="labels" />
+      <GeneralHeader current="labels" plain />
       <Intro action={labels.data && labels.data.length > 0 ? add : undefined}>
         <Trans>Sort conversations by topic. Each label also gets its own view in the sidebar.</Trans>
       </Intro>
+      {editing && (
+        <LabelForm
+          key={editing === "new" ? "new" : editing.id}
+          label={editing === "new" ? null : editing}
+          onClose={() => setEditing(null)}
+        />
+      )}
       {labels.data && labels.data.length === 0 ? (
-        <EmptyBox icon={TagIcon} title={<Trans>No labels yet</Trans>} actions={add} testId="labels-empty">
+        <EmptyBox icon={TagIcon} title={<Trans>No labels yet</Trans>} actions={!editing && add} testId="labels-empty">
           <Trans>Labels sort conversations by topic, such as billing or bugs.</Trans>
         </EmptyBox>
       ) : (
@@ -90,7 +98,6 @@ export function LabelsPage() {
           <ErrorLine error={labels.error ?? remove.error} className="px-5 pb-4" />
         </Card>
       )}
-      {editing && <LabelDialog label={editing === "new" ? null : editing} onClose={() => setEditing(null)} />}
       {confirmDialog}
     </>
   )

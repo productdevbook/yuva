@@ -1,14 +1,14 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { PencilIcon, Trash2Icon, ZapIcon } from "lucide-react"
+import { PencilIcon, PlusIcon, Trash2Icon, ZapIcon } from "lucide-react"
 import { useState } from "react"
 
 import { ErrorLine, useConfirm } from "@/components/common"
 import { EmptyBox } from "@/components/common/EmptyBox"
 import { Button } from "@/components/ui/button"
 import { GeneralHeader, Intro } from "@/features/settings/GeneralTabs"
-import { MacroDialog } from "@/features/settings/macros/MacroDialog"
-import { Card, Chip, headButton, Row, Rows } from "@/features/settings/ui"
+import { MacroForm } from "@/features/settings/macros/MacroForm"
+import { Card, Chip, Row, Rows } from "@/features/settings/ui"
 import { api, unwrap, type Macro } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
@@ -26,21 +26,29 @@ export function MacrosPage() {
     onSuccess: () => qc.invalidateQueries({ queryKey: keys.macros(ws) }),
   })
   const add = (
-    <Button className={headButton.primary} onClick={() => setEditing("new")} data-testid="macro-new">
+    <Button onClick={() => setEditing("new")} disabled={!!editing} data-testid="macro-new">
+      <PlusIcon />
       <Trans>New macro</Trans>
     </Button>
   )
   return (
     <>
-      <GeneralHeader current="macros" />
+      <GeneralHeader current="macros" plain />
       <Intro action={macros.data && macros.data.length > 0 ? add : undefined}>
         <Trans>
           A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the
           composer; the actions apply when the reply is sent.
         </Trans>
       </Intro>
+      {editing && (
+        <MacroForm
+          key={editing === "new" ? "new" : editing.id}
+          macro={editing === "new" ? null : editing}
+          onClose={() => setEditing(null)}
+        />
+      )}
       {macros.data && macros.data.length === 0 ? (
-        <EmptyBox icon={ZapIcon} title={<Trans>No macros yet</Trans>} actions={add} testId="macros-empty">
+        <EmptyBox icon={ZapIcon} title={<Trans>No macros yet</Trans>} actions={!editing && add} testId="macros-empty">
           <Trans>Save a reply together with what should happen to the conversation when you send it.</Trans>
         </EmptyBox>
       ) : (
@@ -90,7 +98,6 @@ export function MacrosPage() {
           <ErrorLine error={macros.error ?? remove.error} className="px-5 pb-4" />
         </Card>
       )}
-      {editing && <MacroDialog macro={editing === "new" ? null : editing} onClose={() => setEditing(null)} />}
       {confirmDialog}
     </>
   )

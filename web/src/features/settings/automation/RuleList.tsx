@@ -24,12 +24,12 @@ import { useState } from "react"
 import { ErrorLine, Notice, useConfirm } from "@/components/common"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
-import { RuleDialog } from "@/features/settings/automation/RuleDialog"
+import { RuleForm } from "@/features/settings/automation/RuleForm"
 import { RunLog } from "@/features/settings/automation/RunLog"
 import { useAuthorityCheck, useAutomationRules } from "@/features/settings/automation/queries"
 import { LIMIT, useAutomationText } from "@/features/settings/automation/text"
 import { Intro } from "@/features/settings/GeneralTabs"
-import { Card, headButton, Pill, Row, Rows } from "@/features/settings/ui"
+import { Card, Pill, Row, Rows } from "@/features/settings/ui"
 import { api, unwrap, type AutomationRule } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
@@ -269,13 +269,7 @@ export function RuleList({
             <span className="text-small text-faint tabular-nums" data-testid="automation-count">
               {rules.length}/{LIMIT}
             </span>
-            <Button
-              variant="outline"
-              className={headButton.secondary}
-              disabled={full}
-              onClick={() => setEditing("new")}
-              data-testid="automation-new"
-            >
+            <Button disabled={full || !!editing} onClick={() => setEditing("new")} data-testid="automation-new">
               {filter ? <Trans>New filter</Trans> : <Trans>New rule</Trans>}
             </Button>
           </span>
@@ -283,6 +277,15 @@ export function RuleList({
       >
         {intro}
       </Intro>
+      {editing && (
+        <RuleForm
+          key={editing === "new" ? "new" : editing.id}
+          rule={editing === "new" ? null : editing}
+          inboxId={inboxId}
+          filter={filter}
+          onClose={() => setEditing(null)}
+        />
+      )}
       <ErrorLine error={query.error} />
       <Card flush>
         {rules.length === 0 ? (
@@ -322,15 +325,6 @@ export function RuleList({
         <ErrorLine error={remove.error ?? reorder.error ?? toggle.error} className="px-5 pb-4" />
       </Card>
       {confirmDialog}
-      {editing && (
-        <RuleDialog
-          key={editing === "new" ? "new" : editing.id}
-          rule={editing === "new" ? null : editing}
-          inboxId={inboxId}
-          filter={filter}
-          onClose={() => setEditing(null)}
-        />
-      )}
       {logging && <RunLog rule={logging} onClose={() => setLogging(null)} />}
     </>
   )

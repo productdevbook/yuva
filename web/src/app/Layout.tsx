@@ -40,7 +40,9 @@ function isPhoneDetail(pathname: string, search: string) {
     /^\/incidents\/[^/]+\/[^/]+/.test(pathname) ||
     /^\/monitors\/[^/]+/.test(pathname) ||
     /^\/updates\/[^/]+\/entries\/[^/]+/.test(pathname) ||
-    /^\/docs\/discussions\/(?!queue$)[^/]+/.test(pathname)
+    /^\/docs\/discussions\/(?!queue$)[^/]+/.test(pathname) ||
+    pathname.startsWith("/migrations/") ||
+    /^\/settings\/(inboxes|connected-apps|webhooks)\/[^/]+/.test(pathname)
   )
 }
 
@@ -48,7 +50,6 @@ function Phone() {
   const { pathname, search } = useLocation()
   const section = useSection()
   const column = isSectionHome(pathname) && COLUMNS.includes(section)
-  if (pathname.startsWith("/migrations/")) return <Outlet />
   return (
     <SidebarProvider className="contents">
       <div className="flex h-svh min-h-0 flex-col" data-frame data-testid="shell">

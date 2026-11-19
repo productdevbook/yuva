@@ -1448,7 +1448,7 @@ msgstr "En samtale"
 msgid "A conversation can copy at most 100 people."
 msgstr "En samtale kan ha høyst 100 personer i kopi."
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
 msgstr "En samtale kan ikke lukkes før dette feltet har en verdi. Søppelpost er unntatt."
 
@@ -1468,7 +1468,7 @@ msgstr "En samtale er inaktiv"
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "En samtale tas med i sin helhet når den sist ble oppdatert innenfor området."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "A conversation must match every row you fill in. Leave a row empty to match anything."
 msgstr "En samtale må passe til hver rad du fyller ut. En tom rad passer til alt."
 
@@ -1739,7 +1739,7 @@ msgstr "En prosentandel ved siden av hver komponent."
 msgid "A personal API key from Linear, under Settings, Account, Security and access."
 msgstr "A personal API key from Linear, under Settings, Account, Security and access."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "A policy that is off applies to nothing."
 msgstr "En avslått policy gjelder for ingenting."
 
@@ -1799,7 +1799,7 @@ msgstr "Et obligatorisk felt er tomt"
 msgid "A roadmap idea moved to another stage"
 msgstr "En idé på veikartet ble flyttet til et annet trinn"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "A rule that is off never runs. Rules run in the order of the list."
 msgstr "En regel som er slått av, kjører aldri. Reglene kjører i rekkefølgen i listen."
 
@@ -1974,10 +1974,6 @@ msgstr "Tilgang til {provider}"
 msgid "Access to the mailbox"
 msgstr "Tilgang til postboksen"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Access to your mailbox: none"
-msgstr "Tilgang til postboksen din: ingen"
-
 #: src/features/account/AccountPage.tsx
 msgid "Account"
 msgstr "Konto"
@@ -2002,7 +1998,7 @@ msgstr "Acme Support"
 msgid "ACS URL"
 msgstr "ACS URL"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Actions"
@@ -2017,6 +2013,7 @@ msgstr "Bare handlinger"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/text.ts
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
@@ -2032,7 +2029,7 @@ msgstr "Aktivitet"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "Legg til"
@@ -2050,7 +2047,7 @@ msgstr "Legg til en blokk"
 msgid "Add a category"
 msgstr "Legg til en kategori"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Add a channel"
 msgstr "Legg til kanal"
 
@@ -2099,7 +2096,7 @@ msgstr "Legg til deltaker med e-postadresse"
 msgid "Add a passkey"
 msgstr "Legg til en passkey"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Add a product"
 msgstr "Legg til produkt"
 
@@ -2137,7 +2134,7 @@ msgstr "Legg til en nettstedchat i postboksens innstillinger"
 msgid "Add a website or app"
 msgstr "Legg til et nettsted eller en app"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Add an action"
 msgstr "Legg til en handling"
 
@@ -2154,6 +2151,10 @@ msgstr "Legg til en adresse på serveren din og velg hendelsene Yuva skal fortel
 #: src/app/Palette.tsx
 msgid "Add an analytics property"
 msgstr "Legg til en analytics-property"
+
+#: src/features/settings/channels/ApiChannelForm.tsx
+msgid "Add an API channel"
+msgstr "Legg til API-kanal"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add an image"
@@ -2184,7 +2185,6 @@ msgstr "Legg til en til"
 msgid "Add at least one origin."
 msgstr "Legg til minst én origin."
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Add channel"
 msgstr "Legg til kanal"
@@ -2194,7 +2194,7 @@ msgstr "Legg til kanal"
 msgid "Add component"
 msgstr "Legg til komponent"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Add condition"
 msgstr "Legg til vilkår"
 
@@ -2228,6 +2228,10 @@ msgstr "Add image"
 #: src/features/mail/Compose.tsx
 msgid "Add it back"
 msgstr "Add it back"
+
+#: src/features/settings/labels/LabelForm.tsx
+msgid "Add label"
+msgstr "Legg til etikett"
 
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
@@ -2386,6 +2390,7 @@ msgid "Address verified"
 msgstr "Adressen er bekreftet"
 
 #: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Addresses"
 msgstr "Adresser"
 
@@ -2496,6 +2501,7 @@ msgid "All good"
 msgstr "Alt i orden"
 
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/MigrationsPage.tsx
 msgid "All imports"
 msgstr "Alle importer"
 
@@ -2881,10 +2887,6 @@ msgstr "En invitasjon godtas når personen logger inn med en kode sendt til den 
 msgid "An issue URL, owner/repo#12 or ENG-123."
 msgstr "An issue URL, owner/repo#12 or ENG-123."
 
-#: src/features/migrations/MigrationsPage.tsx
-msgid "An mbox export of a mailbox"
-msgstr "En mbox-eksport av en postboks"
-
 #: src/features/team/TeamPage.tsx
 msgid "An owner cannot be removed. Change their role first."
 msgstr "En eier kan ikke fjernes. Endre rollen først."
@@ -2960,7 +2962,7 @@ msgstr "En annen konto"
 msgid "Another address this channel receives mail at. Forward a mailbox here, for example {own} at its provider; forwarding to {own} itself would loop."
 msgstr "En annen adresse denne kanalen mottar e-post på. Videresend en postboks hit, for eksempel {own} hos leverandøren; videresending til {own} selv ville gitt en løkke."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 msgid "Another canned reply already uses this shortcut."
 msgstr "Et annet ferdig svar bruker allerede denne snarveien."
 
@@ -3092,7 +3094,7 @@ msgstr "Alle felt"
 msgid "Any label"
 msgstr "Hvilken som helst etikett"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Any of the labels you pick."
 msgstr "Én av etikettene du velger."
 
@@ -3137,15 +3139,11 @@ msgstr "Alt som bruker denne nøkkelen slutter å virke med en gang."
 msgid "API"
 msgstr "API"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "API & MCP"
 msgstr "API og MCP"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "API channel"
 msgstr "API-kanal"
 
@@ -3158,7 +3156,6 @@ msgstr "API-nøkkel"
 #: src/app/Palette.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "API keys"
 msgstr "API-nøkler"
@@ -3222,8 +3219,8 @@ msgstr "Program-ID (klient)"
 msgid "Applied"
 msgstr "Brukt"
 
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Applies to"
 msgstr "Gjelder for"
 
@@ -3450,7 +3447,7 @@ msgstr "Tildelt deg"
 
 #: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Assignee"
 msgstr "Ansvarlig"
 
@@ -3486,7 +3483,7 @@ msgid "Assistants work in Yuva through MCP, acting as the member who connected t
 msgstr "Assistenter jobber i Yuva via MCP, som medlemmet som koblet dem til, og med bare den tilgangen medlemmet har godkjent."
 
 #: src/components/common/text.ts
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Async"
 msgstr "Asynkron"
 
@@ -3585,7 +3582,6 @@ msgid "Audience"
 msgstr "Målgruppe"
 
 #: src/app/Palette.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Audit log"
 msgstr "Revisjonslogg"
@@ -3618,7 +3614,6 @@ msgstr "Automatisk tildeling"
 msgid "Automatic mail never triggers an automatic reply."
 msgstr "Automatisk e-post utløser aldri et autosvar."
 
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Automation"
 msgstr "Automatisering"
@@ -3766,7 +3761,7 @@ msgstr "Best regards,"
 msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
 msgstr "Mellom 1 og 500, talt i hele arbeidsområdet. Manuell tildeling ignorerer den. La feltet stå tomt for ingen grense."
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Billing"
 msgstr "Fakturering"
@@ -3776,7 +3771,7 @@ msgstr "Fakturering"
 msgid "Billing bot"
 msgstr "Faktureringsrobot"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 msgid "Billing events"
 msgstr "Faktureringshendelser"
 
@@ -3924,17 +3919,13 @@ msgstr "Brutt"
 msgid "Breached, met late at {at}"
 msgstr "Brutt, oppfylt for sent kl. {at}"
 
-#: src/features/settings/SettingsFrame.tsx
-msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
-msgstr "Hent historikken til en postboks fra Gmail, Yandex eller en hvilken som helst IMAP-server"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Bring subscribers who already agreed elsewhere. Each address is checked first and nothing is added until you start: invalid addresses, domains that take no mail, role addresses, duplicates and anyone who left or objected are left out."
 msgstr "Hent abonnenter som allerede har sagt ja andre steder. Hver adresse sjekkes først, og ingenting legges til før du starter: ugyldige adresser, domener som ikke tar imot e-post, rolleadresser, duplikater og alle som har meldt seg av eller protestert utelates."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Bring the history of a mailbox you answer from today, then switch its mail over. Yuva only reads the mailbox; nothing there is changed."
-msgstr "Hent historikken til en postboks du svarer fra i dag, og bytt deretter over e-posten dens. Yuva leser bare postboksen; ingenting endres der."
+msgid "Bring the history of a mailbox or help desk you answer from today, then switch its mail over. Yuva only reads the source; nothing there is changed."
+msgstr "Hent historikken fra en postboks eller helpdesk du svarer fra i dag, og flytt deretter e-posten over. Yuva leser bare kilden; ingenting endres der."
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Bring your old mail"
@@ -3949,7 +3940,6 @@ msgstr "Utsendelse"
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/settings/workspace/BroadcastsSettings.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Broadcast sending"
 msgstr "Masseutsendelse"
 
@@ -4047,13 +4037,9 @@ msgstr "Kampanjenavn"
 #: src/features/docs/FromDocs.tsx
 #: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
-#: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -4136,8 +4122,6 @@ msgstr "Avbrutt. Det som ble lagt til før, blir værende."
 #: src/app/Palette.tsx
 #: src/features/conversation/composer/CannedMenu.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Canned replies"
 msgstr "Ferdige svar"
 
@@ -4291,10 +4275,6 @@ msgstr "Endret webhooken til {host}"
 msgid "Changelog settings"
 msgstr "Innstillinger for endringsloggen"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Changes made to {provider}: none"
-msgstr "Endringer gjort i {provider}: ingen"
-
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
 msgstr "Endringer i medlemmer, nøkler, webhooks og andre sensitive innstillinger vises her."
@@ -4308,14 +4288,14 @@ msgstr "Å endre avsenderdomenet slår av DKIM-signering til du slår den på ig
 #: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
 msgid "Channel"
 msgstr "Kanal"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Channel added"
 msgstr "Kanal lagt til"
 
@@ -4339,14 +4319,8 @@ msgstr "Kanal fjernet"
 msgid "Channel settings"
 msgstr "Kanalinnstillinger"
 
-#: src/app/places.tsx
-#: src/components/common/SettingsStrip.tsx
-#: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Channels"
 msgstr "Kanaler"
 
@@ -4450,7 +4424,7 @@ msgstr "Sjekket {when}"
 msgid "Checked and waiting for an owner or admin to start it."
 msgstr "Sjekket og venter på at en eier eller admin starter den."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Checked every 5 minutes, once per quiet period. Only open and pending conversations."
 msgstr "Sjekkes hvert 5. minutt, én gang per stille periode. Bare åpne og ventende samtaler."
 
@@ -4649,7 +4623,6 @@ msgstr "Klokkene stilles den {date}; tidene forblir {start}–{end} lokal tid."
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -4689,7 +4662,7 @@ msgstr "Lukk hver samtale etter svaret"
 msgid "Close everything"
 msgstr "Lukk alt"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Close idle conversations"
 msgstr "Lukk inaktive samtaler"
 
@@ -4777,11 +4750,11 @@ msgstr "Skjul"
 msgid "Collections"
 msgstr "Samlinger"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Color"
 msgstr "Farge"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/colors.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Colour"
@@ -4972,7 +4945,6 @@ msgstr "Connect a tracker"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
 msgid "Connect an assistant"
 msgstr "Koble til en assistent"
 
@@ -5038,12 +5010,10 @@ msgid "Connected {created}"
 msgstr "Tilkoblet {created}"
 
 #: src/app/Palette.tsx
-#: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
+#: src/features/settings/connected-apps/AssistantPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Connected apps"
 msgstr "Tilkoblede apper"
 
@@ -5181,7 +5151,6 @@ msgstr "inneholder"
 
 #: src/app/places.tsx
 #: src/features/broadcasts/Composer.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Content"
 msgstr "Innhold"
 
@@ -5197,7 +5166,7 @@ msgstr "Innhold"
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
 #: src/features/setup/email/EmailReceiveStep.tsx
@@ -5256,7 +5225,6 @@ msgstr "Samtalen er startet"
 msgid "conversations"
 msgstr "samtaler"
 
-#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
@@ -5271,6 +5239,7 @@ msgstr "samtaler"
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Conversations"
 msgstr "Samtaler"
@@ -5341,7 +5310,6 @@ msgstr "adresse i kopi"
 #: src/components/common/CopyButton.tsx
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/messages/MessageActions.tsx
-#: src/features/migrations/Wizard.tsx
 msgid "Copy"
 msgstr "Kopier"
 
@@ -5394,6 +5362,10 @@ msgstr "Kopier detaljene om tilbakemeldingen"
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Copy the feedback details (Y)"
 msgstr "Kopier tilbakemeldingsdetaljene (Y)"
+
+#: src/features/migrations/Wizard.tsx
+msgid "Copy the history of a mailbox or help desk into Yuva."
+msgstr "Kopier historikken fra en postboks eller helpdesk til Yuva."
 
 #: src/features/migrations/text.ts
 msgid "Copy the key under “Your API Key”. A Freshdesk key cannot be limited to reading; Yuva's connection only sends read requests."
@@ -5459,7 +5431,6 @@ msgid "Counts when a subscription becomes confirmed, not when it is still waitin
 msgstr "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/DeveloperTabs.tsx
 msgid "Create"
 msgstr "Opprett"
 
@@ -5492,7 +5463,7 @@ msgstr "Create an issue"
 msgid "Create an OAuth client in Zendesk"
 msgstr "Opprett en OAuth-klient i Zendesk"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Create and add a channel"
 msgstr "Opprett og legg til en kanal"
 
@@ -5516,11 +5487,11 @@ msgstr "Opprett kanal"
 msgid "Create draft"
 msgstr "Opprett utkast"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Create field"
 msgstr "Opprett felt"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Create filter"
 msgstr "Opprett filter"
 
@@ -5554,11 +5525,11 @@ msgstr "Opprett nøkkel"
 msgid "Create list"
 msgstr "Opprett liste"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Create policy"
 msgstr "Opprett policy"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Create rule"
 msgstr "Opprett regel"
 
@@ -5619,9 +5590,7 @@ msgstr "Opprette, endre, sortere og slette automatiseringsregler"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Created"
 msgstr "Opprettet"
 
@@ -5690,11 +5659,6 @@ msgstr "Egendefinert"
 msgid "Custom field"
 msgstr "Egendefinert felt"
 
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "Custom fields"
-msgstr "Egendefinerte felt"
-
 #: src/features/contact/ContactsPage.tsx
 msgid "Customers"
 msgstr "Kunder"
@@ -5725,7 +5689,6 @@ msgid "Daily limit reached · continues at {time} {city} time"
 msgstr "Daglig grense nådd · fortsetter kl. {time} {city}-tid"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Danger zone"
 msgstr "Faresone"
 
@@ -6075,10 +6038,6 @@ msgstr "Slette teamet {name}?"
 msgid "Delete the view {name}?"
 msgstr "Slette visningen {name}?"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-msgid "Delete this canned reply?"
-msgstr "Slette dette ferdige svaret?"
-
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Delete this DKIM key?"
 msgstr "Slette denne DKIM-nøkkelen?"
@@ -6102,6 +6061,10 @@ msgstr "Slett dette notatet"
 #: src/features/contact/ContactNotes.tsx
 msgid "Delete this note?"
 msgstr "Slette dette notatet?"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "Delete this saved reply?"
+msgstr "Slette dette lagrede svaret?"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete this subscription?"
@@ -6302,7 +6265,6 @@ msgstr "Skrivebordsvarsler er blokkert for dette nettstedet i nettleserens innst
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
@@ -6310,8 +6272,11 @@ msgstr "Skrivebordsvarsler er blokkert for dette nettstedet i nettleserens innst
 msgid "Details"
 msgstr "Detaljer"
 
-#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsFrame.tsx
+msgid "Developer"
+msgstr "Utvikler"
+
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Developers"
 msgstr "Utviklere"
 
@@ -6519,7 +6484,7 @@ msgstr "Docs er sidene du vedlikeholder på ditt eget nettsted og hoster selv. N
 msgid "Documentation pages"
 msgstr "Dokumentasjonssider"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Documentation site"
 msgstr "Dokumentasjonsnettsted"
@@ -6555,7 +6520,6 @@ msgstr "utført"
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/fields/BulkFailures.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -6738,7 +6702,7 @@ msgstr "Duplikater"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/notifications/EventsSection.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -6816,7 +6780,7 @@ msgstr "Kode på e-post"
 msgid "E-mails to the people who signed up"
 msgstr "E-poster til de som har meldt seg på"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
 msgstr "Hver handling én gang, høyst 10. Handlingene kjører som én endring; feiler én, brukes ingen."
 
@@ -6919,10 +6883,6 @@ msgstr "Rediger {name}"
 msgid "Edit API key"
 msgstr "Rediger API-nøkkel"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-msgid "Edit canned reply"
-msgstr "Rediger ferdig svar"
-
 #: src/features/status/ComponentForms.tsx
 msgid "Edit component"
 msgstr "Rediger komponent"
@@ -6940,11 +6900,11 @@ msgstr "Rediger detaljer"
 msgid "Edit details ({editKey})"
 msgstr "Rediger detaljer ({editKey})"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Edit field"
 msgstr "Rediger felt"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Edit filter"
 msgstr "Rediger filter"
 
@@ -6952,11 +6912,11 @@ msgstr "Rediger filter"
 msgid "Edit help center collections and article drafts"
 msgstr "Rediger hjelpesentersamlinger og artikkelutkast"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Edit label"
 msgstr "Rediger etikett"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Edit macro"
 msgstr "Rediger makro"
 
@@ -6964,13 +6924,17 @@ msgstr "Rediger makro"
 msgid "Edit monitor"
 msgstr "Rediger monitor"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Edit policy"
 msgstr "Rediger policy"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Edit rule"
 msgstr "Rediger regel"
+
+#: src/features/settings/canned/CannedReplyForm.tsx
+msgid "Edit saved reply"
+msgstr "Rediger lagret svar"
 
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Edit team"
@@ -7036,11 +7000,6 @@ msgstr "Redigerer meldingen planlagt til {editingWhen}"
 msgid "Elevated API errors"
 msgstr "Økt antall API-feil"
 
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "Elsewhere in settings"
-msgstr "Andre steder i innstillingene"
-
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Embed snippet"
 msgstr "Innbyggingskode"
@@ -7070,8 +7029,8 @@ msgstr "Tomt bruker emnet på {baseLanguage}. Flettefelt fungerer her også."
 msgid "Emptying the Trash: {0} are being deleted"
 msgstr "Tømmer papirkurven: {0} slettes"
 
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Enabled"
 msgstr "Slått på"
 
@@ -7243,7 +7202,7 @@ msgid "Every imported conversation is closed."
 msgstr "Hver importerte samtale er lukket."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Every inbox"
 msgstr "Hver postboks"
 
@@ -7319,7 +7278,7 @@ msgstr "Hvert nettsted og hver app viser besøkende på Hjem og i Analytics."
 
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Everyone"
 msgstr "Alle"
 
@@ -7469,7 +7428,6 @@ msgstr "Extra scopes"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/migrations/ConnectStep.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7584,6 +7542,7 @@ msgstr "Færrest åpne samtaler"
 
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Fields"
 msgstr "Felt"
 
@@ -7602,10 +7561,6 @@ msgstr "Fil"
 #: src/features/broadcasts/Import.tsx
 msgid "File and consent"
 msgstr "Fil og samtykke"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Files"
-msgstr "Filer"
 
 #: src/features/fields/RequiredFieldsHost.tsx
 msgid "Fill in before closing"
@@ -7739,6 +7694,7 @@ msgstr "Fullfør uten å sjekke"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/migrations/MigrationsPage.tsx
 msgid "Finished"
 msgstr "Fullført"
 
@@ -7766,7 +7722,7 @@ msgstr "første svar"
 #: src/features/home/HomeWork.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "First reply"
 msgstr "Første svar"
 
@@ -7882,7 +7838,7 @@ msgid "For example Acme"
 msgstr "For eksempel Acme"
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/setup/NameStep.tsx
 msgid "For example Fieldnote"
 msgstr "For eksempel Fieldnote"
@@ -8071,15 +8027,15 @@ msgstr "Avsenderadresse (valgfritt)"
 msgid "From blocked contacts"
 msgstr "Fra blokkerte kontakter"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From each later contact message to the reply."
 msgstr "Fra hver senere melding fra kontakten til svaret."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From the contact's first message to the first public reply."
 msgstr "Fra kontaktens første melding til det første offentlige svaret."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From the start of the conversation to its first close."
 msgstr "Fra samtalen starter til den lukkes første gang."
 
@@ -8144,9 +8100,7 @@ msgstr "Ga {person} tilgang til {inbox}"
 msgid "Gave the team {team} access to {inbox}"
 msgstr "Ga teamet {team} tilgang til {inbox}"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/channels/sections.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "General"
@@ -8213,10 +8167,6 @@ msgstr "Gmail videresender bare ny e-post som ikke er søppelpost. Hvis en Works
 #: src/features/migrations/ConnectStep.tsx
 msgid "Gmail lets other apps read about 1.5 GB a day over IMAP, so a mailbox of many gigabytes takes days. Google Takeout exports it as one file that uploads as fast as your connection allows. Import that first, then come back here with an app password for the newer mail and the switch."
 msgstr "Gmail lar andre apper lese rundt 1,5 GB om dagen over IMAP, så en postboks på mange gigabyte tar dager. Google Takeout eksporterer den som én fil som lastes opp så raskt som tilkoblingen din tillater. Importer den først, og kom så tilbake hit med et app-passord for den nyere e-posten og byttet."
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Gmail, Outlook, Yandex, any IMAP server"
-msgstr "Gmail, Outlook, Yandex, hvilken som helst IMAP-server"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "go back to operational when you post this"
@@ -8316,10 +8266,6 @@ msgstr "Groups attribute"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
 msgstr "Groups claim"
-
-#: src/features/settings/SettingsFrame.tsx
-msgid "Groups of members and the inboxes they cover"
-msgstr "Grupper av medlemmer og postbokser de dekker"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -8436,10 +8382,6 @@ msgstr "Hjelpecenter"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Help center settings"
 msgstr "Indstillinger for hjelpecenter"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Help desks"
-msgstr "Helpdesker"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Help report"
@@ -8580,7 +8522,7 @@ msgid "Hostname and certificate"
 msgstr "Vertsnavn og sertifikat"
 
 #: src/features/broadcasts/Trigger.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "hours"
 msgstr "timer"
 
@@ -8605,7 +8547,7 @@ msgstr "Hvordan sa abonnentene dine ja?"
 msgid "How do people sign up?"
 msgstr "Hvordan melder folk seg på?"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "How do you answer?"
 msgstr "Hvordan svarer du?"
 
@@ -8629,7 +8571,6 @@ msgstr "Hvor sent et signal kan være."
 msgid "How mail reaches Yuva"
 msgstr "Hvordan e-post når Yuva"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "How messages arrive: chat, e-mail, apps"
 msgstr "Slik kommer meldinger inn: chat, e-post, apper"
@@ -8641,10 +8582,6 @@ msgstr "Hvordan meldinger når hvert produkt"
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "How should replies go out?"
 msgstr "Hvordan skal svar sendes?"
-
-#: src/components/common/SettingsStrip.tsx
-msgid "How software connects: keys, hooks, assistants"
-msgstr "Slik kobler programvare seg til: nøkler, webhooks, assistenter"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "How the chat opens"
@@ -8728,7 +8665,7 @@ msgstr "Inaktiv i {idle} min"
 msgid "If {provider} mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "Hvis {provider} sender en bekreftelse til den adressen, kommer den til denne postboksen som en samtale; åpne den der."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "If all of these match"
 msgstr "Hvis alle disse stemmer"
 
@@ -8821,11 +8758,11 @@ msgid "Import people"
 msgstr "Importer personer"
 
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Import steps"
 msgstr "Importtrinn"
 
 #: src/components/common/ImportedChip.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 msgid "Imported"
 msgstr "Importert"
@@ -8856,6 +8793,8 @@ msgstr "Importerer …"
 
 #: src/app/nav.tsx
 #: src/app/places.tsx
+#: src/features/migrations/Wizard.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Imports"
 msgstr "Importer"
 
@@ -9018,7 +8957,7 @@ msgstr "I Zoho Mail, åpne Innstillinger › E-postkontoer › IMAP-tilgang og s
 #: src/features/docs/InstallDialog.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "Postboks"
@@ -9051,10 +8990,15 @@ msgstr "Postboks for {name}"
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Inboxes"
 msgstr "Postbokser"
+
+#: src/features/settings/ProductsPage.tsx
+#: src/features/settings/SettingsFrame.tsx
+msgid "Inboxes and channels"
+msgstr "Innbokser og kanaler"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Inboxes cut off subjects longer than 80 characters."
@@ -9477,7 +9421,7 @@ msgstr "Lagres med hvert abonnement fra denne filen, som bevis på samtykket der
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Key"
 msgstr "Nøkkel"
 
@@ -9517,12 +9461,6 @@ msgstr "Nøkler og tilkoblede apper"
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
 msgstr "Nøkler som kan nå dette produktet. Opprett og tilbakekall dem under API & MCP."
 
-#: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
-#: src/features/settings/webhooks/WebhooksPage.tsx
-msgid "Keys, webhooks and connected assistants"
-msgstr "Nøkler, webhooks og tilkoblede assistenter"
-
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Keyword"
 msgstr "Nøkkelord"
@@ -9558,10 +9496,9 @@ msgstr "Bare etikett: e-posten dens kommer fra All e-post, og samtalene får eti
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Labels"
 msgstr "Etiketter"
 
@@ -9762,7 +9699,7 @@ msgstr "Startknappfarge"
 msgid "Launcher position"
 msgstr "Startknappplassering"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Leave as is"
 msgstr "La være som den er"
 
@@ -10075,7 +10012,7 @@ msgid "Live"
 msgstr "Live"
 
 #: src/components/common/Source.tsx
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Live chat"
 msgstr "Live-chat"
 
@@ -10197,8 +10134,8 @@ msgstr "Lav"
 msgid "Lowercase letters, digits and dashes, not at the start or end."
 msgstr "Små bokstaver, sifre og bindestreker, ikke i begynnelsen eller slutten."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Lowercase letters, digits and dashes."
 msgstr "Små bokstaver, sifre og bindestreker."
 
@@ -10213,7 +10150,6 @@ msgid "Macro"
 msgstr "Makro"
 
 #: src/app/Palette.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Macros"
 msgstr "Makroer"
@@ -10345,7 +10281,6 @@ msgstr "Postboksadresse"
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
-#: src/features/migrations/MigrationsPage.tsx
 msgid "Mailboxes"
 msgstr "Postbokser"
 
@@ -10452,10 +10387,6 @@ msgstr "Administrer webhooks"
 #: src/features/settings/webhooks/parts.tsx
 msgid "manual"
 msgstr "manuell"
-
-#: src/features/migrations/Wizard.tsx
-msgid "Map"
-msgstr "Tilordne"
 
 #: src/app/Header.tsx
 #: src/features/account/AccountPage.tsx
@@ -10636,7 +10567,6 @@ msgstr "Medlem"
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/teams/TeamsPage.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "Medlemmer"
@@ -10827,10 +10757,6 @@ msgstr "Tokenet fra Microsoft gir mer enn å lese e-post over IMAP, så Yuva bru
 msgid "Migration cancelled"
 msgstr "Migrering avbrutt"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Migration steps"
-msgstr "Migreringstrinn"
-
 #: src/features/inbox/ChatList.tsx
 msgid "Mine"
 msgstr "Mine"
@@ -10841,7 +10767,7 @@ msgstr "Liten"
 
 #: src/features/broadcasts/Trigger.tsx
 #: src/features/settings/automation/ActionRow.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "minutes"
 msgstr "minutter"
 
@@ -10849,7 +10775,7 @@ msgstr "minutter"
 msgid "Minutes"
 msgstr "Minutter"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Minutes before a due time. 0 sends no warning."
 msgstr "Minutter før forfallstidspunktet. 0 sender ingen advarsel."
 
@@ -10858,7 +10784,7 @@ msgid "Missed beat"
 msgstr "Tapt signal"
 
 #: src/components/common/text.ts
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/app/AppFields.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Mobile app"
@@ -11158,12 +11084,6 @@ msgstr "Flytt til papirkurven ({0})"
 msgid "Move to the Trash (#)"
 msgstr "Flytt til papirkurven (#)"
 
-#: src/features/migrations/Wizard.tsx
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "Move to Yuva"
-msgstr "Flytt til Yuva"
-
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11202,8 +11122,8 @@ msgid "Moves the mail to the Trash. Runs after the other actions."
 msgstr "Flytter e-posten til papirkurven. Kjører etter de andre handlingene."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
-msgstr "Flytter du fra Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX eller en hvilken som helst IMAP-server? Yuva kopierer historikken til postboksen inn i en postboks, stille og med de nyeste først, mens teamet ditt fortsetter å jobbe. Deretter videresender du postboksen hit, og ingenting går tapt underveis."
+msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX, any IMAP server or another help desk? Yuva copies the history into an inbox, newest first, while your team keeps working."
+msgstr "Bytter du fra Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX, en IMAP-server eller et annet helpdesk? Yuva kopierer historikken til en innboks, nyeste først, mens teamet ditt jobber videre."
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Moving the idea to Planned, In progress or Shipped sets this for linked feedback that has no progress yet."
@@ -11247,20 +11167,19 @@ msgstr "Mine visninger"
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
-#: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -11300,6 +11219,10 @@ msgstr "Gi den navnet Yuva. Under <0>Connection</0>, velg <1>Public endpoint</1>
 #: src/features/migrations/MapStep.tsx
 msgid "Name of the new inbox"
 msgstr "Navn på den nye postboksen"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Name, closed conversations and broadcast sending"
+msgstr "Navn, lukkede samtaler og utsending av massepost"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Name, colour and the first thing the chat says"
@@ -11411,11 +11334,6 @@ msgstr "Ny artikel"
 msgid "New broadcast"
 msgstr "Ny utsendelse"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
-msgid "New canned reply"
-msgstr "Nytt ferdig svar"
-
 #: src/components/common/ShortcutSheet.tsx
 msgid "New collection"
 msgstr "Ny samling"
@@ -11484,12 +11402,13 @@ msgstr "nye diskusjoner"
 msgid "New entry"
 msgstr "Nytt innlegg"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 msgid "New field"
 msgstr "Nytt felt"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/mail/FilterDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New filter"
 msgstr "Nytt filter"
@@ -11508,6 +11427,8 @@ msgid "New identity secret"
 msgstr "Ny identitetshemmelighet"
 
 #: src/app/places.tsx
+#: src/features/migrations/MigrationsPage.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "New import"
 msgstr "Ny import"
 
@@ -11532,7 +11453,7 @@ msgstr "Ny hendelse"
 msgid "New incident ({incidentKey})"
 msgstr "Ny hendelse ({incidentKey})"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "New label"
 msgstr "Ny etikett"
@@ -11546,7 +11467,7 @@ msgstr "Ny etikett «{folder}»"
 msgid "New list"
 msgstr "Ny liste"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "New macro"
 msgstr "Ny makro"
@@ -11577,10 +11498,6 @@ msgstr "Ny melding i en samtale tildelt meg"
 msgid "New message in an unassigned conversation"
 msgstr "Ny melding i en utildelt samtale"
 
-#: src/features/migrations/MigrationsPage.tsx
-msgid "New migration"
-msgstr "Ny migrering"
-
 #: src/features/status/MonitorsPage.tsx
 msgid "new monitor"
 msgstr "ny monitor"
@@ -11601,7 +11518,7 @@ msgstr "Ny eier av {boxName}"
 msgid "New password"
 msgstr "Nytt passord"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "New policy"
 msgstr "Ny policy"
@@ -11610,10 +11527,15 @@ msgstr "Ny policy"
 msgid "New reply in <0>{title}</0>"
 msgstr "Nytt svar i <0>{title}</0>"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "Ny regel"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+msgid "New saved reply"
+msgstr "Nytt lagret svar"
 
 #: src/features/settings/webhooks/sections.tsx
 msgid "New signing secret"
@@ -11720,7 +11642,7 @@ msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "Neste e-post {local} ({utc} UTC), i tempoet til denne utsendelsen."
 
 #: src/features/conversation/SlaPopover.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Next reply"
 msgstr "Neste svar"
 
@@ -11731,10 +11653,6 @@ msgstr "Neste svar {next}"
 #: src/features/feedback/Lightbox.tsx
 msgid "Next screenshot"
 msgstr "Neste skjermbilde"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Next you pick the source and connect it. Nothing is copied until you start."
-msgstr "Deretter velger du kilden og kobler den til. Ingenting kopieres før du starter."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Next, choose what to bring. The scan reads the file once."
@@ -11825,10 +11743,6 @@ msgstr "Ingen utsendelse har gått ut ennå."
 msgid "No broadcasts yet"
 msgstr "Ingen utsendelser ennå"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-msgid "No canned replies yet"
-msgstr "Ingen ferdige svar ennå"
-
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "No canned replies yet. Add them in settings."
 msgstr "Ingen ferdige svar ennå. Legg dem til i innstillingene."
@@ -11879,7 +11793,7 @@ msgstr "Ingen komponenter ennå. Legg til delene av produktet som kundene er avh
 msgid "No components yet. Add the parts of your product that customers depend on."
 msgstr "Ingen komponenter ennå. Legg til delene av produktet ditt som kundene er avhengige av."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "No conditions: the rule runs for every conversation the trigger fits."
 msgstr "Ingen vilkår: Regelen kjører for hver samtale utløseren passer til."
 
@@ -12060,6 +11974,10 @@ msgstr "Ingen ID-er ennå. Denne personen er ikke identifisert av noen app eller
 #: src/features/status/text.tsx
 msgid "No impact"
 msgstr "Ingen påvirkning"
+
+#: src/features/migrations/MigrationsPage.tsx
+msgid "No imports match this filter."
+msgstr "Ingen importer passer med dette filteret."
 
 #: src/features/broadcasts/Import.tsx
 msgid "No imports yet."
@@ -12244,6 +12162,10 @@ msgstr "Ingen regler ennå."
 #: src/features/settings/automation/RunLog.tsx
 msgid "No runs in the last 30 days."
 msgstr "Ingen kjøringer de siste 30 dagene."
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "No saved replies yet"
+msgstr "Ingen lagrede svar ennå"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "No secret yet. Make one, then paste it into GitHub."
@@ -12667,7 +12589,7 @@ msgstr "Ikke den samme"
 msgid "Not there after a minute? Look in your spam or junk folder, or send a new code below."
 msgstr "Ikke kommet etter et minutt? Se i søppelpost-mappen, eller send en ny kode under."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Not tracked"
 msgstr "Følges ikke"
 
@@ -13034,11 +12956,6 @@ msgstr "I Team- og Enterprise-planer legger en eier den til én gang under <0>Or
 msgid "On the web"
 msgstr "På nettet"
 
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "On this page"
-msgstr "På denne siden"
-
 #: src/components/common/SlaBadge.tsx
 msgid "On track"
 msgstr "I rute"
@@ -13056,7 +12973,7 @@ msgstr "Når en testmelding kommer fram, venter Yuva {hours} timer. Hvis ingenti
 msgid "One e-mail a month about what is new."
 msgstr "Én e-post i måneden om hva som er nytt."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "Én postboks"
@@ -13073,7 +12990,7 @@ msgstr "One mail to each person, a set time after they sign in"
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Én per linje, 1 til 20. Bare sider på disse origins kan bruke widgeten."
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "One per line, all different, at most 100."
 msgstr "Én per linje, alle ulike, høyst 100."
 
@@ -13200,7 +13117,7 @@ msgid "Only mail since {date}"
 msgstr "Bare e-post siden {date}"
 
 #: src/features/inbox/views/ViewDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Only me"
 msgstr "Bare meg"
 
@@ -13702,7 +13619,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "Valgfritt. De første 64 KiB av svaret må inneholde det; store og små bokstaver teller."
 
 #: src/features/broadcasts/Composer.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Options"
 msgstr "Alternativer"
 
@@ -13742,7 +13659,7 @@ msgstr "Eller last opp en eksportfil"
 msgid "Order and view"
 msgstr "Rekkefølge og visning"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Order number"
 msgstr "Ordrenummer"
 
@@ -13839,7 +13756,6 @@ msgid "Own tenant"
 msgstr "Egen tenant"
 
 #: src/components/common/text.ts
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Owner"
 msgstr "Eier"
 
@@ -14241,7 +14157,7 @@ msgstr "Velg et ferdig svar"
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "Velg en chatkanal for produktet og lim inn koden. Vurderinger og spørsmål havner i postboksen dens."
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Pick a color"
 msgstr "Velg en farge"
 
@@ -14345,7 +14261,7 @@ msgid "Pick an endpoint"
 msgstr "Velg et endepunkt"
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Pick an inbox"
 msgstr "Velg en postboks"
 
@@ -14436,7 +14352,7 @@ msgstr "Velg den andre kontakten. Den slås sammen med denne og slettes deretter
 msgid "Pick the platforms; the next step shows the lines to add to each app."
 msgstr "Velg plattformene; neste trinn viser linjene som skal legges til i hver app."
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Pick the product and how customers reach it. The next steps set it up."
 msgstr "Velg produktet og hvordan kunder når det. De neste trinnene setter det opp."
 
@@ -14607,7 +14523,7 @@ msgstr "Forbereder"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/status/PreviewDialog.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Preview"
@@ -14671,12 +14587,12 @@ msgstr "Forrige skjermbilde"
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Priority"
 msgstr "Prioritet"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Priority customers"
 msgstr "Prioriterte kunder"
 
@@ -14707,19 +14623,17 @@ msgstr "pro, team"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageForm.tsx
 #: src/features/status/IncidentForm.tsx
 msgid "Product"
 msgstr "Produkt"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/setup/NameStep.tsx
 msgid "Product name"
 msgstr "Produktnavn"
@@ -14729,7 +14643,6 @@ msgstr "Produktnavn"
 msgid "Product news"
 msgstr "Produktnyheter"
 
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Product settings"
@@ -14744,7 +14657,6 @@ msgstr "Produksjon"
 msgid "Production backend"
 msgstr "Produksjons-backend"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomeSide.tsx
@@ -14755,7 +14667,6 @@ msgstr "Produksjons-backend"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Products"
 msgstr "Produkter"
@@ -14992,7 +14903,7 @@ msgstr "I kø. Det nye forsøket vises under om et øyeblikk."
 msgid "Quick cleanup"
 msgstr "Rask opprydding"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Quiet for (minutes)"
 msgstr "Stille i (minutter)"
 
@@ -15165,11 +15076,6 @@ msgstr "Lest for å foreslå teamets adresser: e-posten kommer fra All e-post."
 msgid "Read What's new changelogs and their entries"
 msgstr "Les endringslogger i Nytt og oppføringene deres"
 
-#: src/features/migrations/MigrationsPage.tsx
-#: src/features/migrations/Wizard.tsx
-msgid "Read-only"
-msgstr "Skrivebeskyttet"
-
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/account/ConnectPage.tsx
 msgid "Reader"
@@ -15327,11 +15233,11 @@ msgstr "Referanse"
 msgid "Refresh"
 msgstr "Oppdater"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Refund"
 msgstr "Refusjon"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Refund approved"
 msgstr "Refusjon godkjent"
 
@@ -15379,7 +15285,7 @@ msgstr "Eksterne bilder kan fortelle avsenderen at du åpnet e-posten."
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -15601,7 +15507,7 @@ msgstr "Fjernet et notat fra en samtale"
 msgid "Removed by {who}"
 msgstr "Fjernet av {who}"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "Fjernede valg fjernes fra alle samtaler som har dem. Dette skjer i bakgrunnen."
 
@@ -15854,6 +15760,10 @@ msgstr "Svartekst"
 msgid "Reply time"
 msgstr "Svartid"
 
+#: src/features/settings/SettingsFrame.tsx
+msgid "Reply times"
+msgstr "Svartider"
+
 #: src/features/conversation/BroadcastLine.tsx
 msgid "Reply to {name}"
 msgstr "Svar {name}"
@@ -15960,7 +15870,7 @@ msgstr "Innvirkning på omdømmet"
 msgid "Require single sign-on"
 msgstr "Require single sign-on"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 msgid "Required to close"
 msgstr "Påkrevd for å lukke"
@@ -15982,7 +15892,7 @@ msgid "Reset to defaults"
 msgstr "Tilbakestill til standard"
 
 #: src/features/conversation/SlaPopover.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Resolution"
 msgstr "Løsning"
 
@@ -16122,7 +16032,6 @@ msgstr "Sender deg tilbake til"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Import.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Review"
 msgstr "Gjennomgang"
@@ -16203,7 +16112,6 @@ msgstr "Rett etter påmeldingen får folk en kort e-post som bekrefter den, med 
 msgid "Roadmap"
 msgstr "Veikart"
 
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Role"
 msgstr "Rolle"
@@ -16294,7 +16202,6 @@ msgstr "Regelen {rule} kjørte, ingenting trengte å endres"
 msgid "Rule {rule} ran: {done}"
 msgstr "Regelen {rule} kjørte: {done}"
 
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Rules"
 msgstr "Regler"
@@ -16365,16 +16272,16 @@ msgstr "Lørdag"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/channels/ApiChannelDialog.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/signature/SignaturePage.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/ui.tsx
@@ -16461,6 +16368,10 @@ msgstr "Lagre listen som visning"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "Lagret"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Saved replies"
+msgstr "Lagrede svar"
 
 #: src/app/ViewsGroup.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
@@ -17536,13 +17447,12 @@ msgstr "Setter opp …"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "Innstillinger"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "Settings (JSON)"
 msgstr "Innstillinger (JSON)"
@@ -17585,8 +17495,8 @@ msgstr "Delt med teamet"
 msgid "Shipped"
 msgstr "Levert"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Shortcut"
 msgstr "Hurtigtast"
 
@@ -17597,6 +17507,7 @@ msgstr "Hurtigtast"
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -18029,7 +17940,6 @@ msgstr "Enkel opt-in"
 
 #: src/app/Palette.tsx
 #: src/features/settings/profile/Sessions.tsx
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
 msgstr "Single sign-on"
@@ -18131,11 +18041,6 @@ msgstr "SLA oppfylt"
 msgid "SLA met / breached"
 msgstr "SLA oppfylt / brutt"
 
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "SLA policies"
-msgstr "SLA-policyer"
-
 #: src/features/conversation/SlaPopover.tsx
 msgid "SLA targets (W)"
 msgstr "SLA-mål (W)"
@@ -18223,7 +18128,7 @@ msgstr "Utsett (B)"
 msgid "Snooze (S)"
 msgstr "Utsett (S)"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Snooze for (minutes)"
 msgstr "Utsett i (minutter)"
 
@@ -18411,6 +18316,10 @@ msgstr "SPF, DKIM eller DMARC må sjekkes"
 msgid "Split by"
 msgstr "Del opp etter"
 
+#: src/features/settings/SettingsFrame.tsx
+msgid "SSO"
+msgstr "SSO"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
 msgstr "Fase"
@@ -18468,7 +18377,7 @@ msgstr "stjernemerket av deg"
 msgid "Stars the mail for you."
 msgstr "Stjernemerker e-posten for deg."
 
-#: src/features/migrations/MigrationsPage.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Start"
 msgstr "Start"
 
@@ -18487,6 +18396,10 @@ msgstr "Start en diskusjon"
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Start a mailing list"
 msgstr "Start en e-postliste"
+
+#: src/features/migrations/MigrationsPage.tsx
+msgid "Start an import"
+msgstr "Start en import"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "Start conversation"
@@ -18570,7 +18483,6 @@ msgstr "Starts when a change to the person’s attributes makes them match, and 
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (port 587)"
 
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
@@ -18612,7 +18524,7 @@ msgstr "Tilstand når den er nede"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
 #: src/features/team/TeamPage.tsx
@@ -18874,10 +18786,6 @@ msgstr "Suspendert"
 msgid "Suspended broadcasts"
 msgstr "Satte utsendelser på pause"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Switch"
-msgstr "Bytt"
-
 #: src/features/migrations/SwitchStep.tsx
 msgid "Switch your mail to Yuva"
 msgstr "Bytt e-posten din til Yuva"
@@ -18934,11 +18842,11 @@ msgstr "Tar imot påmeldinger igjen og setter listen tilbake i målgruppevelgere
 msgid "Taking the recipients: {prepared} so far"
 msgstr "Henter mottakerne: {prepared} så langt"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Targets"
 msgstr "Mål"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Targets count in the business hours of the conversation's inbox, in its time zone. Leave one empty to not track it; at least one is required."
 msgstr "Målene regnes i åpningstidene og tidssonen til samtalens innboks. La ett stå tomt for ikke å følge det; minst ett kreves."
 
@@ -19031,7 +18939,6 @@ msgstr "kollega@selskap.no"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/features/conversation/HeaderActions.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -19075,9 +18982,9 @@ msgstr "Tester går bare til medlemmer av arbeidsområdet, maks fem om gangen, m
 
 #: src/features/fields/value.ts
 #: src/features/settings/automation/ConditionRow.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Text"
 msgstr "Tekst"
 
@@ -19089,7 +18996,7 @@ msgstr "Teksten ble sist lagret av {who}"
 msgid "Thanks for waiting. Your invoice is on its way."
 msgstr "Takk for at du ventet. Fakturaen din er på vei."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 msgid "Thanks for writing"
 msgstr "Takk for at du skrev"
 
@@ -19214,12 +19121,12 @@ msgstr "Chatten vises i hjørnet av hver side som har kodebiten."
 msgid "The chat bubble appears on these addresses:"
 msgstr "Chatteboblen vises på disse adressene:"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "The chat shows when you usually reply"
 msgstr "Chatten viser når du vanligvis svarer"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "The chat shows who is available and typing"
 msgstr "Chatten viser hvem som er tilgjengelig og skriver"
@@ -19601,11 +19508,11 @@ msgstr "Nøkkelen ser bare disse innboksene og kan ikke administrere innbokser, 
 msgid "The key stops working at the end of this day."
 msgstr "Nøkkelen slutter å virke ved slutten av denne dagen."
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "The key, the object and the type cannot change after creation."
 msgstr "Nøkkelen, objektet og typen kan ikke endres etter opprettelsen."
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 msgid "The kind cannot be changed later."
 msgstr "Typen kan ikke endres senere."
 
@@ -19738,7 +19645,7 @@ msgstr "Migreringen fortsetter der den stoppet."
 msgid "The migration moved on in the meantime. Look at its state and try again."
 msgstr "Migreringen gikk videre i mellomtiden. Se tilstanden og prøv igjen."
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "The next step adds its first channel: website chat, e-mail or a mobile app."
 msgstr "Neste trinn legger til den første kanalen: nettchat, e-post eller en mobilapp."
 
@@ -20203,10 +20110,6 @@ msgstr "Webhook-endepunktet er slått av eller ikke tilgjengelig her"
 msgid "The What’s new count shows on the chat button while no messages are unread. The widget’s Home always shows it."
 msgstr "Antall nyheter vises på chat-knappen så lenge det ikke er uleste meldinger. Hjem i widgeten viser det alltid."
 
-#: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
-msgstr "Selve arbeidsområdet: navn, lagring, etiketter, ferdige svar, flytting og revisjonsloggen"
-
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
 msgstr "Arbeidsområdet kan ikke sende utsendelser for øyeblikket."
@@ -20214,11 +20117,6 @@ msgstr "Arbeidsområdet kan ikke sende utsendelser for øyeblikket."
 #: src/features/status/Notices.tsx
 msgid "The workspace may not send bulk mail now"
 msgstr "Arbeidsområdet kan ikke sende masseutsendelser nå"
-
-#: src/components/common/SettingsStrip.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "The workspace: labels, replies, data"
-msgstr "Arbeidsområdet: etiketter, svar, data"
 
 #: src/components/common/text.ts
 msgid "The zip cannot be read; it may be damaged or cut off. Make it again and upload it."
@@ -20272,7 +20170,7 @@ msgstr "Tema"
 msgid "Theme and e-mail view on this device"
 msgstr "Tema og e-postvisning på denne enheten"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Then"
 msgstr "Så"
 
@@ -20614,7 +20512,7 @@ msgstr "Dette er ikke en CSV-fil. Lagre regnearket som CSV og last opp den."
 msgid "This is not a domain this page can use. Use a name like {example} that is not one of this server’s own addresses."
 msgstr "Denne siden kan ikke bruke dette domenet. Bruk et navn som {example} som ikke er en av serverens egne adresser."
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "This is not a JSON object."
 msgstr "Dette er ikke et JSON-objekt."
@@ -20751,7 +20649,7 @@ msgstr "Denne propertyen har allerede et segment med dette navnet."
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Dette svaret sendes ikke før en eier eller administrator lagrer både regelen og det ferdige svaret {title}, eller roboter får sende i innstillingene for API-nøkler."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Dette svaret sendes ikke før en eier eller administrator lagrer det ferdige svaret {title}, eller roboter får sende i innstillingene for API-nøkler."
@@ -20966,7 +20864,7 @@ msgstr "Tidsavbrudd"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/status/IncidentForm.tsx
 msgid "Title"
 msgstr "Tittel"
@@ -21097,7 +20995,7 @@ msgstr "Trender"
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Trigger"
 msgstr "Utløser"
 
@@ -21221,8 +21119,7 @@ msgid "TXT record"
 msgstr "TXT-post"
 
 #: src/features/inbox/SourceFilter.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Type"
 msgstr "Type"
 
@@ -21271,7 +21168,7 @@ msgstr "Fjern tildeling"
 #: src/features/home/HomeWork.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Unassigned"
 msgstr "Utildelt"
 
@@ -21345,7 +21242,7 @@ msgid "Unfollowed"
 msgstr "Slutt å følge"
 
 #: src/features/broadcasts/Trigger.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Unit"
 msgstr "Enhet"
 
@@ -21758,9 +21655,9 @@ msgstr "Bruk den som bearer-token mot denne serveren."
 msgid "Use letters, digits, - and _, at most 64."
 msgstr "Bruk bokstaver, sifre, - og _, høyst 64."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Use lowercase letters, digits and single dashes."
 msgstr "Bruk små bokstaver, sifre og enkle bindestreker."
 
@@ -21914,10 +21811,6 @@ msgstr "Verify"
 #: src/features/settings/webhooks/SignatureHint.tsx
 msgid "Verify every request before trusting it: the <0>webhook-signature</0> header follows the <1>Standard Webhooks</1> specification, so any of its libraries can check it with the endpoint's secret. Go backends can use the <2>sdk/go/webhook</2> package of the Yuva repository."
 msgstr "Verifiser hver forespørsel før du stoler på den: <0>webhook-signature</0>-headeren følger <1>Standard Webhooks</1>-spesifikasjonen, så hvilket som helst av bibliotekene kan sjekke den med endepunktets hemmelighet. Go-backends kan bruke pakken <2>sdk/go/webhook</2> i Yuva-repoet."
-
-#: src/features/settings/SettingsFrame.tsx
-msgid "Version"
-msgstr "Versjon"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Versions"
@@ -22158,7 +22051,7 @@ msgstr "venter på deg"
 msgid "Warn about the certificate"
 msgstr "Varsle om sertifikatet"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Warn before it is due"
 msgstr "Advar før forfallstidspunktet"
 
@@ -22218,8 +22111,6 @@ msgstr "Webhook secret for {revealName}"
 
 #: src/app/Palette.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
@@ -22246,7 +22137,7 @@ msgstr "Nettsted"
 msgid "Website addresses"
 msgstr "Nettstedadresser"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Website chat"
 msgstr "Nettstedchat"
@@ -22368,7 +22259,7 @@ msgstr "Hva kunden ser"
 msgid "What the import will do"
 msgstr "Hva importen vil gjøre"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "What the team sees."
 msgstr "Det teamet ser."
 
@@ -22414,7 +22305,6 @@ msgstr "What your e-mailed replies end with, per inbox. Chat replies and notes c
 
 #: src/components/common/FocusChoice.tsx
 #: src/features/settings/workspace/FocusForm.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "What Yuva is for"
 msgstr "Hva Yuva brukes til"
 
@@ -22429,7 +22319,7 @@ msgid "What’s new entry"
 msgstr "Nyhetsinnlegg"
 
 #: src/features/broadcasts/ReviewPanel.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "When"
 msgstr "Når"
 
@@ -22552,7 +22442,7 @@ msgstr "Where new issues go when nobody picks a team, as a team key such as ENG.
 msgid "Where should Yuva send events?"
 msgstr "Hvor skal Yuva sende hendelser?"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
 msgstr "Der API-et lagrer verdien. Små bokstaver, sifre og understreker; kan ikke endres."
 
@@ -22608,7 +22498,7 @@ msgstr "Hvem som svarer, hvor, og hvem som er pålogget"
 msgid "Who can reply"
 msgstr "Hvem kan svare"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Who can use it"
 msgstr "Hvem som kan bruke den"
 
@@ -22645,7 +22535,6 @@ msgstr "Hvem sender, og om hva?"
 msgid "Who should take it?"
 msgstr "Hvem skal ta den?"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Who you support: name, hours, team, sender"
 msgstr "Hvem du støtter: navn, åpningstider, team, avsender"
@@ -22764,10 +22653,8 @@ msgstr "Jobber …"
 #: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/oauth/ConsentPage.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Workspace"
 msgstr "Arbeidsområde"
 
@@ -23074,7 +22961,6 @@ msgid "Your account is not in a group that may use Yuva. Ask your administrator 
 msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 
 #: src/features/settings/addresses/AddressesPage.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Your addresses"
 msgstr "Adressene dine"
 
@@ -23167,6 +23053,10 @@ msgstr "Microsoft 365-organisasjonen din lar bare en admin gi samtykke til apper
 #: src/features/broadcasts/Composer.tsx
 msgid "Your name"
 msgstr "Navnet ditt"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Your name, photo, language and sign-in"
+msgstr "Navnet, bildet, språket og innloggingen din"
 
 #: src/features/home/HomeWork.tsx
 msgid "Your open conversations"
@@ -23273,10 +23163,6 @@ msgstr "Nettstedet ditt"
 msgid "Your workspace asks for these fields on every conversation it closes."
 msgstr "Arbeidsområdet ditt ber om disse feltene i hver samtale det lukker."
 
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."
-msgstr "Navnet på arbeidsområdet, hvor lenge lukkede samtaler lagres, og hvem som kan sende masseutsendelser."
-
 #: src/features/account/AccountPage.tsx
 msgid "Your Yuva account"
 msgstr "Yuva-kontoen din"
@@ -23367,10 +23253,6 @@ msgstr "Yuva driver ingen e-postserver: e-posten til domenet ditt sendes videre 
 msgid "Yuva held back a command that would have changed the mailbox"
 msgstr "Yuva holdt tilbake en kommando som ville endret postboksen"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Yuva inbox"
-msgstr "Yuva-postboks"
-
 #: src/features/migrations/SwitchStep.tsx
 msgid "Yuva mails {address} a short test message. When it reaches Yuva by the new route, the switch works."
 msgstr "Yuva sender en kort testmelding til {address}. Når den kommer fram til Yuva via den nye ruten, virker byttet."
@@ -23402,10 +23284,6 @@ msgstr "Yuva leser bare helpdesken. Historikken kommer stille: ingen varsler, in
 #: src/features/migrations/Wizard.tsx
 msgid "Yuva only reads the mailbox. History arrives quietly: no notifications, no auto-replies."
 msgstr "Yuva leser bare postboksen. Historikken kommer stille: ingen varsler, ingen autosvar."
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Yuva only reads the source; nothing there is changed."
-msgstr "Yuva leser bare kilden; ingenting endres der."
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Yuva only reads. Besides signing in, its connection sends {provider} nothing but read requests, so no ticket, customer or setting changes."
@@ -23478,7 +23356,3 @@ msgstr "Yuva, gå til start"
 #: src/components/common/text.ts
 msgid "Yuva's own notes cannot be changed."
 msgstr "Yuvas egne notater kan ikke endres."
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"
-msgstr "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"

@@ -1,17 +1,14 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { useQuery } from "@tanstack/react-query"
-import { ChevronRightIcon, RefreshCwIcon, TriangleAlertIcon } from "lucide-react"
-import { useState } from "react"
-import { Link, Navigate, useLocation, useNavigate, useParams, useSearchParams } from "react-router"
+import { RefreshCwIcon, TriangleAlertIcon } from "lucide-react"
+import { Link, Navigate, useLocation, useParams, useSearchParams } from "react-router"
 
 import { ErrorLine, Notice } from "@/components/common"
 import { SaveBarProvider } from "@/components/common/SaveBar"
 import { useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useConversations } from "@/features/inbox/queries"
-import { useHotkeys } from "@/hooks/use-hotkeys"
 import { PushSection } from "@/features/settings/channels/app/PushSection"
 import { AppAccessSection, AppInstallSection } from "@/features/settings/channels/app/AppSections"
 import {
@@ -41,26 +38,13 @@ import {
 import { AttachmentsSection } from "@/features/settings/channels/Attachments"
 import { ApiSettingsSection, NameSection, PageSection, RemoveSection } from "@/features/settings/channels/sections"
 import { InboxProvider } from "@/features/settings/inboxes/InboxPage"
-import { PageHeading, PageTop as PageTopLine } from "@/components/common"
-import { PageTop } from "@/features/inbox/PageFrame"
-import {
-  ChannelAside,
-  ChannelInfo,
-  ChannelNav,
-  ChannelTile,
-  FactsStrip,
-  useSectionEntries,
-} from "@/features/settings/channels/Frame"
 import { ChannelPill } from "@/features/settings/channels/ChannelState"
 import { LoadProblem } from "@/features/reports/parts"
-import { FrameTabs } from "@/features/status/PageFrame"
-import { SettingsAside, SettingsTrail } from "@/features/settings/SettingsFrame"
-import { Card, Chip, EmptyRow, PageTabs, Pill, Row, Rows, useFlatSettings } from "@/features/settings/ui"
+import { Card, Chip, EmptyRow, Page, PageHeader, PageTabs, Pill, Row, Rows } from "@/features/settings/ui"
 import { api, unwrap, type Channel } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 import { useAllInboxes, useChannel } from "@/lib/workspace"
-import { usePhoneBackTarget } from "@/components/common/PageLayout"
 
 const HASH_TAB: Record<string, ChannelTab> = {
   ses: "deliverability",
@@ -252,48 +236,6 @@ function Body({ ch, tab }: { ch: Channel; tab: ChannelTab }) {
   )
 }
 
-function Crumb({ ch, inboxName }: { ch: Channel; inboxName?: string }) {
-  const { t } = useLingui()
-  usePhoneBackTarget({ to: "/settings?view=channels", label: t`Channels` })
-  const link =
-    "min-w-0 truncate text-faint transition-colors outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-  return (
-    <nav
-      aria-label={t`Channel`}
-      className="flex min-w-0 shrink-0 items-center gap-1.5 px-6 pt-4 text-body phone:px-4 phone:pt-3"
-    >
-      <Link to="/settings?view=channels" className={cn(link, "max-md:hidden")} data-testid="settings-back">
-        <Trans>Channels</Trans>
-      </Link>
-      <ChevronRightIcon className="size-3.5 shrink-0 text-faint max-md:hidden rtl:rotate-180" aria-hidden />
-      <Link to={`/settings/inboxes/${ch.inbox_id}`} className={link}>
-        {inboxName ?? <Trans>Product</Trans>}
-      </Link>
-    </nav>
-  )
-}
-
-function Loading() {
-  return (
-    <div className="contents" aria-busy="true" data-testid="channel-loading">
-      <div className="flex flex-col gap-1 @max-[759px]:hidden">
-        <Skeleton className="mx-2.5 mb-2 h-4 w-24" />
-        {[0, 1, 2, 3, 4].map((i) => (
-          <Skeleton key={i} className="h-[30px]" />
-        ))}
-      </div>
-      <div className="flex min-w-0 max-w-[760px] flex-col gap-7">
-        {[120, 220, 160].map((h, i) => (
-          <div key={i} className="flex flex-col gap-3">
-            <Skeleton className="h-5 w-40" />
-            <Skeleton className="rounded-[14px]" style={{ height: h }} />
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
 export function ChannelPage() {
   const { t } = useLingui()
   const { inboxId = "", channelId = "" } = useParams()
@@ -303,17 +245,12 @@ export function ChannelPage() {
   const inboxes = useAllInboxes()
   const [params] = useSearchParams()
   const { hash } = useLocation()
-  const [root, setRoot] = useState<HTMLElement | null>(null)
   const ch = channel.data
   const tab: ChannelTab = (() => {
     const tabs = ch ? channelTabs(ch) : (["settings"] as ChannelTab[])
     const asked = params.get("tab") ?? HASH_TAB[hash.slice(1)] ?? "settings"
     return (tabs as string[]).includes(asked) ? (asked as ChannelTab) : "settings"
   })()
-  const entries = useSectionEntries(root, `${ch?.id ?? ""}:${tab}`)
-  const flat = useFlatSettings()
-  const navigate = useNavigate()
-  useHotkeys({ Escape: () => navigate(`/settings/inboxes/${inboxId}`) }, !!flat)
   if (!canManage || (ch && ch.inbox_id !== inboxId)) return <Navigate to={`/settings/inboxes/${inboxId}`} replace />
   const tabs = ch ? channelTabs(ch) : (["settings"] as ChannelTab[])
   const inboxName = inboxes.data?.find((x) => x.id === inboxId)?.name
@@ -331,121 +268,44 @@ export function ChannelPage() {
         testId: `channel-tab-${x}`,
       }))
     : []
-  if (flat)
-    return (
-      <div className="@container flex flex-col" data-flat="" data-testid="settings">
-        <PageTopLine
-          back={{
-            label: inboxName ?? t`Product`,
-            to: `/settings/inboxes/${inboxId}`,
-            testId: "settings-back",
-          }}
-          slot={flat.slot}
-        >
-          <SettingsTrail place="channels" name={ch?.name} />
-        </PageTopLine>
-        <div className="mt-3 flex max-w-[760px] min-w-0 flex-col gap-7" ref={setRoot}>
-          {ch ? (
-            <>
-              <div className="flex flex-col gap-3">
-                <PageHeading
-                  title={<span className="break-words">{ch.name}</span>}
-                  lede={
-                    <span className="flex min-w-0 flex-wrap items-center gap-2 text-body">
-                      <span className="shrink-0 whitespace-nowrap">{text.channel[ch.kind]}</span>
-                      {address(ch) && (
-                        <bdi className="min-w-0 truncate font-mono text-[12.5px]" dir="ltr">
-                          {address(ch)}
-                        </bdi>
-                      )}
-                      <ChannelPill ch={ch} />
-                    </span>
-                  }
-                />
-                {tabItems.length > 1 && <PageTabs label={t`Channel`} current={tab} items={tabItems} />}
-              </div>
-              <StateBanner ch={ch} tab={tab} />
-              <InboxProvider>
-                {() => (
-                  <SaveBarProvider what={ch.name}>
-                    <div className="flex flex-col gap-7" key={`${ch.id}:${tab}`}>
-                      <Body ch={ch} tab={tab} />
-                    </div>
-                  </SaveBarProvider>
-                )}
-              </InboxProvider>
-              <SettingsAside>
-                <ChannelInfo ch={ch} productName={inboxName} />
-              </SettingsAside>
-            </>
-          ) : channel.isPending ? (
-            <Skeleton className="h-40 w-full" />
-          ) : (
-            <LoadProblem error={channel.error} onRetry={() => void channel.refetch()} testId="channel-error" />
-          )}
-        </div>
-      </div>
-    )
   return (
-    <main
-      className="@container flex h-svh min-h-0 min-w-0 flex-1 flex-col bg-surface max-md:h-[calc(100svh-49px)] phone:h-auto"
-      data-testid="settings"
-    >
-      {ch && <Crumb ch={ch} inboxName={inboxName} />}
-      <PageTop
-        className={ch ? "pt-2" : undefined}
-        title={
-          ch ? (
-            <span className="flex min-w-0 items-center gap-3">
-              <ChannelTile kind={ch.kind} />
-              <span className="min-w-0 truncate">{ch.name}</span>
-            </span>
-          ) : (
-            <Skeleton className="h-7 w-48" />
-          )
-        }
-        sub={
-          ch ? (
-            <span className="flex min-w-0 items-center gap-2">
-              <span className="shrink-0 text-faint">{text.channel[ch.kind]}</span>
-              <bdi className="min-w-0 truncate font-mono text-[12.5px]" dir="ltr">
-                {address(ch)}
-              </bdi>
+    <Page testId="settings" width="form" className="@container gap-7">
+      <PageHeader
+        back={{ label: inboxName ?? t`Product`, to: `/settings/inboxes/${inboxId}` }}
+        title={ch ? <span className="break-words">{ch.name}</span> : <Skeleton className="h-7 w-48" />}
+        description={
+          ch && (
+            <span className="flex min-w-0 flex-wrap items-center gap-2 text-body">
+              <span className="shrink-0 whitespace-nowrap">{text.channel[ch.kind]}</span>
+              {address(ch) && (
+                <bdi className="min-w-0 truncate font-mono text-[12.5px]" dir="ltr">
+                  {address(ch)}
+                </bdi>
+              )}
               <ChannelPill ch={ch} />
             </span>
-          ) : undefined
+          )
         }
-        tabs={ch ? <FrameTabs label={t`Channel`} current={tab} items={tabItems} /> : undefined}
+        tabs={tabItems.length > 1 && <PageTabs label={t`Channel`} current={tab} items={tabItems} />}
       />
-      <div className="min-h-0 flex-1 overflow-y-auto">
-        <div className="grid max-w-[1360px] items-start gap-8 px-6 pt-6 pb-24 phone:px-4 phone:pt-4 @min-[760px]:grid-cols-[180px_minmax(0,1fr)] @min-[1240px]:grid-cols-[196px_minmax(0,1fr)_296px]">
-          {ch ? (
-            <>
-              <ChannelNav entries={entries} />
-              <div className="flex min-w-0 max-w-[760px] flex-col gap-7 @min-[760px]:col-start-2" ref={setRoot}>
-                <FactsStrip ch={ch} productName={inboxName} />
-                <StateBanner ch={ch} tab={tab} />
-                <InboxProvider>
-                  {() => (
-                    <SaveBarProvider what={ch.name}>
-                      <div className="flex flex-col gap-7" key={`${ch.id}:${tab}`}>
-                        <Body ch={ch} tab={tab} />
-                      </div>
-                    </SaveBarProvider>
-                  )}
-                </InboxProvider>
-              </div>
-              <ChannelAside ch={ch} productName={inboxName} />
-            </>
-          ) : channel.isPending ? (
-            <Loading />
-          ) : (
-            <div className="col-span-full max-w-[760px]">
-              <LoadProblem error={channel.error} onRetry={() => void channel.refetch()} testId="channel-error" />
-            </div>
-          )}
-        </div>
-      </div>
-    </main>
+      {ch ? (
+        <>
+          <StateBanner ch={ch} tab={tab} />
+          <InboxProvider>
+            {() => (
+              <SaveBarProvider what={ch.name}>
+                <div className="flex flex-col gap-7" key={`${ch.id}:${tab}`}>
+                  <Body ch={ch} tab={tab} />
+                </div>
+              </SaveBarProvider>
+            )}
+          </InboxProvider>
+        </>
+      ) : channel.isPending ? (
+        <Skeleton className="h-40 w-full" />
+      ) : (
+        <LoadProblem error={channel.error} onRetry={() => void channel.refetch()} testId="channel-error" />
+      )}
+    </Page>
   )
 }

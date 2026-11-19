@@ -1448,7 +1448,7 @@ msgstr "Bir konuşma"
 msgid "A conversation can copy at most 100 people."
 msgstr "Bir konuşmada en fazla 100 kişi Cc'ye eklenebilir."
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
 msgstr "Bu alanın değeri girilmeden görüşme kapatılamaz. Spam bunun dışındadır."
 
@@ -1468,7 +1468,7 @@ msgstr "Bir konuşma hareketsiz"
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "Son güncellemesi aralıkta olan bir konuşma bütünüyle alınır."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "A conversation must match every row you fill in. Leave a row empty to match anything."
 msgstr "Doldurduğunuz her satırla eşleşmesi gerekir. Boş bıraktığınız satır her şeyle eşleşir."
 
@@ -1739,7 +1739,7 @@ msgstr "Her bileşenin yanında bir yüzde."
 msgid "A personal API key from Linear, under Settings, Account, Security and access."
 msgstr "Linear'dan kişisel bir API anahtarı: Settings, Account, Security and access altında."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "A policy that is off applies to nothing."
 msgstr "Kapalı bir politika hiçbir şeye uygulanmaz."
 
@@ -1799,7 +1799,7 @@ msgstr "Zorunlu bir alan boş"
 msgid "A roadmap idea moved to another stage"
 msgstr "Bir yol haritası fikri başka bir aşamaya geçti"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "A rule that is off never runs. Rules run in the order of the list."
 msgstr "Kapalı bir kural hiç çalışmaz. Kurallar listedeki sırayla çalışır."
 
@@ -1974,10 +1974,6 @@ msgstr "{provider} erişimi"
 msgid "Access to the mailbox"
 msgstr "Posta kutusuna erişim"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Access to your mailbox: none"
-msgstr "Posta kutunuza erişim: yok"
-
 #: src/features/account/AccountPage.tsx
 msgid "Account"
 msgstr "Hesap"
@@ -2002,7 +1998,7 @@ msgstr "Acme Destek"
 msgid "ACS URL"
 msgstr "ACS URL'si"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Actions"
@@ -2017,6 +2013,7 @@ msgstr "Yalnızca eylemler"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/text.ts
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
@@ -2032,7 +2029,7 @@ msgstr "Etkinlik"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "Ekle"
@@ -2050,7 +2047,7 @@ msgstr "Blok ekle"
 msgid "Add a category"
 msgstr "Kategori ekle"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Add a channel"
 msgstr "Kanal ekle"
 
@@ -2099,7 +2096,7 @@ msgstr "E-posta adresiyle katılımcı ekle"
 msgid "Add a passkey"
 msgstr "Geçiş anahtarı ekle"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Add a product"
 msgstr "Ürün ekle"
 
@@ -2137,7 +2134,7 @@ msgstr "Gelen kutusu ayarlarından bir web sitesi sohbeti ekleyin"
 msgid "Add a website or app"
 msgstr "Web sitesi ya da uygulama ekle"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Add an action"
 msgstr "Eylem ekle"
 
@@ -2154,6 +2151,10 @@ msgstr "Sunucunuzda bir adres ekleyin ve Yuva'nın ona bildirmesini istediğiniz
 #: src/app/Palette.tsx
 msgid "Add an analytics property"
 msgstr "Analitik mülkü ekle"
+
+#: src/features/settings/channels/ApiChannelForm.tsx
+msgid "Add an API channel"
+msgstr "API kanalı ekle"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add an image"
@@ -2184,7 +2185,6 @@ msgstr "Bir tane daha ekle"
 msgid "Add at least one origin."
 msgstr "En az bir kaynak ekleyin."
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Add channel"
 msgstr "Kanal ekle"
@@ -2194,7 +2194,7 @@ msgstr "Kanal ekle"
 msgid "Add component"
 msgstr "Bileşen ekle"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Add condition"
 msgstr "Koşul ekle"
 
@@ -2228,6 +2228,10 @@ msgstr "Görsel ekle"
 #: src/features/mail/Compose.tsx
 msgid "Add it back"
 msgstr "Geri ekle"
+
+#: src/features/settings/labels/LabelForm.tsx
+msgid "Add label"
+msgstr "Etiket ekle"
 
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
@@ -2386,6 +2390,7 @@ msgid "Address verified"
 msgstr "Adres doğrulandı"
 
 #: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Addresses"
 msgstr "Adresler"
 
@@ -2496,6 +2501,7 @@ msgid "All good"
 msgstr "Her şey yolunda"
 
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/MigrationsPage.tsx
 msgid "All imports"
 msgstr "Tüm içe aktarmalar"
 
@@ -2881,10 +2887,6 @@ msgstr "Davet, kişi o adrese gönderilen kodla giriş yaptığında kabul edili
 msgid "An issue URL, owner/repo#12 or ENG-123."
 msgstr "Bir issue URL'si, owner/repo#12 veya ENG-123."
 
-#: src/features/migrations/MigrationsPage.tsx
-msgid "An mbox export of a mailbox"
-msgstr "Bir posta kutusunun mbox dışa aktarımı"
-
 #: src/features/team/TeamPage.tsx
 msgid "An owner cannot be removed. Change their role first."
 msgstr "Sahip kaldırılamaz. Önce rolünü değiştirin."
@@ -2960,7 +2962,7 @@ msgstr "Başka bir hesap"
 msgid "Another address this channel receives mail at. Forward a mailbox here, for example {own} at its provider; forwarding to {own} itself would loop."
 msgstr "Bu kanalın e-posta aldığı başka bir adres. Bir posta kutusunu, örneğin {own} adresini, sağlayıcısında buraya yönlendirin; {own} adresinin kendisine yönlendirmek döngüye yol açar."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 msgid "Another canned reply already uses this shortcut."
 msgstr "Başka bir hazır yanıt bu kısayolu zaten kullanıyor."
 
@@ -3092,7 +3094,7 @@ msgstr "Herhangi bir alan"
 msgid "Any label"
 msgstr "Herhangi bir etiket"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Any of the labels you pick."
 msgstr "Seçtiğiniz etiketlerden herhangi biri."
 
@@ -3137,15 +3139,11 @@ msgstr "Bu anahtarı kullanan her şey hemen çalışmayı durdurur."
 msgid "API"
 msgstr "API"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "API & MCP"
 msgstr "API ve MCP"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "API channel"
 msgstr "API kanalı"
 
@@ -3158,7 +3156,6 @@ msgstr "API anahtarı"
 #: src/app/Palette.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "API keys"
 msgstr "API anahtarları"
@@ -3222,8 +3219,8 @@ msgstr "Application (client) ID"
 msgid "Applied"
 msgstr "Uygulandı"
 
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Applies to"
 msgstr "Uygulandığı yer"
 
@@ -3450,7 +3447,7 @@ msgstr "Size atandı"
 
 #: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Assignee"
 msgstr "Atanan kişi"
 
@@ -3486,7 +3483,7 @@ msgid "Assistants work in Yuva through MCP, acting as the member who connected t
 msgstr "Asistanlar Yuva'da MCP üzerinden, kendilerini bağlayan üye adına ve yalnızca o üyenin onayladığı erişimle çalışır."
 
 #: src/components/common/text.ts
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Async"
 msgstr "Eşzamansız"
 
@@ -3585,7 +3582,6 @@ msgid "Audience"
 msgstr "Alıcılar"
 
 #: src/app/Palette.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Audit log"
 msgstr "Denetim kaydı"
@@ -3618,7 +3614,6 @@ msgstr "Otomatik atama"
 msgid "Automatic mail never triggers an automatic reply."
 msgstr "Otomatik postalar hiçbir zaman otomatik yanıt tetiklemez."
 
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Automation"
 msgstr "Otomasyon"
@@ -3766,7 +3761,7 @@ msgstr "Saygılarımla,"
 msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
 msgstr "1 ile 500 arasında, çalışma alanının tamamında sayılır. Elle atama bunu yok sayar. Sınır istemiyorsanız boş bırakın."
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Billing"
 msgstr "Faturalama"
@@ -3776,7 +3771,7 @@ msgstr "Faturalama"
 msgid "Billing bot"
 msgstr "Fatura botu"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 msgid "Billing events"
 msgstr "Faturalama olayları"
 
@@ -3924,17 +3919,13 @@ msgstr "Aşıldı"
 msgid "Breached, met late at {at}"
 msgstr "Aşıldı, {at} geç karşılandı"
 
-#: src/features/settings/SettingsFrame.tsx
-msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
-msgstr "Gmail, Yandex ya da herhangi bir IMAP sunucusundaki posta kutusunun geçmişini getirin"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Bring subscribers who already agreed elsewhere. Each address is checked first and nothing is added until you start: invalid addresses, domains that take no mail, role addresses, duplicates and anyone who left or objected are left out."
 msgstr "Başka bir yerde zaten onay vermiş aboneleri getirin. Her adres önce denetlenir ve siz başlatana kadar hiçbir şey eklenmez: geçersiz adresler, e-posta almayan alan adları, rol adresleri, tekrarlar ve ayrılmış ya da itiraz etmiş herkes dışarıda bırakılır."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Bring the history of a mailbox you answer from today, then switch its mail over. Yuva only reads the mailbox; nothing there is changed."
-msgstr "Bugün yanıt verdiğiniz posta kutusunun geçmişini getirin, sonra e-postalarını Yuva'ya yönlendirin. Yuva posta kutusunu yalnızca okur; orada hiçbir şey değişmez."
+msgid "Bring the history of a mailbox or help desk you answer from today, then switch its mail over. Yuva only reads the source; nothing there is changed."
+msgstr "Bugün yanıt verdiğiniz bir posta kutusunun veya yardım masasının geçmişini getirin, ardından postasını Yuva'ya yönlendirin. Yuva kaynağı yalnızca okur; orada hiçbir şey değişmez."
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Bring your old mail"
@@ -3949,7 +3940,6 @@ msgstr "Bülten"
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/settings/workspace/BroadcastsSettings.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Broadcast sending"
 msgstr "Bülten gönderimi"
 
@@ -4047,13 +4037,9 @@ msgstr "Kampanya adı"
 #: src/features/docs/FromDocs.tsx
 #: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
-#: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -4136,8 +4122,6 @@ msgstr "İptal edildi. Daha önce eklenenler kalır."
 #: src/app/Palette.tsx
 #: src/features/conversation/composer/CannedMenu.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Canned replies"
 msgstr "Hazır yanıtlar"
 
@@ -4291,10 +4275,6 @@ msgstr "{host} adresindeki webhook'u değiştirdi"
 msgid "Changelog settings"
 msgstr "Değişiklik günlüğü ayarları"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Changes made to {provider}: none"
-msgstr "{provider} içinde yapılan değişiklik: yok"
-
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
 msgstr "Üyelerde, anahtarlarda, webhook'larda ve diğer hassas ayarlarda yapılan değişiklikler burada görünür."
@@ -4308,14 +4288,14 @@ msgstr "Gönderim alan adını değiştirmek, yeni alan adı için yeniden açan
 #: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
 msgid "Channel"
 msgstr "Kanal"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Channel added"
 msgstr "Kanal eklendi"
 
@@ -4339,14 +4319,8 @@ msgstr "Kanal kaldırıldı"
 msgid "Channel settings"
 msgstr "Kanal ayarları"
 
-#: src/app/places.tsx
-#: src/components/common/SettingsStrip.tsx
-#: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Channels"
 msgstr "Kanallar"
 
@@ -4450,7 +4424,7 @@ msgstr "Denetlendi: {when}"
 msgid "Checked and waiting for an owner or admin to start it."
 msgstr "Denetlendi; bir sahip ya da yöneticinin başlatması bekleniyor."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Checked every 5 minutes, once per quiet period. Only open and pending conversations."
 msgstr "5 dakikada bir denetlenir, her sessiz dönem için bir kez. Yalnızca açık ve beklemedeki konuşmalar."
 
@@ -4649,7 +4623,6 @@ msgstr "Saatler {date} tarihinde değişiyor; gönderim saatleri yerel saatle {s
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -4689,7 +4662,7 @@ msgstr "Yanıtladıktan sonra her konuşmayı kapat"
 msgid "Close everything"
 msgstr "Hepsini kapat"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Close idle conversations"
 msgstr "Hareketsiz konuşmaları kapat"
 
@@ -4777,11 +4750,11 @@ msgstr "Daralt"
 msgid "Collections"
 msgstr "Koleksiyonlar"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Color"
 msgstr "Renk"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/colors.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Colour"
@@ -4972,7 +4945,6 @@ msgstr "Takip aracı bağla"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
 msgid "Connect an assistant"
 msgstr "Asistan bağlayın"
 
@@ -5038,12 +5010,10 @@ msgid "Connected {created}"
 msgstr "Bağlandı: {created}"
 
 #: src/app/Palette.tsx
-#: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
+#: src/features/settings/connected-apps/AssistantPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Connected apps"
 msgstr "Bağlı uygulamalar"
 
@@ -5181,7 +5151,6 @@ msgstr "içerir"
 
 #: src/app/places.tsx
 #: src/features/broadcasts/Composer.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Content"
 msgstr "İçerik"
 
@@ -5197,7 +5166,7 @@ msgstr "İçerik"
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
 #: src/features/setup/email/EmailReceiveStep.tsx
@@ -5256,7 +5225,6 @@ msgstr "Konuşma başlatıldı"
 msgid "conversations"
 msgstr "konuşma"
 
-#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
@@ -5271,6 +5239,7 @@ msgstr "konuşma"
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Conversations"
 msgstr "Konuşmalar"
@@ -5341,7 +5310,6 @@ msgstr "bilgi adresi"
 #: src/components/common/CopyButton.tsx
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/messages/MessageActions.tsx
-#: src/features/migrations/Wizard.tsx
 msgid "Copy"
 msgstr "Kopyala"
 
@@ -5394,6 +5362,10 @@ msgstr "Geri bildirim ayrıntılarını kopyala"
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Copy the feedback details (Y)"
 msgstr "Geri bildirim ayrıntılarını kopyala (Y)"
+
+#: src/features/migrations/Wizard.tsx
+msgid "Copy the history of a mailbox or help desk into Yuva."
+msgstr "Bir posta kutusunun veya yardım masasının geçmişini Yuva'ya kopyalayın."
 
 #: src/features/migrations/text.ts
 msgid "Copy the key under “Your API Key”. A Freshdesk key cannot be limited to reading; Yuva's connection only sends read requests."
@@ -5459,7 +5431,6 @@ msgid "Counts when a subscription becomes confirmed, not when it is still waitin
 msgstr "Abonelik onaylandığında sayılır; kişinin onayını hâlâ bekleyen abonelik sayılmaz. İçe aktarmayla eklenen kişiler hiçbir zaman tetiklemez."
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/DeveloperTabs.tsx
 msgid "Create"
 msgstr "Oluştur"
 
@@ -5492,7 +5463,7 @@ msgstr "Issue oluştur"
 msgid "Create an OAuth client in Zendesk"
 msgstr "Zendesk'te bir OAuth istemcisi oluşturun"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Create and add a channel"
 msgstr "Oluştur ve kanal ekle"
 
@@ -5516,11 +5487,11 @@ msgstr "Kanalı oluştur"
 msgid "Create draft"
 msgstr "Taslak oluştur"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Create field"
 msgstr "Alanı oluştur"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Create filter"
 msgstr "Filtre oluştur"
 
@@ -5554,11 +5525,11 @@ msgstr "Anahtar oluştur"
 msgid "Create list"
 msgstr "Listeyi oluştur"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Create policy"
 msgstr "Politika oluştur"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Create rule"
 msgstr "Kural oluştur"
 
@@ -5619,9 +5590,7 @@ msgstr "Otomasyon kurallarını oluştur, değiştir, sırala ve sil"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Created"
 msgstr "Oluşturulma"
 
@@ -5690,11 +5659,6 @@ msgstr "Özel"
 msgid "Custom field"
 msgstr "Özel alan"
 
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "Custom fields"
-msgstr "Özel alanlar"
-
 #: src/features/contact/ContactsPage.tsx
 msgid "Customers"
 msgstr "Müşteriler"
@@ -5725,7 +5689,6 @@ msgid "Daily limit reached · continues at {time} {city} time"
 msgstr "Günlük sınıra ulaşıldı · {city} saatiyle {time} saatinde devam eder"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Danger zone"
 msgstr "Tehlikeli bölge"
 
@@ -6075,10 +6038,6 @@ msgstr "{name} ekibi silinsin mi?"
 msgid "Delete the view {name}?"
 msgstr "{name} görünümü silinsin mi?"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-msgid "Delete this canned reply?"
-msgstr "Bu hazır yanıt silinsin mi?"
-
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Delete this DKIM key?"
 msgstr "Bu DKIM anahtarı silinsin mi?"
@@ -6102,6 +6061,10 @@ msgstr "Bu notu sil"
 #: src/features/contact/ContactNotes.tsx
 msgid "Delete this note?"
 msgstr "Bu not silinsin mi?"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "Delete this saved reply?"
+msgstr "Bu kayıtlı yanıt silinsin mi?"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete this subscription?"
@@ -6302,7 +6265,6 @@ msgstr "Masaüstü bildirimleri bu site için tarayıcı ayarlarında engelli, b
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
@@ -6310,8 +6272,11 @@ msgstr "Masaüstü bildirimleri bu site için tarayıcı ayarlarında engelli, b
 msgid "Details"
 msgstr "Bilgiler"
 
-#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsFrame.tsx
+msgid "Developer"
+msgstr "Geliştirici"
+
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Developers"
 msgstr "Geliştiriciler"
 
@@ -6519,7 +6484,7 @@ msgstr "Dokümanlar, kendi sitenizde tuttuğunuz ve kendinizin barındırdığı
 msgid "Documentation pages"
 msgstr "Dokümantasyon sayfaları"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Documentation site"
 msgstr "Dokümantasyon sitesi"
@@ -6555,7 +6520,6 @@ msgstr "yapıldı"
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/fields/BulkFailures.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -6738,7 +6702,7 @@ msgstr "Yinelenenler"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/notifications/EventsSection.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -6816,7 +6780,7 @@ msgstr "E-postayla gelen kod"
 msgid "E-mails to the people who signed up"
 msgstr "Kaydolan kişilere e-postalar"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
 msgstr "Her eylem bir kez, en fazla 10. Eylemler tek değişiklik olarak çalışır; biri başarısız olursa hiçbiri uygulanmaz."
 
@@ -6919,10 +6883,6 @@ msgstr "{name} ekibini düzenle"
 msgid "Edit API key"
 msgstr "API anahtarını düzenle"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-msgid "Edit canned reply"
-msgstr "Hazır yanıtı düzenle"
-
 #: src/features/status/ComponentForms.tsx
 msgid "Edit component"
 msgstr "Bileşeni düzenle"
@@ -6940,11 +6900,11 @@ msgstr "Ayrıntıları düzenle"
 msgid "Edit details ({editKey})"
 msgstr "Ayrıntıları düzenle ({editKey})"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Edit field"
 msgstr "Alanı düzenle"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Edit filter"
 msgstr "Filtreyi düzenle"
 
@@ -6952,11 +6912,11 @@ msgstr "Filtreyi düzenle"
 msgid "Edit help center collections and article drafts"
 msgstr "Yardım merkezi koleksiyonlarını ve makale taslaklarını düzenle"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Edit label"
 msgstr "Etiketi düzenle"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Edit macro"
 msgstr "Makroyu düzenle"
 
@@ -6964,13 +6924,17 @@ msgstr "Makroyu düzenle"
 msgid "Edit monitor"
 msgstr "Monitörü düzenle"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Edit policy"
 msgstr "Politikayı düzenle"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Edit rule"
 msgstr "Kuralı düzenle"
+
+#: src/features/settings/canned/CannedReplyForm.tsx
+msgid "Edit saved reply"
+msgstr "Kayıtlı yanıtı düzenle"
 
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Edit team"
@@ -7036,11 +7000,6 @@ msgstr "{editingWhen} için zamanlanmış ileti düzenleniyor"
 msgid "Elevated API errors"
 msgstr "API hataları arttı"
 
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "Elsewhere in settings"
-msgstr "Ayarların diğer bölümleri"
-
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Embed snippet"
 msgstr "Yerleştirme kodu"
@@ -7070,8 +7029,8 @@ msgstr "Boş bırakılırsa {baseLanguage} konu kullanılır. Birleştirme alanl
 msgid "Emptying the Trash: {0} are being deleted"
 msgstr "Çöp kutusu boşaltılıyor: {0} konuşma siliniyor"
 
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Enabled"
 msgstr "Açık"
 
@@ -7243,7 +7202,7 @@ msgid "Every imported conversation is closed."
 msgstr "Aktarılan her konuşma kapatılır."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Every inbox"
 msgstr "Tüm gelen kutuları"
 
@@ -7319,7 +7278,7 @@ msgstr "Her web sitesi ve uygulama, ziyaretçilerini Ana sayfa’da ve Analitik�
 
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Everyone"
 msgstr "Herkes"
 
@@ -7469,7 +7428,6 @@ msgstr "Ek kapsamlar"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/migrations/ConnectStep.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7584,6 +7542,7 @@ msgstr "En az açık konuşması olan"
 
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Fields"
 msgstr "Alanlar"
 
@@ -7602,10 +7561,6 @@ msgstr "Dosya"
 #: src/features/broadcasts/Import.tsx
 msgid "File and consent"
 msgstr "Dosya ve onay"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Files"
-msgstr "Dosyalar"
 
 #: src/features/fields/RequiredFieldsHost.tsx
 msgid "Fill in before closing"
@@ -7739,6 +7694,7 @@ msgstr "Kontrol etmeden bitir"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/migrations/MigrationsPage.tsx
 msgid "Finished"
 msgstr "Bitti"
 
@@ -7766,7 +7722,7 @@ msgstr "ilk yanıt"
 #: src/features/home/HomeWork.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "First reply"
 msgstr "İlk yanıt"
 
@@ -7882,7 +7838,7 @@ msgid "For example Acme"
 msgstr "Örn. Acme"
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/setup/NameStep.tsx
 msgid "For example Fieldnote"
 msgstr "Örn. Fieldnote"
@@ -8071,15 +8027,15 @@ msgstr "Gönderen adresi (isteğe bağlı)"
 msgid "From blocked contacts"
 msgstr "Engellenmiş kişilerden"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From each later contact message to the reply."
 msgstr "Kişinin sonraki her mesajından yanıta kadar."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From the contact's first message to the first public reply."
 msgstr "Kişinin ilk mesajından ilk herkese açık yanıta kadar."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From the start of the conversation to its first close."
 msgstr "Görüşmenin başlangıcından ilk kapanışına kadar."
 
@@ -8144,9 +8100,7 @@ msgstr "{person} kişisine {inbox} erişimi verdi"
 msgid "Gave the team {team} access to {inbox}"
 msgstr "{team} ekibine {inbox} erişimi verdi"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/channels/sections.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "General"
@@ -8213,10 +8167,6 @@ msgstr "Gmail yalnızca spam olmayan yeni e-postaları yönlendirir. Bir Workspa
 #: src/features/migrations/ConnectStep.tsx
 msgid "Gmail lets other apps read about 1.5 GB a day over IMAP, so a mailbox of many gigabytes takes days. Google Takeout exports it as one file that uploads as fast as your connection allows. Import that first, then come back here with an app password for the newer mail and the switch."
 msgstr "Gmail, diğer uygulamaların IMAP ile günde yaklaşık 1,5 GB okumasına izin verir; bu yüzden birkaç gigabaytlık bir posta kutusu günler sürer. Google Takeout kutuyu tek bir dosya olarak dışa aktarır ve bu dosya bağlantınızın izin verdiği hızda yüklenir. Önce onu içe aktarın, sonra yeni e-postalar ve geçiş için bir uygulama şifresiyle buraya dönün."
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Gmail, Outlook, Yandex, any IMAP server"
-msgstr "Gmail, Outlook, Yandex, herhangi bir IMAP sunucusu"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "go back to operational when you post this"
@@ -8316,10 +8266,6 @@ msgstr "Grup özniteliği"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
 msgstr "Grup talebi"
-
-#: src/features/settings/SettingsFrame.tsx
-msgid "Groups of members and the inboxes they cover"
-msgstr "Üye grupları ve kapsadıkları gelen kutuları"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -8436,10 +8382,6 @@ msgstr "Yardım merkezi"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Help center settings"
 msgstr "Yardım merkezi ayarları"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Help desks"
-msgstr "Yardım masaları"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Help report"
@@ -8580,7 +8522,7 @@ msgid "Hostname and certificate"
 msgstr "Ana makine adı ve sertifika"
 
 #: src/features/broadcasts/Trigger.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "hours"
 msgstr "saat"
 
@@ -8605,7 +8547,7 @@ msgstr "Aboneleriniz nasıl izin verdi?"
 msgid "How do people sign up?"
 msgstr "İnsanlar nasıl abone olur?"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "How do you answer?"
 msgstr "Nasıl yanıtlıyorsunuz?"
 
@@ -8629,7 +8571,6 @@ msgstr "Bir sinyalin ne kadar geç kalabileceği."
 msgid "How mail reaches Yuva"
 msgstr "Postanın Yuva'ya ulaşma yolu"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "How messages arrive: chat, e-mail, apps"
 msgstr "Mesajlar nasıl ulaşır: sohbet, e-posta, uygulamalar"
@@ -8641,10 +8582,6 @@ msgstr "Mesajların her ürüne nasıl ulaştığı"
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "How should replies go out?"
 msgstr "Yanıtlar nasıl gitsin?"
-
-#: src/components/common/SettingsStrip.tsx
-msgid "How software connects: keys, hooks, assistants"
-msgstr "Yazılımlar nasıl bağlanır: anahtarlar, webhook'lar, asistanlar"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "How the chat opens"
@@ -8728,7 +8665,7 @@ msgstr "{idle} dk hareketsiz"
 msgid "If {provider} mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "{provider} bu adrese bir onay e-postası gönderirse bu gelen kutusuna bir konuşma olarak gelir; onu orada açın."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "If all of these match"
 msgstr "Bunların hepsi eşleşirse"
 
@@ -8821,11 +8758,11 @@ msgid "Import people"
 msgstr "Kişileri içe aktar"
 
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Import steps"
 msgstr "İçe aktarma adımları"
 
 #: src/components/common/ImportedChip.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 msgid "Imported"
 msgstr "Aktarıldı"
@@ -8856,6 +8793,8 @@ msgstr "İçe aktarılıyor…"
 
 #: src/app/nav.tsx
 #: src/app/places.tsx
+#: src/features/migrations/Wizard.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Imports"
 msgstr "İçe aktarmalar"
 
@@ -9018,7 +8957,7 @@ msgstr "Zoho Mail'de Ayarlar › Posta hesapları › IMAP erişimi'ni açın ve
 #: src/features/docs/InstallDialog.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "Gelen kutusu"
@@ -9051,10 +8990,15 @@ msgstr "{name} için gelen kutusu"
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Inboxes"
 msgstr "Gelen kutuları"
+
+#: src/features/settings/ProductsPage.tsx
+#: src/features/settings/SettingsFrame.tsx
+msgid "Inboxes and channels"
+msgstr "Gelen kutuları ve kanallar"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Inboxes cut off subjects longer than 80 characters."
@@ -9477,7 +9421,7 @@ msgstr "Bu dosyadan gelen her aboneliğin yanında, onay kaydı olarak saklanır
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Key"
 msgstr "Anahtar"
 
@@ -9517,12 +9461,6 @@ msgstr "Anahtarlar ve bağlı uygulamalar"
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
 msgstr "Bu ürüne erişebilen anahtarlar. Onları API ve MCP altında oluşturup iptal edebilirsiniz."
 
-#: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
-#: src/features/settings/webhooks/WebhooksPage.tsx
-msgid "Keys, webhooks and connected assistants"
-msgstr "Anahtarlar, webhook'lar ve bağlı asistanlar"
-
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Keyword"
 msgstr "Anahtar kelime"
@@ -9558,10 +9496,9 @@ msgstr "Yalnızca etiket: e-postaları Tüm postalar'dan gelir, konuşmaları bu
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Labels"
 msgstr "Etiketler"
 
@@ -9762,7 +9699,7 @@ msgstr "Düğme rengi"
 msgid "Launcher position"
 msgstr "Düğme konumu"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Leave as is"
 msgstr "Olduğu gibi bırak"
 
@@ -10075,7 +10012,7 @@ msgid "Live"
 msgstr "Canlı"
 
 #: src/components/common/Source.tsx
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Live chat"
 msgstr "Canlı sohbet"
 
@@ -10197,8 +10134,8 @@ msgstr "Düşük"
 msgid "Lowercase letters, digits and dashes, not at the start or end."
 msgstr "Küçük harf, rakam ve tire; tire başta ya da sonda olamaz."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Lowercase letters, digits and dashes."
 msgstr "Küçük harf, rakam ve tire."
 
@@ -10213,7 +10150,6 @@ msgid "Macro"
 msgstr "Makro"
 
 #: src/app/Palette.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Macros"
 msgstr "Makrolar"
@@ -10345,7 +10281,6 @@ msgstr "Posta kutusu adresi"
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
-#: src/features/migrations/MigrationsPage.tsx
 msgid "Mailboxes"
 msgstr "Posta kutuları"
 
@@ -10452,10 +10387,6 @@ msgstr "Webhook'ları yönetme"
 #: src/features/settings/webhooks/parts.tsx
 msgid "manual"
 msgstr "elle"
-
-#: src/features/migrations/Wizard.tsx
-msgid "Map"
-msgstr "Eşleştir"
 
 #: src/app/Header.tsx
 #: src/features/account/AccountPage.tsx
@@ -10636,7 +10567,6 @@ msgstr "Üye"
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/teams/TeamsPage.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "Üyeler"
@@ -10827,10 +10757,6 @@ msgstr "Microsoft'un belirteci IMAP üzerinden posta okumaktan fazlasına izin v
 msgid "Migration cancelled"
 msgstr "Taşıma iptal edildi"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Migration steps"
-msgstr "Taşıma adımları"
-
 #: src/features/inbox/ChatList.tsx
 msgid "Mine"
 msgstr "Bana atanan"
@@ -10841,7 +10767,7 @@ msgstr "Küçük"
 
 #: src/features/broadcasts/Trigger.tsx
 #: src/features/settings/automation/ActionRow.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "minutes"
 msgstr "dakika"
 
@@ -10849,7 +10775,7 @@ msgstr "dakika"
 msgid "Minutes"
 msgstr "Dakika"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Minutes before a due time. 0 sends no warning."
 msgstr "Bitiş zamanından kaç dakika önce uyarılacağı. 0 uyarı göndermez."
 
@@ -10858,7 +10784,7 @@ msgid "Missed beat"
 msgstr "Kaçan sinyal"
 
 #: src/components/common/text.ts
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/app/AppFields.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Mobile app"
@@ -11158,12 +11084,6 @@ msgstr "Çöp kutusuna taşı ({0})"
 msgid "Move to the Trash (#)"
 msgstr "Çöp kutusuna taşı (#)"
 
-#: src/features/migrations/Wizard.tsx
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "Move to Yuva"
-msgstr "Yuva'ya taşı"
-
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11202,8 +11122,8 @@ msgid "Moves the mail to the Trash. Runs after the other actions."
 msgstr "Postayı Çöp kutusuna taşır. Diğer eylemlerden sonra çalışır."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
-msgstr "Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX ya da herhangi bir IMAP sunucusundan mı geliyorsunuz? Ekibiniz çalışmaya devam ederken Yuva posta kutusunun geçmişini sessizce, en yenilerden başlayarak bir gelen kutusuna kopyalar. Sonra posta kutusunu buraya yönlendirirsiniz; aradaki hiçbir e-posta kaybolmaz."
+msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX, any IMAP server or another help desk? Yuva copies the history into an inbox, newest first, while your team keeps working."
+msgstr "Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX, herhangi bir IMAP sunucusu ya da başka bir yardım masasından mı geçiyorsunuz? Ekibiniz çalışmaya devam ederken Yuva geçmişi en yeniden başlayarak bir gelen kutusuna kopyalar."
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Moving the idea to Planned, In progress or Shipped sets this for linked feedback that has no progress yet."
@@ -11247,20 +11167,19 @@ msgstr "Görünümlerim"
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
-#: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -11300,6 +11219,10 @@ msgstr "Adını Yuva koyun. <0>Connection</0> altında <1>Public endpoint</1> se
 #: src/features/migrations/MapStep.tsx
 msgid "Name of the new inbox"
 msgstr "Yeni gelen kutusunun adı"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Name, closed conversations and broadcast sending"
+msgstr "Ad, kapanan konuşmalar ve toplu gönderim"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Name, colour and the first thing the chat says"
@@ -11411,11 +11334,6 @@ msgstr "Yeni makale"
 msgid "New broadcast"
 msgstr "Yeni bülten"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
-msgid "New canned reply"
-msgstr "Yeni hazır yanıt"
-
 #: src/components/common/ShortcutSheet.tsx
 msgid "New collection"
 msgstr "Yeni koleksiyon"
@@ -11484,12 +11402,13 @@ msgstr "yeni tartışma"
 msgid "New entry"
 msgstr "Yeni kayıt"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 msgid "New field"
 msgstr "Yeni alan"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/mail/FilterDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New filter"
 msgstr "Yeni filtre"
@@ -11508,6 +11427,8 @@ msgid "New identity secret"
 msgstr "Yeni kimlik anahtarı"
 
 #: src/app/places.tsx
+#: src/features/migrations/MigrationsPage.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "New import"
 msgstr "Yeni içe aktarma"
 
@@ -11532,7 +11453,7 @@ msgstr "Yeni olay"
 msgid "New incident ({incidentKey})"
 msgstr "Yeni olay ({incidentKey})"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "New label"
 msgstr "Yeni etiket"
@@ -11546,7 +11467,7 @@ msgstr "Yeni etiket “{folder}”"
 msgid "New list"
 msgstr "Yeni liste"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "New macro"
 msgstr "Yeni makro"
@@ -11577,10 +11498,6 @@ msgstr "Bana atanmış bir konuşmada yeni mesaj"
 msgid "New message in an unassigned conversation"
 msgstr "Atanmamış bir konuşmada yeni mesaj"
 
-#: src/features/migrations/MigrationsPage.tsx
-msgid "New migration"
-msgstr "Yeni taşıma"
-
 #: src/features/status/MonitorsPage.tsx
 msgid "new monitor"
 msgstr "yeni monitör"
@@ -11601,7 +11518,7 @@ msgstr "{boxName} kutusunun yeni sahibi"
 msgid "New password"
 msgstr "Yeni parola"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "New policy"
 msgstr "Yeni politika"
@@ -11610,10 +11527,15 @@ msgstr "Yeni politika"
 msgid "New reply in <0>{title}</0>"
 msgstr "<0>{title}</0> tartışmasında yeni yanıt"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "Yeni kural"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+msgid "New saved reply"
+msgstr "Yeni kayıtlı yanıt"
 
 #: src/features/settings/webhooks/sections.tsx
 msgid "New signing secret"
@@ -11720,7 +11642,7 @@ msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "Sonraki posta {local} ({utc} UTC), bu bültenin hızına göre."
 
 #: src/features/conversation/SlaPopover.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Next reply"
 msgstr "Sonraki yanıt"
 
@@ -11731,10 +11653,6 @@ msgstr "Sonraki yanıt {next}"
 #: src/features/feedback/Lightbox.tsx
 msgid "Next screenshot"
 msgstr "Sonraki ekran görüntüsü"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Next you pick the source and connect it. Nothing is copied until you start."
-msgstr "Sonra kaynağı seçip bağlarsınız. Siz başlatana kadar hiçbir şey kopyalanmaz."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Next, choose what to bring. The scan reads the file once."
@@ -11825,10 +11743,6 @@ msgstr "Henüz hiçbir yayın gönderilmedi."
 msgid "No broadcasts yet"
 msgstr "Henüz bülten yok"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-msgid "No canned replies yet"
-msgstr "Henüz hazır yanıt yok"
-
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "No canned replies yet. Add them in settings."
 msgstr "Henüz hazır yanıt yok. Ayarlardan ekleyebilirsin."
@@ -11879,7 +11793,7 @@ msgstr "Henüz bileşen yok. Müşterilerin güvendiği ürün parçalarını Bi
 msgid "No components yet. Add the parts of your product that customers depend on."
 msgstr "Henüz bileşen yok. Müşterilerin güvendiği ürün parçalarını ekleyin."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "No conditions: the rule runs for every conversation the trigger fits."
 msgstr "Koşul yok: kural, tetikleyicinin uyduğu her konuşmada çalışır."
 
@@ -12060,6 +11974,10 @@ msgstr "Henüz kimlik yok. Bu kişi bir uygulama veya widget tarafından tanıml
 #: src/features/status/text.tsx
 msgid "No impact"
 msgstr "Etki yok"
+
+#: src/features/migrations/MigrationsPage.tsx
+msgid "No imports match this filter."
+msgstr "Bu filtreye uyan içe aktarma yok."
 
 #: src/features/broadcasts/Import.tsx
 msgid "No imports yet."
@@ -12244,6 +12162,10 @@ msgstr "Henüz kural yok."
 #: src/features/settings/automation/RunLog.tsx
 msgid "No runs in the last 30 days."
 msgstr "Son 30 günde çalışma yok."
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "No saved replies yet"
+msgstr "Henüz kayıtlı yanıt yok"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "No secret yet. Make one, then paste it into GitHub."
@@ -12667,7 +12589,7 @@ msgstr "Aynı değil"
 msgid "Not there after a minute? Look in your spam or junk folder, or send a new code below."
 msgstr "Bir dakika içinde gelmediyse spam ya da gereksiz klasörünüze bakın veya aşağıdan yeni kod isteyin."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Not tracked"
 msgstr "İzlenmiyor"
 
@@ -13034,11 +12956,6 @@ msgstr "Team ve Enterprise planlarında bir sahip bunu <0>Organization settings 
 msgid "On the web"
 msgstr "Web'de"
 
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "On this page"
-msgstr "Bu sayfada"
-
 #: src/components/common/SlaBadge.tsx
 msgid "On track"
 msgstr "Zamanında"
@@ -13056,7 +12973,7 @@ msgstr "Deneme e-postası ulaştıktan sonra Yuva {hours} saat bekler. Bu süred
 msgid "One e-mail a month about what is new."
 msgstr "Yeniliklerle ilgili ayda bir e-posta."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "Tek gelen kutusu"
@@ -13073,7 +12990,7 @@ msgstr "Giriş yaptıktan belirli bir süre sonra her kişiye bir posta"
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Her satıra bir tane, 1 ile 20 arası. Sohbet penceresini yalnızca bu kaynaklardaki sayfalar kullanabilir."
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "One per line, all different, at most 100."
 msgstr "Her satıra bir seçenek, hepsi farklı, en fazla 100."
 
@@ -13200,7 +13117,7 @@ msgid "Only mail since {date}"
 msgstr "Yalnızca {date} sonrasındaki e-postalar"
 
 #: src/features/inbox/views/ViewDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Only me"
 msgstr "Yalnızca ben"
 
@@ -13702,7 +13619,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "İsteğe bağlı. Yanıtın ilk 64 KiB'ında bulunmalı, büyük küçük harf ayrımı yapılır."
 
 #: src/features/broadcasts/Composer.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Options"
 msgstr "Seçenekler"
 
@@ -13742,7 +13659,7 @@ msgstr "Ya da bir dışa aktarım dosyası yükleyin"
 msgid "Order and view"
 msgstr "Sıralama ve görünüm"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Order number"
 msgstr "Sipariş numarası"
 
@@ -13839,7 +13756,6 @@ msgid "Own tenant"
 msgstr "Kendi kiracısı"
 
 #: src/components/common/text.ts
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Owner"
 msgstr "Sahip"
 
@@ -14241,7 +14157,7 @@ msgstr "Hazır bir yanıt seçin"
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "Ürünün bir sohbet kanalını seçin ve kodu yapıştırın. Puanlar ve sorular onun gelen kutusuna düşer."
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Pick a color"
 msgstr "Renk seç"
 
@@ -14345,7 +14261,7 @@ msgid "Pick an endpoint"
 msgstr "Bir uç nokta seçin"
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Pick an inbox"
 msgstr "Bir gelen kutusu seçin"
 
@@ -14436,7 +14352,7 @@ msgstr "Diğer kişiyi seçin. Bu kişiyle birleştirilir ve ardından silinir."
 msgid "Pick the platforms; the next step shows the lines to add to each app."
 msgstr "Platformları seçin; sonraki adım her uygulamaya eklenecek satırları gösterir."
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Pick the product and how customers reach it. The next steps set it up."
 msgstr "Ürünü ve müşterilerin ona nasıl ulaştığını seçin. Sonraki adımlar kurulumu yapar."
 
@@ -14607,7 +14523,7 @@ msgstr "Hazırlanıyor"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/status/PreviewDialog.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Preview"
@@ -14671,12 +14587,12 @@ msgstr "Önceki ekran görüntüsü"
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Priority"
 msgstr "Öncelik"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Priority customers"
 msgstr "Öncelikli müşteriler"
 
@@ -14707,19 +14623,17 @@ msgstr "pro, ekip"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageForm.tsx
 #: src/features/status/IncidentForm.tsx
 msgid "Product"
 msgstr "Ürün"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/setup/NameStep.tsx
 msgid "Product name"
 msgstr "Ürün adı"
@@ -14729,7 +14643,6 @@ msgstr "Ürün adı"
 msgid "Product news"
 msgstr "Ürün haberleri"
 
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Product settings"
@@ -14744,7 +14657,6 @@ msgstr "Üretim"
 msgid "Production backend"
 msgstr "Canlı sunucu"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomeSide.tsx
@@ -14755,7 +14667,6 @@ msgstr "Canlı sunucu"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Products"
 msgstr "Ürünler"
@@ -14992,7 +14903,7 @@ msgstr "Sıraya alındı. Yeni deneme birazdan aşağıda görünür."
 msgid "Quick cleanup"
 msgstr "Hızlı temizlik"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Quiet for (minutes)"
 msgstr "Şu kadar süre sessiz (dakika)"
 
@@ -15165,11 +15076,6 @@ msgstr "Ekibinizin adreslerini önermek için okunur; e-postaları Tüm postalar
 msgid "Read What's new changelogs and their entries"
 msgstr "Yenilikler değişiklik günlüklerini ve girdilerini oku"
 
-#: src/features/migrations/MigrationsPage.tsx
-#: src/features/migrations/Wizard.tsx
-msgid "Read-only"
-msgstr "Salt okunur"
-
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/account/ConnectPage.tsx
 msgid "Reader"
@@ -15327,11 +15233,11 @@ msgstr "Referans"
 msgid "Refresh"
 msgstr "Yenile"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Refund"
 msgstr "İade"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Refund approved"
 msgstr "İade onaylandı"
 
@@ -15379,7 +15285,7 @@ msgstr "Uzak görseller, postayı açtığınızı gönderene bildirebilir."
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -15601,7 +15507,7 @@ msgstr "Bir konuşmadan bir not kaldırdı"
 msgid "Removed by {who}"
 msgstr "{who} kaldırdı"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "Kaldırılan seçenekler, onları taşıyan tüm görüşmelerden temizlenir. Bu arka planda çalışır."
 
@@ -15854,6 +15760,10 @@ msgstr "Yanıt metni"
 msgid "Reply time"
 msgstr "Yanıt süresi"
 
+#: src/features/settings/SettingsFrame.tsx
+msgid "Reply times"
+msgstr "Yanıt süreleri"
+
 #: src/features/conversation/BroadcastLine.tsx
 msgid "Reply to {name}"
 msgstr "{name} bültenine yanıt"
@@ -15960,7 +15870,7 @@ msgstr "İtibar etkisi"
 msgid "Require single sign-on"
 msgstr "Tek oturum açmayı zorunlu kıl"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 msgid "Required to close"
 msgstr "Kapatmak için gerekli"
@@ -15982,7 +15892,7 @@ msgid "Reset to defaults"
 msgstr "Varsayılanlara dön"
 
 #: src/features/conversation/SlaPopover.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Resolution"
 msgstr "Çözüm"
 
@@ -16122,7 +16032,6 @@ msgstr "Dönüş adresi"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Import.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Review"
 msgstr "Gözden geçir"
@@ -16203,7 +16112,6 @@ msgstr "Abone olur olmaz kişilere bunu doğrulayan, abonelikten çıkma bağlan
 msgid "Roadmap"
 msgstr "Yol haritası"
 
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Role"
 msgstr "Rol"
@@ -16294,7 +16202,6 @@ msgstr "{rule} kuralı çalıştı, değiştirilecek bir şey yoktu"
 msgid "Rule {rule} ran: {done}"
 msgstr "{rule} kuralı çalıştı: {done}"
 
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Rules"
 msgstr "Kurallar"
@@ -16365,16 +16272,16 @@ msgstr "Cumartesi"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/channels/ApiChannelDialog.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/signature/SignaturePage.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/ui.tsx
@@ -16461,6 +16368,10 @@ msgstr "Listeyi görünüm olarak kaydet"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "Kaydedildi"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Saved replies"
+msgstr "Kayıtlı yanıtlar"
 
 #: src/app/ViewsGroup.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
@@ -17536,13 +17447,12 @@ msgstr "Kuruluyor…"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "Ayarlar"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "Settings (JSON)"
 msgstr "Ayarlar (JSON)"
@@ -17585,8 +17495,8 @@ msgstr "Ekiple paylaşılan"
 msgid "Shipped"
 msgstr "Yayınlandı"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Shortcut"
 msgstr "Kısayol"
 
@@ -17597,6 +17507,7 @@ msgstr "Kısayol"
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -18029,7 +17940,6 @@ msgstr "Tek onay"
 
 #: src/app/Palette.tsx
 #: src/features/settings/profile/Sessions.tsx
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
 msgstr "Tek oturum açma"
@@ -18131,11 +18041,6 @@ msgstr "SLA karşılanan"
 msgid "SLA met / breached"
 msgstr "SLA karşılanan / aşılan"
 
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "SLA policies"
-msgstr "SLA politikaları"
-
 #: src/features/conversation/SlaPopover.tsx
 msgid "SLA targets (W)"
 msgstr "SLA hedefleri (W)"
@@ -18223,7 +18128,7 @@ msgstr "Ertele (B)"
 msgid "Snooze (S)"
 msgstr "Ertele (S)"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Snooze for (minutes)"
 msgstr "Şu kadar süre ertele (dakika)"
 
@@ -18411,6 +18316,10 @@ msgstr "SPF, DKIM ya da DMARC'a bakılmalı"
 msgid "Split by"
 msgstr "Dilimle"
 
+#: src/features/settings/SettingsFrame.tsx
+msgid "SSO"
+msgstr "SSO"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
 msgstr "Aşama"
@@ -18468,7 +18377,7 @@ msgstr "sizin yıldızladığınız"
 msgid "Stars the mail for you."
 msgstr "Postayı sizin için yıldızlar."
 
-#: src/features/migrations/MigrationsPage.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Start"
 msgstr "Başla"
 
@@ -18487,6 +18396,10 @@ msgstr "Tartışma başlat"
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Start a mailing list"
 msgstr "Bir posta listesi başlatın"
+
+#: src/features/migrations/MigrationsPage.tsx
+msgid "Start an import"
+msgstr "İçe aktarmaya başla"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "Start conversation"
@@ -18570,7 +18483,6 @@ msgstr "Kişinin özelliklerindeki bir değişiklik onu koşula uygun hâle geti
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (port 587)"
 
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
@@ -18612,7 +18524,7 @@ msgstr "Düştüğündeki durum"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
 #: src/features/team/TeamPage.tsx
@@ -18874,10 +18786,6 @@ msgstr "Askıya alındı"
 msgid "Suspended broadcasts"
 msgstr "Bültenleri askıya aldı"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Switch"
-msgstr "Geçiş"
-
 #: src/features/migrations/SwitchStep.tsx
 msgid "Switch your mail to Yuva"
 msgstr "E-postalarınızı Yuva'ya yönlendirin"
@@ -18934,11 +18842,11 @@ msgstr "Yeniden kayıt almaya başlar ve listeyi yayın kitlesi seçicisine geri
 msgid "Taking the recipients: {prepared} so far"
 msgstr "Alıcılar belirleniyor: şimdiye kadar {prepared}"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Targets"
 msgstr "Hedefler"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Targets count in the business hours of the conversation's inbox, in its time zone. Leave one empty to not track it; at least one is required."
 msgstr "Hedefler, görüşmenin gelen kutusunun çalışma saatlerine ve saat dilimine göre sayılır. İzlememek için birini boş bırakın; en az biri gerekli."
 
@@ -19031,7 +18939,6 @@ msgstr "ekiparkadasi@sirket.com"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/features/conversation/HeaderActions.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -19075,9 +18982,9 @@ msgstr "Denemeler yalnızca çalışma alanının üyelerine, bir seferde en faz
 
 #: src/features/fields/value.ts
 #: src/features/settings/automation/ConditionRow.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Text"
 msgstr "Metin"
 
@@ -19089,7 +18996,7 @@ msgstr "Metni en son {who} kaydetti"
 msgid "Thanks for waiting. Your invoice is on its way."
 msgstr "Beklediğiniz için teşekkürler. Faturanız yolda."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 msgid "Thanks for writing"
 msgstr "Yazdığınız için teşekkürler"
 
@@ -19214,12 +19121,12 @@ msgstr "Sohbet, kodun eklendiği her sayfanın köşesinde görünür."
 msgid "The chat bubble appears on these addresses:"
 msgstr "Sohbet balonu şu adreslerde görünür:"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "The chat shows when you usually reply"
 msgstr "Sohbet, genelde ne zaman yanıt verdiğini gösterir"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "The chat shows who is available and typing"
 msgstr "Sohbet, kimin çevrimiçi olduğunu ve yazdığını gösterir"
@@ -19601,11 +19508,11 @@ msgstr "Anahtar yalnızca bu gelen kutularını görür; gelen kutularını, web
 msgid "The key stops working at the end of this day."
 msgstr "Anahtar bu günün sonunda çalışmayı bırakır."
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "The key, the object and the type cannot change after creation."
 msgstr "Anahtar, nesne ve tür oluşturulduktan sonra değiştirilemez."
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 msgid "The kind cannot be changed later."
 msgstr "Tür daha sonra değiştirilemez."
 
@@ -19738,7 +19645,7 @@ msgstr "Taşıma kaldığı yerden devam ediyor."
 msgid "The migration moved on in the meantime. Look at its state and try again."
 msgstr "Taşıma bu arada ilerledi. Durumuna bakıp yeniden deneyin."
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "The next step adds its first channel: website chat, e-mail or a mobile app."
 msgstr "Sonraki adım ilk kanalını ekler: web sohbeti, e-posta veya mobil uygulama."
 
@@ -20203,10 +20110,6 @@ msgstr "Web kancası uç noktası kapalı veya burada kullanılamıyor"
 msgid "The What’s new count shows on the chat button while no messages are unread. The widget’s Home always shows it."
 msgstr "Okunmamış mesaj yokken Yenilikler sayısı sohbet düğmesinde görünür. Widget’ın Ana sayfası her zaman gösterir."
 
-#: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
-msgstr "Çalışma alanının kendisi: ad, saklama, etiketler, hazır yanıtlar, taşınma ve denetim kaydı"
-
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
 msgstr "Çalışma alanı şimdilik bülten gönderemez."
@@ -20214,11 +20117,6 @@ msgstr "Çalışma alanı şimdilik bülten gönderemez."
 #: src/features/status/Notices.tsx
 msgid "The workspace may not send bulk mail now"
 msgstr "Çalışma alanı şu an toplu e-posta gönderemez"
-
-#: src/components/common/SettingsStrip.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "The workspace: labels, replies, data"
-msgstr "Çalışma alanı: etiketler, yanıtlar, veriler"
 
 #: src/components/common/text.ts
 msgid "The zip cannot be read; it may be damaged or cut off. Make it again and upload it."
@@ -20272,7 +20170,7 @@ msgstr "Tema"
 msgid "Theme and e-mail view on this device"
 msgstr "Bu cihazda tema ve e-posta görünümü"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Then"
 msgstr "Sonra"
 
@@ -20614,7 +20512,7 @@ msgstr "Bu bir CSV dosyası değil. Tabloyu CSV olarak kaydedip onu yükleyin."
 msgid "This is not a domain this page can use. Use a name like {example} that is not one of this server’s own addresses."
 msgstr "Bu sayfa bu alan adını kullanamaz. Bu sunucunun kendi adreslerinden biri olmayan, {example} gibi bir ad kullanın."
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "This is not a JSON object."
 msgstr "Bu bir JSON nesnesi değil."
@@ -20751,7 +20649,7 @@ msgstr "Bu mülkte bu adla bir segment zaten var."
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Bir sahip veya yönetici hem bu kuralı hem de {title} hazır yanıtını kaydedene ya da API anahtarı ayarlarında botların göndermesine izin verilene kadar bu yanıt gönderilmez."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Bir sahip veya yönetici {title} hazır yanıtını kaydedene ya da API anahtarı ayarlarında botların göndermesine izin verilene kadar bu yanıt gönderilmez."
@@ -20966,7 +20864,7 @@ msgstr "Zaman aşımı"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/status/IncidentForm.tsx
 msgid "Title"
 msgstr "Başlık"
@@ -21097,7 +20995,7 @@ msgstr "Eğilimler"
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Trigger"
 msgstr "Tetikleyici"
 
@@ -21221,8 +21119,7 @@ msgid "TXT record"
 msgstr "TXT kaydı"
 
 #: src/features/inbox/SourceFilter.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Type"
 msgstr "Tür"
 
@@ -21271,7 +21168,7 @@ msgstr "Atamayı kaldır"
 #: src/features/home/HomeWork.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Unassigned"
 msgstr "Atanmamış"
 
@@ -21345,7 +21242,7 @@ msgid "Unfollowed"
 msgstr "Takip bırakıldı"
 
 #: src/features/broadcasts/Trigger.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Unit"
 msgstr "Birim"
 
@@ -21758,9 +21655,9 @@ msgstr "Bu sunucuya karşı bearer belirteci olarak kullanın."
 msgid "Use letters, digits, - and _, at most 64."
 msgstr "Harf, rakam, - ve _ kullanın; en fazla 64 karakter."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Use lowercase letters, digits and single dashes."
 msgstr "Küçük harf, rakam ve tek tire kullanın."
 
@@ -21914,10 +21811,6 @@ msgstr "Doğrula"
 #: src/features/settings/webhooks/SignatureHint.tsx
 msgid "Verify every request before trusting it: the <0>webhook-signature</0> header follows the <1>Standard Webhooks</1> specification, so any of its libraries can check it with the endpoint's secret. Go backends can use the <2>sdk/go/webhook</2> package of the Yuva repository."
 msgstr "Her isteğe güvenmeden önce doğrulayın: <0>webhook-signature</0> başlığı <1>Standard Webhooks</1> belirtimine uyar, bu yüzden onun kütüphanelerinden herhangi biri uç noktanın anahtarıyla imzayı denetleyebilir. Go arka uçları Yuva deposundaki <2>sdk/go/webhook</2> paketini kullanabilir."
-
-#: src/features/settings/SettingsFrame.tsx
-msgid "Version"
-msgstr "Sürüm"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Versions"
@@ -22158,7 +22051,7 @@ msgstr "sizi bekliyor"
 msgid "Warn about the certificate"
 msgstr "Sertifika için uyar"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Warn before it is due"
 msgstr "Süre dolmadan önce uyar"
 
@@ -22218,8 +22111,6 @@ msgstr "{revealName} için webhook gizli anahtarı"
 
 #: src/app/Palette.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
@@ -22246,7 +22137,7 @@ msgstr "Web sitesi"
 msgid "Website addresses"
 msgstr "Web sitesi adresleri"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Website chat"
 msgstr "Web sitesi sohbeti"
@@ -22368,7 +22259,7 @@ msgstr "Müşterinin gördüğü"
 msgid "What the import will do"
 msgstr "İçe aktarma ne yapacak"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "What the team sees."
 msgstr "Ekibin gördüğü ad."
 
@@ -22414,7 +22305,6 @@ msgstr "E-postayla giden yanıtlarının sonunda ne yazacağı, gelen kutusu ba�
 
 #: src/components/common/FocusChoice.tsx
 #: src/features/settings/workspace/FocusForm.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "What Yuva is for"
 msgstr "Yuva ne için"
 
@@ -22429,7 +22319,7 @@ msgid "What’s new entry"
 msgstr "Yenilikler kaydı"
 
 #: src/features/broadcasts/ReviewPanel.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "When"
 msgstr "Ne zaman"
 
@@ -22552,7 +22442,7 @@ msgstr "Kimse ekip seçmediğinde yeni issue'ların gideceği yer, ENG gibi bir 
 msgid "Where should Yuva send events?"
 msgstr "Yuva olayları nereye göndersin?"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
 msgstr "API'nin değeri sakladığı yer. Küçük harf, rakam ve alt çizgi; değiştirilemez."
 
@@ -22608,7 +22498,7 @@ msgstr "Kimin, nerede yanıtladığı ve kimin çevrimiçi olduğu"
 msgid "Who can reply"
 msgstr "Kim yanıtlayabilir"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Who can use it"
 msgstr "Kimler kullanabilir"
 
@@ -22645,7 +22535,6 @@ msgstr "Kim gönderiyor, ne hakkında?"
 msgid "Who should take it?"
 msgstr "Kime verelim?"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Who you support: name, hours, team, sender"
 msgstr "Kimi destekliyorsunuz: ad, saatler, ekip, gönderici"
@@ -22764,10 +22653,8 @@ msgstr "Çalışılıyor…"
 #: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/oauth/ConsentPage.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Workspace"
 msgstr "Çalışma alanı"
 
@@ -23074,7 +22961,6 @@ msgid "Your account is not in a group that may use Yuva. Ask your administrator 
 msgstr "Hesabınız Yuva'yı kullanabilen bir grupta değil. Yöneticinizden sizi eklemesini isteyin."
 
 #: src/features/settings/addresses/AddressesPage.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Your addresses"
 msgstr "Adreslerin"
 
@@ -23167,6 +23053,10 @@ msgstr "Microsoft 365 kuruluşunuzda uygulamalara yalnızca bir yönetici onay v
 #: src/features/broadcasts/Composer.tsx
 msgid "Your name"
 msgstr "Adınız"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Your name, photo, language and sign-in"
+msgstr "Adınız, fotoğrafınız, diliniz ve oturum açma"
 
 #: src/features/home/HomeWork.tsx
 msgid "Your open conversations"
@@ -23273,10 +23163,6 @@ msgstr "Web siteniz"
 msgid "Your workspace asks for these fields on every conversation it closes."
 msgstr "Çalışma alanınız, kapattığı her görüşmede bu alanların doldurulmasını ister."
 
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."
-msgstr "Çalışma alanı adınız, kapalı konuşmaların ne kadar saklandığı ve kimin bülten gönderebileceği."
-
 #: src/features/account/AccountPage.tsx
 msgid "Your Yuva account"
 msgstr "Yuva hesabınız"
@@ -23367,10 +23253,6 @@ msgstr "Yuva kendi posta sunucusunu çalıştırmaz: alan adınıza gelen postal
 msgid "Yuva held back a command that would have changed the mailbox"
 msgstr "Yuva, posta kutusunu değiştirecek bir komutu engelledi"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Yuva inbox"
-msgstr "Yuva gelen kutusu"
-
 #: src/features/migrations/SwitchStep.tsx
 msgid "Yuva mails {address} a short test message. When it reaches Yuva by the new route, the switch works."
 msgstr "Yuva, {address} adresine kısa bir deneme e-postası gönderir. Yeni yoldan Yuva'ya ulaşırsa geçiş çalışıyor demektir."
@@ -23402,10 +23284,6 @@ msgstr "Yuva yardım masasını yalnızca okur. Geçmiş sessizce gelir: bildiri
 #: src/features/migrations/Wizard.tsx
 msgid "Yuva only reads the mailbox. History arrives quietly: no notifications, no auto-replies."
 msgstr "Yuva posta kutusunu yalnızca okur. Geçmiş sessizce gelir: bildirim yok, otomatik yanıt yok."
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Yuva only reads the source; nothing there is changed."
-msgstr "Yuva yalnızca kaynağı okur; orada hiçbir şey değişmez."
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Yuva only reads. Besides signing in, its connection sends {provider} nothing but read requests, so no ticket, customer or setting changes."
@@ -23478,7 +23356,3 @@ msgstr "Yuva, ana sayfaya git"
 #: src/components/common/text.ts
 msgid "Yuva's own notes cannot be changed."
 msgstr "Yuva'nın kendi notları değiştirilemez."
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"
-msgstr "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"

@@ -1448,7 +1448,7 @@ msgstr "Uma conversa"
 msgid "A conversation can copy at most 100 people."
 msgstr "Uma conversa pode copiar no máximo 100 pessoas."
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
 msgstr "Uma conversa não pode ser fechada enquanto este campo não tiver valor. O spam está isento."
 
@@ -1468,7 +1468,7 @@ msgstr "Uma conversa está inativa"
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "Uma conversa é incluída inteira quando foi atualizada pela última vez dentro do intervalo."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "A conversation must match every row you fill in. Leave a row empty to match anything."
 msgstr "Uma conversa tem de corresponder a cada linha preenchida. Uma linha vazia corresponde a tudo."
 
@@ -1739,7 +1739,7 @@ msgstr "Uma percentagem ao lado de cada componente."
 msgid "A personal API key from Linear, under Settings, Account, Security and access."
 msgstr "A personal API key from Linear, under Settings, Account, Security and access."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "A policy that is off applies to nothing."
 msgstr "Uma política desativada não se aplica a nada."
 
@@ -1799,7 +1799,7 @@ msgstr "Um campo obrigatório está vazio"
 msgid "A roadmap idea moved to another stage"
 msgstr "Uma ideia do roadmap passou para outra etapa"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "A rule that is off never runs. Rules run in the order of the list."
 msgstr "Uma regra desativada nunca é executada. As regras são executadas pela ordem da lista."
 
@@ -1974,10 +1974,6 @@ msgstr "Acesso ao {provider}"
 msgid "Access to the mailbox"
 msgstr "Acesso à caixa de correio"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Access to your mailbox: none"
-msgstr "Acesso à sua caixa de correio: nenhum"
-
 #: src/features/account/AccountPage.tsx
 msgid "Account"
 msgstr "Conta"
@@ -2002,7 +1998,7 @@ msgstr "Suporte da Acme"
 msgid "ACS URL"
 msgstr "ACS URL"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Actions"
@@ -2017,6 +2013,7 @@ msgstr "Só ações"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/text.ts
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
@@ -2032,7 +2029,7 @@ msgstr "Atividade"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "Adicionar"
@@ -2050,7 +2047,7 @@ msgstr "Adicionar um bloco"
 msgid "Add a category"
 msgstr "Adicionar categoria"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Add a channel"
 msgstr "Adicionar canal"
 
@@ -2099,7 +2096,7 @@ msgstr "Adicionar participante por endereço de e-mail"
 msgid "Add a passkey"
 msgstr "Adicionar uma passkey"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Add a product"
 msgstr "Adicionar produto"
 
@@ -2137,7 +2134,7 @@ msgstr "Adicionar um chat do site nas configurações da caixa"
 msgid "Add a website or app"
 msgstr "Adicionar um site ou uma app"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Add an action"
 msgstr "Adicionar uma ação"
 
@@ -2154,6 +2151,10 @@ msgstr "Adicione um endereço no seu servidor e escolha os eventos sobre os quai
 #: src/app/Palette.tsx
 msgid "Add an analytics property"
 msgstr "Adicionar uma propriedade de analytics"
+
+#: src/features/settings/channels/ApiChannelForm.tsx
+msgid "Add an API channel"
+msgstr "Adicionar um canal de API"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add an image"
@@ -2184,7 +2185,6 @@ msgstr "Adicionar outro"
 msgid "Add at least one origin."
 msgstr "Adicione pelo menos uma origem."
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Add channel"
 msgstr "Adicionar canal"
@@ -2194,7 +2194,7 @@ msgstr "Adicionar canal"
 msgid "Add component"
 msgstr "Adicionar componente"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Add condition"
 msgstr "Adicionar condição"
 
@@ -2228,6 +2228,10 @@ msgstr "Add image"
 #: src/features/mail/Compose.tsx
 msgid "Add it back"
 msgstr "Add it back"
+
+#: src/features/settings/labels/LabelForm.tsx
+msgid "Add label"
+msgstr "Adicionar etiqueta"
 
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
@@ -2386,6 +2390,7 @@ msgid "Address verified"
 msgstr "Endereço verificado"
 
 #: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Addresses"
 msgstr "Endereços"
 
@@ -2496,6 +2501,7 @@ msgid "All good"
 msgstr "Tudo bem"
 
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/MigrationsPage.tsx
 msgid "All imports"
 msgstr "Todas as importações"
 
@@ -2881,10 +2887,6 @@ msgstr "Um convite é aceito quando a pessoa inicia sessão com um código envia
 msgid "An issue URL, owner/repo#12 or ENG-123."
 msgstr "An issue URL, owner/repo#12 or ENG-123."
 
-#: src/features/migrations/MigrationsPage.tsx
-msgid "An mbox export of a mailbox"
-msgstr "Uma exportação mbox de uma caixa de correio"
-
 #: src/features/team/TeamPage.tsx
 msgid "An owner cannot be removed. Change their role first."
 msgstr "Não é possível remover um proprietário. Altere primeiro a sua função."
@@ -2960,7 +2962,7 @@ msgstr "Outra conta"
 msgid "Another address this channel receives mail at. Forward a mailbox here, for example {own} at its provider; forwarding to {own} itself would loop."
 msgstr "Outro endereço em que este canal recebe e-mail. Encaminhe uma caixa para cá, por exemplo {own} no fornecedor dela; encaminhar para o próprio {own} criaria um loop."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 msgid "Another canned reply already uses this shortcut."
 msgstr "Outra resposta pronta já usa este atalho."
 
@@ -3092,7 +3094,7 @@ msgstr "Qualquer campo"
 msgid "Any label"
 msgstr "Qualquer etiqueta"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Any of the labels you pick."
 msgstr "Qualquer uma das etiquetas escolhidas."
 
@@ -3137,15 +3139,11 @@ msgstr "Tudo que usa esta chave para de funcionar na hora."
 msgid "API"
 msgstr "API"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "API & MCP"
 msgstr "API e MCP"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "API channel"
 msgstr "Canal de API"
 
@@ -3158,7 +3156,6 @@ msgstr "Chave de API"
 #: src/app/Palette.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "API keys"
 msgstr "Chaves de API"
@@ -3222,8 +3219,8 @@ msgstr "ID do aplicação (cliente)"
 msgid "Applied"
 msgstr "Aplicada"
 
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Applies to"
 msgstr "Aplica-se a"
 
@@ -3450,7 +3447,7 @@ msgstr "Atribuída a si"
 
 #: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Assignee"
 msgstr "Responsável"
 
@@ -3486,7 +3483,7 @@ msgid "Assistants work in Yuva through MCP, acting as the member who connected t
 msgstr "Os assistentes trabalham na Yuva através de MCP, agindo como o membro que os ligou e apenas com o acesso que esse membro aprovou."
 
 #: src/components/common/text.ts
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Async"
 msgstr "Assíncrono"
 
@@ -3585,7 +3582,6 @@ msgid "Audience"
 msgstr "Público"
 
 #: src/app/Palette.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Audit log"
 msgstr "Registo de auditoria"
@@ -3618,7 +3614,6 @@ msgstr "Atribuição automática"
 msgid "Automatic mail never triggers an automatic reply."
 msgstr "E-mail automático nunca dispara uma resposta automática."
 
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Automation"
 msgstr "Automatização"
@@ -3766,7 +3761,7 @@ msgstr "Best regards,"
 msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
 msgstr "Entre 1 e 500, contadas em todo o espaço de trabalho. A atribuição manual ignora-o. Deixe vazio para não ter limite."
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Billing"
 msgstr "Cobrança"
@@ -3776,7 +3771,7 @@ msgstr "Cobrança"
 msgid "Billing bot"
 msgstr "Bot de cobrança"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 msgid "Billing events"
 msgstr "Eventos de cobrança"
 
@@ -3924,17 +3919,13 @@ msgstr "Incumprido"
 msgid "Breached, met late at {at}"
 msgstr "Incumprido, cumprido com atraso às {at}"
 
-#: src/features/settings/SettingsFrame.tsx
-msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
-msgstr "Traga o histórico de uma caixa do Gmail, Yandex ou qualquer servidor IMAP"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Bring subscribers who already agreed elsewhere. Each address is checked first and nothing is added until you start: invalid addresses, domains that take no mail, role addresses, duplicates and anyone who left or objected are left out."
 msgstr "Traga subscritores que já aceitaram em outro lugar. Cada endereço é verificado antes e nada é adicionado até você começar: endereços inválidos, domínios que não recebem e-mail, endereços de função, duplicados e quem saiu ou se opôs ficam de fora."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Bring the history of a mailbox you answer from today, then switch its mail over. Yuva only reads the mailbox; nothing there is changed."
-msgstr "Traga o histórico de uma caixa em que você responde hoje e depois troque o e-mail dela. O Yuva só lê a caixa; nada nela é alterado."
+msgid "Bring the history of a mailbox or help desk you answer from today, then switch its mail over. Yuva only reads the source; nothing there is changed."
+msgstr "Traga o histórico de uma caixa de correio ou help desk a partir do qual responde hoje e depois redirecione o correio. O Yuva só lê a origem; nada é alterado lá."
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Bring your old mail"
@@ -3949,7 +3940,6 @@ msgstr "Envio"
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/settings/workspace/BroadcastsSettings.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Broadcast sending"
 msgstr "Envio em massa"
 
@@ -4047,13 +4037,9 @@ msgstr "Nome da campanha"
 #: src/features/docs/FromDocs.tsx
 #: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
-#: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -4136,8 +4122,6 @@ msgstr "Cancelado. O que foi adicionado antes permanece."
 #: src/app/Palette.tsx
 #: src/features/conversation/composer/CannedMenu.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Canned replies"
 msgstr "Respostas prontas"
 
@@ -4291,10 +4275,6 @@ msgstr "Alterou o webhook para {host}"
 msgid "Changelog settings"
 msgstr "Configurações do changelog"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Changes made to {provider}: none"
-msgstr "Alterações feitas no {provider}: nenhuma"
-
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
 msgstr "As alterações a membros, chaves, webhooks e outras definições sensíveis aparecem aqui."
@@ -4308,14 +4288,14 @@ msgstr "Mudar o domínio de envio desativa a assinatura DKIM até você ativá-l
 #: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
 msgid "Channel"
 msgstr "Canal"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Channel added"
 msgstr "Canal adicionado"
 
@@ -4339,14 +4319,8 @@ msgstr "Canal removido"
 msgid "Channel settings"
 msgstr "Configurações do canal"
 
-#: src/app/places.tsx
-#: src/components/common/SettingsStrip.tsx
-#: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Channels"
 msgstr "Canais"
 
@@ -4450,7 +4424,7 @@ msgstr "Verificado {when}"
 msgid "Checked and waiting for an owner or admin to start it."
 msgstr "Verificado e a aguardar um proprietário ou administrador iniciar."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Checked every 5 minutes, once per quiet period. Only open and pending conversations."
 msgstr "Verificado de 5 em 5 minutos, uma vez por período de inatividade. Apenas conversas abertas e pendentes."
 
@@ -4649,7 +4623,6 @@ msgstr "Os relógios mudam a {date}; o horário mantém-se {start}–{end} na ho
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -4689,7 +4662,7 @@ msgstr "Fechar cada conversa depois de responder"
 msgid "Close everything"
 msgstr "Fechar tudo"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Close idle conversations"
 msgstr "Fechar conversas inativas"
 
@@ -4777,11 +4750,11 @@ msgstr "Recolher"
 msgid "Collections"
 msgstr "Coleções"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Color"
 msgstr "Cor"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/colors.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Colour"
@@ -4972,7 +4945,6 @@ msgstr "Connect a tracker"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
 msgid "Connect an assistant"
 msgstr "Ligar um assistente"
 
@@ -5038,12 +5010,10 @@ msgid "Connected {created}"
 msgstr "Ligado {created}"
 
 #: src/app/Palette.tsx
-#: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
+#: src/features/settings/connected-apps/AssistantPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Connected apps"
 msgstr "Apps ligados"
 
@@ -5181,7 +5151,6 @@ msgstr "contém"
 
 #: src/app/places.tsx
 #: src/features/broadcasts/Composer.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Content"
 msgstr "Conteúdo"
 
@@ -5197,7 +5166,7 @@ msgstr "Conteúdo"
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
 #: src/features/setup/email/EmailReceiveStep.tsx
@@ -5256,7 +5225,6 @@ msgstr "Conversa iniciada"
 msgid "conversations"
 msgstr "conversas"
 
-#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
@@ -5271,6 +5239,7 @@ msgstr "conversas"
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Conversations"
 msgstr "Conversas"
@@ -5341,7 +5310,6 @@ msgstr "endereço em cópia"
 #: src/components/common/CopyButton.tsx
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/messages/MessageActions.tsx
-#: src/features/migrations/Wizard.tsx
 msgid "Copy"
 msgstr "Copiar"
 
@@ -5394,6 +5362,10 @@ msgstr "Copiar os detalhes do feedback"
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Copy the feedback details (Y)"
 msgstr "Copiar os detalhes do feedback (Y)"
+
+#: src/features/migrations/Wizard.tsx
+msgid "Copy the history of a mailbox or help desk into Yuva."
+msgstr "Copie o histórico de uma caixa de correio ou help desk para o Yuva."
 
 #: src/features/migrations/text.ts
 msgid "Copy the key under “Your API Key”. A Freshdesk key cannot be limited to reading; Yuva's connection only sends read requests."
@@ -5459,7 +5431,6 @@ msgid "Counts when a subscription becomes confirmed, not when it is still waitin
 msgstr "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/DeveloperTabs.tsx
 msgid "Create"
 msgstr "Criar"
 
@@ -5492,7 +5463,7 @@ msgstr "Create an issue"
 msgid "Create an OAuth client in Zendesk"
 msgstr "Criar um cliente OAuth no Zendesk"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Create and add a channel"
 msgstr "Criar e adicionar um canal"
 
@@ -5516,11 +5487,11 @@ msgstr "Criar canal"
 msgid "Create draft"
 msgstr "Criar rascunho"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Create field"
 msgstr "Criar campo"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Create filter"
 msgstr "Criar filtro"
 
@@ -5554,11 +5525,11 @@ msgstr "Criar chave"
 msgid "Create list"
 msgstr "Criar lista"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Create policy"
 msgstr "Criar política"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Create rule"
 msgstr "Criar regra"
 
@@ -5619,9 +5590,7 @@ msgstr "Criar, alterar, reordenar e eliminar regras de automatização"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Created"
 msgstr "Criado"
 
@@ -5690,11 +5659,6 @@ msgstr "Personalizado"
 msgid "Custom field"
 msgstr "Campo personalizado"
 
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "Custom fields"
-msgstr "Campos personalizados"
-
 #: src/features/contact/ContactsPage.tsx
 msgid "Customers"
 msgstr "Clientes"
@@ -5725,7 +5689,6 @@ msgid "Daily limit reached · continues at {time} {city} time"
 msgstr "Limite diário atingido · continua às {time}, hora de {city}"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Danger zone"
 msgstr "Zona de perigo"
 
@@ -6075,10 +6038,6 @@ msgstr "Eliminar a equipa {name}?"
 msgid "Delete the view {name}?"
 msgstr "Eliminar a vista {name}?"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-msgid "Delete this canned reply?"
-msgstr "Eliminar esta resposta pronta?"
-
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Delete this DKIM key?"
 msgstr "Eliminar esta chave DKIM?"
@@ -6102,6 +6061,10 @@ msgstr "Eliminar esta nota"
 #: src/features/contact/ContactNotes.tsx
 msgid "Delete this note?"
 msgstr "Eliminar esta nota?"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "Delete this saved reply?"
+msgstr "Eliminar esta resposta guardada?"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete this subscription?"
@@ -6302,7 +6265,6 @@ msgstr "As notificações na área de trabalho estão bloqueadas para este site 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
@@ -6310,8 +6272,11 @@ msgstr "As notificações na área de trabalho estão bloqueadas para este site 
 msgid "Details"
 msgstr "Detalhes"
 
-#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsFrame.tsx
+msgid "Developer"
+msgstr "Programador"
+
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Developers"
 msgstr "Programadores"
 
@@ -6519,7 +6484,7 @@ msgstr "Docs são as páginas que você mantém no seu próprio site e hospeda p
 msgid "Documentation pages"
 msgstr "Páginas de documentação"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Documentation site"
 msgstr "Site de documentação"
@@ -6555,7 +6520,6 @@ msgstr "feito"
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/fields/BulkFailures.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -6738,7 +6702,7 @@ msgstr "Duplicados"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/notifications/EventsSection.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -6816,7 +6780,7 @@ msgstr "Código enviado por e-mail"
 msgid "E-mails to the people who signed up"
 msgstr "E-mails para as pessoas que se inscreveram"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
 msgstr "Cada ação uma vez, no máximo 10. As ações são aplicadas como uma única alteração; se uma falhar, nenhuma é aplicada."
 
@@ -6919,10 +6883,6 @@ msgstr "Editar {name}"
 msgid "Edit API key"
 msgstr "Editar chave de API"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-msgid "Edit canned reply"
-msgstr "Editar resposta pronta"
-
 #: src/features/status/ComponentForms.tsx
 msgid "Edit component"
 msgstr "Editar componente"
@@ -6940,11 +6900,11 @@ msgstr "Editar detalhes"
 msgid "Edit details ({editKey})"
 msgstr "Editar detalhes ({editKey})"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Edit field"
 msgstr "Editar campo"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Edit filter"
 msgstr "Editar filtro"
 
@@ -6952,11 +6912,11 @@ msgstr "Editar filtro"
 msgid "Edit help center collections and article drafts"
 msgstr "Editar coleções do centro de ajuda e rascunhos de artigos"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Edit label"
 msgstr "Editar etiqueta"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Edit macro"
 msgstr "Editar macro"
 
@@ -6964,13 +6924,17 @@ msgstr "Editar macro"
 msgid "Edit monitor"
 msgstr "Editar monitor"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Edit policy"
 msgstr "Editar política"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Edit rule"
 msgstr "Editar regra"
+
+#: src/features/settings/canned/CannedReplyForm.tsx
+msgid "Edit saved reply"
+msgstr "Editar resposta guardada"
 
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Edit team"
@@ -7036,11 +7000,6 @@ msgstr "A editar a mensagem agendada para {editingWhen}"
 msgid "Elevated API errors"
 msgstr "Erros elevados na API"
 
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "Elsewhere in settings"
-msgstr "Noutras partes das definições"
-
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Embed snippet"
 msgstr "Trecho para incorporar"
@@ -7070,8 +7029,8 @@ msgstr "Vazio usa o assunto em {baseLanguage}. Os campos de fusão também funci
 msgid "Emptying the Trash: {0} are being deleted"
 msgstr "A esvaziar o lixo: {0} estão a ser eliminadas"
 
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Enabled"
 msgstr "Ativada"
 
@@ -7243,7 +7202,7 @@ msgid "Every imported conversation is closed."
 msgstr "Todas as conversas importadas estão fechadas."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Every inbox"
 msgstr "Todas as caixas"
 
@@ -7319,7 +7278,7 @@ msgstr "Cada site e app mostra seus visitantes em Início e em Analytics."
 
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Everyone"
 msgstr "Todos"
 
@@ -7469,7 +7428,6 @@ msgstr "Extra scopes"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/migrations/ConnectStep.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7584,6 +7542,7 @@ msgstr "Menos conversas abertas"
 
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Fields"
 msgstr "Campos"
 
@@ -7602,10 +7561,6 @@ msgstr "Ficheiro"
 #: src/features/broadcasts/Import.tsx
 msgid "File and consent"
 msgstr "Ficheiro e consentimento"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Files"
-msgstr "Ficheiros"
 
 #: src/features/fields/RequiredFieldsHost.tsx
 msgid "Fill in before closing"
@@ -7739,6 +7694,7 @@ msgstr "Concluir sem verificar"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/migrations/MigrationsPage.tsx
 msgid "Finished"
 msgstr "Concluído"
 
@@ -7766,7 +7722,7 @@ msgstr "primeira resposta"
 #: src/features/home/HomeWork.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "First reply"
 msgstr "Primeira resposta"
 
@@ -7882,7 +7838,7 @@ msgid "For example Acme"
 msgstr "Por exemplo, Acme"
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/setup/NameStep.tsx
 msgid "For example Fieldnote"
 msgstr "Por exemplo, Fieldnote"
@@ -8071,15 +8027,15 @@ msgstr "Endereço de remetente (opcional)"
 msgid "From blocked contacts"
 msgstr "De contactos bloqueados"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From each later contact message to the reply."
 msgstr "De cada nova mensagem do contacto até à resposta."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From the contact's first message to the first public reply."
 msgstr "Da primeira mensagem do contacto até à primeira resposta pública."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From the start of the conversation to its first close."
 msgstr "Do início da conversa até ao primeiro fecho."
 
@@ -8144,9 +8100,7 @@ msgstr "Deu a {person} acesso a {inbox}"
 msgid "Gave the team {team} access to {inbox}"
 msgstr "Deu à equipa {team} acesso a {inbox}"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/channels/sections.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "General"
@@ -8213,10 +8167,6 @@ msgstr "O Gmail só encaminha e-mails novos que não são spam. Se um administra
 #: src/features/migrations/ConnectStep.tsx
 msgid "Gmail lets other apps read about 1.5 GB a day over IMAP, so a mailbox of many gigabytes takes days. Google Takeout exports it as one file that uploads as fast as your connection allows. Import that first, then come back here with an app password for the newer mail and the switch."
 msgstr "O Gmail deixa outros apps lerem cerca de 1,5 GB por dia por IMAP, então uma caixa de muitos gigabytes leva dias. O Google Takeout exporta tudo como um único ficheiro que sobe tão rápido quanto sua ligação permitir. Importe esse primeiro e depois volte aqui com uma palavra-passe de app para o e-mail mais recente e a troca."
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Gmail, Outlook, Yandex, any IMAP server"
-msgstr "Gmail, Outlook, Yandex, qualquer servidor IMAP"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "go back to operational when you post this"
@@ -8316,10 +8266,6 @@ msgstr "Groups attribute"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
 msgstr "Groups claim"
-
-#: src/features/settings/SettingsFrame.tsx
-msgid "Groups of members and the inboxes they cover"
-msgstr "Grupos de membros e as caixas que cobrem"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -8436,10 +8382,6 @@ msgstr "Central de ajuda"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Help center settings"
 msgstr "Configurações da central de ajuda"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Help desks"
-msgstr "Helpdesks"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Help report"
@@ -8580,7 +8522,7 @@ msgid "Hostname and certificate"
 msgstr "Nome do host e certificado"
 
 #: src/features/broadcasts/Trigger.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "hours"
 msgstr "horas"
 
@@ -8605,7 +8547,7 @@ msgstr "Como seus subscritores aceitaram?"
 msgid "How do people sign up?"
 msgstr "Como as pessoas se inscrevem?"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "How do you answer?"
 msgstr "Como responde?"
 
@@ -8629,7 +8571,6 @@ msgstr "Quanto um sinal se pode atrasar."
 msgid "How mail reaches Yuva"
 msgstr "Como o e-mail chega ao Yuva"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "How messages arrive: chat, e-mail, apps"
 msgstr "Como chegam as mensagens: chat, e-mail, apps"
@@ -8641,10 +8582,6 @@ msgstr "Como as mensagens chegam a cada produto"
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "How should replies go out?"
 msgstr "Como as respostas devem sair?"
-
-#: src/components/common/SettingsStrip.tsx
-msgid "How software connects: keys, hooks, assistants"
-msgstr "Como o software se liga: chaves, webhooks, assistentes"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "How the chat opens"
@@ -8728,7 +8665,7 @@ msgstr "Inativa há {idle} min"
 msgid "If {provider} mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "Se o {provider} enviar uma confirmação para esse endereço, ela chega nesta caixa como uma conversa; abra-a lá."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "If all of these match"
 msgstr "Se todas estas se verificarem"
 
@@ -8821,11 +8758,11 @@ msgid "Import people"
 msgstr "Importar pessoas"
 
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Import steps"
 msgstr "Etapas da importação"
 
 #: src/components/common/ImportedChip.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 msgid "Imported"
 msgstr "Importado"
@@ -8856,6 +8793,8 @@ msgstr "A importar…"
 
 #: src/app/nav.tsx
 #: src/app/places.tsx
+#: src/features/migrations/Wizard.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Imports"
 msgstr "Importações"
 
@@ -9018,7 +8957,7 @@ msgstr "No Zoho Mail, abra Configurações › Contas de e-mail › Acesso IMAP 
 #: src/features/docs/InstallDialog.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "Caixa"
@@ -9051,10 +8990,15 @@ msgstr "Caixa de {name}"
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Inboxes"
 msgstr "Caixas"
+
+#: src/features/settings/ProductsPage.tsx
+#: src/features/settings/SettingsFrame.tsx
+msgid "Inboxes and channels"
+msgstr "Caixas de entrada e canais"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Inboxes cut off subjects longer than 80 characters."
@@ -9477,7 +9421,7 @@ msgstr "Guardado com cada subscrição deste ficheiro, como registo do consentim
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Key"
 msgstr "Chave"
 
@@ -9517,12 +9461,6 @@ msgstr "Chaves e aplicações ligadas"
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
 msgstr "Chaves que chegam a este produto. Crie-as e revogue-as em API e MCP."
 
-#: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
-#: src/features/settings/webhooks/WebhooksPage.tsx
-msgid "Keys, webhooks and connected assistants"
-msgstr "Chaves, webhooks e assistentes conectados"
-
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Keyword"
 msgstr "Palavra-chave"
@@ -9558,10 +9496,9 @@ msgstr "Só etiqueta: o e-mail dele vem de Todo o e-mail, e as conversas dele re
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Labels"
 msgstr "Etiquetas"
 
@@ -9762,7 +9699,7 @@ msgstr "Cor do iniciador"
 msgid "Launcher position"
 msgstr "Posição do iniciador"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Leave as is"
 msgstr "Deixar como está"
 
@@ -10075,7 +10012,7 @@ msgid "Live"
 msgstr "Ao vivo"
 
 #: src/components/common/Source.tsx
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Live chat"
 msgstr "Chat ao vivo"
 
@@ -10197,8 +10134,8 @@ msgstr "Baixa"
 msgid "Lowercase letters, digits and dashes, not at the start or end."
 msgstr "Letras minúsculas, dígitos e hifens, não no início nem no fim."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Lowercase letters, digits and dashes."
 msgstr "Letras minúsculas, dígitos e hifens."
 
@@ -10213,7 +10150,6 @@ msgid "Macro"
 msgstr "Macro"
 
 #: src/app/Palette.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Macros"
 msgstr "Macros"
@@ -10345,7 +10281,6 @@ msgstr "Endereço da caixa de correio"
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
-#: src/features/migrations/MigrationsPage.tsx
 msgid "Mailboxes"
 msgstr "Caixas de correio"
 
@@ -10452,10 +10387,6 @@ msgstr "Gerir webhooks"
 #: src/features/settings/webhooks/parts.tsx
 msgid "manual"
 msgstr "manual"
-
-#: src/features/migrations/Wizard.tsx
-msgid "Map"
-msgstr "Mapear"
 
 #: src/app/Header.tsx
 #: src/features/account/AccountPage.tsx
@@ -10636,7 +10567,6 @@ msgstr "Membro"
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/teams/TeamsPage.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "Membros"
@@ -10827,10 +10757,6 @@ msgstr "O token da Microsoft concede mais do que ler e-mail por IMAP, então o Y
 msgid "Migration cancelled"
 msgstr "Migração cancelada"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Migration steps"
-msgstr "Etapas da migração"
-
 #: src/features/inbox/ChatList.tsx
 msgid "Mine"
 msgstr "Minhas"
@@ -10841,7 +10767,7 @@ msgstr "Baixo"
 
 #: src/features/broadcasts/Trigger.tsx
 #: src/features/settings/automation/ActionRow.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "minutes"
 msgstr "minutos"
 
@@ -10849,7 +10775,7 @@ msgstr "minutos"
 msgid "Minutes"
 msgstr "Minutos"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Minutes before a due time. 0 sends no warning."
 msgstr "Minutos antes do prazo. 0 não envia aviso."
 
@@ -10858,7 +10784,7 @@ msgid "Missed beat"
 msgstr "Sinal perdido"
 
 #: src/components/common/text.ts
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/app/AppFields.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Mobile app"
@@ -11158,12 +11084,6 @@ msgstr "Mover para o lixo ({0})"
 msgid "Move to the Trash (#)"
 msgstr "Mover para o lixo (#)"
 
-#: src/features/migrations/Wizard.tsx
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "Move to Yuva"
-msgstr "Mudar para o Yuva"
-
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11202,8 +11122,8 @@ msgid "Moves the mail to the Trash. Runs after the other actions."
 msgstr "Move o e-mail para o lixo. Corre depois das outras ações."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
-msgstr "A mudar do Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX ou de qualquer servidor IMAP? O Yuva copia o histórico da caixa para uma caixa dele, em silêncio e dos mais recentes aos mais antigos, enquanto sua equipa continua a trabalhar. Depois você encaminha a caixa para cá e nada se perde no meio do caminho."
+msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX, any IMAP server or another help desk? Yuva copies the history into an inbox, newest first, while your team keeps working."
+msgstr "Vem do Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX, de qualquer servidor IMAP ou de outro help desk? O Yuva copia o histórico para uma caixa de entrada, do mais recente para o mais antigo, enquanto a sua equipa continua a trabalhar."
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Moving the idea to Planned, In progress or Shipped sets this for linked feedback that has no progress yet."
@@ -11247,20 +11167,19 @@ msgstr "As minhas vistas"
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
-#: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -11300,6 +11219,10 @@ msgstr "Dê o nome Yuva. Em <0>Connection</0>, escolha <1>Public endpoint</1> e 
 #: src/features/migrations/MapStep.tsx
 msgid "Name of the new inbox"
 msgstr "Nome da nova caixa"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Name, closed conversations and broadcast sending"
+msgstr "Nome, conversas fechadas e envio de campanhas"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Name, colour and the first thing the chat says"
@@ -11411,11 +11334,6 @@ msgstr "Novo artigo"
 msgid "New broadcast"
 msgstr "Novo envio"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
-msgid "New canned reply"
-msgstr "Nova resposta pronta"
-
 #: src/components/common/ShortcutSheet.tsx
 msgid "New collection"
 msgstr "Nova coleção"
@@ -11484,12 +11402,13 @@ msgstr "novas discussões"
 msgid "New entry"
 msgstr "Nova entrada"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 msgid "New field"
 msgstr "Novo campo"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/mail/FilterDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New filter"
 msgstr "Novo filtro"
@@ -11508,6 +11427,8 @@ msgid "New identity secret"
 msgstr "Novo segredo de identidade"
 
 #: src/app/places.tsx
+#: src/features/migrations/MigrationsPage.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "New import"
 msgstr "Nova importação"
 
@@ -11532,7 +11453,7 @@ msgstr "Novo incidente"
 msgid "New incident ({incidentKey})"
 msgstr "Novo incidente ({incidentKey})"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "New label"
 msgstr "Novo etiqueta"
@@ -11546,7 +11467,7 @@ msgstr "Novo etiqueta “{folder}”"
 msgid "New list"
 msgstr "Nova lista"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "New macro"
 msgstr "Nova macro"
@@ -11577,10 +11498,6 @@ msgstr "Nova mensagem em uma conversa atribuída a mim"
 msgid "New message in an unassigned conversation"
 msgstr "Nova mensagem em uma conversa sem responsável"
 
-#: src/features/migrations/MigrationsPage.tsx
-msgid "New migration"
-msgstr "Nova migração"
-
 #: src/features/status/MonitorsPage.tsx
 msgid "new monitor"
 msgstr "novo monitor"
@@ -11601,7 +11518,7 @@ msgstr "Novo proprietário de {boxName}"
 msgid "New password"
 msgstr "Nova palavra-passe"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "New policy"
 msgstr "Nova política"
@@ -11610,10 +11527,15 @@ msgstr "Nova política"
 msgid "New reply in <0>{title}</0>"
 msgstr "Nova resposta em <0>{title}</0>"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "Nova regra"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+msgid "New saved reply"
+msgstr "Nova resposta guardada"
 
 #: src/features/settings/webhooks/sections.tsx
 msgid "New signing secret"
@@ -11720,7 +11642,7 @@ msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "Próximo e-mail em {local} ({utc} UTC), no ritmo deste envio."
 
 #: src/features/conversation/SlaPopover.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Next reply"
 msgstr "Resposta seguinte"
 
@@ -11731,10 +11653,6 @@ msgstr "Resposta seguinte {next}"
 #: src/features/feedback/Lightbox.tsx
 msgid "Next screenshot"
 msgstr "Próxima captura"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Next you pick the source and connect it. Nothing is copied until you start."
-msgstr "Depois escolhe a origem e liga-a. Nada é copiado até começar."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Next, choose what to bring. The scan reads the file once."
@@ -11825,10 +11743,6 @@ msgstr "Ainda não saiu nenhum envio."
 msgid "No broadcasts yet"
 msgstr "Ainda não há envios"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-msgid "No canned replies yet"
-msgstr "Ainda não há respostas prontas"
-
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "No canned replies yet. Add them in settings."
 msgstr "Ainda não há respostas prontas. Adicione nas configurações."
@@ -11879,7 +11793,7 @@ msgstr "Ainda não há componentes. Adicione na aba Componentes as partes do seu
 msgid "No components yet. Add the parts of your product that customers depend on."
 msgstr "Ainda não há componentes. Adicione as partes do seu produto das quais os clientes dependem."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "No conditions: the rule runs for every conversation the trigger fits."
 msgstr "Sem condições: a regra é executada para todas as conversas que o acionador abrange."
 
@@ -12060,6 +11974,10 @@ msgstr "Ainda não há IDs. Esta pessoa não foi identificada por nenhuma app ne
 #: src/features/status/text.tsx
 msgid "No impact"
 msgstr "Sem impacto"
+
+#: src/features/migrations/MigrationsPage.tsx
+msgid "No imports match this filter."
+msgstr "Nenhuma importação corresponde a este filtro."
 
 #: src/features/broadcasts/Import.tsx
 msgid "No imports yet."
@@ -12244,6 +12162,10 @@ msgstr "Ainda não há regras."
 #: src/features/settings/automation/RunLog.tsx
 msgid "No runs in the last 30 days."
 msgstr "Nenhuma execução nos últimos 30 dias."
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "No saved replies yet"
+msgstr "Ainda não há respostas guardadas"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "No secret yet. Make one, then paste it into GitHub."
@@ -12667,7 +12589,7 @@ msgstr "Não é a mesma pessoa"
 msgid "Not there after a minute? Look in your spam or junk folder, or send a new code below."
 msgstr "Não chegou depois de um minuto? Olhe na pasta de spam ou lixo eletrônico, ou envie um novo código abaixo."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Not tracked"
 msgstr "Sem acompanhamento"
 
@@ -13034,11 +12956,6 @@ msgstr "Nos planos Team e Enterprise, um proprietário o adiciona uma vez em <0>
 msgid "On the web"
 msgstr "Na web"
 
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "On this page"
-msgstr "Nesta página"
-
 #: src/components/common/SlaBadge.tsx
 msgid "On track"
 msgstr "Dentro do prazo"
@@ -13056,7 +12973,7 @@ msgstr "Quando uma mensagem de teste chega, o Yuva espera {hours} horas. Se nada
 msgid "One e-mail a month about what is new."
 msgstr "Um e-mail por mês sobre as novidades."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "Uma caixa"
@@ -13073,7 +12990,7 @@ msgstr "One mail to each person, a set time after they sign in"
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Um por linha, de 1 a 20. Só páginas dessas origens podem usar o widget."
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "One per line, all different, at most 100."
 msgstr "Uma por linha, todas diferentes, no máximo 100."
 
@@ -13200,7 +13117,7 @@ msgid "Only mail since {date}"
 msgstr "Só e-mail desde {date}"
 
 #: src/features/inbox/views/ViewDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Only me"
 msgstr "Só eu"
 
@@ -13702,7 +13619,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "Opcional. Os primeiros 64 KiB da resposta têm de a conter; maiúsculas e minúsculas contam."
 
 #: src/features/broadcasts/Composer.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Options"
 msgstr "Opções"
 
@@ -13742,7 +13659,7 @@ msgstr "Ou envie um ficheiro de exportação"
 msgid "Order and view"
 msgstr "Ordem e visualização"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Order number"
 msgstr "Número da encomenda"
 
@@ -13839,7 +13756,6 @@ msgid "Own tenant"
 msgstr "Tenant próprio"
 
 #: src/components/common/text.ts
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Owner"
 msgstr "Proprietário"
 
@@ -14241,7 +14157,7 @@ msgstr "Escolha uma resposta predefinida"
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "Escolha um canal de chat do produto e cole o código. As avaliações e perguntas chegam à caixa dele."
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Pick a color"
 msgstr "Escolha uma cor"
 
@@ -14345,7 +14261,7 @@ msgid "Pick an endpoint"
 msgstr "Escolha um endpoint"
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Pick an inbox"
 msgstr "Escolha uma caixa"
 
@@ -14436,7 +14352,7 @@ msgstr "Escolha o outro contacto. Ele é mesclado neste e depois eliminado."
 msgid "Pick the platforms; the next step shows the lines to add to each app."
 msgstr "Escolha as plataformas; a próxima etapa mostra as linhas a adicionar em cada app."
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Pick the product and how customers reach it. The next steps set it up."
 msgstr "Escolha o produto e a forma como os clientes o contactam. Os passos seguintes configuram-no."
 
@@ -14607,7 +14523,7 @@ msgstr "A preparar"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/status/PreviewDialog.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Preview"
@@ -14671,12 +14587,12 @@ msgstr "Captura anterior"
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Priority"
 msgstr "Prioridade"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Priority customers"
 msgstr "Clientes prioritários"
 
@@ -14707,19 +14623,17 @@ msgstr "pro, team"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageForm.tsx
 #: src/features/status/IncidentForm.tsx
 msgid "Product"
 msgstr "Produto"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/setup/NameStep.tsx
 msgid "Product name"
 msgstr "Nome do produto"
@@ -14729,7 +14643,6 @@ msgstr "Nome do produto"
 msgid "Product news"
 msgstr "Novidades do produto"
 
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Product settings"
@@ -14744,7 +14657,6 @@ msgstr "Produção"
 msgid "Production backend"
 msgstr "Backend de produção"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomeSide.tsx
@@ -14755,7 +14667,6 @@ msgstr "Backend de produção"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Products"
 msgstr "Produtos"
@@ -14992,7 +14903,7 @@ msgstr "Na fila. A nova tentativa aparece abaixo em instantes."
 msgid "Quick cleanup"
 msgstr "Limpeza rápida"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Quiet for (minutes)"
 msgstr "Em silêncio há (minutos)"
 
@@ -15165,11 +15076,6 @@ msgstr "Lido para sugerir os endereços da sua equipa: o e-mail dela vem de Todo
 msgid "Read What's new changelogs and their entries"
 msgstr "Ler os registos de alterações de Novidades e as respetivas entradas"
 
-#: src/features/migrations/MigrationsPage.tsx
-#: src/features/migrations/Wizard.tsx
-msgid "Read-only"
-msgstr "Só de leitura"
-
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/account/ConnectPage.tsx
 msgid "Reader"
@@ -15327,11 +15233,11 @@ msgstr "Referência"
 msgid "Refresh"
 msgstr "Atualizar"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Refund"
 msgstr "Reembolso"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Refund approved"
 msgstr "Reembolso aprovado"
 
@@ -15379,7 +15285,7 @@ msgstr "Imagens remotas podem avisar o remetente de que você abriu o e-mail."
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -15601,7 +15507,7 @@ msgstr "Removeu uma nota de uma conversa"
 msgid "Removed by {who}"
 msgstr "Removida por {who}"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "As opções removidas são apagadas de todas as conversas que as têm. Isto corre em segundo plano."
 
@@ -15854,6 +15760,10 @@ msgstr "Texto da resposta"
 msgid "Reply time"
 msgstr "Tempo de resposta"
 
+#: src/features/settings/SettingsFrame.tsx
+msgid "Reply times"
+msgstr "Tempos de resposta"
+
 #: src/features/conversation/BroadcastLine.tsx
 msgid "Reply to {name}"
 msgstr "Responder a {name}"
@@ -15960,7 +15870,7 @@ msgstr "Impacto na reputação"
 msgid "Require single sign-on"
 msgstr "Require single sign-on"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 msgid "Required to close"
 msgstr "Obrigatório para fechar"
@@ -15982,7 +15892,7 @@ msgid "Reset to defaults"
 msgstr "Restaurar padrões"
 
 #: src/features/conversation/SlaPopover.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Resolution"
 msgstr "Resolução"
 
@@ -16122,7 +16032,6 @@ msgstr "Leva você de volta a"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Import.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Review"
 msgstr "Revisão"
@@ -16203,7 +16112,6 @@ msgstr "Logo depois de se subscrever, as pessoas recebem um e-mail curto que con
 msgid "Roadmap"
 msgstr "Roadmap"
 
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Role"
 msgstr "Função"
@@ -16294,7 +16202,6 @@ msgstr "A regra {rule} foi executada, não havia nada a alterar"
 msgid "Rule {rule} ran: {done}"
 msgstr "A regra {rule} foi executada: {done}"
 
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Rules"
 msgstr "Regras"
@@ -16365,16 +16272,16 @@ msgstr "Sábado"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/channels/ApiChannelDialog.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/signature/SignaturePage.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/ui.tsx
@@ -16461,6 +16368,10 @@ msgstr "Guardar a lista como vista"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "Guardado"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Saved replies"
+msgstr "Respostas guardadas"
 
 #: src/app/ViewsGroup.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
@@ -17536,13 +17447,12 @@ msgstr "A configurar…"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "Configurações"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "Settings (JSON)"
 msgstr "Configurações (JSON)"
@@ -17585,8 +17495,8 @@ msgstr "Compartilhada com a equipe"
 msgid "Shipped"
 msgstr "Lançado"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Shortcut"
 msgstr "Atalho"
 
@@ -17597,6 +17507,7 @@ msgstr "Atalho"
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -18029,7 +17940,6 @@ msgstr "Opt-in simples"
 
 #: src/app/Palette.tsx
 #: src/features/settings/profile/Sessions.tsx
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
 msgstr "Single sign-on"
@@ -18131,11 +18041,6 @@ msgstr "SLA cumprido"
 msgid "SLA met / breached"
 msgstr "SLA cumpridos / incumpridos"
 
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "SLA policies"
-msgstr "Políticas de SLA"
-
 #: src/features/conversation/SlaPopover.tsx
 msgid "SLA targets (W)"
 msgstr "Objetivos de SLA (W)"
@@ -18223,7 +18128,7 @@ msgstr "Adiar (B)"
 msgid "Snooze (S)"
 msgstr "Adiar (S)"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Snooze for (minutes)"
 msgstr "Adiar durante (minutos)"
 
@@ -18411,6 +18316,10 @@ msgstr "SPF, DKIM ou DMARC precisa de atenção"
 msgid "Split by"
 msgstr "Dividir por"
 
+#: src/features/settings/SettingsFrame.tsx
+msgid "SSO"
+msgstr "SSO"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
 msgstr "Etapa"
@@ -18468,7 +18377,7 @@ msgstr "marcado por si com estrela"
 msgid "Stars the mail for you."
 msgstr "Marca o e-mail com estrela para si."
 
-#: src/features/migrations/MigrationsPage.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Start"
 msgstr "Começar"
 
@@ -18487,6 +18396,10 @@ msgstr "Iniciar uma discussão"
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Start a mailing list"
 msgstr "Criar uma lista de e-mails"
+
+#: src/features/migrations/MigrationsPage.tsx
+msgid "Start an import"
+msgstr "Iniciar uma importação"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "Start conversation"
@@ -18570,7 +18483,6 @@ msgstr "Starts when a change to the person’s attributes makes them match, and 
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (porta 587)"
 
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
@@ -18612,7 +18524,7 @@ msgstr "Estado ao cair"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
 #: src/features/team/TeamPage.tsx
@@ -18874,10 +18786,6 @@ msgstr "Suspenso"
 msgid "Suspended broadcasts"
 msgstr "Suspendeu as transmissões"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Switch"
-msgstr "Trocar"
-
 #: src/features/migrations/SwitchStep.tsx
 msgid "Switch your mail to Yuva"
 msgstr "Troque seu e-mail para o Yuva"
@@ -18934,11 +18842,11 @@ msgstr "Volta a aceitar subscrições e devolve a lista ao seletor de público d
 msgid "Taking the recipients: {prepared} so far"
 msgstr "A definir os destinatários: {prepared} até agora"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Targets"
 msgstr "Objetivos"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Targets count in the business hours of the conversation's inbox, in its time zone. Leave one empty to not track it; at least one is required."
 msgstr "Os objetivos contam no horário de funcionamento da caixa de entrada da conversa, no respetivo fuso horário. Deixe um vazio para não o acompanhar; é necessário pelo menos um."
 
@@ -19031,7 +18939,6 @@ msgstr "colega@empresa.com"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/features/conversation/HeaderActions.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -19075,9 +18982,9 @@ msgstr "Os testes vão só para membros do espaço de trabalho, no máximo cinco
 
 #: src/features/fields/value.ts
 #: src/features/settings/automation/ConditionRow.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Text"
 msgstr "Texto"
 
@@ -19089,7 +18996,7 @@ msgstr "Texto guardado pela última vez por {who}"
 msgid "Thanks for waiting. Your invoice is on its way."
 msgstr "Obrigado por esperar. Sua fatura está a caminho."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 msgid "Thanks for writing"
 msgstr "Obrigado por escrever"
 
@@ -19214,12 +19121,12 @@ msgstr "O chat aparece no canto de cada página que tiver o trecho."
 msgid "The chat bubble appears on these addresses:"
 msgstr "O balão de chat aparece nestes endereços:"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "The chat shows when you usually reply"
 msgstr "O chat mostra quando você costuma responder"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "The chat shows who is available and typing"
 msgstr "O chat mostra quem está disponível e digitando"
@@ -19601,11 +19508,11 @@ msgstr "A chave vê apenas estas caixas de entrada e não pode gerir caixas, web
 msgid "The key stops working at the end of this day."
 msgstr "A chave para de funcionar no fim deste dia."
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "The key, the object and the type cannot change after creation."
 msgstr "A chave, o objeto e o tipo não podem ser alterados depois de criados."
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 msgid "The kind cannot be changed later."
 msgstr "O tipo não pode ser alterado depois."
 
@@ -19738,7 +19645,7 @@ msgstr "A migração continua de onde parou."
 msgid "The migration moved on in the meantime. Look at its state and try again."
 msgstr "A migração avançou nesse meio-tempo. Veja o estado dela e tente de novo."
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "The next step adds its first channel: website chat, e-mail or a mobile app."
 msgstr "O passo seguinte adiciona o primeiro canal: chat do site, e-mail ou app para telemóvel."
 
@@ -20203,10 +20110,6 @@ msgstr "O endpoint do webhook está desativado ou indisponível aqui"
 msgid "The What’s new count shows on the chat button while no messages are unread. The widget’s Home always shows it."
 msgstr "O número de novidades aparece no botão do chat enquanto não houver mensagens não lidas. O início do widget sempre o mostra."
 
-#: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
-msgstr "O próprio espaço de trabalho: nome, retenção, etiquetas, respostas prontas, mudança e registo de auditoria"
-
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
 msgstr "O espaço de trabalho não pode enviar envios por enquanto."
@@ -20214,11 +20117,6 @@ msgstr "O espaço de trabalho não pode enviar envios por enquanto."
 #: src/features/status/Notices.tsx
 msgid "The workspace may not send bulk mail now"
 msgstr "O espaço de trabalho não pode enviar e-mails em massa neste momento"
-
-#: src/components/common/SettingsStrip.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "The workspace: labels, replies, data"
-msgstr "O espaço de trabalho: etiquetas, respostas, dados"
 
 #: src/components/common/text.ts
 msgid "The zip cannot be read; it may be damaged or cut off. Make it again and upload it."
@@ -20272,7 +20170,7 @@ msgstr "Tema"
 msgid "Theme and e-mail view on this device"
 msgstr "Tema e visualização de e-mail neste dispositivo"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Then"
 msgstr "Então"
 
@@ -20614,7 +20512,7 @@ msgstr "Não é um ficheiro CSV. Guarde a planilha como CSV e envie esse ficheir
 msgid "This is not a domain this page can use. Use a name like {example} that is not one of this server’s own addresses."
 msgstr "Esta página não pode usar este domínio. Use um nome como {example} que não seja um dos endereços próprios deste servidor."
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "This is not a JSON object."
 msgstr "Não é um objeto JSON."
@@ -20751,7 +20649,7 @@ msgstr "Esta propriedade já tem um segmento com este nome."
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Esta resposta não será enviada até que um proprietário ou administrador guarde tanto esta regra como a resposta predefinida {title}, ou os bots possam enviar nas definições das chaves de API."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Esta resposta não será enviada até que um proprietário ou administrador guarde a resposta predefinida {title}, ou os bots possam enviar nas definições das chaves de API."
@@ -20966,7 +20864,7 @@ msgstr "Tempo limite"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/status/IncidentForm.tsx
 msgid "Title"
 msgstr "Título"
@@ -21097,7 +20995,7 @@ msgstr "Tendências"
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Trigger"
 msgstr "Acionador"
 
@@ -21221,8 +21119,7 @@ msgid "TXT record"
 msgstr "Registro TXT"
 
 #: src/features/inbox/SourceFilter.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Type"
 msgstr "Tipo"
 
@@ -21271,7 +21168,7 @@ msgstr "Remover atribuição"
 #: src/features/home/HomeWork.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Unassigned"
 msgstr "Sem responsável"
 
@@ -21345,7 +21242,7 @@ msgid "Unfollowed"
 msgstr "Deixou de seguir"
 
 #: src/features/broadcasts/Trigger.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Unit"
 msgstr "Unidade"
 
@@ -21758,9 +21655,9 @@ msgstr "Use-a como token bearer neste servidor."
 msgid "Use letters, digits, - and _, at most 64."
 msgstr "Use letras, dígitos, - e _, no máximo 64."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Use lowercase letters, digits and single dashes."
 msgstr "Utilize letras minúsculas, dígitos e hífenes simples."
 
@@ -21914,10 +21811,6 @@ msgstr "Verify"
 #: src/features/settings/webhooks/SignatureHint.tsx
 msgid "Verify every request before trusting it: the <0>webhook-signature</0> header follows the <1>Standard Webhooks</1> specification, so any of its libraries can check it with the endpoint's secret. Go backends can use the <2>sdk/go/webhook</2> package of the Yuva repository."
 msgstr "Verifique cada requisição antes de confiar nela: o cabeçalho <0>webhook-signature</0> segue a especificação <1>Standard Webhooks</1>, então qualquer biblioteca dela pode conferi-lo com o segredo do endpoint. Backends em Go podem usar o pacote <2>sdk/go/webhook</2> do repositório do Yuva."
-
-#: src/features/settings/SettingsFrame.tsx
-msgid "Version"
-msgstr "Versão"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Versions"
@@ -22158,7 +22051,7 @@ msgstr "à sua espera"
 msgid "Warn about the certificate"
 msgstr "Avisar sobre o certificado"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Warn before it is due"
 msgstr "Avisar antes do prazo"
 
@@ -22218,8 +22111,6 @@ msgstr "Webhook secret for {revealName}"
 
 #: src/app/Palette.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
@@ -22246,7 +22137,7 @@ msgstr "Site"
 msgid "Website addresses"
 msgstr "Endereços de sites"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Website chat"
 msgstr "Chat do site"
@@ -22368,7 +22259,7 @@ msgstr "O que o cliente vê"
 msgid "What the import will do"
 msgstr "O que a importação fará"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "What the team sees."
 msgstr "O que a equipa vê."
 
@@ -22414,7 +22305,6 @@ msgstr "What your e-mailed replies end with, per inbox. Chat replies and notes c
 
 #: src/components/common/FocusChoice.tsx
 #: src/features/settings/workspace/FocusForm.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "What Yuva is for"
 msgstr "Para que serve o Yuva"
 
@@ -22429,7 +22319,7 @@ msgid "What’s new entry"
 msgstr "Entrada de novidades"
 
 #: src/features/broadcasts/ReviewPanel.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "When"
 msgstr "Quando"
 
@@ -22552,7 +22442,7 @@ msgstr "Where new issues go when nobody picks a team, as a team key such as ENG.
 msgid "Where should Yuva send events?"
 msgstr "Para onde o Yuva deve enviar eventos?"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
 msgstr "Onde a API guarda o valor. Letras minúsculas, dígitos e sublinhados; não pode ser alterada."
 
@@ -22608,7 +22498,7 @@ msgstr "Quem responde, onde, e quem está online"
 msgid "Who can reply"
 msgstr "Quem pode responder"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Who can use it"
 msgstr "Quem pode usar"
 
@@ -22645,7 +22535,6 @@ msgstr "Quem envia, e sobre o quê?"
 msgid "Who should take it?"
 msgstr "Quem deve assumir?"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Who you support: name, hours, team, sender"
 msgstr "Quem apoia: nome, horário, equipa, remetente"
@@ -22764,10 +22653,8 @@ msgstr "A trabalhar…"
 #: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/oauth/ConsentPage.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Workspace"
 msgstr "Espaço de trabalho"
 
@@ -23074,7 +22961,6 @@ msgid "Your account is not in a group that may use Yuva. Ask your administrator 
 msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 
 #: src/features/settings/addresses/AddressesPage.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Your addresses"
 msgstr "Os seus endereços"
 
@@ -23167,6 +23053,10 @@ msgstr "Sua organização do Microsoft 365 só permite que um administrador cons
 #: src/features/broadcasts/Composer.tsx
 msgid "Your name"
 msgstr "Seu nome"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Your name, photo, language and sign-in"
+msgstr "O seu nome, foto, idioma e início de sessão"
 
 #: src/features/home/HomeWork.tsx
 msgid "Your open conversations"
@@ -23273,10 +23163,6 @@ msgstr "Seu site"
 msgid "Your workspace asks for these fields on every conversation it closes."
 msgstr "O seu espaço de trabalho pede estes campos em todas as conversas que fecha."
 
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."
-msgstr "O nome do seu espaço de trabalho, durante quanto tempo as conversas fechadas são mantidas e quem pode enviar envios em massa."
-
 #: src/features/account/AccountPage.tsx
 msgid "Your Yuva account"
 msgstr "Sua conta do Yuva"
@@ -23367,10 +23253,6 @@ msgstr "O Yuva não opera um servidor de e-mail: o e-mail do seu domínio é rep
 msgid "Yuva held back a command that would have changed the mailbox"
 msgstr "O Yuva barrou um comando que teria alterado a caixa"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Yuva inbox"
-msgstr "Caixa do Yuva"
-
 #: src/features/migrations/SwitchStep.tsx
 msgid "Yuva mails {address} a short test message. When it reaches Yuva by the new route, the switch works."
 msgstr "O Yuva envia a {address} uma mensagem de teste curta. Quando ela chega ao Yuva pela nova rota, a troca funciona."
@@ -23402,10 +23284,6 @@ msgstr "O Yuva só lê o help desk. O histórico chega em silêncio: sem notific
 #: src/features/migrations/Wizard.tsx
 msgid "Yuva only reads the mailbox. History arrives quietly: no notifications, no auto-replies."
 msgstr "O Yuva só lê a caixa. O histórico chega em silêncio: sem notificações, sem respostas automáticas."
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Yuva only reads the source; nothing there is changed."
-msgstr "A Yuva só lê a origem; nada nela é alterado."
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Yuva only reads. Besides signing in, its connection sends {provider} nothing but read requests, so no ticket, customer or setting changes."
@@ -23478,7 +23356,3 @@ msgstr "Yuva, ir para o início"
 #: src/components/common/text.ts
 msgid "Yuva's own notes cannot be changed."
 msgstr "As notas do próprio Yuva não podem ser alteradas."
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"
-msgstr "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"

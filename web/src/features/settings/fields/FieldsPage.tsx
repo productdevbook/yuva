@@ -1,14 +1,14 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { ChevronDownIcon, ChevronUpIcon, PencilIcon, Trash2Icon } from "lucide-react"
+import { ChevronDownIcon, ChevronUpIcon, PencilIcon, PlusIcon, Trash2Icon } from "lucide-react"
 import { useState } from "react"
 
 import { ErrorLine, useConfirm } from "@/components/common"
 import { Button } from "@/components/ui/button"
 import { byPosition, useFieldTypeText } from "@/features/fields/value"
 import { GeneralHeader, Intro } from "@/features/settings/GeneralTabs"
-import { FieldDialog } from "@/features/settings/fields/FieldDialog"
-import { Card, headButton, Pill, Row, Rows, Section } from "@/features/settings/ui"
+import { FieldForm } from "@/features/settings/fields/FieldForm"
+import { Card, Pill, Row, Rows, Section } from "@/features/settings/ui"
 import { api, unwrap, type CustomField, type CustomFieldObject } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
@@ -24,11 +24,13 @@ function ObjectSection({
   title,
   fields,
   onEdit,
+  form,
 }: {
   object: CustomFieldObject
   title: React.ReactNode
   fields: CustomField[]
   onEdit: (e: Editing) => void
+  form?: React.ReactNode
 }) {
   const { t } = useLingui()
   const qc = useQueryClient()
@@ -71,17 +73,18 @@ function ObjectSection({
       </span>
       <Button
         variant="outline"
-        className={headButton.secondary}
-        disabled={full}
+        disabled={full || !!form}
         onClick={() => onEdit({ field: null, object })}
         data-testid={`field-new-${object}`}
       >
+        <PlusIcon />
         <Trans>New field</Trans>
       </Button>
     </span>
   )
   return (
     <Section title={title} action={add}>
+      {form}
       <Card flush>
         {fields.length === 0 ? (
           <p className="px-4 py-4 text-faint" data-testid={`fields-empty-${object}`}>
@@ -177,9 +180,18 @@ export function FieldsPage() {
   const of = (o: CustomFieldObject) => sorted.filter((f) => f.object === o)
   const nextPosition = (o: CustomFieldObject) =>
     Math.min(10000, of(o).reduce((m, f) => Math.max(m, f.position), -STEP) + STEP)
+  const form = editing && (
+    <FieldForm
+      key={editing.field?.id ?? editing.object}
+      field={editing.field}
+      object={editing.object}
+      nextPosition={nextPosition(editing.object)}
+      onClose={() => setEditing(null)}
+    />
+  )
   return (
     <>
-      <GeneralHeader current="fields" />
+      <GeneralHeader current="fields" plain />
       <Intro>
         <Trans>
           Typed values your team keeps on conversations and contacts, such as an order number or a plan. Agents edit
@@ -192,22 +204,15 @@ export function FieldsPage() {
         title={<Trans>Conversation fields</Trans>}
         fields={of("conversation")}
         onEdit={setEditing}
+        form={editing?.object === "conversation" && form}
       />
       <ObjectSection
         object="contact"
         title={<Trans>Contact fields</Trans>}
         fields={of("contact")}
         onEdit={setEditing}
+        form={editing?.object === "contact" && form}
       />
-      {editing && (
-        <FieldDialog
-          key={editing.field?.id ?? editing.object}
-          field={editing.field}
-          object={editing.object}
-          nextPosition={nextPosition(editing.object)}
-          onClose={() => setEditing(null)}
-        />
-      )}
     </>
   )
 }

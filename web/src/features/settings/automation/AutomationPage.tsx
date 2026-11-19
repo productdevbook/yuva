@@ -10,7 +10,7 @@ export function AutomationPage() {
   if (!canManage) return <Navigate to="/settings/profile" replace />
   return (
     <>
-      <GeneralHeader current="automation" />
+      <GeneralHeader current="automation" plain />
       <RuleList
         intro={
           <Trans>

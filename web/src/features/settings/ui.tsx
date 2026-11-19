@@ -1,30 +1,22 @@
-import { Trans, useLingui } from "@lingui/react/macro"
+import { Trans } from "@lingui/react/macro"
 import { ChevronRightIcon } from "lucide-react"
 import { createContext, useContext } from "react"
 import { Link, useNavigate, type To } from "react-router"
 
-import { colorFor, ErrorLine, PageHeading, PageTop } from "@/components/common"
+import { colorFor, ErrorLine, PageTop } from "@/components/common"
 import { OverflowTabs, pageTabClass } from "@/components/common/OverflowTabs"
 import { useSaveBarEntry } from "@/components/common/SaveBar"
 import { initials } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
+import { Card as UICard } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
-import { PageBackLink } from "@/components/common/PageLayout"
 
-const Band = createContext(false)
+const TitleSlot = createContext<((el: HTMLElement | null) => void) | null>(null)
 
-export type FlatFrame = { trail: React.ReactNode; slot: (el: HTMLElement | null) => void }
-
-const Flat = createContext<FlatFrame | null>(null)
-
-export const FlatSettingsProvider = Flat.Provider
-
-export function useFlatSettings() {
-  return useContext(Flat)
-}
+export const TitleSlotProvider = TitleSlot.Provider
 
 export function Page({
   testId,
@@ -37,42 +29,21 @@ export function Page({
   className?: string
   children: React.ReactNode
 }) {
-  const flat = useContext(Flat)
-  if (flat)
-    return (
-      <div
-        className={cn(
-          "flex w-full flex-col gap-4",
-          width === "form" ? "[&>:not([data-page-header])]:max-w-[760px]" : "max-w-[1100px]",
-          className
-        )}
-        data-flat=""
-        data-testid={testId}
-      >
-        {children}
-      </div>
-    )
   return (
-    <main className="min-h-0 flex-1 bg-background in-data-frame:overflow-y-auto" data-testid={testId}>
-      <Band.Provider value>
-        <div
-          className={cn(
-            "flex w-full flex-col gap-4 px-6 pb-16 phone:px-4",
-            width === "form" && "[&>:not([data-page-header])]:w-full [&>:not([data-page-header])]:max-w-[760px]",
-            className
-          )}
-        >
-          {children}
-        </div>
-      </Band.Provider>
-    </main>
+    <div
+      className={cn(
+        "flex w-full min-w-0 flex-col gap-4 pb-4 *:mt-0",
+        width === "form" ? "[&>:not([data-page-header])]:max-w-[760px]" : "max-w-[1100px]",
+        className
+      )}
+      data-testid={testId}
+    >
+      {children}
+    </div>
   )
 }
 
-export const headButton = {
-  primary: "h-[34px] rounded-lg bg-foreground px-3.5 text-background hover:bg-foreground/85",
-  secondary: "h-[34px] rounded-lg border-input bg-background px-3.5 font-normal hover:border-faint",
-}
+export const headButton = { primary: "", secondary: "" }
 
 export function PageHeader({
   title,
@@ -91,62 +62,26 @@ export function PageHeader({
   tabs?: React.ReactNode
   children?: React.ReactNode
 }) {
-  const { t } = useLingui()
-  const band = useContext(Band)
-  const flat = useContext(Flat)
+  const slot = useContext(TitleSlot)
   const navigate = useNavigate()
-  const to = back === undefined ? { to: "/settings", label: t`Settings` } : back
-  useHotkeys({ Escape: () => back && navigate(back.to) }, !!flat && !!back)
-  if (flat)
-    return (
-      <div data-page-header className="contents">
-        <PageTop
-          back={back ? { label: back.label, to: back.to, testId: "settings-back" } : undefined}
-          actions={action}
-          slot={flat.slot}
-        >
-          {flat.trail}
-        </PageTop>
-        <div data-page-header className="mt-3 flex flex-col gap-3">
-          {eyebrow && <p className="m-0 text-small text-muted-foreground">{eyebrow}</p>}
-          <PageHeading title={title} lede={description} />
-          {tabs && <div className="mt-2">{tabs}</div>}
-          {children}
-        </div>
-      </div>
-    )
+  useHotkeys({ Escape: () => back && navigate(back.to) }, !!back)
   return (
-    <header
-      data-page-header
-      className={cn(
-        "flex flex-col",
-        band &&
-          "sticky top-0 z-10 -mx-6 mb-2 gap-3 border-b bg-background px-6 pt-5 phone:static phone:-mx-4 phone:px-4 phone:pt-3"
-      )}
-    >
-      {to && (
-        <PageBackLink
-          to={to.to}
-          label={to.label}
-          className={cn(
-            "w-fit items-center gap-1.5 text-body text-faint transition-colors hover:text-foreground",
-            band ? "-mb-1" : "mb-4.5",
-            back === undefined ? "hidden" : "inline-flex"
-          )}
-          testId="settings-back"
-        />
-      )}
-      {eyebrow && <p className={cn("text-small text-faint", !band && "mb-2.5")}>{eyebrow}</p>}
-      <div className={cn("flex flex-wrap items-center gap-3", band && !tabs && "pb-4")}>
-        <div className="flex min-w-0 flex-1 basis-64 flex-col">
-          <h1 className="min-w-0 text-[22px] leading-[1.3] font-semibold tracking-[-0.02em] break-words">{title}</h1>
-          {description && <div className="max-w-2xl text-body leading-[1.3] text-muted-foreground">{description}</div>}
+    <div data-page-header className="flex flex-col gap-3">
+      {back ? <PageTop back={{ label: back.label, to: back.to, testId: "settings-back" }} /> : <div className="h-3" />}
+      <header className="flex flex-wrap items-center gap-x-4 gap-y-3">
+        <div className="flex min-w-0 flex-[1_1_240px] flex-col gap-0.5">
+          {eyebrow && <p className="m-0 text-small text-muted-foreground">{eyebrow}</p>}
+          <h1 className="m-0 min-w-0 text-[22px] leading-7 font-semibold tracking-[-0.01em] break-words">{title}</h1>
+          {description && <div className="max-w-[680px] text-body text-muted-foreground">{description}</div>}
         </div>
-        {action && <div className="flex shrink-0 flex-wrap items-center gap-3">{action}</div>}
-      </div>
-      {tabs && <div className={cn(!band && "mt-3")}>{tabs}</div>}
+        <div className="flex max-w-full min-w-0 flex-wrap items-center gap-2 empty:hidden">
+          {slot && <div ref={slot} className="flex flex-wrap items-center gap-2 empty:hidden" />}
+          {action}
+        </div>
+      </header>
+      {tabs}
       {children}
-    </header>
+    </div>
   )
 }
 
@@ -161,10 +96,7 @@ export type PageTab = {
 export { pageTabClass }
 
 export function PageTabs({ items, current, label }: { items: PageTab[]; current: string; label: string }) {
-  const inBand = useContext(Band)
-  const flat = useContext(Flat)
-  const band = inBand && !flat
-  return <OverflowTabs label={label} current={current} items={items} className={cn(!band && "border-b")} />
+  return <OverflowTabs label={label} current={current} items={items} className="border-b" />
 }
 
 export function StatTile({
@@ -408,26 +340,22 @@ export function Block({
       )}
     </>
   )
-  const cls = cn(
-    "flex flex-col overflow-hidden rounded-xl border bg-card",
-    flatBox,
-    tone === "danger" && "border-destructive/30"
-  )
+  const cls = cn(cardBase, flatBox, tone === "danger" && "ring-destructive/30")
   return onSubmit ? (
     <form
-      className={cls}
+      className="flex min-w-0 flex-col"
       data-testid={testId}
       onSubmit={(e) => {
         e.preventDefault()
         onSubmit()
       }}
     >
-      {body}
+      <UICard className={cls}>{body}</UICard>
     </form>
   ) : (
-    <section className={cls} data-testid={testId}>
+    <UICard className={cls} data-testid={testId}>
       {body}
-    </section>
+    </UICard>
   )
 }
 
@@ -490,16 +418,12 @@ type CardProps = {
   className?: string
 }
 
-const flatBox =
-  "in-data-flat:overflow-visible in-data-flat:rounded-none in-data-flat:border-x-0 in-data-flat:border-line-soft in-data-flat:bg-transparent"
+const cardBase = "gap-0 py-0 shadow-none"
 
-const cardClass = (p: CardProps) =>
-  cn(
-    "flex flex-col overflow-hidden rounded-xl border bg-card",
-    flatBox,
-    p.tone === "danger" && "border-destructive/30",
-    p.className
-  )
+const flatBox =
+  "in-data-flat:overflow-visible in-data-flat:rounded-none in-data-flat:border-y in-data-flat:border-line-soft in-data-flat:bg-transparent in-data-flat:ring-0"
+
+const cardClass = (p: CardProps) => cn(cardBase, flatBox, p.tone === "danger" && "ring-destructive/30", p.className)
 
 function CardBody(p: CardProps) {
   return (
@@ -524,22 +448,24 @@ export function Card({
 }: CardProps & Omit<React.ComponentProps<"div">, "children">) {
   const p = { children, footer, flush, tone, className }
   return (
-    <div className={cardClass(p)} {...rest}>
+    <UICard className={cardClass(p)} {...rest}>
       <CardBody {...p} />
-    </div>
+    </UICard>
   )
 }
 
 export function FormCard({ onSubmit, ...p }: CardProps & { onSubmit: () => void }) {
   return (
     <form
-      className={cardClass(p)}
+      className="flex min-w-0 flex-col"
       onSubmit={(e) => {
         e.preventDefault()
         onSubmit()
       }}
     >
-      <CardBody {...p} />
+      <UICard className={cardClass(p)}>
+        <CardBody {...p} />
+      </UICard>
     </form>
   )
 }

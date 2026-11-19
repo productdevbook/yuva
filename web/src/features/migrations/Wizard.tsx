@@ -1,19 +1,9 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { ArrowDownIcon, LifeBuoyIcon, MailIcon, ShieldCheckIcon } from "lucide-react"
+import { ShieldCheckIcon } from "lucide-react"
 import { useEffect, useRef } from "react"
 import { Link, Navigate, useParams, useSearchParams } from "react-router"
 
-import {
-  BackArrow,
-  ErrorLine,
-  InfoSection,
-  KV,
-  PageTop,
-  StepBar,
-  SummaryList,
-  WizardFrame,
-  YuvaMark,
-} from "@/components/common"
+import { BackArrow, ErrorLine, StepBar } from "@/components/common"
 import { formatDate } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { useNumber } from "@/features/broadcasts/BroadcastParts"
@@ -30,9 +20,8 @@ import { SourceStep } from "@/features/migrations/SourceStep"
 import { SwitchStep } from "@/features/migrations/SwitchStep"
 import { isHelpdesk, useFormatName, useMigrationText } from "@/features/migrations/text"
 import { UploadStep } from "@/features/migrations/UploadStep"
-import { SettingsAside, SettingsLayout, SettingsTrail } from "@/features/settings/SettingsFrame"
-import { PreviewCaption } from "@/features/setup/previews"
-import { useIsPhone } from "@/hooks/use-media-query"
+import { SettingsLayout } from "@/features/settings/SettingsFrame"
+import { Page, PageHeader } from "@/features/settings/ui"
 import type { Migration, MigrationPreset } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { useInboxes } from "@/lib/workspace"
@@ -86,91 +75,47 @@ function reachable(step: StepKey, m: Migration) {
   return step === currentStep(m)
 }
 
-function useStepNames() {
-  const { t } = useLingui()
-  return {
-    source: t`Source`,
-    connect: t`Connect`,
-    choose: t`Choose`,
-    map: t`Map`,
-    review: t`Review`,
-    copy: t`Copy`,
-    switch: t`Switch`,
-    done: t`Done`,
-  } satisfies Record<StepKey, string>
+const LINE = ["source", "connect", "choose", "start"] as const
+type LineKey = (typeof LINE)[number]
+const LINE_OF: Partial<Record<StepKey, LineKey>> = {
+  source: "source",
+  connect: "connect",
+  choose: "choose",
+  map: "choose",
+  review: "start",
 }
 
-export function WizardLayout(props: {
+export function WizardLayout({
+  step,
+  m,
+  preset,
+  address,
+  children,
+}: {
   step: StepKey
   m?: Migration
   preset?: MigrationPreset
   address?: string
   children: React.ReactNode
 }) {
-  const phone = useIsPhone()
-  return phone ? <StackedWizard {...props} /> : <FlatWizard {...props} />
-}
-
-function useStepLinks(step: StepKey, m?: Migration, preset?: MigrationPreset) {
-  const names = useStepNames()
+  const { t } = useLingui()
   const steps = stepsFor(isFile(m, preset))
   const index = steps.indexOf(step)
   const prev = index > 0 ? steps[index - 1] : undefined
-  const back = m && prev && reachable(prev, m) ? `/migrations/${m.id}/${prev}` : undefined
-  const href = (key: StepKey) => (m && reachable(key, m) ? `/migrations/${m.id}/${key}` : undefined)
-  return { names, steps, index, back, href }
-}
-
-function StackedWizard({
-  step,
-  m,
-  preset,
-  address,
-  children,
-}: {
-  step: StepKey
-  m?: Migration
-  preset?: MigrationPreset
-  address?: string
-  children: React.ReactNode
-}) {
-  const { t } = useLingui()
-  const { names, steps, back, href } = useStepLinks(step, m, preset)
-  return (
-    <WizardFrame
-      current={step}
-      steps={steps.map((s) => ({ key: s, label: names[s] }))}
-      stepHref={(key) => href(key as StepKey)}
-      stepsLabel={t`Migration steps`}
-      back={back ?? (step === "source" ? "/settings/migrations" : undefined)}
-      leave={
-        <Button variant="ghost" size="sm" render={<Link to="/settings/migrations" />} data-testid="migration-close">
-          <Trans>Close</Trans>
-        </Button>
-      }
-      preview={<Journey m={m} preset={preset} address={address ?? m?.source_address} />}
-    >
-      {children}
-    </WizardFrame>
-  )
-}
-
-function FlatWizard({
-  step,
-  m,
-  preset,
-  address,
-  children,
-}: {
-  step: StepKey
-  m?: Migration
-  preset?: MigrationPreset
-  address?: string
-  children: React.ReactNode
-}) {
-  const { t } = useLingui()
-  const { names, steps, index, back, href } = useStepLinks(step, m, preset)
+  const back = m && prev && LINE_OF[step] && reachable(prev, m) ? `/migrations/${m.id}/${prev}` : undefined
   const journey = useJourney(m, preset, address ?? m?.source_address)
+  const line = LINE_OF[step]
+  const names: Record<LineKey, string> = {
+    source: t`Source`,
+    connect: t`Connect`,
+    choose: t`Choose`,
+    start: t`Start`,
+  }
+  const lineHref = (key: string) => {
+    if (!m) return undefined
+    const target = steps.find((s) => LINE_OF[s] === key && reachable(s, m))
+    return target ? `/migrations/${m.id}/${target}` : undefined
+  }
   const main = useRef<HTMLDivElement>(null)
   const first = useRef(true)
   useEffect(() => {
@@ -184,47 +129,76 @@ function FlatWizard({
   }, [step])
   return (
     <SettingsLayout>
-      <PageTop back={{ label: t`Move to Yuva`, to: "/settings/migrations", testId: "migration-close" }}>
-        <SettingsTrail place="migrations" name={journey.from} />
-      </PageTop>
-      <div ref={main} className="mt-3 flex max-w-[720px] min-w-0 flex-col" data-testid="setup">
-        <p className="sr-only" data-testid="setup-step">
-          <StepOf step={index + 1} count={steps.length} />
-          {" · "}
-          {names[step]}
-        </p>
-        <StepBar
-          steps={steps.map((s) => ({ key: s, label: names[s] }))}
-          current={step}
-          stepHref={(key) => href(key as StepKey)}
-          label={t`Migration steps`}
-          className="mb-8"
+      <Page width="form" testId="setup">
+        <PageHeader
+          back={{ label: t`Imports`, to: "/settings/migrations" }}
+          title={m ? journey.from : <Trans>New import</Trans>}
+          description={
+            m ? (
+              <>
+                {journey.provider} → {journey.to}
+              </>
+            ) : (
+              <Trans>Copy the history of a mailbox or help desk into Yuva.</Trans>
+            )
+          }
         />
-        {back && (
-          <Link
-            to={back}
-            className="mb-5 inline-flex w-fit items-center gap-1.5 text-small text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-            data-testid="setup-back"
-          >
-            <BackArrow className="size-3.5" />
-            <Trans>Back</Trans>
-          </Link>
-        )}
-        <div className="max-w-[640px]">{children}</div>
-      </div>
-      <SettingsAside>
-        <InfoSection title={journey.provider} testId="migration-journey">
-          <KV label={t`Source`} value={journey.from} />
-          <KV label={t`Yuva inbox`} value={journey.to} />
-          {journey.facts.map(([label, value]) => (
-            <KV key={label} label={label} value={value} />
-          ))}
-        </InfoSection>
-        <InfoSection title={t`Read-only`}>
-          <p className="m-0 text-small leading-5 text-muted-foreground">{journey.note}</p>
-        </InfoSection>
-      </SettingsAside>
+        <div ref={main} className="flex min-w-0 flex-col">
+          {line ? (
+            <>
+              <p className="sr-only" data-testid="setup-step">
+                <StepOf step={LINE.indexOf(line) + 1} count={LINE.length} />
+                {" · "}
+                {names[line]}
+              </p>
+              <StepBar
+                steps={LINE.map((k) => ({ key: k, label: names[k] }))}
+                current={line}
+                stepHref={lineHref}
+                label={t`Import steps`}
+                className="mb-6"
+              />
+              <p
+                className="mb-6 flex items-start gap-2 text-small text-muted-foreground"
+                data-testid="migration-read-only"
+              >
+                <ShieldCheckIcon className="mt-0.5 size-3.5 shrink-0 text-success" aria-hidden />
+                {journey.note}
+              </p>
+              {back && (
+                <Link
+                  to={back}
+                  className="mb-5 inline-flex w-fit items-center gap-1.5 text-small text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                  data-testid="setup-back"
+                >
+                  <BackArrow className="size-3.5" />
+                  <Trans>Back</Trans>
+                </Link>
+              )}
+            </>
+          ) : (
+            m && <Facts items={journey.facts} />
+          )}
+          {children}
+        </div>
+      </Page>
     </SettingsLayout>
+  )
+}
+
+function Facts({ items }: { items: [string, string][] }) {
+  return (
+    <dl
+      className="mb-6 grid grid-cols-2 gap-x-4 gap-y-2.5 rounded-xl border bg-card px-4 py-3 sm:grid-cols-4"
+      data-testid="migration-journey"
+    >
+      {items.map(([label, value]) => (
+        <div key={label} className="flex min-w-0 flex-col gap-0.5">
+          <dt className="text-caption text-muted-foreground">{label}</dt>
+          <dd className="m-0 truncate text-body">{value}</dd>
+        </div>
+      ))}
+    </dl>
   )
 }
 
@@ -283,46 +257,6 @@ function useJourney(m?: Migration, preset?: MigrationPreset, address?: string) {
     facts,
     note,
   }
-}
-
-function Journey({ m, preset, address }: { m?: Migration; preset?: MigrationPreset; address?: string }) {
-  const { file, desk, provider, from, to, facts, note } = useJourney(m, preset, address)
-  return (
-    <>
-      <div
-        className="flex w-full max-w-sm flex-col gap-4 rounded-2xl border bg-card p-5 shadow-[0_24px_60px_-28px_rgb(15_23_42/0.35)]"
-        data-testid="migration-journey"
-      >
-        <div className="flex items-center gap-3">
-          <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-surface text-muted-foreground [&_svg]:size-[18px]">
-            {desk ? <LifeBuoyIcon /> : <MailIcon />}
-          </span>
-          <span className="min-w-0">
-            <span className="block text-caption text-faint">{provider}</span>
-            <span className="block truncate font-medium">{from}</span>
-          </span>
-        </div>
-        <ArrowDownIcon className="ms-3 size-4 text-faint" aria-hidden="true" />
-        <div className="flex items-center gap-3">
-          <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-brand-wash">
-            <YuvaMark className="size-5" />
-          </span>
-          <span className="min-w-0">
-            <span className="block text-caption text-faint">
-              <Trans>Yuva inbox</Trans>
-            </span>
-            <span className="block truncate font-medium">{to}</span>
-          </span>
-        </div>
-        {facts.length > 0 && <SummaryList items={facts} className="border-t pt-4" />}
-        <p className="flex items-center gap-2 border-t pt-4 text-small text-muted-foreground">
-          <ShieldCheckIcon className="size-4 shrink-0 text-success" />
-          {file ? <Trans>Access to your mailbox: none</Trans> : <Trans>Changes made to {provider}: none</Trans>}
-        </p>
-      </div>
-      <PreviewCaption>{note}</PreviewCaption>
-    </>
-  )
 }
 
 export function NewMigrationPage() {

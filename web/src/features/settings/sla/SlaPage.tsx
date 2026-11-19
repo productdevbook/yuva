@@ -16,13 +16,13 @@ import { Navigate } from "react-router"
 import { ErrorLine, useConfirm } from "@/components/common"
 import { Button } from "@/components/ui/button"
 import { GeneralHeader, Intro } from "@/features/settings/GeneralTabs"
-import { Card, headButton, Pill, Row, Rows } from "@/features/settings/ui"
+import { Card, Pill, Row, Rows } from "@/features/settings/ui"
 import { api, unwrap, type SlaPolicy } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { useSlaPolicies } from "@/lib/workspace"
-import { PolicyDialog } from "@/features/settings/sla/PolicyDialog"
+import { PolicyForm } from "@/features/settings/sla/PolicyForm"
 
 const LIMIT = 100
 
@@ -199,20 +199,14 @@ function SlaContent() {
 
   return (
     <>
-      <GeneralHeader current="sla" />
+      <GeneralHeader current="sla" plain />
       <Intro
         action={
           <span className="flex items-center gap-3">
             <span className="text-small text-faint tabular-nums" data-testid="sla-count">
               {policies.length}/{LIMIT}
             </span>
-            <Button
-              variant="outline"
-              className={headButton.secondary}
-              disabled={full}
-              onClick={() => setEditing("new")}
-              data-testid="sla-new"
-            >
+            <Button disabled={full || !!editing} onClick={() => setEditing("new")} data-testid="sla-new">
               <Trans>New policy</Trans>
             </Button>
           </span>
@@ -224,6 +218,13 @@ function SlaContent() {
           inbox.
         </Trans>
       </Intro>
+      {editing && (
+        <PolicyForm
+          key={editing === "new" ? "new" : editing.id}
+          policy={editing === "new" ? null : editing}
+          onClose={() => setEditing(null)}
+        />
+      )}
       <ErrorLine error={query.error} />
       <Card flush>
         {policies.length === 0 ? (
@@ -264,13 +265,6 @@ function SlaContent() {
         <ErrorLine error={remove.error ?? reorder.error} className="px-5 pb-4" />
       </Card>
       {confirmDialog}
-      {editing && (
-        <PolicyDialog
-          key={editing === "new" ? "new" : editing.id}
-          policy={editing === "new" ? null : editing}
-          onClose={() => setEditing(null)}
-        />
-      )}
     </>
   )
 }

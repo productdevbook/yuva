@@ -4,7 +4,6 @@ import { Outlet, useLocation } from "react-router"
 import { ProductsHome } from "@/features/settings/ProductsPage"
 import { SettingsLayout } from "@/features/settings/SettingsFrame"
 import { Page } from "@/features/settings/ui"
-import { useIsPhone } from "@/hooks/use-media-query"
 import { api, unwrap } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
@@ -26,23 +25,22 @@ function isWide(pathname: string) {
 
 export function SettingsPane() {
   const { pathname } = useLocation()
-  const phone = useIsPhone()
   const own = pathname === "/settings/workspace" || /^\/settings\/inboxes\/[^/]+\/channels\/[^/]+$/.test(pathname)
-  const body = own ? (
-    <Outlet />
-  ) : (
-    <Page testId="settings" width={isWide(pathname) ? "full" : "form"}>
-      <Outlet />
-    </Page>
+  return (
+    <SettingsLayout>
+      {own ? (
+        <Outlet />
+      ) : (
+        <Page testId="settings" width={isWide(pathname) ? "full" : "form"}>
+          <Outlet />
+        </Page>
+      )}
+    </SettingsLayout>
   )
-  return phone ? body : <SettingsLayout>{body}</SettingsLayout>
 }
 
 export function SettingsHome() {
-  const phone = useIsPhone()
-  return phone ? (
-    <ProductsHome />
-  ) : (
+  return (
     <SettingsLayout>
       <ProductsHome />
     </SettingsLayout>

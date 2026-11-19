@@ -1,17 +1,18 @@
 import { Plural, Trans, useLingui } from "@lingui/react/macro"
-import { TriangleAlertIcon } from "lucide-react"
+import { PlusIcon, TriangleAlertIcon } from "lucide-react"
 import { useState } from "react"
-import { Link, useSearchParams } from "react-router"
+import { Link, useNavigate, useSearchParams } from "react-router"
 
 import { ChannelIcon, InboxMark, Notice } from "@/components/common"
 import { EmptyBox } from "@/components/common/EmptyBox"
-import { SettingsStrip } from "@/components/common/SettingsStrip"
+import { FilterMenu, FilterRow } from "@/components/common/ListBox"
 import { formatDuration, useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
+import { Card as UICard } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
-import { AddProductDialog } from "@/features/settings/AddProductDialog"
-import { AddChannelDialog } from "@/features/settings/channels/AddChannelDialog"
+import { AddProductForm } from "@/features/settings/AddProductForm"
+import { AddChannelForm } from "@/features/settings/channels/AddChannelForm"
 import { ChannelSummary } from "@/features/settings/channels/ChannelSummary"
 import {
   channelAction,
@@ -22,11 +23,10 @@ import {
 } from "@/features/settings/channels/ChannelState"
 import { PersonalMailboxes } from "@/features/settings/inboxes/Mailbox"
 import { useInboxChannels } from "@/features/settings/SettingsColumn"
-import { Card, CardHead, headButton, HeadLink, Page, PageHeader, PageTabs } from "@/features/settings/ui"
+import { Card, CardHead, headButton, HeadLink, Page, PageHeader } from "@/features/settings/ui"
 import { useTab } from "@/features/settings/useTab"
 import type { BusinessHours, Channel, Inbox, Weekday } from "@/lib/api"
 import { useSession } from "@/lib/session"
-import { cn } from "@/lib/utils"
 import { managesInbox } from "@/lib/mailbox"
 import { useInboxMembers, useLockedMailboxes } from "@/lib/workspace"
 
@@ -126,11 +126,8 @@ function ProductCard({ inbox, channels }: { inbox: Inbox; channels?: Channel[] }
   const domain = channelDomain(channels)
   const scheduled = openNow(inbox.business_hours, inbox.timezone)
   return (
-    <li
-      className="flex flex-col overflow-hidden rounded-xl border bg-card in-data-flat:rounded-none in-data-flat:border-x-0 in-data-flat:border-b-0 in-data-flat:border-line-soft in-data-flat:bg-transparent in-data-flat:pb-3"
-      data-testid="product-card"
-    >
-      <div className="flex items-center gap-3 border-b px-[18px] py-4 in-data-flat:border-b-0 in-data-flat:px-1 in-data-flat:pb-2">
+    <UICard className="gap-0 py-0 shadow-none" data-testid="product-card">
+      <div className="flex items-center gap-3 border-b px-[18px] py-4">
         <InboxMark name={inbox.name} color={inbox.branding.color} className="size-10 rounded-[10px] text-[18px]" />
         <div className="flex min-w-0 flex-1 flex-col leading-[1.3]">
           <span className="truncate text-[16px] font-semibold">{inbox.name}</span>
@@ -156,7 +153,7 @@ function ProductCard({ inbox, channels }: { inbox: Inbox; channels?: Channel[] }
           </Button>
         )}
       </div>
-      <dl className="grid grid-cols-2 gap-x-4 gap-y-2.5 px-[18px] pt-3.5 pb-3 in-data-flat:px-1 in-data-flat:pt-1 in-data-flat:lg:grid-cols-4">
+      <dl className="grid grid-cols-2 gap-x-4 gap-y-2.5 px-[18px] pt-3.5 pb-3">
         <Fact label={<Trans>Language</Trans>}>{language(inbox.default_locale, i18n.locale)}</Fact>
         <Fact label={<Trans>Hours</Trans>}>
           {scheduled && <span aria-hidden className="size-2 shrink-0 rounded-full bg-success" />}
@@ -181,7 +178,7 @@ function ProductCard({ inbox, channels }: { inbox: Inbox; channels?: Channel[] }
           </Fact>
         )}
       </dl>
-      <div className="mt-auto flex flex-col gap-2 border-t bg-surface/50 px-[18px] py-3.5 in-data-flat:border-t-0 in-data-flat:bg-transparent in-data-flat:px-1 in-data-flat:pt-1">
+      <div className="mt-auto flex flex-col gap-2 border-t bg-surface/50 px-[18px] py-3.5">
         {channels === undefined ? (
           <Skeleton className="h-5 w-24" />
         ) : channels.length === 0 ? (
@@ -205,7 +202,7 @@ function ProductCard({ inbox, channels }: { inbox: Inbox; channels?: Channel[] }
           </ul>
         )}
       </div>
-    </li>
+    </UICard>
   )
 }
 
@@ -275,8 +272,9 @@ function ChannelGroup({ inbox, channels, only }: { inbox: Inbox; channels?: Chan
 }
 
 export function ProductsHome() {
-  const { t } = useLingui()
+  const { t, i18n } = useLingui()
   const { canManage } = useSession()
+  const navigate = useNavigate()
   const [params] = useSearchParams()
   const [inboxId] = useInboxFilter()
   const [adding, setAdding] = useState<"product" | "channel" | null>(null)
@@ -288,11 +286,14 @@ export function ProductsHome() {
   const loaded = inboxes.every((x) => x.channels !== undefined)
   const everyChannel = inboxes.flatMap((x) => x.channels ?? [])
   const attention = everyChannel.filter(needsAttention).length
+  const num = new Intl.NumberFormat(i18n.locale)
+  const count = (n: number) => (loaded ? ` · ${num.format(n)}` : "")
+  const close = () => setAdding(null)
   return (
     <Page testId="settings-home">
       <PageHeader
         back={false}
-        title={view === "channels" ? <Trans>Channels</Trans> : <Trans>Products</Trans>}
+        title={view === "channels" ? <Trans>Inboxes and channels</Trans> : <Trans>Products</Trans>}
         description={
           view === "channels" ? (
             <Trans>How messages reach each product</Trans>
@@ -304,49 +305,44 @@ export function ProductsHome() {
           canManage &&
           (view === "channels" ? (
             inboxes.length > 0 && (
-              <Button className={headButton.primary} onClick={() => setAdding("channel")} data-testid="channels-add">
+              <Button onClick={() => setAdding("channel")} disabled={!!adding} data-testid="channels-add">
+                <PlusIcon />
                 <Trans>Add channel</Trans>
               </Button>
             )
           ) : (
-            <Button className={headButton.primary} onClick={() => setAdding("product")} data-testid="products-add">
+            <Button onClick={() => setAdding("product")} disabled={!!adding} data-testid="products-add">
+              <PlusIcon />
               <Trans>Add product</Trans>
             </Button>
           ))
         }
-        tabs={
-          view === "channels" && (
-            <PageTabs
+      >
+        {view === "channels" && everyChannel.length > 0 && (
+          <FilterRow testId="channels-filters">
+            <FilterMenu
+              value={tab === "all" ? "" : tab}
+              onChange={(v) => navigate(to(v === "attention" ? "attention" : "all"))}
+              options={[{ value: "attention", label: t`Needs attention` + count(attention) }]}
+              anyLabel={t`All channels` + count(everyChannel.length)}
               label={t`Show`}
-              current={tab}
-              items={[
-                {
-                  key: "all",
-                  to: to("all"),
-                  label: t`All channels`,
-                  count: loaded ? everyChannel.length : undefined,
-                  testId: "channels-tab-all",
-                },
-                {
-                  key: "attention",
-                  to: to("attention"),
-                  label: t`Needs attention`,
-                  count: loaded ? attention : undefined,
-                  testId: "channels-tab-attention",
-                },
-              ]}
+              testId="channels-show"
             />
-          )
-        }
-      />
-      <SettingsStrip current={view} />
+          </FilterRow>
+        )}
+      </PageHeader>
+      {adding === "product" && <AddProductForm onClose={close} />}
+      {adding === "channel" && (
+        <AddChannelForm inboxes={inboxes.map((x) => x.inbox)} initial={inboxId || undefined} onClose={close} />
+      )}
       {inboxes.length === 0 && locked.length === 0 ? (
         <EmptyBox
           title={<Trans>No products yet</Trans>}
           testId="products-empty"
           actions={
-            canManage && (
-              <Button className={headButton.primary} onClick={() => setAdding("product")}>
+            canManage &&
+            !adding && (
+              <Button onClick={() => setAdding("product")}>
                 <Trans>Add product</Trans>
               </Button>
             )
@@ -379,7 +375,7 @@ export function ProductsHome() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className={cn("bg-background")}
+                  className="bg-background"
                   render={<Link to="/settings?view=channels&tab=attention" />}
                 >
                   <Trans>Open channels</Trans>
@@ -387,24 +383,13 @@ export function ProductsHome() {
               </div>
             </Notice>
           )}
-          <ul
-            className="grid gap-4 lg:grid-cols-2 in-data-flat:gap-0 in-data-flat:lg:grid-cols-1"
-            data-testid="settings-products"
-          >
+          <div className="grid gap-4 lg:grid-cols-2" data-testid="settings-products">
             {inboxes.map(({ inbox, channels }) => (
               <ProductCard key={inbox.id} inbox={inbox} channels={channels} />
             ))}
-          </ul>
+          </div>
           {!inboxId && <PersonalMailboxes items={locked} />}
         </>
-      )}
-      {adding === "product" && <AddProductDialog onClose={() => setAdding(null)} />}
-      {adding === "channel" && (
-        <AddChannelDialog
-          inboxes={inboxes.map((x) => x.inbox)}
-          initial={inboxId || undefined}
-          onClose={() => setAdding(null)}
-        />
       )}
     </Page>
   )

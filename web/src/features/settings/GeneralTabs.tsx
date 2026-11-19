@@ -1,141 +1,18 @@
-import { Trans, useLingui } from "@lingui/react/macro"
-
 import { TopPortal } from "@/components/common"
-import { SettingsStrip } from "@/components/common/SettingsStrip"
-import { useMigrations } from "@/features/migrations/queries"
-import { useAutomationRules } from "@/features/settings/automation/queries"
-import { useSettingsNames } from "@/features/settings/SettingsFrame"
-import { PageHeader, PageTabs, useFlatSettings, type PageTab } from "@/features/settings/ui"
-import { useSession } from "@/lib/session"
-import { useCannedReplies, useCustomFields, useLabels, useMacros, useSlaPolicies, useTeams } from "@/lib/workspace"
+import { useSettingsAbout, useSettingsNames, type SettingsPlace } from "@/features/settings/SettingsFrame"
+import { PageHeader } from "@/features/settings/ui"
 
-type Tab =
-  | "workspace"
-  | "labels"
-  | "canned-replies"
-  | "macros"
-  | "teams"
-  | "fields"
-  | "sla"
-  | "automation"
-  | "migrations"
-  | "audit-log"
-
-export function useGeneralTabItems(): PageTab[] {
-  const { t } = useLingui()
-  const { canManage, isOwner } = useSession()
-  const labels = useLabels().data
-  const canned = useCannedReplies().data
-  const macros = useMacros().data
-  const teams = useTeams().data
-  const fields = useCustomFields().data
-  const sla = useSlaPolicies().data
-  const rules = useAutomationRules().data
-  const moves = useMigrations().data?.pages[0]?.items
-  return [
-    { key: "workspace", to: "/settings/workspace", label: t`Workspace`, testId: "general-tab-workspace" },
-    {
-      key: "labels",
-      to: "/settings/labels",
-      label: t`Labels`,
-      count: labels?.length,
-      testId: "general-tab-labels",
-    },
-    {
-      key: "canned-replies",
-      to: "/settings/canned-replies",
-      label: t`Canned replies`,
-      count: canned?.length,
-      testId: "general-tab-canned-replies",
-    },
-    {
-      key: "macros",
-      to: "/settings/macros",
-      label: t`Macros`,
-      count: macros?.length,
-      testId: "general-tab-macros",
-    },
-    ...(canManage
-      ? [
-          {
-            key: "teams",
-            to: "/settings/teams",
-            label: t`Teams`,
-            count: teams?.length,
-            testId: "general-tab-teams",
-          },
-          {
-            key: "fields",
-            to: "/settings/fields",
-            label: t`Custom fields`,
-            count: fields?.length,
-            testId: "general-tab-fields",
-          },
-          {
-            key: "sla",
-            to: "/settings/sla",
-            label: t`SLA policies`,
-            count: sla?.length,
-            testId: "general-tab-sla",
-          },
-          {
-            key: "automation",
-            to: "/settings/automation",
-            label: t`Automation`,
-            count: rules?.length,
-            testId: "general-tab-automation",
-          },
-          {
-            key: "migrations",
-            to: "/settings/migrations",
-            label: t`Move to Yuva`,
-            count: moves?.length,
-            testId: "general-tab-migrations",
-          },
-        ]
-      : []),
-    ...(isOwner
-      ? [{ key: "audit-log", to: "/settings/audit-log", label: t`Audit log`, testId: "general-tab-audit-log" }]
-      : []),
-  ]
-}
-
-export function GeneralTabs({ current }: { current: Tab }) {
-  const { t } = useLingui()
-  const items = useGeneralTabItems()
-  const flat = useFlatSettings()
-  if (flat) return null
-  return <PageTabs label={t`General`} current={current} items={items} />
-}
-
-export function GeneralHeader({ current }: { current: Tab }) {
+export function GeneralHeader({ current, plain }: { current: SettingsPlace; plain?: boolean }) {
   const names = useSettingsNames()
-  const flat = useFlatSettings()
-  const page = current === "workspace" ? undefined : names.place[current]
-  return (
-    <>
-      <PageHeader
-        title={flat && page ? page : <Trans>General</Trans>}
-        description={
-          !(flat && page) && (
-            <Trans>The workspace itself: name, retention, labels, canned replies, moving in and the audit log</Trans>
-          )
-        }
-        tabs={<GeneralTabs current={current} />}
-      />
-      <SettingsStrip current="general" />
-    </>
-  )
+  const about = useSettingsAbout()
+  return <PageHeader back={false} title={names.place[current]} description={!plain && about[current]} />
 }
 
 export function Intro({ children, action }: { children: React.ReactNode; action?: React.ReactNode }) {
-  const flat = useFlatSettings()
   return (
-    <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-      <p className="min-w-0 flex-1 basis-64 text-muted-foreground in-data-flat:max-w-[680px] in-data-flat:text-reading">
-        {children}
-      </p>
-      {action && (flat ? <TopPortal>{action}</TopPortal> : action)}
-    </div>
+    <>
+      <p className="m-0 max-w-[680px] text-body text-muted-foreground">{children}</p>
+      {action && <TopPortal>{action}</TopPortal>}
+    </>
   )
 }

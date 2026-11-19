@@ -1448,7 +1448,7 @@ msgstr "一个对话"
 msgid "A conversation can copy at most 100 people."
 msgstr "一个对话最多可抄送 100 人。"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
 msgstr "此字段有值之前，对话无法关闭。垃圾邮件除外。"
 
@@ -1468,7 +1468,7 @@ msgstr "对话处于闲置状态"
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "最后更新在范围内的对话会被整体导入。"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "A conversation must match every row you fill in. Leave a row empty to match anything."
 msgstr "会话必须匹配你填写的每一行。留空的行匹配所有内容。"
 
@@ -1739,7 +1739,7 @@ msgstr "每个组件旁的百分比。"
 msgid "A personal API key from Linear, under Settings, Account, Security and access."
 msgstr "A personal API key from Linear, under Settings, Account, Security and access."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "A policy that is off applies to nothing."
 msgstr "已关闭的策略不适用于任何内容。"
 
@@ -1799,7 +1799,7 @@ msgstr "必填字段为空"
 msgid "A roadmap idea moved to another stage"
 msgstr "一个路线图想法进入了另一个阶段"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "A rule that is off never runs. Rules run in the order of the list."
 msgstr "已关闭的规则永远不会运行。规则按列表顺序运行。"
 
@@ -1974,10 +1974,6 @@ msgstr "访问 {provider}"
 msgid "Access to the mailbox"
 msgstr "访问邮箱"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Access to your mailbox: none"
-msgstr "访问你的邮箱:无"
-
 #: src/features/account/AccountPage.tsx
 msgid "Account"
 msgstr "账号"
@@ -2002,7 +1998,7 @@ msgstr "Acme 支持"
 msgid "ACS URL"
 msgstr "ACS URL"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Actions"
@@ -2017,6 +2013,7 @@ msgstr "仅操作"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/text.ts
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
@@ -2032,7 +2029,7 @@ msgstr "活动"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "添加"
@@ -2050,7 +2047,7 @@ msgstr "添加区块"
 msgid "Add a category"
 msgstr "添加分类"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Add a channel"
 msgstr "添加渠道"
 
@@ -2099,7 +2096,7 @@ msgstr "通过电子邮件地址添加参与者"
 msgid "Add a passkey"
 msgstr "添加通行密钥"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Add a product"
 msgstr "添加产品"
 
@@ -2137,7 +2134,7 @@ msgstr "在收件箱设置中添加网站聊天"
 msgid "Add a website or app"
 msgstr "添加网站或应用"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Add an action"
 msgstr "添加动作"
 
@@ -2154,6 +2151,10 @@ msgstr "在你的服务器上添加一个地址，并选择 Yuva 需要通知它
 #: src/app/Palette.tsx
 msgid "Add an analytics property"
 msgstr "添加分析属性"
+
+#: src/features/settings/channels/ApiChannelForm.tsx
+msgid "Add an API channel"
+msgstr "添加 API 渠道"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add an image"
@@ -2184,7 +2185,6 @@ msgstr "再添加一个"
 msgid "Add at least one origin."
 msgstr "请至少添加一个来源。"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Add channel"
 msgstr "添加渠道"
@@ -2194,7 +2194,7 @@ msgstr "添加渠道"
 msgid "Add component"
 msgstr "添加组件"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Add condition"
 msgstr "添加条件"
 
@@ -2228,6 +2228,10 @@ msgstr "Add image"
 #: src/features/mail/Compose.tsx
 msgid "Add it back"
 msgstr "Add it back"
+
+#: src/features/settings/labels/LabelForm.tsx
+msgid "Add label"
+msgstr "添加标签"
 
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
@@ -2386,6 +2390,7 @@ msgid "Address verified"
 msgstr "地址已验证"
 
 #: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Addresses"
 msgstr "地址"
 
@@ -2496,6 +2501,7 @@ msgid "All good"
 msgstr "一切正常"
 
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/MigrationsPage.tsx
 msgid "All imports"
 msgstr "所有导入"
 
@@ -2881,10 +2887,6 @@ msgstr "当对方使用发送到该地址的验证码登录时,邀请即被接�
 msgid "An issue URL, owner/repo#12 or ENG-123."
 msgstr "An issue URL, owner/repo#12 or ENG-123."
 
-#: src/features/migrations/MigrationsPage.tsx
-msgid "An mbox export of a mailbox"
-msgstr "邮箱的 mbox 导出"
-
 #: src/features/team/TeamPage.tsx
 msgid "An owner cannot be removed. Change their role first."
 msgstr "无法移除所有者。请先更改其角色。"
@@ -2960,7 +2962,7 @@ msgstr "另一个账号"
 msgid "Another address this channel receives mail at. Forward a mailbox here, for example {own} at its provider; forwarding to {own} itself would loop."
 msgstr "此渠道接收邮件的另一个地址。请把邮箱转发到这里,例如在其服务商处转发到 {own};转发到 {own} 本身会造成循环。"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 msgid "Another canned reply already uses this shortcut."
 msgstr "另一个快捷回复已在使用此快捷键。"
 
@@ -3092,7 +3094,7 @@ msgstr "任意字段"
 msgid "Any label"
 msgstr "任意标签"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Any of the labels you pick."
 msgstr "所选标签中的任意一个。"
 
@@ -3137,15 +3139,11 @@ msgstr "所有使用此密钥的内容会立即失效。"
 msgid "API"
 msgstr "API"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "API & MCP"
 msgstr "API 与 MCP"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "API channel"
 msgstr "API 渠道"
 
@@ -3158,7 +3156,6 @@ msgstr "API 密钥"
 #: src/app/Palette.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "API keys"
 msgstr "API 密钥"
@@ -3222,8 +3219,8 @@ msgstr "应用程序(客户端)ID"
 msgid "Applied"
 msgstr "已应用"
 
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Applies to"
 msgstr "适用于"
 
@@ -3450,7 +3447,7 @@ msgstr "已分配给你"
 
 #: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Assignee"
 msgstr "负责人"
 
@@ -3486,7 +3483,7 @@ msgid "Assistants work in Yuva through MCP, acting as the member who connected t
 msgstr "助手通过 MCP 在 Yuva 中工作，以连接它们的成员身份行事，且仅拥有该成员批准的访问权限。"
 
 #: src/components/common/text.ts
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Async"
 msgstr "异步"
 
@@ -3585,7 +3582,6 @@ msgid "Audience"
 msgstr "受众"
 
 #: src/app/Palette.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Audit log"
 msgstr "审计日志"
@@ -3618,7 +3614,6 @@ msgstr "自动分配"
 msgid "Automatic mail never triggers an automatic reply."
 msgstr "自动邮件绝不会触发自动回复。"
 
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Automation"
 msgstr "自动化"
@@ -3766,7 +3761,7 @@ msgstr "Best regards,"
 msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
 msgstr "1 到 500，在整个工作区内计数。手动分配不受限制。留空表示不设上限。"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Billing"
 msgstr "账单"
@@ -3776,7 +3771,7 @@ msgstr "账单"
 msgid "Billing bot"
 msgstr "账单机器人"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 msgid "Billing events"
 msgstr "账单事件"
 
@@ -3924,17 +3919,13 @@ msgstr "已违反"
 msgid "Breached, met late at {at}"
 msgstr "已违反，于 {at} 迟到达成"
 
-#: src/features/settings/SettingsFrame.tsx
-msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
-msgstr "从 Gmail、Yandex 或任何 IMAP 服务器导入邮箱的历史记录"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Bring subscribers who already agreed elsewhere. Each address is checked first and nothing is added until you start: invalid addresses, domains that take no mail, role addresses, duplicates and anyone who left or objected are left out."
 msgstr "导入已在别处同意的订阅者。每个地址会先检查,开始之前不会添加任何内容:无效地址、不接收邮件的域名、角色地址、重复项以及已退订或表示反对的人都会被排除。"
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Bring the history of a mailbox you answer from today, then switch its mail over. Yuva only reads the mailbox; nothing there is changed."
-msgstr "导入你目前用来回复的邮箱的历史记录,然后切换它的邮件。Yuva 只读取邮箱,不会更改其中任何内容。"
+msgid "Bring the history of a mailbox or help desk you answer from today, then switch its mail over. Yuva only reads the source; nothing there is changed."
+msgstr "导入你目前回复所用邮箱或帮助台的历史记录，然后把它的邮件切换过来。Yuva 只读取来源，不会改动那里的任何内容。"
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Bring your old mail"
@@ -3949,7 +3940,6 @@ msgstr "群发"
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/settings/workspace/BroadcastsSettings.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Broadcast sending"
 msgstr "群发发送"
 
@@ -4047,13 +4037,9 @@ msgstr "活动名称"
 #: src/features/docs/FromDocs.tsx
 #: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
-#: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -4136,8 +4122,6 @@ msgstr "已取消。之前已添加的内容会保留。"
 #: src/app/Palette.tsx
 #: src/features/conversation/composer/CannedMenu.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Canned replies"
 msgstr "快捷回复"
 
@@ -4291,10 +4275,6 @@ msgstr "更改了指向 {host} 的 Webhook"
 msgid "Changelog settings"
 msgstr "更新日志设置"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Changes made to {provider}: none"
-msgstr "对 {provider} 所做的更改:无"
-
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
 msgstr "成员、密钥、Webhook 和其他敏感设置的更改会显示在这里。"
@@ -4308,14 +4288,14 @@ msgstr "更改发送域名会关闭 DKIM 签名,直到你为新域名重新启�
 #: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
 msgid "Channel"
 msgstr "渠道"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Channel added"
 msgstr "已添加渠道"
 
@@ -4339,14 +4319,8 @@ msgstr "已移除渠道"
 msgid "Channel settings"
 msgstr "渠道设置"
 
-#: src/app/places.tsx
-#: src/components/common/SettingsStrip.tsx
-#: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Channels"
 msgstr "渠道"
 
@@ -4450,7 +4424,7 @@ msgstr "{when} 检查"
 msgid "Checked and waiting for an owner or admin to start it."
 msgstr "已检查,等待所有者或管理员开始。"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Checked every 5 minutes, once per quiet period. Only open and pending conversations."
 msgstr "每 5 分钟检查一次,每个安静期仅一次。仅限未关闭和待处理的对话。"
 
@@ -4649,7 +4623,6 @@ msgstr "时钟将在 {date} 调整；发送时段仍为当地时间 {start}–{e
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -4689,7 +4662,7 @@ msgstr "回复后关闭每个对话"
 msgid "Close everything"
 msgstr "全部关闭"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Close idle conversations"
 msgstr "关闭闲置对话"
 
@@ -4777,11 +4750,11 @@ msgstr "收起"
 msgid "Collections"
 msgstr "集合"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Color"
 msgstr "颜色"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/colors.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Colour"
@@ -4972,7 +4945,6 @@ msgstr "Connect a tracker"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
 msgid "Connect an assistant"
 msgstr "连接助手"
 
@@ -5038,12 +5010,10 @@ msgid "Connected {created}"
 msgstr "{created} 连接"
 
 #: src/app/Palette.tsx
-#: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
+#: src/features/settings/connected-apps/AssistantPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Connected apps"
 msgstr "已连接的应用"
 
@@ -5181,7 +5151,6 @@ msgstr "包含"
 
 #: src/app/places.tsx
 #: src/features/broadcasts/Composer.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Content"
 msgstr "内容"
 
@@ -5197,7 +5166,7 @@ msgstr "内容"
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
 #: src/features/setup/email/EmailReceiveStep.tsx
@@ -5256,7 +5225,6 @@ msgstr "对话已开始"
 msgid "conversations"
 msgstr "对话"
 
-#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
@@ -5271,6 +5239,7 @@ msgstr "对话"
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Conversations"
 msgstr "对话"
@@ -5341,7 +5310,6 @@ msgstr "抄送地址"
 #: src/components/common/CopyButton.tsx
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/messages/MessageActions.tsx
-#: src/features/migrations/Wizard.tsx
 msgid "Copy"
 msgstr "复制"
 
@@ -5394,6 +5362,10 @@ msgstr "复制反馈详情"
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Copy the feedback details (Y)"
 msgstr "复制反馈详情 (Y)"
+
+#: src/features/migrations/Wizard.tsx
+msgid "Copy the history of a mailbox or help desk into Yuva."
+msgstr "把邮箱或帮助台的历史记录复制到 Yuva。"
 
 #: src/features/migrations/text.ts
 msgid "Copy the key under “Your API Key”. A Freshdesk key cannot be limited to reading; Yuva's connection only sends read requests."
@@ -5459,7 +5431,6 @@ msgid "Counts when a subscription becomes confirmed, not when it is still waitin
 msgstr "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/DeveloperTabs.tsx
 msgid "Create"
 msgstr "创建"
 
@@ -5492,7 +5463,7 @@ msgstr "Create an issue"
 msgid "Create an OAuth client in Zendesk"
 msgstr "在 Zendesk 中创建 OAuth 客户端"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Create and add a channel"
 msgstr "创建并添加渠道"
 
@@ -5516,11 +5487,11 @@ msgstr "创建渠道"
 msgid "Create draft"
 msgstr "创建草稿"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Create field"
 msgstr "创建字段"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Create filter"
 msgstr "创建筛选器"
 
@@ -5554,11 +5525,11 @@ msgstr "创建密钥"
 msgid "Create list"
 msgstr "创建列表"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Create policy"
 msgstr "创建策略"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Create rule"
 msgstr "创建规则"
 
@@ -5619,9 +5590,7 @@ msgstr "创建、修改、排序和删除自动化规则"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Created"
 msgstr "已创建"
 
@@ -5690,11 +5659,6 @@ msgstr "自定义"
 msgid "Custom field"
 msgstr "自定义字段"
 
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "Custom fields"
-msgstr "自定义字段"
-
 #: src/features/contact/ContactsPage.tsx
 msgid "Customers"
 msgstr "客户"
@@ -5725,7 +5689,6 @@ msgid "Daily limit reached · continues at {time} {city} time"
 msgstr "已达每日上限 · 将在{city}时间 {time} 继续"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Danger zone"
 msgstr "危险区域"
 
@@ -6075,10 +6038,6 @@ msgstr "删除团队“{name}”？"
 msgid "Delete the view {name}?"
 msgstr "删除视图“{name}”吗?"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-msgid "Delete this canned reply?"
-msgstr "删除此快捷回复?"
-
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Delete this DKIM key?"
 msgstr "删除此 DKIM 密钥?"
@@ -6102,6 +6061,10 @@ msgstr "删除此备注"
 #: src/features/contact/ContactNotes.tsx
 msgid "Delete this note?"
 msgstr "删除此备注?"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "Delete this saved reply?"
+msgstr "删除这条已保存的回复？"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete this subscription?"
@@ -6302,7 +6265,6 @@ msgstr "浏览器设置中已屏蔽此站点的桌面通知,因此只会播放�
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
@@ -6310,8 +6272,11 @@ msgstr "浏览器设置中已屏蔽此站点的桌面通知,因此只会播放�
 msgid "Details"
 msgstr "详情"
 
-#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsFrame.tsx
+msgid "Developer"
+msgstr "开发者"
+
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Developers"
 msgstr "开发者"
 
@@ -6519,7 +6484,7 @@ msgstr "文档是你在自己网站上维护并自行托管的页面。当 Yuva 
 msgid "Documentation pages"
 msgstr "文档页面"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Documentation site"
 msgstr "文档站点"
@@ -6555,7 +6520,6 @@ msgstr "完成"
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/fields/BulkFailures.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -6738,7 +6702,7 @@ msgstr "重复项"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/notifications/EventsSection.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -6816,7 +6780,7 @@ msgstr "邮件验证码"
 msgid "E-mails to the people who signed up"
 msgstr "发给已注册用户的邮件"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
 msgstr "每个动作最多一次,至多 10 个。动作作为一次更改运行;只要有一个失败,全部都不会应用。"
 
@@ -6919,10 +6883,6 @@ msgstr "编辑 {name}"
 msgid "Edit API key"
 msgstr "编辑 API 密钥"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-msgid "Edit canned reply"
-msgstr "编辑快捷回复"
-
 #: src/features/status/ComponentForms.tsx
 msgid "Edit component"
 msgstr "编辑组件"
@@ -6940,11 +6900,11 @@ msgstr "编辑详情"
 msgid "Edit details ({editKey})"
 msgstr "编辑详情（{editKey}）"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Edit field"
 msgstr "编辑字段"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Edit filter"
 msgstr "编辑筛选器"
 
@@ -6952,11 +6912,11 @@ msgstr "编辑筛选器"
 msgid "Edit help center collections and article drafts"
 msgstr "编辑帮助中心合集和文章草稿"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Edit label"
 msgstr "编辑标签"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Edit macro"
 msgstr "编辑宏"
 
@@ -6964,13 +6924,17 @@ msgstr "编辑宏"
 msgid "Edit monitor"
 msgstr "编辑监控"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Edit policy"
 msgstr "编辑策略"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Edit rule"
 msgstr "编辑规则"
+
+#: src/features/settings/canned/CannedReplyForm.tsx
+msgid "Edit saved reply"
+msgstr "编辑已保存的回复"
 
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Edit team"
@@ -7036,11 +7000,6 @@ msgstr "正在编辑定于 {editingWhen} 发送的消息"
 msgid "Elevated API errors"
 msgstr "API 错误增多"
 
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "Elsewhere in settings"
-msgstr "设置中的其他位置"
-
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Embed snippet"
 msgstr "嵌入代码片段"
@@ -7070,8 +7029,8 @@ msgstr "留空则使用{baseLanguage}主题。这里也可以使用合并字段�
 msgid "Emptying the Trash: {0} are being deleted"
 msgstr "正在清空垃圾箱：正在删除 {0} 个"
 
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Enabled"
 msgstr "已启用"
 
@@ -7243,7 +7202,7 @@ msgid "Every imported conversation is closed."
 msgstr "导入的每个对话都已关闭。"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Every inbox"
 msgstr "所有收件箱"
 
@@ -7319,7 +7278,7 @@ msgstr "每个网站和应用的访客都显示在首页和分析中。"
 
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Everyone"
 msgstr "所有人"
 
@@ -7469,7 +7428,6 @@ msgstr "Extra scopes"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/migrations/ConnectStep.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7584,6 +7542,7 @@ msgstr "未结会话最少"
 
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Fields"
 msgstr "字段"
 
@@ -7602,10 +7561,6 @@ msgstr "文件"
 #: src/features/broadcasts/Import.tsx
 msgid "File and consent"
 msgstr "文件与同意"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Files"
-msgstr "文件"
 
 #: src/features/fields/RequiredFieldsHost.tsx
 msgid "Fill in before closing"
@@ -7739,6 +7694,7 @@ msgstr "不检查直接完成"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/migrations/MigrationsPage.tsx
 msgid "Finished"
 msgstr "已完成"
 
@@ -7766,7 +7722,7 @@ msgstr "首次回复"
 #: src/features/home/HomeWork.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "First reply"
 msgstr "首次回复"
 
@@ -7882,7 +7838,7 @@ msgid "For example Acme"
 msgstr "例如 Acme"
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/setup/NameStep.tsx
 msgid "For example Fieldnote"
 msgstr "例如 Fieldnote"
@@ -8071,15 +8027,15 @@ msgstr "发件地址(可选)"
 msgid "From blocked contacts"
 msgstr "来自已屏蔽的联系人"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From each later contact message to the reply."
 msgstr "从联系人的每条后续消息到回复。"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From the contact's first message to the first public reply."
 msgstr "从联系人的第一条消息到第一次公开回复。"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From the start of the conversation to its first close."
 msgstr "从会话开始到第一次关闭。"
 
@@ -8144,9 +8100,7 @@ msgstr "授予 {person} 访问 {inbox} 的权限"
 msgid "Gave the team {team} access to {inbox}"
 msgstr "授予团队 {team} 访问 {inbox} 的权限"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/channels/sections.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "General"
@@ -8213,10 +8167,6 @@ msgstr "Gmail 只转发非垃圾的新邮件。如果 Workspace 管理员关闭�
 #: src/features/migrations/ConnectStep.tsx
 msgid "Gmail lets other apps read about 1.5 GB a day over IMAP, so a mailbox of many gigabytes takes days. Google Takeout exports it as one file that uploads as fast as your connection allows. Import that first, then come back here with an app password for the newer mail and the switch."
 msgstr "Gmail 允许其他应用通过 IMAP 每天读取约 1.5 GB,因此几十 GB 的邮箱需要好几天。Google Takeout 会把它导出为一个文件,上传速度取决于你的网速。先导入它,再带着应用专用密码回到这里导入较新的邮件并完成切换。"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Gmail, Outlook, Yandex, any IMAP server"
-msgstr "Gmail、Outlook、Yandex、任何 IMAP 服务器"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "go back to operational when you post this"
@@ -8316,10 +8266,6 @@ msgstr "Groups attribute"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
 msgstr "Groups claim"
-
-#: src/features/settings/SettingsFrame.tsx
-msgid "Groups of members and the inboxes they cover"
-msgstr "成员分组及其负责的收件箱"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -8436,10 +8382,6 @@ msgstr "帮助中心"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Help center settings"
 msgstr "帮助中心设置"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Help desks"
-msgstr "客服系统"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Help report"
@@ -8580,7 +8522,7 @@ msgid "Hostname and certificate"
 msgstr "主机名和证书"
 
 #: src/features/broadcasts/Trigger.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "hours"
 msgstr "小时"
 
@@ -8605,7 +8547,7 @@ msgstr "你的订阅者是怎么同意的?"
 msgid "How do people sign up?"
 msgstr "大家如何注册?"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "How do you answer?"
 msgstr "你如何回复？"
 
@@ -8629,7 +8571,6 @@ msgstr "心跳信号可以迟到多久。"
 msgid "How mail reaches Yuva"
 msgstr "邮件如何到达 Yuva"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "How messages arrive: chat, e-mail, apps"
 msgstr "消息如何到达：聊天、电子邮件、应用"
@@ -8641,10 +8582,6 @@ msgstr "消息如何到达每个产品"
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "How should replies go out?"
 msgstr "回复应如何发出?"
-
-#: src/components/common/SettingsStrip.tsx
-msgid "How software connects: keys, hooks, assistants"
-msgstr "软件如何连接：密钥、Webhook、助手"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "How the chat opens"
@@ -8728,7 +8665,7 @@ msgstr "闲置 {idle} 分钟"
 msgid "If {provider} mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "如果 {provider} 向该地址发送确认邮件,它会作为一个对话到达此收件箱;请在那里打开。"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "If all of these match"
 msgstr "如果以下条件全部匹配"
 
@@ -8821,11 +8758,11 @@ msgid "Import people"
 msgstr "导入人员"
 
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Import steps"
 msgstr "导入步骤"
 
 #: src/components/common/ImportedChip.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 msgid "Imported"
 msgstr "已导入"
@@ -8856,6 +8793,8 @@ msgstr "正在导入…"
 
 #: src/app/nav.tsx
 #: src/app/places.tsx
+#: src/features/migrations/Wizard.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Imports"
 msgstr "导入记录"
 
@@ -9018,7 +8957,7 @@ msgstr "在 Zoho Mail 中,打开“设置 › 邮件账户 › IMAP 访问”并
 #: src/features/docs/InstallDialog.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "收件箱"
@@ -9051,10 +8990,15 @@ msgstr "{name} 的收件箱"
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Inboxes"
 msgstr "收件箱"
+
+#: src/features/settings/ProductsPage.tsx
+#: src/features/settings/SettingsFrame.tsx
+msgid "Inboxes and channels"
+msgstr "收件箱和渠道"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Inboxes cut off subjects longer than 80 characters."
@@ -9477,7 +9421,7 @@ msgstr "随来自此文件的每个订阅一起保存,作为他们同意的记�
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Key"
 msgstr "密钥"
 
@@ -9517,12 +9461,6 @@ msgstr "密钥和已连接的应用"
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
 msgstr "可访问此产品的密钥。请在 API 和 MCP 中创建和撤销。"
 
-#: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
-#: src/features/settings/webhooks/WebhooksPage.tsx
-msgid "Keys, webhooks and connected assistants"
-msgstr "密钥、Webhook 和已连接的助手"
-
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Keyword"
 msgstr "关键词"
@@ -9558,10 +9496,9 @@ msgstr "仅标签:其邮件来自“所有邮件”,其对话会带上该标签�
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Labels"
 msgstr "标签"
 
@@ -9762,7 +9699,7 @@ msgstr "启动按钮颜色"
 msgid "Launcher position"
 msgstr "启动按钮位置"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Leave as is"
 msgstr "保持不变"
 
@@ -10075,7 +10012,7 @@ msgid "Live"
 msgstr "在线"
 
 #: src/components/common/Source.tsx
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Live chat"
 msgstr "在线聊天"
 
@@ -10197,8 +10134,8 @@ msgstr "低"
 msgid "Lowercase letters, digits and dashes, not at the start or end."
 msgstr "小写字母、数字和短横线,不能出现在开头或结尾。"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Lowercase letters, digits and dashes."
 msgstr "小写字母、数字和短横线。"
 
@@ -10213,7 +10150,6 @@ msgid "Macro"
 msgstr "宏"
 
 #: src/app/Palette.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Macros"
 msgstr "宏"
@@ -10345,7 +10281,6 @@ msgstr "邮箱地址"
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
-#: src/features/migrations/MigrationsPage.tsx
 msgid "Mailboxes"
 msgstr "邮箱"
 
@@ -10452,10 +10387,6 @@ msgstr "管理 Webhook"
 #: src/features/settings/webhooks/parts.tsx
 msgid "manual"
 msgstr "手动"
-
-#: src/features/migrations/Wizard.tsx
-msgid "Map"
-msgstr "映射"
 
 #: src/app/Header.tsx
 #: src/features/account/AccountPage.tsx
@@ -10636,7 +10567,6 @@ msgstr "成员"
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/teams/TeamsPage.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "成员"
@@ -10827,10 +10757,6 @@ msgstr "Microsoft 的令牌授予的权限超出了通过 IMAP 读取邮件,因�
 msgid "Migration cancelled"
 msgstr "迁移已取消"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Migration steps"
-msgstr "迁移步骤"
-
 #: src/features/inbox/ChatList.tsx
 msgid "Mine"
 msgstr "我的"
@@ -10841,7 +10767,7 @@ msgstr "轻微"
 
 #: src/features/broadcasts/Trigger.tsx
 #: src/features/settings/automation/ActionRow.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "minutes"
 msgstr "分钟"
 
@@ -10849,7 +10775,7 @@ msgstr "分钟"
 msgid "Minutes"
 msgstr "分钟"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Minutes before a due time. 0 sends no warning."
 msgstr "到期前多少分钟。0 表示不发送提醒。"
 
@@ -10858,7 +10784,7 @@ msgid "Missed beat"
 msgstr "漏掉的心跳信号"
 
 #: src/components/common/text.ts
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/app/AppFields.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Mobile app"
@@ -11158,12 +11084,6 @@ msgstr "移到垃圾箱 ({0})"
 msgid "Move to the Trash (#)"
 msgstr "移到垃圾箱 (#)"
 
-#: src/features/migrations/Wizard.tsx
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "Move to Yuva"
-msgstr "迁移到 Yuva"
-
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11202,8 +11122,8 @@ msgid "Moves the mail to the Trash. Runs after the other actions."
 msgstr "将邮件移入废纸篓。在其他操作之后运行。"
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
-msgstr "要从 Gmail、Google Workspace、Yandex、iCloud、Zoho、Yahoo、Fastmail、GMX 或任何 IMAP 服务器迁移吗?Yuva 会在团队继续工作的同时,安静地把邮箱的历史记录由新到旧复制到一个收件箱中。然后你把邮箱转发到这里,中间不会丢失任何内容。"
+msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX, any IMAP server or another help desk? Yuva copies the history into an inbox, newest first, while your team keeps working."
+msgstr "要从 Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX、任意 IMAP 服务器或其他帮助台迁移过来吗？团队照常工作的同时，Yuva 会按从新到旧的顺序把历史记录复制到收件箱。"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Moving the idea to Planned, In progress or Shipped sets this for linked feedback that has no progress yet."
@@ -11247,20 +11167,19 @@ msgstr "我的视图"
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
-#: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -11300,6 +11219,10 @@ msgstr "命名为 Yuva。在<0>连接</0>下选择<1>公开端点</1>并粘贴�
 #: src/features/migrations/MapStep.tsx
 msgid "Name of the new inbox"
 msgstr "新收件箱的名称"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Name, closed conversations and broadcast sending"
+msgstr "名称、已关闭的对话和群发"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Name, colour and the first thing the chat says"
@@ -11411,11 +11334,6 @@ msgstr "新文章"
 msgid "New broadcast"
 msgstr "新建群发"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
-msgid "New canned reply"
-msgstr "新建快捷回复"
-
 #: src/components/common/ShortcutSheet.tsx
 msgid "New collection"
 msgstr "新集合"
@@ -11484,12 +11402,13 @@ msgstr "新讨论"
 msgid "New entry"
 msgstr "新条目"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 msgid "New field"
 msgstr "新建字段"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/mail/FilterDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New filter"
 msgstr "新建筛选器"
@@ -11508,6 +11427,8 @@ msgid "New identity secret"
 msgstr "新身份密钥"
 
 #: src/app/places.tsx
+#: src/features/migrations/MigrationsPage.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "New import"
 msgstr "新建导入"
 
@@ -11532,7 +11453,7 @@ msgstr "新建事件"
 msgid "New incident ({incidentKey})"
 msgstr "新建事件（{incidentKey}）"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "New label"
 msgstr "新建标签"
@@ -11546,7 +11467,7 @@ msgstr "新建标签“{folder}”"
 msgid "New list"
 msgstr "新建列表"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "New macro"
 msgstr "新建宏"
@@ -11577,10 +11498,6 @@ msgstr "分配给我的对话中的新消息"
 msgid "New message in an unassigned conversation"
 msgstr "未分配对话中的新消息"
 
-#: src/features/migrations/MigrationsPage.tsx
-msgid "New migration"
-msgstr "新建迁移"
-
 #: src/features/status/MonitorsPage.tsx
 msgid "new monitor"
 msgstr "新建监控"
@@ -11601,7 +11518,7 @@ msgstr "{boxName}的新所有者"
 msgid "New password"
 msgstr "新密码"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "New policy"
 msgstr "新建策略"
@@ -11610,10 +11527,15 @@ msgstr "新建策略"
 msgid "New reply in <0>{title}</0>"
 msgstr "<0>{title}</0> 中有新回复"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "新建规则"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+msgid "New saved reply"
+msgstr "新建已保存的回复"
 
 #: src/features/settings/webhooks/sections.tsx
 msgid "New signing secret"
@@ -11720,7 +11642,7 @@ msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "下一封邮件将在 {local}({utc} UTC)按此群发的速度发出。"
 
 #: src/features/conversation/SlaPopover.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Next reply"
 msgstr "后续回复"
 
@@ -11731,10 +11653,6 @@ msgstr "后续回复 {next}"
 #: src/features/feedback/Lightbox.tsx
 msgid "Next screenshot"
 msgstr "下一张截图"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Next you pick the source and connect it. Nothing is copied until you start."
-msgstr "接下来你选择来源并连接它。在你开始之前不会复制任何内容。"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Next, choose what to bring. The scan reads the file once."
@@ -11825,10 +11743,6 @@ msgstr "还没有任何群发发出。"
 msgid "No broadcasts yet"
 msgstr "还没有群发"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-msgid "No canned replies yet"
-msgstr "还没有快捷回复"
-
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "No canned replies yet. Add them in settings."
 msgstr "还没有快捷回复。请在设置中添加。"
@@ -11879,7 +11793,7 @@ msgstr "还没有组件。请在“组件”选项卡中添加客户依赖的产
 msgid "No components yet. Add the parts of your product that customers depend on."
 msgstr "还没有组件。添加客户所依赖的产品部分。"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "No conditions: the rule runs for every conversation the trigger fits."
 msgstr "没有条件:规则会对触发器适用的每个对话运行。"
 
@@ -12060,6 +11974,10 @@ msgstr "还没有 ID。没有任何应用或小组件识别过此人。"
 #: src/features/status/text.tsx
 msgid "No impact"
 msgstr "无影响"
+
+#: src/features/migrations/MigrationsPage.tsx
+msgid "No imports match this filter."
+msgstr "没有符合此筛选条件的导入。"
 
 #: src/features/broadcasts/Import.tsx
 msgid "No imports yet."
@@ -12244,6 +12162,10 @@ msgstr "还没有规则。"
 #: src/features/settings/automation/RunLog.tsx
 msgid "No runs in the last 30 days."
 msgstr "最近 30 天没有运行记录。"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "No saved replies yet"
+msgstr "还没有已保存的回复"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "No secret yet. Make one, then paste it into GitHub."
@@ -12667,7 +12589,7 @@ msgstr "不是同一人"
 msgid "Not there after a minute? Look in your spam or junk folder, or send a new code below."
 msgstr "一分钟后还没收到?请查看垃圾邮件文件夹,或在下面重新发送验证码。"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Not tracked"
 msgstr "不跟踪"
 
@@ -13034,11 +12956,6 @@ msgstr "在 Team 和 Enterprise 套餐中,由所有者在<0>组织设置 › 连
 msgid "On the web"
 msgstr "在网页上"
 
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "On this page"
-msgstr "本页内容"
-
 #: src/components/common/SlaBadge.tsx
 msgid "On track"
 msgstr "正常"
@@ -13056,7 +12973,7 @@ msgstr "测试消息到达后,Yuva 会等待 {hours} 小时。如果这段时间
 msgid "One e-mail a month about what is new."
 msgstr "每月一封邮件,介绍新动态。"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "一个收件箱"
@@ -13073,7 +12990,7 @@ msgstr "One mail to each person, a set time after they sign in"
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "每行一个,1 到 20 个。只有这些来源上的页面才能使用小部件。"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "One per line, all different, at most 100."
 msgstr "每行一个，互不相同，最多 100 个。"
 
@@ -13200,7 +13117,7 @@ msgid "Only mail since {date}"
 msgstr "仅 {date} 以来的邮件"
 
 #: src/features/inbox/views/ViewDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Only me"
 msgstr "仅自己"
 
@@ -13702,7 +13619,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "可选。响应的前 64 KiB 必须包含它,区分大小写。"
 
 #: src/features/broadcasts/Composer.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Options"
 msgstr "选项"
 
@@ -13742,7 +13659,7 @@ msgstr "或上传导出文件"
 msgid "Order and view"
 msgstr "排序与视图"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Order number"
 msgstr "订单号"
 
@@ -13839,7 +13756,6 @@ msgid "Own tenant"
 msgstr "独立租户"
 
 #: src/components/common/text.ts
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Owner"
 msgstr "所有者"
 
@@ -14241,7 +14157,7 @@ msgstr "选择一条快捷回复"
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "选择产品的一个聊天渠道并粘贴代码。评分和问题会进入它的收件箱。"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Pick a color"
 msgstr "选择颜色"
 
@@ -14345,7 +14261,7 @@ msgid "Pick an endpoint"
 msgstr "选择一个端点"
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Pick an inbox"
 msgstr "选择收件箱"
 
@@ -14436,7 +14352,7 @@ msgstr "选择另一位联系人。它会合并到这位联系人中,然后被�
 msgid "Pick the platforms; the next step shows the lines to add to each app."
 msgstr "选择平台;下一步会显示要添加到每个应用的代码。"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Pick the product and how customers reach it. The next steps set it up."
 msgstr "选择产品以及客户联系它的方式。后续步骤会进行设置。"
 
@@ -14607,7 +14523,7 @@ msgstr "准备中"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/status/PreviewDialog.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Preview"
@@ -14671,12 +14587,12 @@ msgstr "上一张截图"
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Priority"
 msgstr "优先级"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Priority customers"
 msgstr "重点客户"
 
@@ -14707,19 +14623,17 @@ msgstr "pro、team"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageForm.tsx
 #: src/features/status/IncidentForm.tsx
 msgid "Product"
 msgstr "产品"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/setup/NameStep.tsx
 msgid "Product name"
 msgstr "产品名称"
@@ -14729,7 +14643,6 @@ msgstr "产品名称"
 msgid "Product news"
 msgstr "产品动态"
 
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Product settings"
@@ -14744,7 +14657,6 @@ msgstr "生产"
 msgid "Production backend"
 msgstr "生产环境后端"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomeSide.tsx
@@ -14755,7 +14667,6 @@ msgstr "生产环境后端"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Products"
 msgstr "产品"
@@ -14992,7 +14903,7 @@ msgstr "已排队。新的尝试稍后会显示在下面。"
 msgid "Quick cleanup"
 msgstr "快速清理"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Quiet for (minutes)"
 msgstr "安静时长(分钟)"
 
@@ -15165,11 +15076,6 @@ msgstr "读取以建议你团队的地址:其邮件来自“所有邮件”。"
 msgid "Read What's new changelogs and their entries"
 msgstr "读取「最新动态」更新日志及其条目"
 
-#: src/features/migrations/MigrationsPage.tsx
-#: src/features/migrations/Wizard.tsx
-msgid "Read-only"
-msgstr "只读"
-
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/account/ConnectPage.tsx
 msgid "Reader"
@@ -15327,11 +15233,11 @@ msgstr "引用"
 msgid "Refresh"
 msgstr "刷新"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Refund"
 msgstr "退款"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Refund approved"
 msgstr "退款已批准"
 
@@ -15379,7 +15285,7 @@ msgstr "远程图片可能会让发件人知道你已打开邮件。"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -15601,7 +15507,7 @@ msgstr "从对话中移除了一条备注"
 msgid "Removed by {who}"
 msgstr "由 {who} 移除"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "移除的选项会从所有包含它们的对话中清除。此操作在后台运行。"
 
@@ -15854,6 +15760,10 @@ msgstr "回复内容"
 msgid "Reply time"
 msgstr "回复时间"
 
+#: src/features/settings/SettingsFrame.tsx
+msgid "Reply times"
+msgstr "回复时间"
+
 #: src/features/conversation/BroadcastLine.tsx
 msgid "Reply to {name}"
 msgstr "回复 {name}"
@@ -15960,7 +15870,7 @@ msgstr "信誉影响"
 msgid "Require single sign-on"
 msgstr "Require single sign-on"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 msgid "Required to close"
 msgstr "关闭时必填"
@@ -15982,7 +15892,7 @@ msgid "Reset to defaults"
 msgstr "恢复默认设置"
 
 #: src/features/conversation/SlaPopover.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Resolution"
 msgstr "解决"
 
@@ -16122,7 +16032,6 @@ msgstr "将返回到"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Import.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Review"
 msgstr "审核"
@@ -16203,7 +16112,6 @@ msgstr "订阅后,人们会立即收到一封带退订链接的简短确认邮�
 msgid "Roadmap"
 msgstr "路线图"
 
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Role"
 msgstr "角色"
@@ -16294,7 +16202,6 @@ msgstr "规则 {rule} 已运行,无需更改"
 msgid "Rule {rule} ran: {done}"
 msgstr "规则 {rule} 已运行:{done}"
 
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Rules"
 msgstr "规则"
@@ -16365,16 +16272,16 @@ msgstr "星期六"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/channels/ApiChannelDialog.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/signature/SignaturePage.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/ui.tsx
@@ -16461,6 +16368,10 @@ msgstr "将列表保存为视图"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "已保存"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Saved replies"
+msgstr "已保存的回复"
 
 #: src/app/ViewsGroup.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
@@ -17536,13 +17447,12 @@ msgstr "正在设置…"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "设置"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "Settings (JSON)"
 msgstr "设置(JSON)"
@@ -17585,8 +17495,8 @@ msgstr "与团队共享"
 msgid "Shipped"
 msgstr "已发布"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Shortcut"
 msgstr "快捷键"
 
@@ -17597,6 +17507,7 @@ msgstr "快捷键"
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -18029,7 +17940,6 @@ msgstr "单次确认订阅"
 
 #: src/app/Palette.tsx
 #: src/features/settings/profile/Sessions.tsx
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
 msgstr "Single sign-on"
@@ -18131,11 +18041,6 @@ msgstr "SLA 已达成"
 msgid "SLA met / breached"
 msgstr "SLA 已达成 / 已违反"
 
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "SLA policies"
-msgstr "SLA 策略"
-
 #: src/features/conversation/SlaPopover.tsx
 msgid "SLA targets (W)"
 msgstr "SLA 目标 (W)"
@@ -18223,7 +18128,7 @@ msgstr "推迟 (B)"
 msgid "Snooze (S)"
 msgstr "推迟(S)"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Snooze for (minutes)"
 msgstr "延后时长（分钟）"
 
@@ -18411,6 +18316,10 @@ msgstr "SPF、DKIM 或 DMARC 需要检查"
 msgid "Split by"
 msgstr "拆分方式"
 
+#: src/features/settings/SettingsFrame.tsx
+msgid "SSO"
+msgstr "SSO"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
 msgstr "阶段"
@@ -18468,7 +18377,7 @@ msgstr "你已加星标"
 msgid "Stars the mail for you."
 msgstr "为你给邮件加星标。"
 
-#: src/features/migrations/MigrationsPage.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Start"
 msgstr "开始"
 
@@ -18487,6 +18396,10 @@ msgstr "发起讨论"
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Start a mailing list"
 msgstr "创建邮件列表"
+
+#: src/features/migrations/MigrationsPage.tsx
+msgid "Start an import"
+msgstr "开始导入"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "Start conversation"
@@ -18570,7 +18483,6 @@ msgstr "Starts when a change to the person’s attributes makes them match, and 
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS(端口 587)"
 
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
@@ -18612,7 +18524,7 @@ msgstr "故障时的状态"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
 #: src/features/team/TeamPage.tsx
@@ -18874,10 +18786,6 @@ msgstr "已暂停使用"
 msgid "Suspended broadcasts"
 msgstr "暂停了群发邮件"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Switch"
-msgstr "切换"
-
 #: src/features/migrations/SwitchStep.tsx
 msgid "Switch your mail to Yuva"
 msgstr "把你的邮件切换到 Yuva"
@@ -18934,11 +18842,11 @@ msgstr "重新接受订阅，并让列表回到群发的受众选择中。"
 msgid "Taking the recipients: {prepared} so far"
 msgstr "正在确定收件人:目前 {prepared} 位"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Targets"
 msgstr "目标"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Targets count in the business hours of the conversation's inbox, in its time zone. Leave one empty to not track it; at least one is required."
 msgstr "目标按会话所在收件箱的工作时间和时区计算。留空表示不跟踪该目标；至少需要一个。"
 
@@ -19031,7 +18939,6 @@ msgstr "teammate@company.com"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/features/conversation/HeaderActions.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -19075,9 +18982,9 @@ msgstr "测试只会发给工作区成员,一次最多五人,主题前会加上 
 
 #: src/features/fields/value.ts
 #: src/features/settings/automation/ConditionRow.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Text"
 msgstr "文本"
 
@@ -19089,7 +18996,7 @@ msgstr "文本最后由 {who} 保存"
 msgid "Thanks for waiting. Your invoice is on its way."
 msgstr "感谢等待。你的发票正在路上。"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 msgid "Thanks for writing"
 msgstr "感谢来信"
 
@@ -19214,12 +19121,12 @@ msgstr "聊天会显示在所有带有该代码片段的页面角落。"
 msgid "The chat bubble appears on these addresses:"
 msgstr "聊天气泡会显示在这些地址上:"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "The chat shows when you usually reply"
 msgstr "聊天中显示你通常何时回复"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "The chat shows who is available and typing"
 msgstr "聊天中显示谁在线以及谁正在输入"
@@ -19601,11 +19508,11 @@ msgstr "该密钥只能看到这些收件箱，不能管理收件箱、Webhook �
 msgid "The key stops working at the end of this day."
 msgstr "该密钥会在这一天结束时失效。"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "The key, the object and the type cannot change after creation."
 msgstr "键、对象和类型在创建后无法更改。"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 msgid "The kind cannot be changed later."
 msgstr "类型之后无法更改。"
 
@@ -19738,7 +19645,7 @@ msgstr "迁移将从中断处继续。"
 msgid "The migration moved on in the meantime. Look at its state and try again."
 msgstr "迁移在此期间有了进展。请查看其状态后重试。"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "The next step adds its first channel: website chat, e-mail or a mobile app."
 msgstr "下一步会添加它的第一个渠道：网页聊天、电子邮件或移动应用。"
 
@@ -20203,10 +20110,6 @@ msgstr "Webhook 端点已关闭或在此不可用"
 msgid "The What’s new count shows on the chat button while no messages are unread. The widget’s Home always shows it."
 msgstr "没有未读消息时，聊天按钮上会显示新动态数量。小组件的首页始终显示。"
 
-#: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
-msgstr "工作区本身：名称、保留时间、标签、预设回复、迁移和审计日志"
-
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
 msgstr "工作区暂时不能发送群发。"
@@ -20214,11 +20117,6 @@ msgstr "工作区暂时不能发送群发。"
 #: src/features/status/Notices.tsx
 msgid "The workspace may not send bulk mail now"
 msgstr "工作区目前不允许发送群发邮件"
-
-#: src/components/common/SettingsStrip.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "The workspace: labels, replies, data"
-msgstr "工作区：标签、回复、数据"
 
 #: src/components/common/text.ts
 msgid "The zip cannot be read; it may be damaged or cut off. Make it again and upload it."
@@ -20272,7 +20170,7 @@ msgstr "主题"
 msgid "Theme and e-mail view on this device"
 msgstr "此设备上的主题和邮件视图"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Then"
 msgstr "则"
 
@@ -20614,7 +20512,7 @@ msgstr "这不是 CSV 文件。请把电子表格另存为 CSV 后上传。"
 msgid "This is not a domain this page can use. Use a name like {example} that is not one of this server’s own addresses."
 msgstr "此页面无法使用该域名。请使用类似 {example} 的名称，且不能是此服务器自身的地址。"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "This is not a JSON object."
 msgstr "这不是 JSON 对象。"
@@ -20751,7 +20649,7 @@ msgstr "此属性已有同名细分。"
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "在所有者或管理员同时保存此规则和快捷回复 {title},或在 API 密钥设置中允许机器人发送之前,这条回复不会发出。"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "在所有者或管理员保存快捷回复 {title},或在 API 密钥设置中允许机器人发送之前,这条回复不会发出。"
@@ -20966,7 +20864,7 @@ msgstr "超时"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/status/IncidentForm.tsx
 msgid "Title"
 msgstr "标题"
@@ -21097,7 +20995,7 @@ msgstr "趋势"
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Trigger"
 msgstr "触发器"
 
@@ -21221,8 +21119,7 @@ msgid "TXT record"
 msgstr "TXT 记录"
 
 #: src/features/inbox/SourceFilter.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Type"
 msgstr "类型"
 
@@ -21271,7 +21168,7 @@ msgstr "取消分配"
 #: src/features/home/HomeWork.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Unassigned"
 msgstr "未分配"
 
@@ -21345,7 +21242,7 @@ msgid "Unfollowed"
 msgstr "已取消关注"
 
 #: src/features/broadcasts/Trigger.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Unit"
 msgstr "单位"
 
@@ -21758,9 +21655,9 @@ msgstr "在此服务器上将它用作 bearer 令牌。"
 msgid "Use letters, digits, - and _, at most 64."
 msgstr "使用字母、数字、- 和 _,最多 64 个字符。"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Use lowercase letters, digits and single dashes."
 msgstr "请使用小写字母、数字和单个连字符。"
 
@@ -21914,10 +21811,6 @@ msgstr "Verify"
 #: src/features/settings/webhooks/SignatureHint.tsx
 msgid "Verify every request before trusting it: the <0>webhook-signature</0> header follows the <1>Standard Webhooks</1> specification, so any of its libraries can check it with the endpoint's secret. Go backends can use the <2>sdk/go/webhook</2> package of the Yuva repository."
 msgstr "信任之前请验证每个请求:<0>webhook-signature</0> 标头遵循 <1>Standard Webhooks</1> 规范,因此其任何库都可以用端点的密钥来检查它。Go 后端可以使用 Yuva 仓库的 <2>sdk/go/webhook</2> 包。"
-
-#: src/features/settings/SettingsFrame.tsx
-msgid "Version"
-msgstr "版本"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Versions"
@@ -22158,7 +22051,7 @@ msgstr "等待你"
 msgid "Warn about the certificate"
 msgstr "证书提醒"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Warn before it is due"
 msgstr "到期前提醒"
 
@@ -22218,8 +22111,6 @@ msgstr "Webhook secret for {revealName}"
 
 #: src/app/Palette.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
@@ -22246,7 +22137,7 @@ msgstr "网站"
 msgid "Website addresses"
 msgstr "网站地址"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Website chat"
 msgstr "网站聊天"
@@ -22368,7 +22259,7 @@ msgstr "客户看到的内容"
 msgid "What the import will do"
 msgstr "导入将会做什么"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "What the team sees."
 msgstr "团队看到的名称。"
 
@@ -22414,7 +22305,6 @@ msgstr "What your e-mailed replies end with, per inbox. Chat replies and notes c
 
 #: src/components/common/FocusChoice.tsx
 #: src/features/settings/workspace/FocusForm.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "What Yuva is for"
 msgstr "Yuva 的用途"
 
@@ -22429,7 +22319,7 @@ msgid "What’s new entry"
 msgstr "新动态条目"
 
 #: src/features/broadcasts/ReviewPanel.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "When"
 msgstr "时间"
 
@@ -22552,7 +22442,7 @@ msgstr "Where new issues go when nobody picks a team, as a team key such as ENG.
 msgid "Where should Yuva send events?"
 msgstr "Yuva 应该把事件发送到哪里?"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
 msgstr "API 保存该值所用的名称。小写字母、数字和下划线；无法更改。"
 
@@ -22608,7 +22498,7 @@ msgstr "谁在哪里回复，以及谁在线"
 msgid "Who can reply"
 msgstr "谁可以回复"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Who can use it"
 msgstr "谁可以使用"
 
@@ -22645,7 +22535,6 @@ msgstr "谁发送,关于什么?"
 msgid "Who should take it?"
 msgstr "谁来处理?"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Who you support: name, hours, team, sender"
 msgstr "你支持谁：名称、工作时间、团队、发件人"
@@ -22764,10 +22653,8 @@ msgstr "处理中…"
 #: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/oauth/ConsentPage.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Workspace"
 msgstr "工作区"
 
@@ -23074,7 +22961,6 @@ msgid "Your account is not in a group that may use Yuva. Ask your administrator 
 msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 
 #: src/features/settings/addresses/AddressesPage.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Your addresses"
 msgstr "你的地址"
 
@@ -23167,6 +23053,10 @@ msgstr "你的 Microsoft 365 组织只允许管理员同意应用。请把下面
 #: src/features/broadcasts/Composer.tsx
 msgid "Your name"
 msgstr "你的姓名"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Your name, photo, language and sign-in"
+msgstr "你的姓名、照片、语言和登录"
 
 #: src/features/home/HomeWork.tsx
 msgid "Your open conversations"
@@ -23273,10 +23163,6 @@ msgstr "你的网站"
 msgid "Your workspace asks for these fields on every conversation it closes."
 msgstr "你的工作区要求在每个关闭的对话中填写这些字段。"
 
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."
-msgstr "工作区名称、已关闭对话的保留时长，以及谁可以发送群发邮件。"
-
 #: src/features/account/AccountPage.tsx
 msgid "Your Yuva account"
 msgstr "你的 Yuva 账号"
@@ -23367,10 +23253,6 @@ msgstr "Yuva 不运行邮件服务器:你域名的邮件会被转交给它。"
 msgid "Yuva held back a command that would have changed the mailbox"
 msgstr "Yuva 拦下了一条会更改邮箱的命令"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Yuva inbox"
-msgstr "Yuva 收件箱"
-
 #: src/features/migrations/SwitchStep.tsx
 msgid "Yuva mails {address} a short test message. When it reaches Yuva by the new route, the switch works."
 msgstr "Yuva 会给 {address} 发送一封简短的测试消息。当它通过新路径到达 Yuva 时,切换就生效了。"
@@ -23402,10 +23284,6 @@ msgstr "Yuva 只读取客服系统。历史记录会静悄悄地到达:没有通
 #: src/features/migrations/Wizard.tsx
 msgid "Yuva only reads the mailbox. History arrives quietly: no notifications, no auto-replies."
 msgstr "Yuva 只读取邮箱。历史记录会静悄悄地到达:没有通知,没有自动回复。"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Yuva only reads the source; nothing there is changed."
-msgstr "Yuva 只读取来源；不会更改其中的任何内容。"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Yuva only reads. Besides signing in, its connection sends {provider} nothing but read requests, so no ticket, customer or setting changes."
@@ -23478,7 +23356,3 @@ msgstr "Yuva，返回首页"
 #: src/components/common/text.ts
 msgid "Yuva's own notes cannot be changed."
 msgstr "Yuva 自带的备注无法更改。"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"
-msgstr "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"

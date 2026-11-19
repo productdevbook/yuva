@@ -10,7 +10,6 @@ import { ThemeToggle } from "@/components/common/PageLayout"
 import { Button } from "@/components/ui/button"
 import { RadioGroup } from "@/components/ui/radio-group"
 import { Spinner } from "@/components/ui/spinner"
-import { useMediaQuery } from "@/hooks/use-media-query"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 
@@ -95,8 +94,8 @@ export function Stepper({
     ) + 1
   return (
     <div className={className}>
-      <StepBar steps={steps} current={current} stepHref={stepHref} label={label} className="mb-6" />
-      <p className="eyebrow font-mono text-muted2" data-testid={testId}>
+      <StepBar steps={steps} current={current} stepHref={stepHref} label={label} className="mb-8" />
+      <p className="sr-only" data-testid={testId}>
         <Trans>
           Step {step} of {count}
         </Trans>
@@ -115,16 +114,20 @@ export function StepHeader({
   icon?: React.ReactNode
 }) {
   return (
-    <div className="mb-7">
+    <div className="mb-6">
       {icon && (
-        <span className="mb-4 grid size-10 place-items-center rounded-full bg-brand-wash text-brand [&_svg]:size-[18px]">
+        <span className="mb-3 grid size-9 place-items-center rounded-lg border bg-surface text-muted-foreground [&_svg]:size-4">
           {icon}
         </span>
       )}
-      <h1 className="text-page text-balance outline-none" tabIndex={-1} data-wizard-heading="">
+      <h1
+        className="text-[22px] leading-7 font-semibold tracking-[-0.01em] text-balance outline-none"
+        tabIndex={-1}
+        data-wizard-heading=""
+      >
         {title}
       </h1>
-      {children && <p className="mt-2 text-reading text-pretty text-muted-foreground">{children}</p>}
+      {children && <p className="mt-1.5 text-body text-pretty text-muted-foreground">{children}</p>}
     </div>
   )
 }
@@ -159,7 +162,6 @@ export function WizardFrame({
   const location = useLocation()
   const state = (location.state ?? {}) as { back?: string }
   const { membership } = useSession()
-  const wide = useMediaQuery("(min-width: 1024px)")
   const [shown, setShown] = useState(false)
   const main = useRef<HTMLElement>(null)
   const later = () => {
@@ -178,7 +180,7 @@ export function WizardFrame({
 
   return (
     <div className="flex min-h-svh flex-col bg-background" data-testid="setup">
-      <header className="sticky top-0 z-10 flex h-13 shrink-0 items-center justify-between gap-3 border-t-2 border-b border-t-brand border-b-line-soft bg-background px-4 sm:px-6">
+      <header className="sticky top-0 z-10 flex h-13 shrink-0 items-center justify-between gap-3 border-b border-b-line-soft bg-background px-4 sm:px-6">
         <span className="flex min-w-0 items-center gap-2.5 px-1 sm:px-2.5">
           <YuvaMark className="size-6 shrink-0" />
           <span className="truncate text-[16px] font-semibold tracking-[-0.01em]">{membership.workspace.name}</span>
@@ -197,61 +199,52 @@ export function WizardFrame({
               )}
         </span>
       </header>
-      <div className="grid flex-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        <main ref={main} className="flex min-w-0 justify-center px-4 pt-8 pb-12 sm:px-8 lg:pt-[9vh] lg:pb-16">
-          <div className="w-full max-w-[720px] lg:max-w-[36rem]">
-            {back && (
-              <Link
-                to={back}
-                state={state}
-                className="mb-5 inline-flex w-fit items-center gap-1.5 text-small text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-                data-testid="setup-back"
+      <main ref={main} className="flex min-w-0 flex-1 justify-center px-4 pt-8 pb-12 sm:px-8 lg:pt-12 lg:pb-16">
+        <div className="w-full max-w-[640px]">
+          {back && (
+            <Link
+              to={back}
+              state={state}
+              className="mb-5 inline-flex w-fit items-center gap-1.5 text-small text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+              data-testid="setup-back"
+            >
+              <ArrowLeftIcon className="size-3.5 rtl:rotate-180" />
+              <Trans>Back</Trans>
+            </Link>
+          )}
+          {steps && current && (
+            <Stepper
+              steps={steps}
+              current={current}
+              stepHref={stepHref}
+              label={stepsLabel}
+              testId="setup-step"
+              className="mb-2"
+            />
+          )}
+          {children}
+          <section className="mt-10 border-t pt-4" aria-label={t`Preview`}>
+            {!previewOpen && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="-ms-3"
+                onClick={() => setShown((s) => !s)}
+                aria-expanded={shown}
+                data-testid="setup-preview-toggle"
               >
-                <ArrowLeftIcon className="size-3.5 rtl:rotate-180" />
-                <Trans>Back</Trans>
-              </Link>
+                <ChevronDownIcon className={cn("transition-transform", shown && "rotate-180")} />
+                {shown ? <Trans>Hide the preview</Trans> : <Trans>Show the preview</Trans>}
+              </Button>
             )}
-            {steps && current && (
-              <Stepper
-                steps={steps}
-                current={current}
-                stepHref={stepHref}
-                label={stepsLabel}
-                testId="setup-step"
-                className="mb-2"
-              />
+            {(previewOpen || shown) && (
+              <div className="mt-3 flex flex-col items-center overflow-hidden rounded-xl border bg-surface p-4 sm:p-6">
+                {preview}
+              </div>
             )}
-            {children}
-            {!wide && (
-              <section className="mt-10 border-t pt-4" aria-label={t`Preview`}>
-                {!previewOpen && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="-ms-3"
-                    onClick={() => setShown((s) => !s)}
-                    aria-expanded={shown}
-                    data-testid="setup-preview-toggle"
-                  >
-                    <ChevronDownIcon className={cn("transition-transform", shown && "rotate-180")} />
-                    {shown ? <Trans>Hide the preview</Trans> : <Trans>Show the preview</Trans>}
-                  </Button>
-                )}
-                {(previewOpen || shown) && (
-                  <div className="mt-3 overflow-hidden rounded-2xl border bg-surface p-4 sm:p-6">{preview}</div>
-                )}
-              </section>
-            )}
-          </div>
-        </main>
-        {wide && (
-          <aside className="flex border-s bg-surface" aria-label={t`Preview`}>
-            <div className="sticky top-13 flex h-[calc(100svh-3.25rem)] flex-1 flex-col items-center justify-center overflow-hidden p-10 xl:p-14">
-              {preview}
-            </div>
-          </aside>
-        )}
-      </div>
+          </section>
+        </div>
+      </main>
     </div>
   )
 }
@@ -275,7 +268,7 @@ export function StepActions({
 }) {
   return (
     <div className="sticky bottom-0 -mx-5 flex flex-wrap items-center gap-3 border-t bg-background px-5 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:static sm:mx-0 sm:border-t-0 sm:bg-transparent sm:px-0 sm:pt-0 sm:pb-0">
-      <Button type={type} size="lg" disabled={disabled || pending} onClick={onClick} data-testid={testId}>
+      <Button type={type} disabled={disabled || pending} onClick={onClick} data-testid={testId}>
         {pending && <Spinner />}
         {children}
         <ArrowRightIcon className="rtl:rotate-180" />

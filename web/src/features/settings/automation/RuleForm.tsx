@@ -4,10 +4,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { PlusIcon, TriangleAlertIcon } from "lucide-react"
 import { useState } from "react"
 
+import { FormCard } from "@/components/common/FormCard"
 import { ErrorLine, Notice } from "@/components/common"
 import { ChipGroup } from "@/components/common/ChipGroup"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { ActionRow } from "@/features/settings/automation/ActionRow"
@@ -62,7 +62,14 @@ function Problem({ error }: { error: unknown }) {
 
 type Source = { rule: AutomationRule | null; prefill?: MailFilterSuggestion; inboxId?: string; filter?: boolean }
 
-function Form({ rule, prefill, inboxId: fixed, filter, onClose }: Source & { onClose: () => void }) {
+export function RuleForm({
+  rule,
+  prefill,
+  inboxId: fixed,
+  filter,
+  onClose,
+  className,
+}: Source & { onClose: () => void; className?: string }) {
   const { t } = useLingui()
   const text = useAutomationText()
   const qc = useQueryClient()
@@ -122,12 +129,26 @@ function Form({ rule, prefill, inboxId: fixed, filter, onClose }: Source & { onC
   })
 
   return (
-    <form
-      className="flex flex-col gap-5"
-      onSubmit={(e) => {
-        e.preventDefault()
-        save.mutate()
-      }}
+    <FormCard
+      title={
+        filter ? (
+          rule ? (
+            <Trans>Edit filter</Trans>
+          ) : (
+            <Trans>New filter</Trans>
+          )
+        ) : rule ? (
+          <Trans>Edit rule</Trans>
+        ) : (
+          <Trans>New rule</Trans>
+        )
+      }
+      submit={rule ? <Trans>Save</Trans> : filter ? <Trans>Create filter</Trans> : <Trans>Create rule</Trans>}
+      ready={!(save.isPending || !complete || !changed)}
+      onSubmit={() => save.mutate()}
+      onCancel={onClose}
+      className={className}
+      testId="rule-form"
     >
       <Field label={<Trans>Name</Trans>} htmlFor="rule-name">
         <Input
@@ -290,37 +311,6 @@ function Form({ rule, prefill, inboxId: fixed, filter, onClose }: Source & { onC
         </Notice>
       )}
       <Problem error={save.error} />
-      <DialogFooter>
-        <Button type="submit" disabled={save.isPending || !complete || !changed} data-testid="rule-save">
-          {rule ? <Trans>Save</Trans> : filter ? <Trans>Create filter</Trans> : <Trans>Create rule</Trans>}
-        </Button>
-      </DialogFooter>
-    </form>
-  )
-}
-
-export function RuleDialog({ onClose, ...source }: Source & { onClose: () => void }) {
-  const { rule, filter } = source
-  return (
-    <Dialog open onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-h-[90svh] overflow-y-auto sm:max-w-2xl">
-        <DialogHeader>
-          <DialogTitle>
-            {filter ? (
-              rule ? (
-                <Trans>Edit filter</Trans>
-              ) : (
-                <Trans>New filter</Trans>
-              )
-            ) : rule ? (
-              <Trans>Edit rule</Trans>
-            ) : (
-              <Trans>New rule</Trans>
-            )}
-          </DialogTitle>
-        </DialogHeader>
-        <Form {...source} onClose={onClose} />
-      </DialogContent>
-    </Dialog>
+    </FormCard>
   )
 }

@@ -1,16 +1,16 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { PencilIcon, QuoteIcon, Trash2Icon, TriangleAlertIcon } from "lucide-react"
+import { PencilIcon, PlusIcon, QuoteIcon, Trash2Icon, TriangleAlertIcon } from "lucide-react"
 import { useState } from "react"
 
 import { ErrorLine, useConfirm } from "@/components/common"
 import { useAuthorText } from "@/components/common/authorText"
 import { EmptyBox } from "@/components/common/EmptyBox"
 import { Button } from "@/components/ui/button"
-import { CannedReplyDialog } from "@/features/settings/canned/CannedReplyDialog"
+import { CannedReplyForm } from "@/features/settings/canned/CannedReplyForm"
 import { useAuthorityCheck, useAutomationRules } from "@/features/settings/automation/queries"
 import { GeneralHeader, Intro } from "@/features/settings/GeneralTabs"
-import { Card, headButton, Row, Rows } from "@/features/settings/ui"
+import { Card, Row, Rows } from "@/features/settings/ui"
 import { api, unwrap, type CannedReply } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
@@ -58,18 +58,31 @@ export function CannedRepliesPage() {
     onSuccess: () => qc.invalidateQueries({ queryKey: keys.cannedReplies(ws) }),
   })
   const add = canManage && (
-    <Button className={headButton.primary} onClick={() => setEditing("new")} data-testid="canned-new">
-      <Trans>New canned reply</Trans>
+    <Button onClick={() => setEditing("new")} disabled={!!editing} data-testid="canned-new">
+      <PlusIcon />
+      <Trans>New saved reply</Trans>
     </Button>
   )
   return (
     <>
-      <GeneralHeader current="canned-replies" />
+      <GeneralHeader current="canned-replies" plain />
       <Intro action={replies.data && replies.data.length > 0 ? add : undefined}>
         <Trans>Type / and the shortcut in the composer to insert one.</Trans>
       </Intro>
+      {editing && (
+        <CannedReplyForm
+          key={editing === "new" ? "new" : editing.id}
+          reply={editing === "new" ? null : editing}
+          onClose={() => setEditing(null)}
+        />
+      )}
       {replies.data && replies.data.length === 0 ? (
-        <EmptyBox icon={QuoteIcon} title={<Trans>No canned replies yet</Trans>} actions={add} testId="canned-empty">
+        <EmptyBox
+          icon={QuoteIcon}
+          title={<Trans>No saved replies yet</Trans>}
+          actions={!editing && add}
+          testId="canned-empty"
+        >
           <Trans>Save the answers you write often, then insert them in the composer with a shortcut.</Trans>
         </EmptyBox>
       ) : (
@@ -96,7 +109,7 @@ export function CannedRepliesPage() {
                       aria-label={t`Delete`}
                       onClick={() =>
                         confirm({
-                          title: <Trans>Delete this canned reply?</Trans>,
+                          title: <Trans>Delete this saved reply?</Trans>,
                           confirm: <Trans>Delete</Trans>,
                           run: () => remove.mutate(r.id),
                         })
@@ -112,7 +125,6 @@ export function CannedRepliesPage() {
           <ErrorLine error={replies.error ?? remove.error} className="px-5 pb-4" />
         </Card>
       )}
-      {editing && <CannedReplyDialog reply={editing === "new" ? null : editing} onClose={() => setEditing(null)} />}
       {confirmDialog}
     </>
   )

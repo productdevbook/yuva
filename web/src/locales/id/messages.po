@@ -1448,7 +1448,7 @@ msgstr "Satu percakapan"
 msgid "A conversation can copy at most 100 people."
 msgstr "Satu percakapan dapat men-Cc paling banyak 100 orang."
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
 msgstr "Percakapan tidak dapat ditutup sebelum kolom ini memiliki nilai. Spam dikecualikan."
 
@@ -1468,7 +1468,7 @@ msgstr "Percakapan tidak aktif"
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "Percakapan diambil utuh jika terakhir diperbarui dalam rentang itu."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "A conversation must match every row you fill in. Leave a row empty to match anything."
 msgstr "Percakapan harus cocok dengan setiap baris yang Anda isi. Baris kosong cocok dengan semuanya."
 
@@ -1739,7 +1739,7 @@ msgstr "Persentase di samping setiap komponen."
 msgid "A personal API key from Linear, under Settings, Account, Security and access."
 msgstr "A personal API key from Linear, under Settings, Account, Security and access."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "A policy that is off applies to nothing."
 msgstr "Kebijakan yang dimatikan tidak berlaku untuk apa pun."
 
@@ -1799,7 +1799,7 @@ msgstr "Kolom wajib kosong"
 msgid "A roadmap idea moved to another stage"
 msgstr "Sebuah ide peta jalan berpindah ke tahap lain"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "A rule that is off never runs. Rules run in the order of the list."
 msgstr "Aturan yang dimatikan tidak pernah berjalan. Aturan berjalan sesuai urutan daftar."
 
@@ -1974,10 +1974,6 @@ msgstr "Akses ke {provider}"
 msgid "Access to the mailbox"
 msgstr "Akses ke kotak surat"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Access to your mailbox: none"
-msgstr "Akses ke kotak surat Anda: tidak ada"
-
 #: src/features/account/AccountPage.tsx
 msgid "Account"
 msgstr "Akun"
@@ -2002,7 +1998,7 @@ msgstr "Dukungan Acme"
 msgid "ACS URL"
 msgstr "ACS URL"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Actions"
@@ -2017,6 +2013,7 @@ msgstr "Hanya tindakan"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/text.ts
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
@@ -2032,7 +2029,7 @@ msgstr "Aktivitas"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "Tambah"
@@ -2050,7 +2047,7 @@ msgstr "Tambah blok"
 msgid "Add a category"
 msgstr "Tambah kategori"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Add a channel"
 msgstr "Tambah saluran"
 
@@ -2099,7 +2096,7 @@ msgstr "Tambahkan peserta dengan alamat e-mail"
 msgid "Add a passkey"
 msgstr "Tambah passkey"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Add a product"
 msgstr "Tambah produk"
 
@@ -2137,7 +2134,7 @@ msgstr "Tambahkan obrolan situs web di pengaturan kotak masuk"
 msgid "Add a website or app"
 msgstr "Tambahkan situs web atau aplikasi"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Add an action"
 msgstr "Tambah tindakan"
 
@@ -2154,6 +2151,10 @@ msgstr "Tambahkan alamat di server Anda dan pilih peristiwa yang harus diberitah
 #: src/app/Palette.tsx
 msgid "Add an analytics property"
 msgstr "Tambah properti analitik"
+
+#: src/features/settings/channels/ApiChannelForm.tsx
+msgid "Add an API channel"
+msgstr "Tambahkan saluran API"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add an image"
@@ -2184,7 +2185,6 @@ msgstr "Tambah lagi"
 msgid "Add at least one origin."
 msgstr "Tambahkan setidaknya satu origin."
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Add channel"
 msgstr "Tambah saluran"
@@ -2194,7 +2194,7 @@ msgstr "Tambah saluran"
 msgid "Add component"
 msgstr "Tambah komponen"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Add condition"
 msgstr "Tambah kondisi"
 
@@ -2228,6 +2228,10 @@ msgstr "Add image"
 #: src/features/mail/Compose.tsx
 msgid "Add it back"
 msgstr "Add it back"
+
+#: src/features/settings/labels/LabelForm.tsx
+msgid "Add label"
+msgstr "Tambahkan label"
 
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
@@ -2386,6 +2390,7 @@ msgid "Address verified"
 msgstr "Alamat terverifikasi"
 
 #: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Addresses"
 msgstr "Alamat"
 
@@ -2496,6 +2501,7 @@ msgid "All good"
 msgstr "Semua baik"
 
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/MigrationsPage.tsx
 msgid "All imports"
 msgstr "Semua impor"
 
@@ -2881,10 +2887,6 @@ msgstr "Undangan diterima saat orang itu masuk dengan kode yang dikirim ke alama
 msgid "An issue URL, owner/repo#12 or ENG-123."
 msgstr "An issue URL, owner/repo#12 or ENG-123."
 
-#: src/features/migrations/MigrationsPage.tsx
-msgid "An mbox export of a mailbox"
-msgstr "Ekspor mbox dari sebuah kotak surat"
-
 #: src/features/team/TeamPage.tsx
 msgid "An owner cannot be removed. Change their role first."
 msgstr "Pemilik tidak dapat dihapus. Ubah dulu perannya."
@@ -2960,7 +2962,7 @@ msgstr "Akun lain"
 msgid "Another address this channel receives mail at. Forward a mailbox here, for example {own} at its provider; forwarding to {own} itself would loop."
 msgstr "Alamat lain tempat saluran ini menerima email. Teruskan kotak surat ke sini, misalnya {own} di penyedianya; meneruskan ke {own} sendiri akan berputar."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 msgid "Another canned reply already uses this shortcut."
 msgstr "Balasan siap pakai lain sudah memakai pintasan ini."
 
@@ -3092,7 +3094,7 @@ msgstr "Kolom apa pun"
 msgid "Any label"
 msgstr "Label apa pun"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Any of the labels you pick."
 msgstr "Salah satu label yang Anda pilih."
 
@@ -3137,15 +3139,11 @@ msgstr "Apa pun yang memakai kunci ini langsung berhenti bekerja."
 msgid "API"
 msgstr "API"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "API & MCP"
 msgstr "API & MCP"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "API channel"
 msgstr "Saluran API"
 
@@ -3158,7 +3156,6 @@ msgstr "Kunci API"
 #: src/app/Palette.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "API keys"
 msgstr "Kunci API"
@@ -3222,8 +3219,8 @@ msgstr "ID aplikasi (klien)"
 msgid "Applied"
 msgstr "Diterapkan"
 
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Applies to"
 msgstr "Berlaku untuk"
 
@@ -3450,7 +3447,7 @@ msgstr "Ditugaskan ke Anda"
 
 #: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Assignee"
 msgstr "Penanggung jawab"
 
@@ -3486,7 +3483,7 @@ msgid "Assistants work in Yuva through MCP, acting as the member who connected t
 msgstr "Asisten bekerja di Yuva lewat MCP, bertindak sebagai anggota yang menghubungkannya dan hanya dengan akses yang disetujui anggota itu."
 
 #: src/components/common/text.ts
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Async"
 msgstr "Asinkron"
 
@@ -3585,7 +3582,6 @@ msgid "Audience"
 msgstr "Audiens"
 
 #: src/app/Palette.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Audit log"
 msgstr "Log audit"
@@ -3618,7 +3614,6 @@ msgstr "Penugasan otomatis"
 msgid "Automatic mail never triggers an automatic reply."
 msgstr "Email otomatis tidak pernah memicu balasan otomatis."
 
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Automation"
 msgstr "Otomatisasi"
@@ -3766,7 +3761,7 @@ msgstr "Best regards,"
 msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
 msgstr "Antara 1 dan 500, dihitung di seluruh ruang kerja. Penugasan manual mengabaikannya. Kosongkan jika tanpa batas."
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Billing"
 msgstr "Penagihan"
@@ -3776,7 +3771,7 @@ msgstr "Penagihan"
 msgid "Billing bot"
 msgstr "Bot penagihan"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 msgid "Billing events"
 msgstr "Peristiwa penagihan"
 
@@ -3924,17 +3919,13 @@ msgstr "Dilanggar"
 msgid "Breached, met late at {at}"
 msgstr "Dilanggar, terpenuhi terlambat pada {at}"
 
-#: src/features/settings/SettingsFrame.tsx
-msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
-msgstr "Bawa riwayat kotak surat dari Gmail, Yandex, atau server IMAP mana pun"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Bring subscribers who already agreed elsewhere. Each address is checked first and nothing is added until you start: invalid addresses, domains that take no mail, role addresses, duplicates and anyone who left or objected are left out."
 msgstr "Bawa pelanggan yang sudah setuju di tempat lain. Setiap alamat diperiksa dulu dan tidak ada yang ditambahkan sampai Anda memulai: alamat tidak valid, domain yang tidak menerima email, alamat peran, duplikat, dan siapa pun yang berhenti atau keberatan dikecualikan."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Bring the history of a mailbox you answer from today, then switch its mail over. Yuva only reads the mailbox; nothing there is changed."
-msgstr "Bawa riwayat kotak surat yang Anda gunakan untuk membalas saat ini, lalu alihkan emailnya. Yuva hanya membaca kotak surat; tidak ada yang diubah di sana."
+msgid "Bring the history of a mailbox or help desk you answer from today, then switch its mail over. Yuva only reads the source; nothing there is changed."
+msgstr "Bawa riwayat kotak surat atau help desk yang Anda pakai untuk menjawab hari ini, lalu alihkan emailnya. Yuva hanya membaca sumbernya; tidak ada yang diubah di sana."
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Bring your old mail"
@@ -3949,7 +3940,6 @@ msgstr "Siaran massal"
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/settings/workspace/BroadcastsSettings.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Broadcast sending"
 msgstr "Pengiriman siaran massal"
 
@@ -4047,13 +4037,9 @@ msgstr "Nama kampanye"
 #: src/features/docs/FromDocs.tsx
 #: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
-#: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -4136,8 +4122,6 @@ msgstr "Dibatalkan. Yang sudah ditambahkan tetap ada."
 #: src/app/Palette.tsx
 #: src/features/conversation/composer/CannedMenu.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Canned replies"
 msgstr "Balasan siap pakai"
 
@@ -4291,10 +4275,6 @@ msgstr "Mengubah webhook ke {host}"
 msgid "Changelog settings"
 msgstr "Pengaturan changelog"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Changes made to {provider}: none"
-msgstr "Perubahan pada {provider}: tidak ada"
-
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
 msgstr "Perubahan pada anggota, kunci, webhook, dan pengaturan sensitif lainnya muncul di sini."
@@ -4308,14 +4288,14 @@ msgstr "Mengubah domain pengiriman menonaktifkan penandatanganan DKIM sampai And
 #: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
 msgid "Channel"
 msgstr "Saluran"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Channel added"
 msgstr "Saluran ditambahkan"
 
@@ -4339,14 +4319,8 @@ msgstr "Saluran dihapus"
 msgid "Channel settings"
 msgstr "Pengaturan kanal"
 
-#: src/app/places.tsx
-#: src/components/common/SettingsStrip.tsx
-#: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Channels"
 msgstr "Saluran"
 
@@ -4450,7 +4424,7 @@ msgstr "Diperiksa {when}"
 msgid "Checked and waiting for an owner or admin to start it."
 msgstr "Diperiksa dan menunggu pemilik atau admin memulainya."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Checked every 5 minutes, once per quiet period. Only open and pending conversations."
 msgstr "Diperiksa setiap 5 menit, sekali per periode sepi. Hanya percakapan terbuka dan tertunda."
 
@@ -4649,7 +4623,6 @@ msgstr "Jam berubah pada {date}; jam tetap {start}–{end} waktu setempat."
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -4689,7 +4662,7 @@ msgstr "Tutup setiap percakapan setelah membalas"
 msgid "Close everything"
 msgstr "Tutup semuanya"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Close idle conversations"
 msgstr "Tutup percakapan yang tidak aktif"
 
@@ -4777,11 +4750,11 @@ msgstr "Ciutkan"
 msgid "Collections"
 msgstr "Koleksi"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Color"
 msgstr "Warna"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/colors.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Colour"
@@ -4972,7 +4945,6 @@ msgstr "Connect a tracker"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
 msgid "Connect an assistant"
 msgstr "Hubungkan asisten"
 
@@ -5038,12 +5010,10 @@ msgid "Connected {created}"
 msgstr "Terhubung {created}"
 
 #: src/app/Palette.tsx
-#: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
+#: src/features/settings/connected-apps/AssistantPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Connected apps"
 msgstr "Aplikasi terhubung"
 
@@ -5181,7 +5151,6 @@ msgstr "berisi"
 
 #: src/app/places.tsx
 #: src/features/broadcasts/Composer.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Content"
 msgstr "Konten"
 
@@ -5197,7 +5166,7 @@ msgstr "Konten"
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
 #: src/features/setup/email/EmailReceiveStep.tsx
@@ -5256,7 +5225,6 @@ msgstr "Percakapan dimulai"
 msgid "conversations"
 msgstr "percakapan"
 
-#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
@@ -5271,6 +5239,7 @@ msgstr "percakapan"
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Conversations"
 msgstr "Percakapan"
@@ -5341,7 +5310,6 @@ msgstr "alamat dalam tembusan"
 #: src/components/common/CopyButton.tsx
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/messages/MessageActions.tsx
-#: src/features/migrations/Wizard.tsx
 msgid "Copy"
 msgstr "Salin"
 
@@ -5394,6 +5362,10 @@ msgstr "Salin detail masukan"
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Copy the feedback details (Y)"
 msgstr "Salin detail masukan (Y)"
+
+#: src/features/migrations/Wizard.tsx
+msgid "Copy the history of a mailbox or help desk into Yuva."
+msgstr "Salin riwayat kotak surat atau help desk ke Yuva."
 
 #: src/features/migrations/text.ts
 msgid "Copy the key under “Your API Key”. A Freshdesk key cannot be limited to reading; Yuva's connection only sends read requests."
@@ -5459,7 +5431,6 @@ msgid "Counts when a subscription becomes confirmed, not when it is still waitin
 msgstr "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/DeveloperTabs.tsx
 msgid "Create"
 msgstr "Buat"
 
@@ -5492,7 +5463,7 @@ msgstr "Create an issue"
 msgid "Create an OAuth client in Zendesk"
 msgstr "Buat klien OAuth di Zendesk"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Create and add a channel"
 msgstr "Buat dan tambah saluran"
 
@@ -5516,11 +5487,11 @@ msgstr "Buat saluran"
 msgid "Create draft"
 msgstr "Buat draf"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Create field"
 msgstr "Buat kolom"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Create filter"
 msgstr "Buat filter"
 
@@ -5554,11 +5525,11 @@ msgstr "Buat kunci"
 msgid "Create list"
 msgstr "Buat milis"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Create policy"
 msgstr "Buat kebijakan"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Create rule"
 msgstr "Buat aturan"
 
@@ -5619,9 +5590,7 @@ msgstr "Membuat, mengubah, mengurutkan ulang, dan menghapus aturan otomatisasi"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Created"
 msgstr "Dibuat"
 
@@ -5690,11 +5659,6 @@ msgstr "Kustom"
 msgid "Custom field"
 msgstr "Kolom khusus"
 
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "Custom fields"
-msgstr "Kolom khusus"
-
 #: src/features/contact/ContactsPage.tsx
 msgid "Customers"
 msgstr "Pelanggan"
@@ -5725,7 +5689,6 @@ msgid "Daily limit reached · continues at {time} {city} time"
 msgstr "Batas harian tercapai · berlanjut pukul {time} waktu {city}"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Danger zone"
 msgstr "Zona bahaya"
 
@@ -6075,10 +6038,6 @@ msgstr "Hapus tim {name}?"
 msgid "Delete the view {name}?"
 msgstr "Hapus tampilan {name}?"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-msgid "Delete this canned reply?"
-msgstr "Hapus balasan siap pakai ini?"
-
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Delete this DKIM key?"
 msgstr "Hapus kunci DKIM ini?"
@@ -6102,6 +6061,10 @@ msgstr "Hapus catatan ini"
 #: src/features/contact/ContactNotes.tsx
 msgid "Delete this note?"
 msgstr "Hapus catatan ini?"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "Delete this saved reply?"
+msgstr "Hapus balasan tersimpan ini?"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete this subscription?"
@@ -6302,7 +6265,6 @@ msgstr "Notifikasi desktop diblokir untuk situs ini di pengaturan browser, sehin
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
@@ -6310,8 +6272,11 @@ msgstr "Notifikasi desktop diblokir untuk situs ini di pengaturan browser, sehin
 msgid "Details"
 msgstr "Detail"
 
-#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsFrame.tsx
+msgid "Developer"
+msgstr "Pengembang"
+
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Developers"
 msgstr "Pengembang"
 
@@ -6519,7 +6484,7 @@ msgstr "Dokumen adalah halaman yang Anda kelola di situs sendiri dan Anda host s
 msgid "Documentation pages"
 msgstr "Halaman dokumentasi"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Documentation site"
 msgstr "Situs dokumentasi"
@@ -6555,7 +6520,6 @@ msgstr "selesai"
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/fields/BulkFailures.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -6738,7 +6702,7 @@ msgstr "Duplikat"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/notifications/EventsSection.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -6816,7 +6780,7 @@ msgstr "Kode lewat email"
 msgid "E-mails to the people who signed up"
 msgstr "Email untuk orang yang mendaftar"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
 msgstr "Setiap tindakan sekali, paling banyak 10. Tindakan berjalan sebagai satu perubahan; jika satu gagal, tidak ada yang diterapkan."
 
@@ -6919,10 +6883,6 @@ msgstr "Edit {name}"
 msgid "Edit API key"
 msgstr "Edit kunci API"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-msgid "Edit canned reply"
-msgstr "Edit balasan siap pakai"
-
 #: src/features/status/ComponentForms.tsx
 msgid "Edit component"
 msgstr "Edit komponen"
@@ -6940,11 +6900,11 @@ msgstr "Edit detail"
 msgid "Edit details ({editKey})"
 msgstr "Edit detail ({editKey})"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Edit field"
 msgstr "Edit kolom"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Edit filter"
 msgstr "Ubah filter"
 
@@ -6952,11 +6912,11 @@ msgstr "Ubah filter"
 msgid "Edit help center collections and article drafts"
 msgstr "Edit koleksi pusat bantuan dan draf artikel"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Edit label"
 msgstr "Edit label"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Edit macro"
 msgstr "Ubah makro"
 
@@ -6964,13 +6924,17 @@ msgstr "Ubah makro"
 msgid "Edit monitor"
 msgstr "Edit monitor"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Edit policy"
 msgstr "Ubah kebijakan"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Edit rule"
 msgstr "Ubah aturan"
+
+#: src/features/settings/canned/CannedReplyForm.tsx
+msgid "Edit saved reply"
+msgstr "Edit balasan tersimpan"
 
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Edit team"
@@ -7036,11 +7000,6 @@ msgstr "Mengedit pesan yang dijadwalkan pada {editingWhen}"
 msgid "Elevated API errors"
 msgstr "Kesalahan API meningkat"
 
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "Elsewhere in settings"
-msgstr "Di bagian lain pengaturan"
-
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Embed snippet"
 msgstr "Cuplikan sematan"
@@ -7070,8 +7029,8 @@ msgstr "Kosong memakai subjek dalam {baseLanguage}. Kolom gabungan juga berfungs
 msgid "Emptying the Trash: {0} are being deleted"
 msgstr "Mengosongkan Sampah: {0} sedang dihapus"
 
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Enabled"
 msgstr "Aktif"
 
@@ -7243,7 +7202,7 @@ msgid "Every imported conversation is closed."
 msgstr "Setiap percakapan impor ditutup."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Every inbox"
 msgstr "Setiap kotak masuk"
 
@@ -7319,7 +7278,7 @@ msgstr "Setiap situs web dan aplikasi menampilkan pengunjungnya di Beranda dan d
 
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Everyone"
 msgstr "Semua orang"
 
@@ -7469,7 +7428,6 @@ msgstr "Extra scopes"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/migrations/ConnectStep.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7584,6 +7542,7 @@ msgstr "Percakapan terbuka paling sedikit"
 
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Fields"
 msgstr "Kolom"
 
@@ -7602,10 +7561,6 @@ msgstr "File"
 #: src/features/broadcasts/Import.tsx
 msgid "File and consent"
 msgstr "File dan persetujuan"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Files"
-msgstr "File"
 
 #: src/features/fields/RequiredFieldsHost.tsx
 msgid "Fill in before closing"
@@ -7739,6 +7694,7 @@ msgstr "Selesaikan tanpa memeriksa"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/migrations/MigrationsPage.tsx
 msgid "Finished"
 msgstr "Selesai"
 
@@ -7766,7 +7722,7 @@ msgstr "balasan pertama"
 #: src/features/home/HomeWork.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "First reply"
 msgstr "Balasan pertama"
 
@@ -7882,7 +7838,7 @@ msgid "For example Acme"
 msgstr "Misalnya Acme"
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/setup/NameStep.tsx
 msgid "For example Fieldnote"
 msgstr "Misalnya Fieldnote"
@@ -8071,15 +8027,15 @@ msgstr "Alamat pengirim (opsional)"
 msgid "From blocked contacts"
 msgstr "Dari kontak yang diblokir"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From each later contact message to the reply."
 msgstr "Dari setiap pesan berikutnya dari kontak sampai balasan."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From the contact's first message to the first public reply."
 msgstr "Dari pesan pertama kontak sampai balasan publik pertama."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From the start of the conversation to its first close."
 msgstr "Dari awal percakapan sampai penutupan pertamanya."
 
@@ -8144,9 +8100,7 @@ msgstr "Memberi {person} akses ke {inbox}"
 msgid "Gave the team {team} access to {inbox}"
 msgstr "Memberi tim {team} akses ke {inbox}"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/channels/sections.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "General"
@@ -8213,10 +8167,6 @@ msgstr "Gmail hanya meneruskan email baru yang bukan spam. Jika admin Workspace 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Gmail lets other apps read about 1.5 GB a day over IMAP, so a mailbox of many gigabytes takes days. Google Takeout exports it as one file that uploads as fast as your connection allows. Import that first, then come back here with an app password for the newer mail and the switch."
 msgstr "Gmail membiarkan aplikasi lain membaca sekitar 1,5 GB sehari lewat IMAP, jadi kotak surat berukuran banyak gigabyte butuh berhari-hari. Google Takeout mengekspornya sebagai satu file yang terunggah secepat koneksi Anda. Impor itu dulu, lalu kembali ke sini dengan kata sandi aplikasi untuk email yang lebih baru dan peralihannya."
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Gmail, Outlook, Yandex, any IMAP server"
-msgstr "Gmail, Outlook, Yandex, server IMAP apa pun"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "go back to operational when you post this"
@@ -8316,10 +8266,6 @@ msgstr "Groups attribute"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
 msgstr "Groups claim"
-
-#: src/features/settings/SettingsFrame.tsx
-msgid "Groups of members and the inboxes they cover"
-msgstr "Kelompok anggota dan kotak masuk yang mereka cakup"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -8436,10 +8382,6 @@ msgstr "Pusat bantuan"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Help center settings"
 msgstr "Pengaturan pusat bantuan"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Help desks"
-msgstr "Help desk"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Help report"
@@ -8580,7 +8522,7 @@ msgid "Hostname and certificate"
 msgstr "Nama host dan sertifikat"
 
 #: src/features/broadcasts/Trigger.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "hours"
 msgstr "jam"
 
@@ -8605,7 +8547,7 @@ msgstr "Bagaimana pelanggan Anda setuju?"
 msgid "How do people sign up?"
 msgstr "Bagaimana orang mendaftar?"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "How do you answer?"
 msgstr "Bagaimana Anda membalas?"
 
@@ -8629,7 +8571,6 @@ msgstr "Seberapa terlambat sinyal boleh datang."
 msgid "How mail reaches Yuva"
 msgstr "Bagaimana email sampai ke Yuva"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "How messages arrive: chat, e-mail, apps"
 msgstr "Cara pesan masuk: obrolan, email, aplikasi"
@@ -8641,10 +8582,6 @@ msgstr "Cara pesan sampai ke setiap produk"
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "How should replies go out?"
 msgstr "Bagaimana balasan dikirim?"
-
-#: src/components/common/SettingsStrip.tsx
-msgid "How software connects: keys, hooks, assistants"
-msgstr "Cara perangkat lunak terhubung: kunci, webhook, asisten"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "How the chat opens"
@@ -8728,7 +8665,7 @@ msgstr "Tidak aktif {idle} mnt"
 msgid "If {provider} mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "Jika {provider} mengirim konfirmasi ke alamat itu, konfirmasi tiba di kotak masuk ini sebagai percakapan; buka di sana."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "If all of these match"
 msgstr "Jika semua ini cocok"
 
@@ -8821,11 +8758,11 @@ msgid "Import people"
 msgstr "Impor orang"
 
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Import steps"
 msgstr "Langkah impor"
 
 #: src/components/common/ImportedChip.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 msgid "Imported"
 msgstr "Diimpor"
@@ -8856,6 +8793,8 @@ msgstr "Mengimpor…"
 
 #: src/app/nav.tsx
 #: src/app/places.tsx
+#: src/features/migrations/Wizard.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Imports"
 msgstr "Impor"
 
@@ -9018,7 +8957,7 @@ msgstr "Di Zoho Mail, buka Pengaturan › Akun email › Akses IMAP dan aktifkan
 #: src/features/docs/InstallDialog.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "Kotak masuk"
@@ -9051,10 +8990,15 @@ msgstr "Kotak masuk untuk {name}"
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Inboxes"
 msgstr "Kotak masuk"
+
+#: src/features/settings/ProductsPage.tsx
+#: src/features/settings/SettingsFrame.tsx
+msgid "Inboxes and channels"
+msgstr "Kotak masuk dan saluran"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Inboxes cut off subjects longer than 80 characters."
@@ -9477,7 +9421,7 @@ msgstr "Disimpan bersama setiap langganan dari file ini, sebagai catatan persetu
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Key"
 msgstr "Kunci"
 
@@ -9517,12 +9461,6 @@ msgstr "Kunci dan aplikasi terhubung"
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
 msgstr "Kunci yang dapat menjangkau produk ini. Buat dan cabut di API & MCP."
 
-#: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
-#: src/features/settings/webhooks/WebhooksPage.tsx
-msgid "Keys, webhooks and connected assistants"
-msgstr "Kunci, webhook, dan asisten yang terhubung"
-
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Keyword"
 msgstr "Kata kunci"
@@ -9558,10 +9496,9 @@ msgstr "Hanya label: emailnya berasal dari Semua email, dan percakapannya mendap
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Labels"
 msgstr "Label"
 
@@ -9762,7 +9699,7 @@ msgstr "Warna peluncur"
 msgid "Launcher position"
 msgstr "Posisi peluncur"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Leave as is"
 msgstr "Biarkan apa adanya"
 
@@ -10075,7 +10012,7 @@ msgid "Live"
 msgstr "Langsung"
 
 #: src/components/common/Source.tsx
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Live chat"
 msgstr "Obrolan langsung"
 
@@ -10197,8 +10134,8 @@ msgstr "Rendah"
 msgid "Lowercase letters, digits and dashes, not at the start or end."
 msgstr "Huruf kecil, angka, dan tanda hubung, tidak di awal atau akhir."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Lowercase letters, digits and dashes."
 msgstr "Huruf kecil, angka, dan tanda hubung."
 
@@ -10213,7 +10150,6 @@ msgid "Macro"
 msgstr "Makro"
 
 #: src/app/Palette.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Macros"
 msgstr "Makro"
@@ -10345,7 +10281,6 @@ msgstr "Alamat kotak surat"
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
-#: src/features/migrations/MigrationsPage.tsx
 msgid "Mailboxes"
 msgstr "Kotak surat"
 
@@ -10452,10 +10387,6 @@ msgstr "Kelola webhook"
 #: src/features/settings/webhooks/parts.tsx
 msgid "manual"
 msgstr "manual"
-
-#: src/features/migrations/Wizard.tsx
-msgid "Map"
-msgstr "Petakan"
 
 #: src/app/Header.tsx
 #: src/features/account/AccountPage.tsx
@@ -10636,7 +10567,6 @@ msgstr "Anggota"
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/teams/TeamsPage.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "Anggota"
@@ -10827,10 +10757,6 @@ msgstr "Token Microsoft memberi lebih dari membaca email lewat IMAP, sehingga Yu
 msgid "Migration cancelled"
 msgstr "Migrasi dibatalkan"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Migration steps"
-msgstr "Langkah migrasi"
-
 #: src/features/inbox/ChatList.tsx
 msgid "Mine"
 msgstr "Milik saya"
@@ -10841,7 +10767,7 @@ msgstr "Kecil"
 
 #: src/features/broadcasts/Trigger.tsx
 #: src/features/settings/automation/ActionRow.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "minutes"
 msgstr "menit"
 
@@ -10849,7 +10775,7 @@ msgstr "menit"
 msgid "Minutes"
 msgstr "Menit"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Minutes before a due time. 0 sends no warning."
 msgstr "Menit sebelum jatuh tempo. 0 tidak mengirim peringatan."
 
@@ -10858,7 +10784,7 @@ msgid "Missed beat"
 msgstr "Sinyal terlewat"
 
 #: src/components/common/text.ts
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/app/AppFields.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Mobile app"
@@ -11158,12 +11084,6 @@ msgstr "Pindahkan ke Sampah ({0})"
 msgid "Move to the Trash (#)"
 msgstr "Pindahkan ke Sampah (#)"
 
-#: src/features/migrations/Wizard.tsx
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "Move to Yuva"
-msgstr "Pindah ke Yuva"
-
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11202,8 +11122,8 @@ msgid "Moves the mail to the Trash. Runs after the other actions."
 msgstr "Memindahkan email ke sampah. Berjalan setelah tindakan lainnya."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
-msgstr "Pindah dari Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX, atau server IMAP mana pun? Yuva menyalin riwayat kotak surat ke sebuah kotak masuk, secara diam-diam dan terbaru dulu, selagi tim Anda tetap bekerja. Lalu Anda meneruskan kotak surat ke sini dan tidak ada yang hilang di antaranya."
+msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX, any IMAP server or another help desk? Yuva copies the history into an inbox, newest first, while your team keeps working."
+msgstr "Pindah dari Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX, server IMAP mana pun, atau help desk lain? Yuva menyalin riwayat ke kotak masuk, terbaru lebih dulu, sementara tim Anda tetap bekerja."
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Moving the idea to Planned, In progress or Shipped sets this for linked feedback that has no progress yet."
@@ -11247,20 +11167,19 @@ msgstr "Tampilan saya"
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
-#: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -11300,6 +11219,10 @@ msgstr "Beri nama Yuva. Di <0>Connection</0> pilih <1>Public endpoint</1> dan te
 #: src/features/migrations/MapStep.tsx
 msgid "Name of the new inbox"
 msgstr "Nama kotak masuk baru"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Name, closed conversations and broadcast sending"
+msgstr "Nama, percakapan tertutup, dan pengiriman broadcast"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Name, colour and the first thing the chat says"
@@ -11411,11 +11334,6 @@ msgstr "Artikel baru"
 msgid "New broadcast"
 msgstr "Siaran massal baru"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
-msgid "New canned reply"
-msgstr "Balasan siap pakai baru"
-
 #: src/components/common/ShortcutSheet.tsx
 msgid "New collection"
 msgstr "Koleksi baru"
@@ -11484,12 +11402,13 @@ msgstr "diskusi baru"
 msgid "New entry"
 msgstr "Entri baru"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 msgid "New field"
 msgstr "Kolom baru"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/mail/FilterDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New filter"
 msgstr "Filter baru"
@@ -11508,6 +11427,8 @@ msgid "New identity secret"
 msgstr "Rahasia identitas baru"
 
 #: src/app/places.tsx
+#: src/features/migrations/MigrationsPage.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "New import"
 msgstr "Impor baru"
 
@@ -11532,7 +11453,7 @@ msgstr "Insiden baru"
 msgid "New incident ({incidentKey})"
 msgstr "Insiden baru ({incidentKey})"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "New label"
 msgstr "Label baru"
@@ -11546,7 +11467,7 @@ msgstr "Label baru “{folder}”"
 msgid "New list"
 msgstr "Milis baru"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "New macro"
 msgstr "Makro baru"
@@ -11577,10 +11498,6 @@ msgstr "Pesan baru di percakapan yang ditugaskan kepada saya"
 msgid "New message in an unassigned conversation"
 msgstr "Pesan baru di percakapan yang belum ditugaskan"
 
-#: src/features/migrations/MigrationsPage.tsx
-msgid "New migration"
-msgstr "Migrasi baru"
-
 #: src/features/status/MonitorsPage.tsx
 msgid "new monitor"
 msgstr "monitor baru"
@@ -11601,7 +11518,7 @@ msgstr "Pemilik baru {boxName}"
 msgid "New password"
 msgstr "Kata sandi baru"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "New policy"
 msgstr "Kebijakan baru"
@@ -11610,10 +11527,15 @@ msgstr "Kebijakan baru"
 msgid "New reply in <0>{title}</0>"
 msgstr "Balasan baru di <0>{title}</0>"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "Aturan baru"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+msgid "New saved reply"
+msgstr "Balasan tersimpan baru"
 
 #: src/features/settings/webhooks/sections.tsx
 msgid "New signing secret"
@@ -11720,7 +11642,7 @@ msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "Email berikutnya pada {local} ({utc} UTC), dengan laju siaran massal ini."
 
 #: src/features/conversation/SlaPopover.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Next reply"
 msgstr "Balasan berikutnya"
 
@@ -11731,10 +11653,6 @@ msgstr "Balasan berikutnya {next}"
 #: src/features/feedback/Lightbox.tsx
 msgid "Next screenshot"
 msgstr "Tangkapan layar berikutnya"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Next you pick the source and connect it. Nothing is copied until you start."
-msgstr "Berikutnya Anda memilih sumber dan menghubungkannya. Tidak ada yang disalin sampai Anda memulai."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Next, choose what to bring. The scan reads the file once."
@@ -11825,10 +11743,6 @@ msgstr "Belum ada siaran yang terkirim."
 msgid "No broadcasts yet"
 msgstr "Belum ada siaran massal"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-msgid "No canned replies yet"
-msgstr "Belum ada balasan siap pakai"
-
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "No canned replies yet. Add them in settings."
 msgstr "Belum ada balasan siap pakai. Tambahkan di pengaturan."
@@ -11879,7 +11793,7 @@ msgstr "Belum ada komponen. Tambahkan bagian produk yang diandalkan pelanggan di
 msgid "No components yet. Add the parts of your product that customers depend on."
 msgstr "Belum ada komponen. Tambahkan bagian produk Anda yang diandalkan pelanggan."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "No conditions: the rule runs for every conversation the trigger fits."
 msgstr "Tanpa kondisi: aturan berjalan untuk setiap percakapan yang sesuai dengan pemicu."
 
@@ -12060,6 +11974,10 @@ msgstr "Belum ada ID. Orang ini belum dikenali oleh aplikasi atau widget mana pu
 #: src/features/status/text.tsx
 msgid "No impact"
 msgstr "Tanpa dampak"
+
+#: src/features/migrations/MigrationsPage.tsx
+msgid "No imports match this filter."
+msgstr "Tidak ada impor yang cocok dengan filter ini."
 
 #: src/features/broadcasts/Import.tsx
 msgid "No imports yet."
@@ -12244,6 +12162,10 @@ msgstr "Belum ada aturan."
 #: src/features/settings/automation/RunLog.tsx
 msgid "No runs in the last 30 days."
 msgstr "Tidak ada eksekusi dalam 30 hari terakhir."
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "No saved replies yet"
+msgstr "Belum ada balasan tersimpan"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "No secret yet. Make one, then paste it into GitHub."
@@ -12667,7 +12589,7 @@ msgstr "Bukan orang yang sama"
 msgid "Not there after a minute? Look in your spam or junk folder, or send a new code below."
 msgstr "Belum sampai setelah semenit? Periksa folder spam atau sampah, atau kirim kode baru di bawah."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Not tracked"
 msgstr "Tidak dipantau"
 
@@ -13034,11 +12956,6 @@ msgstr "Di paket Team dan Enterprise, pemilik menambahkannya sekali di <0>Organi
 msgid "On the web"
 msgstr "Di web"
 
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "On this page"
-msgstr "Di halaman ini"
-
 #: src/components/common/SlaBadge.tsx
 msgid "On track"
 msgstr "Sesuai jadwal"
@@ -13056,7 +12973,7 @@ msgstr "Setelah pesan uji tiba, Yuva menunggu {hours} jam. Jika dalam waktu itu 
 msgid "One e-mail a month about what is new."
 msgstr "Satu email sebulan tentang yang baru."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "Satu kotak masuk"
@@ -13073,7 +12990,7 @@ msgstr "One mail to each person, a set time after they sign in"
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Satu per baris, 1 sampai 20. Hanya halaman di origin ini yang dapat memakai widget."
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "One per line, all different, at most 100."
 msgstr "Satu per baris, semuanya berbeda, maksimal 100."
 
@@ -13200,7 +13117,7 @@ msgid "Only mail since {date}"
 msgstr "Hanya email sejak {date}"
 
 #: src/features/inbox/views/ViewDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Only me"
 msgstr "Hanya saya"
 
@@ -13702,7 +13619,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "Opsional. 64 KiB pertama jawaban harus memuatnya; huruf besar dan kecil dibedakan."
 
 #: src/features/broadcasts/Composer.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Options"
 msgstr "Opsi"
 
@@ -13742,7 +13659,7 @@ msgstr "Atau unggah file ekspor"
 msgid "Order and view"
 msgstr "Urutan dan tampilan"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Order number"
 msgstr "Nomor pesanan"
 
@@ -13839,7 +13756,6 @@ msgid "Own tenant"
 msgstr "Tenant sendiri"
 
 #: src/components/common/text.ts
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Owner"
 msgstr "Pemilik"
 
@@ -14241,7 +14157,7 @@ msgstr "Pilih balasan tersimpan"
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "Pilih kanal obrolan produk dan tempel kodenya. Penilaian dan pertanyaan masuk ke kotak masuknya."
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Pick a color"
 msgstr "Pilih warna"
 
@@ -14345,7 +14261,7 @@ msgid "Pick an endpoint"
 msgstr "Pilih endpoint"
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Pick an inbox"
 msgstr "Pilih kotak masuk"
 
@@ -14436,7 +14352,7 @@ msgstr "Pilih kontak lainnya. Ia digabungkan ke kontak ini lalu dihapus."
 msgid "Pick the platforms; the next step shows the lines to add to each app."
 msgstr "Pilih platform; langkah berikutnya menampilkan baris yang ditambahkan ke setiap aplikasi."
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Pick the product and how customers reach it. The next steps set it up."
 msgstr "Pilih produk dan cara pelanggan menjangkaunya. Langkah berikutnya menyiapkannya."
 
@@ -14607,7 +14523,7 @@ msgstr "Menyiapkan"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/status/PreviewDialog.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Preview"
@@ -14671,12 +14587,12 @@ msgstr "Tangkapan layar sebelumnya"
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Priority"
 msgstr "Prioritas"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Priority customers"
 msgstr "Pelanggan prioritas"
 
@@ -14707,19 +14623,17 @@ msgstr "pro, team"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageForm.tsx
 #: src/features/status/IncidentForm.tsx
 msgid "Product"
 msgstr "Produk"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/setup/NameStep.tsx
 msgid "Product name"
 msgstr "Nama produk"
@@ -14729,7 +14643,6 @@ msgstr "Nama produk"
 msgid "Product news"
 msgstr "Kabar produk"
 
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Product settings"
@@ -14744,7 +14657,6 @@ msgstr "Produksi"
 msgid "Production backend"
 msgstr "Backend produksi"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomeSide.tsx
@@ -14755,7 +14667,6 @@ msgstr "Backend produksi"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Products"
 msgstr "Produk"
@@ -14992,7 +14903,7 @@ msgstr "Dalam antrean. Percobaan baru muncul di bawah sebentar lagi."
 msgid "Quick cleanup"
 msgstr "Pembersihan cepat"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Quiet for (minutes)"
 msgstr "Sepi selama (menit)"
 
@@ -15165,11 +15076,6 @@ msgstr "Dibaca untuk menyarankan alamat tim Anda: emailnya berasal dari Semua em
 msgid "Read What's new changelogs and their entries"
 msgstr "Baca catatan perubahan Yang baru dan entrinya"
 
-#: src/features/migrations/MigrationsPage.tsx
-#: src/features/migrations/Wizard.tsx
-msgid "Read-only"
-msgstr "Hanya baca"
-
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/account/ConnectPage.tsx
 msgid "Reader"
@@ -15327,11 +15233,11 @@ msgstr "Referensi"
 msgid "Refresh"
 msgstr "Segarkan"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Refund"
 msgstr "Pengembalian dana"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Refund approved"
 msgstr "Pengembalian dana disetujui"
 
@@ -15379,7 +15285,7 @@ msgstr "Gambar jarak jauh dapat memberi tahu pengirim bahwa Anda membuka email."
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -15601,7 +15507,7 @@ msgstr "Menghapus sebuah catatan dari percakapan"
 msgid "Removed by {who}"
 msgstr "Dihapus oleh {who}"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "Opsi yang dihapus dibersihkan dari semua percakapan yang memilikinya. Ini berjalan di latar belakang."
 
@@ -15854,6 +15760,10 @@ msgstr "Teks balasan"
 msgid "Reply time"
 msgstr "Waktu balasan"
 
+#: src/features/settings/SettingsFrame.tsx
+msgid "Reply times"
+msgstr "Waktu balasan"
+
 #: src/features/conversation/BroadcastLine.tsx
 msgid "Reply to {name}"
 msgstr "Balas {name}"
@@ -15960,7 +15870,7 @@ msgstr "Dampak pada reputasi"
 msgid "Require single sign-on"
 msgstr "Require single sign-on"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 msgid "Required to close"
 msgstr "Wajib untuk menutup"
@@ -15982,7 +15892,7 @@ msgid "Reset to defaults"
 msgstr "Atur ulang ke default"
 
 #: src/features/conversation/SlaPopover.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Resolution"
 msgstr "Penyelesaian"
 
@@ -16122,7 +16032,6 @@ msgstr "Mengembalikan Anda ke"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Import.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Review"
 msgstr "Tinjau"
@@ -16203,7 +16112,6 @@ msgstr "Segera setelah berlangganan, orang menerima email singkat yang mengonfir
 msgid "Roadmap"
 msgstr "Peta jalan"
 
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Role"
 msgstr "Peran"
@@ -16294,7 +16202,6 @@ msgstr "Aturan {rule} berjalan, tidak ada yang perlu diubah"
 msgid "Rule {rule} ran: {done}"
 msgstr "Aturan {rule} berjalan: {done}"
 
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Rules"
 msgstr "Aturan"
@@ -16365,16 +16272,16 @@ msgstr "Sabtu"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/channels/ApiChannelDialog.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/signature/SignaturePage.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/ui.tsx
@@ -16461,6 +16368,10 @@ msgstr "Simpan daftar sebagai tampilan"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "Tersimpan"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Saved replies"
+msgstr "Balasan tersimpan"
 
 #: src/app/ViewsGroup.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
@@ -17536,13 +17447,12 @@ msgstr "Menyiapkan…"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "Pengaturan"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "Settings (JSON)"
 msgstr "Pengaturan (JSON)"
@@ -17585,8 +17495,8 @@ msgstr "Dibagikan dengan tim"
 msgid "Shipped"
 msgstr "Dirilis"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Shortcut"
 msgstr "Pintasan"
 
@@ -17597,6 +17507,7 @@ msgstr "Pintasan"
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -18029,7 +17940,6 @@ msgstr "Opt-in tunggal"
 
 #: src/app/Palette.tsx
 #: src/features/settings/profile/Sessions.tsx
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
 msgstr "Single sign-on"
@@ -18131,11 +18041,6 @@ msgstr "SLA terpenuhi"
 msgid "SLA met / breached"
 msgstr "SLA terpenuhi / dilanggar"
 
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "SLA policies"
-msgstr "Kebijakan SLA"
-
 #: src/features/conversation/SlaPopover.tsx
 msgid "SLA targets (W)"
 msgstr "Target SLA (W)"
@@ -18223,7 +18128,7 @@ msgstr "Tunda (B)"
 msgid "Snooze (S)"
 msgstr "Tunda (S)"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Snooze for (minutes)"
 msgstr "Tunda selama (menit)"
 
@@ -18411,6 +18316,10 @@ msgstr "SPF, DKIM, atau DMARC perlu diperiksa"
 msgid "Split by"
 msgstr "Pisahkan menurut"
 
+#: src/features/settings/SettingsFrame.tsx
+msgid "SSO"
+msgstr "SSO"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
 msgstr "Tahap"
@@ -18468,7 +18377,7 @@ msgstr "Anda beri bintang"
 msgid "Stars the mail for you."
 msgstr "Memberi bintang pada email untuk Anda."
 
-#: src/features/migrations/MigrationsPage.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Start"
 msgstr "Mulai"
 
@@ -18487,6 +18396,10 @@ msgstr "Mulai diskusi"
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Start a mailing list"
 msgstr "Mulai milis"
+
+#: src/features/migrations/MigrationsPage.tsx
+msgid "Start an import"
+msgstr "Mulai impor"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "Start conversation"
@@ -18570,7 +18483,6 @@ msgstr "Starts when a change to the person’s attributes makes them match, and 
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (port 587)"
 
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
@@ -18612,7 +18524,7 @@ msgstr "Status saat mati"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
 #: src/features/team/TeamPage.tsx
@@ -18874,10 +18786,6 @@ msgstr "Ditangguhkan"
 msgid "Suspended broadcasts"
 msgstr "Menangguhkan siaran"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Switch"
-msgstr "Alihkan"
-
 #: src/features/migrations/SwitchStep.tsx
 msgid "Switch your mail to Yuva"
 msgstr "Alihkan email Anda ke Yuva"
@@ -18934,11 +18842,11 @@ msgstr "Menerima pendaftaran lagi dan mengembalikan daftar ke pemilih audiens si
 msgid "Taking the recipients: {prepared} so far"
 msgstr "Mengambil penerima: {prepared} sejauh ini"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Targets"
 msgstr "Target"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Targets count in the business hours of the conversation's inbox, in its time zone. Leave one empty to not track it; at least one is required."
 msgstr "Target dihitung dalam jam kerja dan zona waktu kotak masuk percakapan. Biarkan satu kosong agar tidak dipantau; minimal satu diperlukan."
 
@@ -19031,7 +18939,6 @@ msgstr "teammate@company.com"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/features/conversation/HeaderActions.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -19075,9 +18982,9 @@ msgstr "Uji hanya dikirim ke anggota ruang kerja, paling banyak lima sekaligus, 
 
 #: src/features/fields/value.ts
 #: src/features/settings/automation/ConditionRow.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Text"
 msgstr "Teks"
 
@@ -19089,7 +18996,7 @@ msgstr "Teks terakhir disimpan oleh {who}"
 msgid "Thanks for waiting. Your invoice is on its way."
 msgstr "Terima kasih sudah menunggu. Faktur Anda sedang dalam perjalanan."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 msgid "Thanks for writing"
 msgstr "Terima kasih sudah menulis"
 
@@ -19214,12 +19121,12 @@ msgstr "Obrolan muncul di sudut setiap halaman yang memiliki cuplikan."
 msgid "The chat bubble appears on these addresses:"
 msgstr "Gelembung obrolan muncul di alamat ini:"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "The chat shows when you usually reply"
 msgstr "Obrolan menunjukkan kapan Anda biasanya membalas"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "The chat shows who is available and typing"
 msgstr "Obrolan menunjukkan siapa yang tersedia dan mengetik"
@@ -19601,11 +19508,11 @@ msgstr "Kunci hanya melihat kotak masuk ini dan tidak dapat mengelola kotak masu
 msgid "The key stops working at the end of this day."
 msgstr "Kunci berhenti bekerja di akhir hari ini."
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "The key, the object and the type cannot change after creation."
 msgstr "Kunci, objek, dan tipe tidak dapat diubah setelah dibuat."
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 msgid "The kind cannot be changed later."
 msgstr "Jenis tidak dapat diubah nanti."
 
@@ -19738,7 +19645,7 @@ msgstr "Migrasi dilanjutkan dari tempat berhenti."
 msgid "The migration moved on in the meantime. Look at its state and try again."
 msgstr "Migrasi sudah berlanjut sementara itu. Lihat statusnya dan coba lagi."
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "The next step adds its first channel: website chat, e-mail or a mobile app."
 msgstr "Langkah berikutnya menambahkan saluran pertamanya: obrolan web, email, atau aplikasi seluler."
 
@@ -20203,10 +20110,6 @@ msgstr "Endpoint webhook mati atau tidak tersedia di sini"
 msgid "The What’s new count shows on the chat button while no messages are unread. The widget’s Home always shows it."
 msgstr "Jumlah hal baru muncul di tombol chat selama tidak ada pesan yang belum dibaca. Beranda widget selalu menampilkannya."
 
-#: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
-msgstr "Ruang kerja itu sendiri: nama, penyimpanan, label, balasan siap pakai, pemindahan, dan log audit"
-
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
 msgstr "Ruang kerja untuk sementara tidak boleh mengirim siaran massal."
@@ -20214,11 +20117,6 @@ msgstr "Ruang kerja untuk sementara tidak boleh mengirim siaran massal."
 #: src/features/status/Notices.tsx
 msgid "The workspace may not send bulk mail now"
 msgstr "Workspace saat ini tidak diizinkan mengirim email massal"
-
-#: src/components/common/SettingsStrip.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "The workspace: labels, replies, data"
-msgstr "Ruang kerja: label, balasan, data"
 
 #: src/components/common/text.ts
 msgid "The zip cannot be read; it may be damaged or cut off. Make it again and upload it."
@@ -20272,7 +20170,7 @@ msgstr "Tema"
 msgid "Theme and e-mail view on this device"
 msgstr "Tema dan tampilan email di perangkat ini"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Then"
 msgstr "Maka"
 
@@ -20614,7 +20512,7 @@ msgstr "Ini bukan file CSV. Simpan spreadsheet sebagai CSV dan unggah itu."
 msgid "This is not a domain this page can use. Use a name like {example} that is not one of this server’s own addresses."
 msgstr "Halaman ini tidak dapat memakai domain ini. Gunakan nama seperti {example} yang bukan salah satu alamat milik server ini."
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "This is not a JSON object."
 msgstr "Ini bukan objek JSON."
@@ -20751,7 +20649,7 @@ msgstr "Properti ini sudah punya segmen dengan nama ini."
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Balasan ini tidak akan dikirim sampai pemilik atau admin menyimpan aturan ini dan balasan tersimpan {title}, atau bot boleh mengirim di pengaturan kunci API."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Balasan ini tidak akan dikirim sampai pemilik atau admin menyimpan balasan tersimpan {title}, atau bot boleh mengirim di pengaturan kunci API."
@@ -20966,7 +20864,7 @@ msgstr "Batas waktu"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/status/IncidentForm.tsx
 msgid "Title"
 msgstr "Judul"
@@ -21097,7 +20995,7 @@ msgstr "Tren"
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Trigger"
 msgstr "Pemicu"
 
@@ -21221,8 +21119,7 @@ msgid "TXT record"
 msgstr "Rekaman TXT"
 
 #: src/features/inbox/SourceFilter.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Type"
 msgstr "Jenis"
 
@@ -21271,7 +21168,7 @@ msgstr "Batalkan penugasan"
 #: src/features/home/HomeWork.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Unassigned"
 msgstr "Belum ditugaskan"
 
@@ -21345,7 +21242,7 @@ msgid "Unfollowed"
 msgstr "Berhenti diikuti"
 
 #: src/features/broadcasts/Trigger.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Unit"
 msgstr "Satuan"
 
@@ -21758,9 +21655,9 @@ msgstr "Gunakan sebagai bearer token terhadap server ini."
 msgid "Use letters, digits, - and _, at most 64."
 msgstr "Gunakan huruf, angka, - dan _, paling banyak 64."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Use lowercase letters, digits and single dashes."
 msgstr "Gunakan huruf kecil, angka, dan tanda hubung tunggal."
 
@@ -21914,10 +21811,6 @@ msgstr "Verify"
 #: src/features/settings/webhooks/SignatureHint.tsx
 msgid "Verify every request before trusting it: the <0>webhook-signature</0> header follows the <1>Standard Webhooks</1> specification, so any of its libraries can check it with the endpoint's secret. Go backends can use the <2>sdk/go/webhook</2> package of the Yuva repository."
 msgstr "Verifikasi setiap permintaan sebelum memercayainya: header <0>webhook-signature</0> mengikuti spesifikasi <1>Standard Webhooks</1>, jadi pustaka mana pun darinya dapat memeriksanya dengan rahasia endpoint. Backend Go dapat memakai paket <2>sdk/go/webhook</2> dari repositori Yuva."
-
-#: src/features/settings/SettingsFrame.tsx
-msgid "Version"
-msgstr "Versi"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Versions"
@@ -22158,7 +22051,7 @@ msgstr "menunggu Anda"
 msgid "Warn about the certificate"
 msgstr "Peringatkan soal sertifikat"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Warn before it is due"
 msgstr "Peringatkan sebelum jatuh tempo"
 
@@ -22218,8 +22111,6 @@ msgstr "Webhook secret for {revealName}"
 
 #: src/app/Palette.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
@@ -22246,7 +22137,7 @@ msgstr "Situs web"
 msgid "Website addresses"
 msgstr "Alamat situs web"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Website chat"
 msgstr "Obrolan situs web"
@@ -22368,7 +22259,7 @@ msgstr "Yang dilihat pelanggan"
 msgid "What the import will do"
 msgstr "Yang akan dilakukan impor"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "What the team sees."
 msgstr "Yang dilihat tim."
 
@@ -22414,7 +22305,6 @@ msgstr "What your e-mailed replies end with, per inbox. Chat replies and notes c
 
 #: src/components/common/FocusChoice.tsx
 #: src/features/settings/workspace/FocusForm.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "What Yuva is for"
 msgstr "Untuk apa Yuva"
 
@@ -22429,7 +22319,7 @@ msgid "What’s new entry"
 msgstr "Entri yang baru"
 
 #: src/features/broadcasts/ReviewPanel.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "When"
 msgstr "Kapan"
 
@@ -22552,7 +22442,7 @@ msgstr "Where new issues go when nobody picks a team, as a team key such as ENG.
 msgid "Where should Yuva send events?"
 msgstr "Ke mana Yuva harus mengirim peristiwa?"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
 msgstr "Tempat API menyimpan nilai. Huruf kecil, angka, dan garis bawah; tidak dapat diubah."
 
@@ -22608,7 +22498,7 @@ msgstr "Siapa yang menjawab, di mana, dan siapa yang online"
 msgid "Who can reply"
 msgstr "Siapa yang dapat membalas"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Who can use it"
 msgstr "Siapa yang boleh memakai"
 
@@ -22645,7 +22535,6 @@ msgstr "Siapa yang mengirim, dan tentang apa?"
 msgid "Who should take it?"
 msgstr "Siapa yang harus menanganinya?"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Who you support: name, hours, team, sender"
 msgstr "Siapa yang Anda layani: nama, jam kerja, tim, pengirim"
@@ -22764,10 +22653,8 @@ msgstr "Memproses…"
 #: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/oauth/ConsentPage.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Workspace"
 msgstr "Ruang kerja"
 
@@ -23074,7 +22961,6 @@ msgid "Your account is not in a group that may use Yuva. Ask your administrator 
 msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 
 #: src/features/settings/addresses/AddressesPage.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Your addresses"
 msgstr "Alamat Anda"
 
@@ -23167,6 +23053,10 @@ msgstr "Organisasi Microsoft 365 Anda hanya mengizinkan admin menyetujui aplikas
 #: src/features/broadcasts/Composer.tsx
 msgid "Your name"
 msgstr "Nama Anda"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Your name, photo, language and sign-in"
+msgstr "Nama, foto, bahasa, dan masuk Anda"
 
 #: src/features/home/HomeWork.tsx
 msgid "Your open conversations"
@@ -23273,10 +23163,6 @@ msgstr "Situs web Anda"
 msgid "Your workspace asks for these fields on every conversation it closes."
 msgstr "Ruang kerja Anda meminta kolom ini di setiap percakapan yang ditutupnya."
 
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."
-msgstr "Nama ruang kerja Anda, berapa lama percakapan tertutup disimpan, dan siapa yang boleh mengirim siaran."
-
 #: src/features/account/AccountPage.tsx
 msgid "Your Yuva account"
 msgstr "Akun Yuva Anda"
@@ -23367,10 +23253,6 @@ msgstr "Yuva tidak menjalankan server email: email domain Anda diteruskan kepada
 msgid "Yuva held back a command that would have changed the mailbox"
 msgstr "Yuva menahan perintah yang akan mengubah kotak surat"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Yuva inbox"
-msgstr "Kotak masuk Yuva"
-
 #: src/features/migrations/SwitchStep.tsx
 msgid "Yuva mails {address} a short test message. When it reaches Yuva by the new route, the switch works."
 msgstr "Yuva mengirim pesan uji singkat ke {address}. Saat sampai ke Yuva lewat rute baru, peralihan berfungsi."
@@ -23402,10 +23284,6 @@ msgstr "Yuva hanya membaca help desk. Riwayat masuk diam-diam: tanpa notifikasi,
 #: src/features/migrations/Wizard.tsx
 msgid "Yuva only reads the mailbox. History arrives quietly: no notifications, no auto-replies."
 msgstr "Yuva hanya membaca kotak surat. Riwayat masuk diam-diam: tanpa notifikasi, tanpa balasan otomatis."
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Yuva only reads the source; nothing there is changed."
-msgstr "Yuva hanya membaca sumber; tidak ada yang diubah di sana."
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Yuva only reads. Besides signing in, its connection sends {provider} nothing but read requests, so no ticket, customer or setting changes."
@@ -23478,7 +23356,3 @@ msgstr "Yuva, ke beranda"
 #: src/components/common/text.ts
 msgid "Yuva's own notes cannot be changed."
 msgstr "Catatan milik Yuva sendiri tidak dapat diubah."
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"
-msgstr "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"

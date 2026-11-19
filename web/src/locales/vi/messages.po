@@ -1448,7 +1448,7 @@ msgstr "Một cuộc trò chuyện"
 msgid "A conversation can copy at most 100 people."
 msgstr "Một cuộc trò chuyện chỉ có thể Cc tối đa 100 người."
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
 msgstr "Không thể đóng cuộc trò chuyện cho đến khi trường này có giá trị. Thư rác được miễn."
 
@@ -1468,7 +1468,7 @@ msgstr "Một cuộc trò chuyện không hoạt động"
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "Một cuộc trò chuyện được lấy toàn bộ khi lần cập nhật cuối nằm trong khoảng thời gian đó."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "A conversation must match every row you fill in. Leave a row empty to match anything."
 msgstr "Cuộc trò chuyện phải khớp với mọi hàng bạn điền. Hàng trống khớp với tất cả."
 
@@ -1739,7 +1739,7 @@ msgstr "Tỷ lệ phần trăm cạnh mỗi thành phần."
 msgid "A personal API key from Linear, under Settings, Account, Security and access."
 msgstr "A personal API key from Linear, under Settings, Account, Security and access."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "A policy that is off applies to nothing."
 msgstr "Chính sách đang tắt không áp dụng cho bất cứ gì."
 
@@ -1799,7 +1799,7 @@ msgstr "Một trường bắt buộc đang trống"
 msgid "A roadmap idea moved to another stage"
 msgstr "Một ý tưởng trong lộ trình đã chuyển sang giai đoạn khác"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "A rule that is off never runs. Rules run in the order of the list."
 msgstr "Quy tắc đang tắt sẽ không bao giờ chạy. Các quy tắc chạy theo thứ tự trong danh sách."
 
@@ -1974,10 +1974,6 @@ msgstr "Quyền truy cập vào {provider}"
 msgid "Access to the mailbox"
 msgstr "Quyền truy cập vào hộp thư"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Access to your mailbox: none"
-msgstr "Quyền truy cập vào hộp thư của bạn: không có"
-
 #: src/features/account/AccountPage.tsx
 msgid "Account"
 msgstr "Tài khoản"
@@ -2002,7 +1998,7 @@ msgstr "Acme Support"
 msgid "ACS URL"
 msgstr "ACS URL"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Actions"
@@ -2017,6 +2013,7 @@ msgstr "Chỉ hành động"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/text.ts
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
@@ -2032,7 +2029,7 @@ msgstr "Hoạt động"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "Thêm"
@@ -2050,7 +2047,7 @@ msgstr "Thêm một khối"
 msgid "Add a category"
 msgstr "Thêm danh mục"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Add a channel"
 msgstr "Thêm kênh"
 
@@ -2099,7 +2096,7 @@ msgstr "Thêm người tham gia bằng địa chỉ email"
 msgid "Add a passkey"
 msgstr "Thêm khóa truy cập"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Add a product"
 msgstr "Thêm sản phẩm"
 
@@ -2137,7 +2134,7 @@ msgstr "Thêm chat trên trang web trong cài đặt hộp thư"
 msgid "Add a website or app"
 msgstr "Thêm trang web hoặc ứng dụng"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Add an action"
 msgstr "Thêm hành động"
 
@@ -2154,6 +2151,10 @@ msgstr "Thêm một địa chỉ trên máy chủ của bạn và chọn các s�
 #: src/app/Palette.tsx
 msgid "Add an analytics property"
 msgstr "Thêm thuộc tính phân tích"
+
+#: src/features/settings/channels/ApiChannelForm.tsx
+msgid "Add an API channel"
+msgstr "Thêm kênh API"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add an image"
@@ -2184,7 +2185,6 @@ msgstr "Thêm cái khác"
 msgid "Add at least one origin."
 msgstr "Hãy thêm ít nhất một origin."
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Add channel"
 msgstr "Thêm kênh"
@@ -2194,7 +2194,7 @@ msgstr "Thêm kênh"
 msgid "Add component"
 msgstr "Thêm thành phần"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Add condition"
 msgstr "Thêm điều kiện"
 
@@ -2228,6 +2228,10 @@ msgstr "Add image"
 #: src/features/mail/Compose.tsx
 msgid "Add it back"
 msgstr "Add it back"
+
+#: src/features/settings/labels/LabelForm.tsx
+msgid "Add label"
+msgstr "Thêm nhãn"
 
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
@@ -2386,6 +2390,7 @@ msgid "Address verified"
 msgstr "Đã xác minh địa chỉ"
 
 #: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Addresses"
 msgstr "Địa chỉ"
 
@@ -2496,6 +2501,7 @@ msgid "All good"
 msgstr "Mọi thứ ổn"
 
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/MigrationsPage.tsx
 msgid "All imports"
 msgstr "Tất cả lần nhập"
 
@@ -2881,10 +2887,6 @@ msgstr "Lời mời được chấp nhận khi người đó đăng nhập bằn
 msgid "An issue URL, owner/repo#12 or ENG-123."
 msgstr "An issue URL, owner/repo#12 or ENG-123."
 
-#: src/features/migrations/MigrationsPage.tsx
-msgid "An mbox export of a mailbox"
-msgstr "Bản xuất mbox của một hộp thư"
-
 #: src/features/team/TeamPage.tsx
 msgid "An owner cannot be removed. Change their role first."
 msgstr "Không thể xóa chủ sở hữu. Hãy đổi vai trò của họ trước."
@@ -2960,7 +2962,7 @@ msgstr "Tài khoản khác"
 msgid "Another address this channel receives mail at. Forward a mailbox here, for example {own} at its provider; forwarding to {own} itself would loop."
 msgstr "Một địa chỉ khác mà kênh này nhận thư. Hãy chuyển tiếp một hộp thư tới đây, ví dụ {own} tại nhà cung cấp của nó; chuyển tiếp tới chính {own} sẽ gây lặp vòng."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 msgid "Another canned reply already uses this shortcut."
 msgstr "Một phản hồi mẫu khác đã dùng phím tắt này."
 
@@ -3092,7 +3094,7 @@ msgstr "Bất kỳ trường nào"
 msgid "Any label"
 msgstr "Nhãn bất kỳ"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Any of the labels you pick."
 msgstr "Bất kỳ nhãn nào bạn chọn."
 
@@ -3137,15 +3139,11 @@ msgstr "Mọi thứ đang dùng khóa này sẽ ngừng hoạt động ngay lậ
 msgid "API"
 msgstr "API"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "API & MCP"
 msgstr "API và MCP"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "API channel"
 msgstr "Kênh API"
 
@@ -3158,7 +3156,6 @@ msgstr "Khóa API"
 #: src/app/Palette.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "API keys"
 msgstr "Khóa API"
@@ -3222,8 +3219,8 @@ msgstr "ID ứng dụng (client)"
 msgid "Applied"
 msgstr "Đã áp dụng"
 
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Applies to"
 msgstr "Áp dụng cho"
 
@@ -3450,7 +3447,7 @@ msgstr "Đã giao cho bạn"
 
 #: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Assignee"
 msgstr "Người phụ trách"
 
@@ -3486,7 +3483,7 @@ msgid "Assistants work in Yuva through MCP, acting as the member who connected t
 msgstr "Trợ lý làm việc trong Yuva qua MCP, hành động như thành viên đã kết nối chúng và chỉ với quyền truy cập mà thành viên đó đã duyệt."
 
 #: src/components/common/text.ts
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Async"
 msgstr "Bất đồng bộ"
 
@@ -3585,7 +3582,6 @@ msgid "Audience"
 msgstr "Đối tượng"
 
 #: src/app/Palette.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Audit log"
 msgstr "Nhật ký kiểm toán"
@@ -3618,7 +3614,6 @@ msgstr "Giao việc tự động"
 msgid "Automatic mail never triggers an automatic reply."
 msgstr "Thư tự động không bao giờ kích hoạt phản hồi tự động."
 
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Automation"
 msgstr "Tự động hóa"
@@ -3766,7 +3761,7 @@ msgstr "Best regards,"
 msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
 msgstr "Từ 1 đến 500, tính trên toàn không gian làm việc. Giao thủ công bỏ qua giới hạn này. Để trống nếu không giới hạn."
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Billing"
 msgstr "Thanh toán"
@@ -3776,7 +3771,7 @@ msgstr "Thanh toán"
 msgid "Billing bot"
 msgstr "Bot thanh toán"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 msgid "Billing events"
 msgstr "Sự kiện thanh toán"
 
@@ -3924,17 +3919,13 @@ msgstr "Vi phạm"
 msgid "Breached, met late at {at}"
 msgstr "Vi phạm, đạt muộn lúc {at}"
 
-#: src/features/settings/SettingsFrame.tsx
-msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
-msgstr "Đưa lịch sử hộp thư từ Gmail, Yandex hoặc bất kỳ máy chủ IMAP nào vào"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Bring subscribers who already agreed elsewhere. Each address is checked first and nothing is added until you start: invalid addresses, domains that take no mail, role addresses, duplicates and anyone who left or objected are left out."
 msgstr "Đưa vào những người đăng ký đã đồng ý ở nơi khác. Mỗi địa chỉ được kiểm tra trước và chưa có gì được thêm cho đến khi bạn bắt đầu: địa chỉ không hợp lệ, tên miền không nhận thư, địa chỉ vai trò, địa chỉ trùng lặp và những người đã rời đi hoặc phản đối sẽ bị bỏ qua."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Bring the history of a mailbox you answer from today, then switch its mail over. Yuva only reads the mailbox; nothing there is changed."
-msgstr "Đưa vào lịch sử của hộp thư bạn đang trả lời hiện nay, rồi chuyển thư của nó sang. Yuva chỉ đọc hộp thư; không có gì ở đó bị thay đổi."
+msgid "Bring the history of a mailbox or help desk you answer from today, then switch its mail over. Yuva only reads the source; nothing there is changed."
+msgstr "Đưa lịch sử của hộp thư hoặc help desk bạn đang dùng để trả lời hôm nay vào, rồi chuyển thư của nó sang đây. Yuva chỉ đọc nguồn; không có gì ở đó bị thay đổi."
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Bring your old mail"
@@ -3949,7 +3940,6 @@ msgstr "Thư hàng loạt"
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/settings/workspace/BroadcastsSettings.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Broadcast sending"
 msgstr "Gửi thư hàng loạt"
 
@@ -4047,13 +4037,9 @@ msgstr "Tên chiến dịch"
 #: src/features/docs/FromDocs.tsx
 #: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
-#: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -4136,8 +4122,6 @@ msgstr "Đã hủy. Những gì đã thêm trước đó vẫn được giữ."
 #: src/app/Palette.tsx
 #: src/features/conversation/composer/CannedMenu.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Canned replies"
 msgstr "Phản hồi mẫu"
 
@@ -4291,10 +4275,6 @@ msgstr "Đã đổi webhook tới {host}"
 msgid "Changelog settings"
 msgstr "Cài đặt nhật ký thay đổi"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Changes made to {provider}: none"
-msgstr "Thay đổi đã thực hiện trên {provider}: không có"
-
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
 msgstr "Các thay đổi về thành viên, khóa, webhook và các cài đặt nhạy cảm khác sẽ hiện ở đây."
@@ -4308,14 +4288,14 @@ msgstr "Đổi tên miền gửi sẽ tắt ký DKIM cho đến khi bạn bật 
 #: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
 msgid "Channel"
 msgstr "Kênh"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Channel added"
 msgstr "Đã thêm kênh"
 
@@ -4339,14 +4319,8 @@ msgstr "Đã gỡ kênh"
 msgid "Channel settings"
 msgstr "Cài đặt kênh"
 
-#: src/app/places.tsx
-#: src/components/common/SettingsStrip.tsx
-#: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Channels"
 msgstr "Kênh"
 
@@ -4450,7 +4424,7 @@ msgstr "Đã kiểm tra {when}"
 msgid "Checked and waiting for an owner or admin to start it."
 msgstr "Đã kiểm tra và đang chờ chủ sở hữu hoặc quản trị viên bắt đầu."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Checked every 5 minutes, once per quiet period. Only open and pending conversations."
 msgstr "Kiểm tra mỗi 5 phút, một lần cho mỗi khoảng im lặng. Chỉ các cuộc trò chuyện đang mở và đang chờ."
 
@@ -4649,7 +4623,6 @@ msgstr "Đồng hồ đổi vào {date}; giờ gửi vẫn là {start}–{end} t
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -4689,7 +4662,7 @@ msgstr "Đóng từng cuộc trò chuyện sau khi trả lời"
 msgid "Close everything"
 msgstr "Đóng tất cả"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Close idle conversations"
 msgstr "Đóng các cuộc trò chuyện không hoạt động"
 
@@ -4777,11 +4750,11 @@ msgstr "Thu gọn"
 msgid "Collections"
 msgstr "Bộ sưu tập"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Color"
 msgstr "Màu"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/colors.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Colour"
@@ -4972,7 +4945,6 @@ msgstr "Connect a tracker"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
 msgid "Connect an assistant"
 msgstr "Kết nối một trợ lý"
 
@@ -5038,12 +5010,10 @@ msgid "Connected {created}"
 msgstr "Đã kết nối {created}"
 
 #: src/app/Palette.tsx
-#: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
+#: src/features/settings/connected-apps/AssistantPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Connected apps"
 msgstr "Ứng dụng đã kết nối"
 
@@ -5181,7 +5151,6 @@ msgstr "chứa"
 
 #: src/app/places.tsx
 #: src/features/broadcasts/Composer.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Content"
 msgstr "Nội dung"
 
@@ -5197,7 +5166,7 @@ msgstr "Nội dung"
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
 #: src/features/setup/email/EmailReceiveStep.tsx
@@ -5256,7 +5225,6 @@ msgstr "Đã bắt đầu cuộc trò chuyện"
 msgid "conversations"
 msgstr "cuộc trò chuyện"
 
-#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
@@ -5271,6 +5239,7 @@ msgstr "cuộc trò chuyện"
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Conversations"
 msgstr "Cuộc trò chuyện"
@@ -5341,7 +5310,6 @@ msgstr "địa chỉ trong bản sao"
 #: src/components/common/CopyButton.tsx
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/messages/MessageActions.tsx
-#: src/features/migrations/Wizard.tsx
 msgid "Copy"
 msgstr "Sao chép"
 
@@ -5394,6 +5362,10 @@ msgstr "Sao chép chi tiết phản hồi"
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Copy the feedback details (Y)"
 msgstr "Sao chép chi tiết phản hồi (Y)"
+
+#: src/features/migrations/Wizard.tsx
+msgid "Copy the history of a mailbox or help desk into Yuva."
+msgstr "Sao chép lịch sử của hộp thư hoặc help desk vào Yuva."
 
 #: src/features/migrations/text.ts
 msgid "Copy the key under “Your API Key”. A Freshdesk key cannot be limited to reading; Yuva's connection only sends read requests."
@@ -5459,7 +5431,6 @@ msgid "Counts when a subscription becomes confirmed, not when it is still waitin
 msgstr "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/DeveloperTabs.tsx
 msgid "Create"
 msgstr "Tạo"
 
@@ -5492,7 +5463,7 @@ msgstr "Create an issue"
 msgid "Create an OAuth client in Zendesk"
 msgstr "Tạo một ứng dụng khách OAuth trong Zendesk"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Create and add a channel"
 msgstr "Tạo và thêm kênh"
 
@@ -5516,11 +5487,11 @@ msgstr "Tạo kênh"
 msgid "Create draft"
 msgstr "Tạo bản nháp"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Create field"
 msgstr "Tạo trường"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Create filter"
 msgstr "Tạo bộ lọc"
 
@@ -5554,11 +5525,11 @@ msgstr "Tạo khóa"
 msgid "Create list"
 msgstr "Tạo danh sách"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Create policy"
 msgstr "Tạo chính sách"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Create rule"
 msgstr "Tạo quy tắc"
 
@@ -5619,9 +5590,7 @@ msgstr "Tạo, thay đổi, sắp xếp lại và xóa quy tắc tự động h�
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Created"
 msgstr "Đã tạo"
 
@@ -5690,11 +5659,6 @@ msgstr "Tùy chỉnh"
 msgid "Custom field"
 msgstr "Trường tùy chỉnh"
 
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "Custom fields"
-msgstr "Trường tùy chỉnh"
-
 #: src/features/contact/ContactsPage.tsx
 msgid "Customers"
 msgstr "Khách hàng"
@@ -5725,7 +5689,6 @@ msgid "Daily limit reached · continues at {time} {city} time"
 msgstr "Đã đạt giới hạn ngày · tiếp tục lúc {time} giờ {city}"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Danger zone"
 msgstr "Vùng nguy hiểm"
 
@@ -6075,10 +6038,6 @@ msgstr "Xóa nhóm {name}?"
 msgid "Delete the view {name}?"
 msgstr "Xóa chế độ xem {name}?"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-msgid "Delete this canned reply?"
-msgstr "Xóa phản hồi mẫu này?"
-
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Delete this DKIM key?"
 msgstr "Xóa khóa DKIM này?"
@@ -6102,6 +6061,10 @@ msgstr "Xóa ghi chú này"
 #: src/features/contact/ContactNotes.tsx
 msgid "Delete this note?"
 msgstr "Xóa ghi chú này?"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "Delete this saved reply?"
+msgstr "Xóa câu trả lời đã lưu này?"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete this subscription?"
@@ -6302,7 +6265,6 @@ msgstr "Thông báo trên màn hình bị chặn cho trang này trong cài đặ
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
@@ -6310,8 +6272,11 @@ msgstr "Thông báo trên màn hình bị chặn cho trang này trong cài đặ
 msgid "Details"
 msgstr "Chi tiết"
 
-#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsFrame.tsx
+msgid "Developer"
+msgstr "Nhà phát triển"
+
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Developers"
 msgstr "Nhà phát triển"
 
@@ -6519,7 +6484,7 @@ msgstr "Tài liệu là các trang bạn quản lý trên trang web của mình 
 msgid "Documentation pages"
 msgstr "Trang tài liệu"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Documentation site"
 msgstr "Trang tài liệu"
@@ -6555,7 +6520,6 @@ msgstr "xong"
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/fields/BulkFailures.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -6738,7 +6702,7 @@ msgstr "Trùng lặp"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/notifications/EventsSection.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -6816,7 +6780,7 @@ msgstr "Mã gửi qua email"
 msgid "E-mails to the people who signed up"
 msgstr "Email gửi cho những người đã đăng ký"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
 msgstr "Mỗi hành động một lần, tối đa 10. Các hành động chạy như một thay đổi; nếu một hành động thất bại thì không hành động nào được áp dụng."
 
@@ -6919,10 +6883,6 @@ msgstr "Sửa {name}"
 msgid "Edit API key"
 msgstr "Sửa khóa API"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-msgid "Edit canned reply"
-msgstr "Sửa phản hồi mẫu"
-
 #: src/features/status/ComponentForms.tsx
 msgid "Edit component"
 msgstr "Sửa thành phần"
@@ -6940,11 +6900,11 @@ msgstr "Sửa chi tiết"
 msgid "Edit details ({editKey})"
 msgstr "Sửa chi tiết ({editKey})"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Edit field"
 msgstr "Sửa trường"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Edit filter"
 msgstr "Sửa bộ lọc"
 
@@ -6952,11 +6912,11 @@ msgstr "Sửa bộ lọc"
 msgid "Edit help center collections and article drafts"
 msgstr "Chỉnh sửa bộ sưu tập của trung tâm trợ giúp và bản nháp bài viết"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Edit label"
 msgstr "Sửa nhãn"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Edit macro"
 msgstr "Sửa macro"
 
@@ -6964,13 +6924,17 @@ msgstr "Sửa macro"
 msgid "Edit monitor"
 msgstr "Sửa trình giám sát"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Edit policy"
 msgstr "Sửa chính sách"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Edit rule"
 msgstr "Sửa quy tắc"
+
+#: src/features/settings/canned/CannedReplyForm.tsx
+msgid "Edit saved reply"
+msgstr "Sửa câu trả lời đã lưu"
 
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Edit team"
@@ -7036,11 +7000,6 @@ msgstr "Đang chỉnh sửa tin nhắn hẹn lúc {editingWhen}"
 msgid "Elevated API errors"
 msgstr "Lỗi API tăng cao"
 
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "Elsewhere in settings"
-msgstr "Ở các phần khác của cài đặt"
-
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Embed snippet"
 msgstr "Đoạn mã nhúng"
@@ -7070,8 +7029,8 @@ msgstr "Để trống sẽ dùng tiêu đề bằng {baseLanguage}. Trường h�
 msgid "Emptying the Trash: {0} are being deleted"
 msgstr "Đang dọn sạch Thùng rác: đang xóa {0}"
 
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Enabled"
 msgstr "Bật"
 
@@ -7243,7 +7202,7 @@ msgid "Every imported conversation is closed."
 msgstr "Mọi cuộc trò chuyện đã nhập đều đã đóng."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Every inbox"
 msgstr "Mọi hộp thư"
 
@@ -7319,7 +7278,7 @@ msgstr "Mọi trang web và ứng dụng hiện khách truy cập của chúng t
 
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Everyone"
 msgstr "Mọi người"
 
@@ -7469,7 +7428,6 @@ msgstr "Extra scopes"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/migrations/ConnectStep.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7584,6 +7542,7 @@ msgstr "Ít cuộc trò chuyện đang mở nhất"
 
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Fields"
 msgstr "Trường"
 
@@ -7602,10 +7561,6 @@ msgstr "Tệp"
 #: src/features/broadcasts/Import.tsx
 msgid "File and consent"
 msgstr "Tệp và sự đồng ý"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Files"
-msgstr "Tệp"
 
 #: src/features/fields/RequiredFieldsHost.tsx
 msgid "Fill in before closing"
@@ -7739,6 +7694,7 @@ msgstr "Hoàn tất mà không kiểm tra"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/migrations/MigrationsPage.tsx
 msgid "Finished"
 msgstr "Đã hoàn tất"
 
@@ -7766,7 +7722,7 @@ msgstr "phản hồi đầu tiên"
 #: src/features/home/HomeWork.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "First reply"
 msgstr "Phản hồi đầu tiên"
 
@@ -7882,7 +7838,7 @@ msgid "For example Acme"
 msgstr "Ví dụ Acme"
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/setup/NameStep.tsx
 msgid "For example Fieldnote"
 msgstr "Ví dụ Fieldnote"
@@ -8071,15 +8027,15 @@ msgstr "Địa chỉ From (không bắt buộc)"
 msgid "From blocked contacts"
 msgstr "Từ các liên hệ bị chặn"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From each later contact message to the reply."
 msgstr "Từ mỗi tin nhắn sau đó của liên hệ đến khi phản hồi."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From the contact's first message to the first public reply."
 msgstr "Từ tin nhắn đầu tiên của liên hệ đến phản hồi công khai đầu tiên."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From the start of the conversation to its first close."
 msgstr "Từ khi cuộc trò chuyện bắt đầu đến lần đóng đầu tiên."
 
@@ -8144,9 +8100,7 @@ msgstr "Đã cấp cho {person} quyền truy cập {inbox}"
 msgid "Gave the team {team} access to {inbox}"
 msgstr "Đã cấp cho nhóm {team} quyền truy cập {inbox}"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/channels/sections.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "General"
@@ -8213,10 +8167,6 @@ msgstr "Gmail chỉ chuyển tiếp thư mới không phải thư rác. Nếu qu
 #: src/features/migrations/ConnectStep.tsx
 msgid "Gmail lets other apps read about 1.5 GB a day over IMAP, so a mailbox of many gigabytes takes days. Google Takeout exports it as one file that uploads as fast as your connection allows. Import that first, then come back here with an app password for the newer mail and the switch."
 msgstr "Gmail cho phép các ứng dụng khác đọc khoảng 1,5 GB mỗi ngày qua IMAP, nên một hộp thư vài chục gigabyte mất nhiều ngày. Google Takeout xuất nó thành một tệp tải lên nhanh bằng tốc độ kết nối của bạn. Hãy nhập tệp đó trước, rồi quay lại đây với mật khẩu ứng dụng cho thư mới hơn và việc chuyển đổi."
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Gmail, Outlook, Yandex, any IMAP server"
-msgstr "Gmail, Outlook, Yandex, mọi máy chủ IMAP"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "go back to operational when you post this"
@@ -8316,10 +8266,6 @@ msgstr "Groups attribute"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
 msgstr "Groups claim"
-
-#: src/features/settings/SettingsFrame.tsx
-msgid "Groups of members and the inboxes they cover"
-msgstr "Các nhóm thành viên và hộp thư họ phụ trách"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -8436,10 +8382,6 @@ msgstr "Trung tâm trợ giúp"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Help center settings"
 msgstr "Cài đặt trung tâm trợ giúp"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Help desks"
-msgstr "Hệ thống hỗ trợ"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Help report"
@@ -8580,7 +8522,7 @@ msgid "Hostname and certificate"
 msgstr "Tên máy chủ và chứng chỉ"
 
 #: src/features/broadcasts/Trigger.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "hours"
 msgstr "giờ"
 
@@ -8605,7 +8547,7 @@ msgstr "Người đăng ký của bạn đã đồng ý bằng cách nào?"
 msgid "How do people sign up?"
 msgstr "Mọi người đăng ký bằng cách nào?"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "How do you answer?"
 msgstr "Bạn trả lời thế nào?"
 
@@ -8629,7 +8571,6 @@ msgstr "Một tín hiệu được phép trễ bao lâu."
 msgid "How mail reaches Yuva"
 msgstr "Thư đến Yuva như thế nào"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "How messages arrive: chat, e-mail, apps"
 msgstr "Tin nhắn đến bằng cách nào: chat, email, ứng dụng"
@@ -8641,10 +8582,6 @@ msgstr "Tin nhắn đến từng sản phẩm như thế nào"
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "How should replies go out?"
 msgstr "Phản hồi nên được gửi đi thế nào?"
-
-#: src/components/common/SettingsStrip.tsx
-msgid "How software connects: keys, hooks, assistants"
-msgstr "Phần mềm kết nối bằng cách nào: khóa, webhook, trợ lý"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "How the chat opens"
@@ -8728,7 +8665,7 @@ msgstr "Không hoạt động {idle} phút"
 msgid "If {provider} mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "Nếu {provider} gửi thư xác nhận đến địa chỉ đó, thư sẽ đến hộp thư này dưới dạng một cuộc trò chuyện; hãy mở nó ở đó."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "If all of these match"
 msgstr "Nếu tất cả những điều sau khớp"
 
@@ -8821,11 +8758,11 @@ msgid "Import people"
 msgstr "Nhập người"
 
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Import steps"
 msgstr "Các bước nhập"
 
 #: src/components/common/ImportedChip.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 msgid "Imported"
 msgstr "Đã nhập"
@@ -8856,6 +8793,8 @@ msgstr "Đang nhập…"
 
 #: src/app/nav.tsx
 #: src/app/places.tsx
+#: src/features/migrations/Wizard.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Imports"
 msgstr "Các lần nhập"
 
@@ -9018,7 +8957,7 @@ msgstr "Trong Zoho Mail, mở Settings › Mail accounts › IMAP access và b�
 #: src/features/docs/InstallDialog.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "Hộp thư"
@@ -9051,10 +8990,15 @@ msgstr "Hộp thư cho {name}"
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Inboxes"
 msgstr "Hộp thư"
+
+#: src/features/settings/ProductsPage.tsx
+#: src/features/settings/SettingsFrame.tsx
+msgid "Inboxes and channels"
+msgstr "Hộp thư đến và kênh"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Inboxes cut off subjects longer than 80 characters."
@@ -9477,7 +9421,7 @@ msgstr "Được giữ cùng mọi đăng ký từ tệp này, làm bản ghi s�
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Key"
 msgstr "Khóa"
 
@@ -9517,12 +9461,6 @@ msgstr "Khóa và ứng dụng đã kết nối"
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
 msgstr "Các khóa có thể truy cập sản phẩm này. Tạo và thu hồi chúng trong API & MCP."
 
-#: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
-#: src/features/settings/webhooks/WebhooksPage.tsx
-msgid "Keys, webhooks and connected assistants"
-msgstr "Khóa, webhook và trợ lý đã kết nối"
-
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Keyword"
 msgstr "Từ khóa"
@@ -9558,10 +9496,9 @@ msgstr "Chỉ là nhãn: thư của nó đến từ Tất cả thư, và các cu
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Labels"
 msgstr "Nhãn"
 
@@ -9762,7 +9699,7 @@ msgstr "Màu nút mở chat"
 msgid "Launcher position"
 msgstr "Vị trí nút mở chat"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Leave as is"
 msgstr "Giữ nguyên"
 
@@ -10075,7 +10012,7 @@ msgid "Live"
 msgstr "Trực tiếp"
 
 #: src/components/common/Source.tsx
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Live chat"
 msgstr "Chat trực tiếp"
 
@@ -10197,8 +10134,8 @@ msgstr "Thấp"
 msgid "Lowercase letters, digits and dashes, not at the start or end."
 msgstr "Chữ thường, chữ số và dấu gạch ngang, không ở đầu hoặc cuối."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Lowercase letters, digits and dashes."
 msgstr "Chữ thường, chữ số và dấu gạch ngang."
 
@@ -10213,7 +10150,6 @@ msgid "Macro"
 msgstr "Macro"
 
 #: src/app/Palette.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Macros"
 msgstr "Macro"
@@ -10345,7 +10281,6 @@ msgstr "Địa chỉ hộp thư"
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
-#: src/features/migrations/MigrationsPage.tsx
 msgid "Mailboxes"
 msgstr "Hộp thư"
 
@@ -10452,10 +10387,6 @@ msgstr "Quản lý webhook"
 #: src/features/settings/webhooks/parts.tsx
 msgid "manual"
 msgstr "thủ công"
-
-#: src/features/migrations/Wizard.tsx
-msgid "Map"
-msgstr "Ánh xạ"
 
 #: src/app/Header.tsx
 #: src/features/account/AccountPage.tsx
@@ -10636,7 +10567,6 @@ msgstr "Thành viên"
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/teams/TeamsPage.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "Thành viên"
@@ -10827,10 +10757,6 @@ msgstr "Token của Microsoft cấp nhiều quyền hơn việc đọc thư qua 
 msgid "Migration cancelled"
 msgstr "Đã hủy di chuyển"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Migration steps"
-msgstr "Các bước di chuyển"
-
 #: src/features/inbox/ChatList.tsx
 msgid "Mine"
 msgstr "Của tôi"
@@ -10841,7 +10767,7 @@ msgstr "Nhỏ"
 
 #: src/features/broadcasts/Trigger.tsx
 #: src/features/settings/automation/ActionRow.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "minutes"
 msgstr "phút"
 
@@ -10849,7 +10775,7 @@ msgstr "phút"
 msgid "Minutes"
 msgstr "Phút"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Minutes before a due time. 0 sends no warning."
 msgstr "Số phút trước hạn. 0 là không gửi cảnh báo."
 
@@ -10858,7 +10784,7 @@ msgid "Missed beat"
 msgstr "Tín hiệu bị lỡ"
 
 #: src/components/common/text.ts
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/app/AppFields.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Mobile app"
@@ -11158,12 +11084,6 @@ msgstr "Chuyển vào Thùng rác ({0})"
 msgid "Move to the Trash (#)"
 msgstr "Chuyển vào Thùng rác (#)"
 
-#: src/features/migrations/Wizard.tsx
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "Move to Yuva"
-msgstr "Chuyển sang Yuva"
-
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11202,8 +11122,8 @@ msgid "Moves the mail to the Trash. Runs after the other actions."
 msgstr "Chuyển thư vào thùng rác. Chạy sau các hành động khác."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
-msgstr "Chuyển từ Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX hay bất kỳ máy chủ IMAP nào? Yuva sao chép lịch sử hộp thư vào một hộp thư, lặng lẽ và mới nhất trước, trong khi nhóm của bạn vẫn làm việc. Sau đó bạn chuyển tiếp hộp thư về đây và không mất gì ở giữa."
+msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX, any IMAP server or another help desk? Yuva copies the history into an inbox, newest first, while your team keeps working."
+msgstr "Chuyển từ Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX, bất kỳ máy chủ IMAP nào hoặc help desk khác? Yuva sao chép lịch sử vào hộp thư đến, mới nhất trước, trong khi nhóm của bạn vẫn làm việc."
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Moving the idea to Planned, In progress or Shipped sets this for linked feedback that has no progress yet."
@@ -11247,20 +11167,19 @@ msgstr "Chế độ xem của tôi"
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
-#: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -11300,6 +11219,10 @@ msgstr "Đặt tên Yuva. Trong <0>Connection</0> chọn <1>Public endpoint</1> 
 #: src/features/migrations/MapStep.tsx
 msgid "Name of the new inbox"
 msgstr "Tên của hộp thư mới"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Name, closed conversations and broadcast sending"
+msgstr "Tên, cuộc trò chuyện đã đóng và gửi broadcast"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Name, colour and the first thing the chat says"
@@ -11411,11 +11334,6 @@ msgstr "Bài viết mới"
 msgid "New broadcast"
 msgstr "Thư hàng loạt mới"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
-msgid "New canned reply"
-msgstr "Phản hồi mẫu mới"
-
 #: src/components/common/ShortcutSheet.tsx
 msgid "New collection"
 msgstr "Bộ sưu tập mới"
@@ -11484,12 +11402,13 @@ msgstr "thảo luận mới"
 msgid "New entry"
 msgstr "Mục mới"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 msgid "New field"
 msgstr "Trường mới"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/mail/FilterDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New filter"
 msgstr "Bộ lọc mới"
@@ -11508,6 +11427,8 @@ msgid "New identity secret"
 msgstr "Identity secret mới"
 
 #: src/app/places.tsx
+#: src/features/migrations/MigrationsPage.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "New import"
 msgstr "Lần nhập mới"
 
@@ -11532,7 +11453,7 @@ msgstr "Sự cố mới"
 msgid "New incident ({incidentKey})"
 msgstr "Sự cố mới ({incidentKey})"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "New label"
 msgstr "Nhãn mới"
@@ -11546,7 +11467,7 @@ msgstr "Nhãn mới “{folder}”"
 msgid "New list"
 msgstr "Danh sách mới"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "New macro"
 msgstr "Macro mới"
@@ -11577,10 +11498,6 @@ msgstr "Tin nhắn mới trong cuộc trò chuyện được giao cho tôi"
 msgid "New message in an unassigned conversation"
 msgstr "Tin nhắn mới trong cuộc trò chuyện chưa giao"
 
-#: src/features/migrations/MigrationsPage.tsx
-msgid "New migration"
-msgstr "Lần di chuyển mới"
-
 #: src/features/status/MonitorsPage.tsx
 msgid "new monitor"
 msgstr "trình giám sát mới"
@@ -11601,7 +11518,7 @@ msgstr "Chủ sở hữu mới của {boxName}"
 msgid "New password"
 msgstr "Mật khẩu mới"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "New policy"
 msgstr "Chính sách mới"
@@ -11610,10 +11527,15 @@ msgstr "Chính sách mới"
 msgid "New reply in <0>{title}</0>"
 msgstr "Phản hồi mới trong <0>{title}</0>"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "Quy tắc mới"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+msgid "New saved reply"
+msgstr "Câu trả lời đã lưu mới"
 
 #: src/features/settings/webhooks/sections.tsx
 msgid "New signing secret"
@@ -11720,7 +11642,7 @@ msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "Thư tiếp theo lúc {local} ({utc} UTC), theo tốc độ của thư hàng loạt này."
 
 #: src/features/conversation/SlaPopover.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Next reply"
 msgstr "Phản hồi tiếp theo"
 
@@ -11731,10 +11653,6 @@ msgstr "Phản hồi tiếp theo {next}"
 #: src/features/feedback/Lightbox.tsx
 msgid "Next screenshot"
 msgstr "Ảnh chụp màn hình tiếp theo"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Next you pick the source and connect it. Nothing is copied until you start."
-msgstr "Tiếp theo bạn chọn nguồn và kết nối nó. Không có gì được sao chép cho đến khi bạn bắt đầu."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Next, choose what to bring. The scan reads the file once."
@@ -11825,10 +11743,6 @@ msgstr "Chưa có bản tin nào được gửi đi."
 msgid "No broadcasts yet"
 msgstr "Chưa có thư hàng loạt"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-msgid "No canned replies yet"
-msgstr "Chưa có phản hồi mẫu"
-
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "No canned replies yet. Add them in settings."
 msgstr "Chưa có phản hồi mẫu. Hãy thêm trong cài đặt."
@@ -11879,7 +11793,7 @@ msgstr "Chưa có thành phần nào. Hãy thêm các phần của sản phẩm 
 msgid "No components yet. Add the parts of your product that customers depend on."
 msgstr "Chưa có thành phần. Hãy thêm những phần của sản phẩm mà khách hàng phụ thuộc vào."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "No conditions: the rule runs for every conversation the trigger fits."
 msgstr "Không có điều kiện: quy tắc chạy cho mọi cuộc trò chuyện mà trình kích hoạt áp dụng."
 
@@ -12060,6 +11974,10 @@ msgstr "Chưa có ID nào. Chưa có ứng dụng hay widget nào nhận diện 
 #: src/features/status/text.tsx
 msgid "No impact"
 msgstr "Không ảnh hưởng"
+
+#: src/features/migrations/MigrationsPage.tsx
+msgid "No imports match this filter."
+msgstr "Không có lần nhập nào khớp bộ lọc này."
 
 #: src/features/broadcasts/Import.tsx
 msgid "No imports yet."
@@ -12244,6 +12162,10 @@ msgstr "Chưa có quy tắc nào."
 #: src/features/settings/automation/RunLog.tsx
 msgid "No runs in the last 30 days."
 msgstr "Không có lần chạy nào trong 30 ngày qua."
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "No saved replies yet"
+msgstr "Chưa có câu trả lời đã lưu"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "No secret yet. Make one, then paste it into GitHub."
@@ -12667,7 +12589,7 @@ msgstr "Không phải cùng một người"
 msgid "Not there after a minute? Look in your spam or junk folder, or send a new code below."
 msgstr "Sau một phút vẫn chưa thấy? Hãy xem trong thư mục thư rác, hoặc gửi mã mới bên dưới."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Not tracked"
 msgstr "Không theo dõi"
 
@@ -13034,11 +12956,6 @@ msgstr "Với gói Team và Enterprise, chủ sở hữu thêm một lần trong
 msgid "On the web"
 msgstr "Trên web"
 
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "On this page"
-msgstr "Trên trang này"
-
 #: src/components/common/SlaBadge.tsx
 msgid "On track"
 msgstr "Đúng tiến độ"
@@ -13056,7 +12973,7 @@ msgstr "Khi có một thư thử đến, Yuva chờ {hours} giờ. Nếu trong t
 msgid "One e-mail a month about what is new."
 msgstr "Mỗi tháng một email về những điều mới."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "Một hộp thư"
@@ -13073,7 +12990,7 @@ msgstr "One mail to each person, a set time after they sign in"
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Mỗi dòng một cái, từ 1 đến 20. Chỉ các trang thuộc những origin này mới dùng được widget."
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "One per line, all different, at most 100."
 msgstr "Mỗi dòng một giá trị, không trùng nhau, tối đa 100."
 
@@ -13200,7 +13117,7 @@ msgid "Only mail since {date}"
 msgstr "Chỉ thư từ {date}"
 
 #: src/features/inbox/views/ViewDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Only me"
 msgstr "Chỉ mình tôi"
 
@@ -13702,7 +13619,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "Tùy chọn. 64 KiB đầu của phản hồi phải chứa nó; phân biệt chữ hoa và chữ thường."
 
 #: src/features/broadcasts/Composer.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Options"
 msgstr "Tùy chọn"
 
@@ -13742,7 +13659,7 @@ msgstr "Hoặc tải lên tệp xuất"
 msgid "Order and view"
 msgstr "Thứ tự và chế độ xem"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Order number"
 msgstr "Mã đơn hàng"
 
@@ -13839,7 +13756,6 @@ msgid "Own tenant"
 msgstr "Tenant riêng"
 
 #: src/components/common/text.ts
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Owner"
 msgstr "Chủ sở hữu"
 
@@ -14241,7 +14157,7 @@ msgstr "Chọn một câu trả lời soạn sẵn"
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "Chọn một kênh trò chuyện của sản phẩm và dán mã. Đánh giá và câu hỏi sẽ vào hộp thư của kênh đó."
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Pick a color"
 msgstr "Chọn một màu"
 
@@ -14345,7 +14261,7 @@ msgid "Pick an endpoint"
 msgstr "Chọn một điểm cuối"
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Pick an inbox"
 msgstr "Chọn một hộp thư"
 
@@ -14436,7 +14352,7 @@ msgstr "Chọn liên hệ kia. Nó được gộp vào liên hệ này rồi b�
 msgid "Pick the platforms; the next step shows the lines to add to each app."
 msgstr "Chọn các nền tảng; bước tiếp theo hiện các dòng cần thêm vào từng ứng dụng."
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Pick the product and how customers reach it. The next steps set it up."
 msgstr "Chọn sản phẩm và cách khách hàng liên hệ. Các bước tiếp theo sẽ thiết lập nó."
 
@@ -14607,7 +14523,7 @@ msgstr "Đang chuẩn bị"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/status/PreviewDialog.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Preview"
@@ -14671,12 +14587,12 @@ msgstr "Ảnh chụp màn hình trước"
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Priority"
 msgstr "Ưu tiên"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Priority customers"
 msgstr "Khách hàng ưu tiên"
 
@@ -14707,19 +14623,17 @@ msgstr "pro, team"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageForm.tsx
 #: src/features/status/IncidentForm.tsx
 msgid "Product"
 msgstr "Sản phẩm"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/setup/NameStep.tsx
 msgid "Product name"
 msgstr "Tên sản phẩm"
@@ -14729,7 +14643,6 @@ msgstr "Tên sản phẩm"
 msgid "Product news"
 msgstr "Tin tức sản phẩm"
 
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Product settings"
@@ -14744,7 +14657,6 @@ msgstr "Sản xuất"
 msgid "Production backend"
 msgstr "Backend production"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomeSide.tsx
@@ -14755,7 +14667,6 @@ msgstr "Backend production"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Products"
 msgstr "Sản phẩm"
@@ -14992,7 +14903,7 @@ msgstr "Đã xếp hàng. Lần thử mới sẽ hiện bên dưới trong giây
 msgid "Quick cleanup"
 msgstr "Dọn dẹp nhanh"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Quiet for (minutes)"
 msgstr "Im lặng trong (phút)"
 
@@ -15165,11 +15076,6 @@ msgstr "Đọc để gợi ý các địa chỉ của nhóm bạn: thư của n�
 msgid "Read What's new changelogs and their entries"
 msgstr "Đọc nhật ký thay đổi của Có gì mới và các mục của chúng"
 
-#: src/features/migrations/MigrationsPage.tsx
-#: src/features/migrations/Wizard.tsx
-msgid "Read-only"
-msgstr "Chỉ đọc"
-
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/account/ConnectPage.tsx
 msgid "Reader"
@@ -15327,11 +15233,11 @@ msgstr "Tham chiếu"
 msgid "Refresh"
 msgstr "Làm mới"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Refund"
 msgstr "Hoàn tiền"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Refund approved"
 msgstr "Đã duyệt hoàn tiền"
 
@@ -15379,7 +15285,7 @@ msgstr "Hình ảnh từ xa có thể cho người gửi biết bạn đã mở 
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -15601,7 +15507,7 @@ msgstr "Đã gỡ một ghi chú khỏi cuộc trò chuyện"
 msgid "Removed by {who}"
 msgstr "Gỡ bởi {who}"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "Các tùy chọn đã gỡ sẽ bị xóa khỏi mọi cuộc trò chuyện có chúng. Việc này chạy trong nền."
 
@@ -15854,6 +15760,10 @@ msgstr "Nội dung trả lời"
 msgid "Reply time"
 msgstr "Thời gian phản hồi"
 
+#: src/features/settings/SettingsFrame.tsx
+msgid "Reply times"
+msgstr "Thời gian phản hồi"
+
 #: src/features/conversation/BroadcastLine.tsx
 msgid "Reply to {name}"
 msgstr "Phản hồi {name}"
@@ -15960,7 +15870,7 @@ msgstr "Ảnh hưởng đến uy tín"
 msgid "Require single sign-on"
 msgstr "Require single sign-on"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 msgid "Required to close"
 msgstr "Bắt buộc để đóng"
@@ -15982,7 +15892,7 @@ msgid "Reset to defaults"
 msgstr "Đặt lại mặc định"
 
 #: src/features/conversation/SlaPopover.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Resolution"
 msgstr "Giải quyết"
 
@@ -16122,7 +16032,6 @@ msgstr "Đưa bạn quay lại"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Import.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Review"
 msgstr "Xem lại"
@@ -16203,7 +16112,6 @@ msgstr "Ngay sau khi đăng ký, mọi người nhận một thư ngắn xác nh
 msgid "Roadmap"
 msgstr "Lộ trình"
 
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Role"
 msgstr "Vai trò"
@@ -16294,7 +16202,6 @@ msgstr "Quy tắc {rule} đã chạy, không có gì cần thay đổi"
 msgid "Rule {rule} ran: {done}"
 msgstr "Quy tắc {rule} đã chạy: {done}"
 
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Rules"
 msgstr "Quy tắc"
@@ -16365,16 +16272,16 @@ msgstr "Thứ Bảy"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/channels/ApiChannelDialog.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/signature/SignaturePage.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/ui.tsx
@@ -16461,6 +16368,10 @@ msgstr "Lưu danh sách thành chế độ xem"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "Đã lưu"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Saved replies"
+msgstr "Câu trả lời đã lưu"
 
 #: src/app/ViewsGroup.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
@@ -17536,13 +17447,12 @@ msgstr "Đang thiết lập…"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "Cài đặt"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "Settings (JSON)"
 msgstr "Cài đặt (JSON)"
@@ -17585,8 +17495,8 @@ msgstr "Chia sẻ với nhóm"
 msgid "Shipped"
 msgstr "Đã phát hành"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Shortcut"
 msgstr "Phím tắt"
 
@@ -17597,6 +17507,7 @@ msgstr "Phím tắt"
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -18029,7 +17940,6 @@ msgstr "Xác nhận đơn"
 
 #: src/app/Palette.tsx
 #: src/features/settings/profile/Sessions.tsx
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
 msgstr "Single sign-on"
@@ -18131,11 +18041,6 @@ msgstr "SLA đạt"
 msgid "SLA met / breached"
 msgstr "SLA đạt / vi phạm"
 
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "SLA policies"
-msgstr "Chính sách SLA"
-
 #: src/features/conversation/SlaPopover.tsx
 msgid "SLA targets (W)"
 msgstr "Mục tiêu SLA (W)"
@@ -18223,7 +18128,7 @@ msgstr "Tạm hoãn (B)"
 msgid "Snooze (S)"
 msgstr "Tạm hoãn (S)"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Snooze for (minutes)"
 msgstr "Báo lại sau (phút)"
 
@@ -18411,6 +18316,10 @@ msgstr "Cần xem lại SPF, DKIM hoặc DMARC"
 msgid "Split by"
 msgstr "Chia theo"
 
+#: src/features/settings/SettingsFrame.tsx
+msgid "SSO"
+msgstr "SSO"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
 msgstr "Giai đoạn"
@@ -18468,7 +18377,7 @@ msgstr "bạn đã gắn sao"
 msgid "Stars the mail for you."
 msgstr "Gắn sao cho thư giúp bạn."
 
-#: src/features/migrations/MigrationsPage.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Start"
 msgstr "Bắt đầu"
 
@@ -18487,6 +18396,10 @@ msgstr "Bắt đầu một cuộc thảo luận"
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Start a mailing list"
 msgstr "Tạo danh sách gửi thư"
+
+#: src/features/migrations/MigrationsPage.tsx
+msgid "Start an import"
+msgstr "Bắt đầu nhập"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "Start conversation"
@@ -18570,7 +18483,6 @@ msgstr "Starts when a change to the person’s attributes makes them match, and 
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (cổng 587)"
 
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
@@ -18612,7 +18524,7 @@ msgstr "Trạng thái khi ngừng"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
 #: src/features/team/TeamPage.tsx
@@ -18874,10 +18786,6 @@ msgstr "Bị đình chỉ"
 msgid "Suspended broadcasts"
 msgstr "Đã tạm dừng thư hàng loạt"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Switch"
-msgstr "Chuyển đổi"
-
 #: src/features/migrations/SwitchStep.tsx
 msgid "Switch your mail to Yuva"
 msgstr "Chuyển thư của bạn sang Yuva"
@@ -18934,11 +18842,11 @@ msgstr "Nhận đăng ký trở lại và đưa danh sách về bộ chọn đ�
 msgid "Taking the recipients: {prepared} so far"
 msgstr "Đang lấy người nhận: đến giờ được {prepared}"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Targets"
 msgstr "Mục tiêu"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Targets count in the business hours of the conversation's inbox, in its time zone. Leave one empty to not track it; at least one is required."
 msgstr "Mục tiêu được tính theo giờ làm việc và múi giờ của hộp thư của cuộc trò chuyện. Để trống một mục tiêu nếu không theo dõi; cần ít nhất một mục tiêu."
 
@@ -19031,7 +18939,6 @@ msgstr "teammate@company.com"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/features/conversation/HeaderActions.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -19075,9 +18982,9 @@ msgstr "Thử nghiệm chỉ gửi đến thành viên của không gian làm vi
 
 #: src/features/fields/value.ts
 #: src/features/settings/automation/ConditionRow.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Text"
 msgstr "Văn bản"
 
@@ -19089,7 +18996,7 @@ msgstr "Nội dung được lưu lần cuối bởi {who}"
 msgid "Thanks for waiting. Your invoice is on its way."
 msgstr "Cảm ơn bạn đã chờ. Hóa đơn của bạn đang được gửi."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 msgid "Thanks for writing"
 msgstr "Cảm ơn bạn đã viết thư"
 
@@ -19214,12 +19121,12 @@ msgstr "Chat hiện ở góc của mọi trang có đoạn mã."
 msgid "The chat bubble appears on these addresses:"
 msgstr "Khung chat hiện ở các địa chỉ này:"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "The chat shows when you usually reply"
 msgstr "Chat hiện khi bạn thường trả lời"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "The chat shows who is available and typing"
 msgstr "Chat hiện ai đang sẵn sàng và đang gõ"
@@ -19601,11 +19508,11 @@ msgstr "Khóa chỉ thấy các hộp thư đến này và không thể quản l
 msgid "The key stops working at the end of this day."
 msgstr "Khóa ngừng hoạt động vào cuối ngày này."
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "The key, the object and the type cannot change after creation."
 msgstr "Không thể đổi khóa, đối tượng và kiểu sau khi tạo."
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 msgid "The kind cannot be changed later."
 msgstr "Loại không thể đổi sau này."
 
@@ -19738,7 +19645,7 @@ msgstr "Quá trình di chuyển tiếp tục từ chỗ đã dừng."
 msgid "The migration moved on in the meantime. Look at its state and try again."
 msgstr "Quá trình di chuyển đã tiến tiếp trong lúc đó. Hãy xem trạng thái của nó và thử lại."
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "The next step adds its first channel: website chat, e-mail or a mobile app."
 msgstr "Bước tiếp theo thêm kênh đầu tiên của nó: chat web, email hoặc ứng dụng di động."
 
@@ -20203,10 +20110,6 @@ msgstr "Điểm cuối webhook đang tắt hoặc không dùng được ở đâ
 msgid "The What’s new count shows on the chat button while no messages are unread. The widget’s Home always shows it."
 msgstr "Số cập nhật mới hiện trên nút chat khi không có tin nhắn chưa đọc. Trang chủ của widget luôn hiện số này."
 
-#: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
-msgstr "Chính không gian làm việc: tên, thời gian lưu, nhãn, câu trả lời soạn sẵn, chuyển đổi và nhật ký kiểm toán"
-
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
 msgstr "Không gian làm việc hiện không được gửi thư hàng loạt."
@@ -20214,11 +20117,6 @@ msgstr "Không gian làm việc hiện không được gửi thư hàng loạt."
 #: src/features/status/Notices.tsx
 msgid "The workspace may not send bulk mail now"
 msgstr "Không gian làm việc hiện không được phép gửi thư hàng loạt"
-
-#: src/components/common/SettingsStrip.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "The workspace: labels, replies, data"
-msgstr "Không gian làm việc: nhãn, phản hồi, dữ liệu"
 
 #: src/components/common/text.ts
 msgid "The zip cannot be read; it may be damaged or cut off. Make it again and upload it."
@@ -20272,7 +20170,7 @@ msgstr "Giao diện"
 msgid "Theme and e-mail view on this device"
 msgstr "Giao diện và chế độ xem email trên thiết bị này"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Then"
 msgstr "Thì"
 
@@ -20614,7 +20512,7 @@ msgstr "Đây không phải tệp CSV. Hãy lưu bảng tính thành CSV và t�
 msgid "This is not a domain this page can use. Use a name like {example} that is not one of this server’s own addresses."
 msgstr "Trang này không thể dùng tên miền này. Hãy dùng một tên như {example} mà không phải là địa chỉ riêng của máy chủ này."
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "This is not a JSON object."
 msgstr "Đây không phải một đối tượng JSON."
@@ -20751,7 +20649,7 @@ msgstr "Thuộc tính này đã có một phân khúc với tên này."
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Câu trả lời này sẽ không được gửi cho đến khi chủ sở hữu hoặc quản trị viên lưu cả quy tắc này lẫn câu trả lời soạn sẵn {title}, hoặc bot được phép gửi trong cài đặt khóa API."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Câu trả lời này sẽ không được gửi cho đến khi chủ sở hữu hoặc quản trị viên lưu câu trả lời soạn sẵn {title}, hoặc bot được phép gửi trong cài đặt khóa API."
@@ -20966,7 +20864,7 @@ msgstr "Thời gian chờ"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/status/IncidentForm.tsx
 msgid "Title"
 msgstr "Tiêu đề"
@@ -21097,7 +20995,7 @@ msgstr "Xu hướng"
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Trigger"
 msgstr "Trình kích hoạt"
 
@@ -21221,8 +21119,7 @@ msgid "TXT record"
 msgstr "Bản ghi TXT"
 
 #: src/features/inbox/SourceFilter.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Type"
 msgstr "Loại"
 
@@ -21271,7 +21168,7 @@ msgstr "Hủy giao"
 #: src/features/home/HomeWork.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Unassigned"
 msgstr "Chưa giao"
 
@@ -21345,7 +21242,7 @@ msgid "Unfollowed"
 msgstr "Đã bỏ theo dõi"
 
 #: src/features/broadcasts/Trigger.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Unit"
 msgstr "Đơn vị"
 
@@ -21758,9 +21655,9 @@ msgstr "Dùng nó làm bearer token với máy chủ này."
 msgid "Use letters, digits, - and _, at most 64."
 msgstr "Dùng chữ cái, chữ số, - và _, tối đa 64."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Use lowercase letters, digits and single dashes."
 msgstr "Dùng chữ thường, chữ số và dấu gạch ngang đơn."
 
@@ -21914,10 +21811,6 @@ msgstr "Verify"
 #: src/features/settings/webhooks/SignatureHint.tsx
 msgid "Verify every request before trusting it: the <0>webhook-signature</0> header follows the <1>Standard Webhooks</1> specification, so any of its libraries can check it with the endpoint's secret. Go backends can use the <2>sdk/go/webhook</2> package of the Yuva repository."
 msgstr "Hãy xác minh mọi yêu cầu trước khi tin: header <0>webhook-signature</0> theo đặc tả <1>Standard Webhooks</1>, nên bất kỳ thư viện nào của nó đều kiểm tra được bằng secret của endpoint. Backend Go có thể dùng gói <2>sdk/go/webhook</2> của kho lưu trữ Yuva."
-
-#: src/features/settings/SettingsFrame.tsx
-msgid "Version"
-msgstr "Phiên bản"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Versions"
@@ -22158,7 +22051,7 @@ msgstr "đang chờ bạn"
 msgid "Warn about the certificate"
 msgstr "Cảnh báo về chứng chỉ"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Warn before it is due"
 msgstr "Cảnh báo trước hạn"
 
@@ -22218,8 +22111,6 @@ msgstr "Webhook secret for {revealName}"
 
 #: src/app/Palette.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
@@ -22246,7 +22137,7 @@ msgstr "Trang web"
 msgid "Website addresses"
 msgstr "Địa chỉ trang web"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Website chat"
 msgstr "Chat trên trang web"
@@ -22368,7 +22259,7 @@ msgstr "Những gì khách hàng thấy"
 msgid "What the import will do"
 msgstr "Lần nhập sẽ làm gì"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "What the team sees."
 msgstr "Điều nhóm nhìn thấy."
 
@@ -22414,7 +22305,6 @@ msgstr "What your e-mailed replies end with, per inbox. Chat replies and notes c
 
 #: src/components/common/FocusChoice.tsx
 #: src/features/settings/workspace/FocusForm.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "What Yuva is for"
 msgstr "Yuva dùng để làm gì"
 
@@ -22429,7 +22319,7 @@ msgid "What’s new entry"
 msgstr "Mục có gì mới"
 
 #: src/features/broadcasts/ReviewPanel.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "When"
 msgstr "Khi nào"
 
@@ -22552,7 +22442,7 @@ msgstr "Where new issues go when nobody picks a team, as a team key such as ENG.
 msgid "Where should Yuva send events?"
 msgstr "Yuva nên gửi sự kiện đến đâu?"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
 msgstr "Nơi API lưu giá trị. Chữ thường, chữ số và dấu gạch dưới; không thể đổi."
 
@@ -22608,7 +22498,7 @@ msgstr "Ai trả lời, ở đâu và ai đang trực tuyến"
 msgid "Who can reply"
 msgstr "Ai có thể trả lời"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Who can use it"
 msgstr "Ai có thể dùng"
 
@@ -22645,7 +22535,6 @@ msgstr "Ai gửi, và về chuyện gì?"
 msgid "Who should take it?"
 msgstr "Ai nên nhận việc này?"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Who you support: name, hours, team, sender"
 msgstr "Bạn hỗ trợ ai: tên, giờ làm việc, nhóm, người gửi"
@@ -22764,10 +22653,8 @@ msgstr "Đang xử lý…"
 #: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/oauth/ConsentPage.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Workspace"
 msgstr "Không gian làm việc"
 
@@ -23074,7 +22961,6 @@ msgid "Your account is not in a group that may use Yuva. Ask your administrator 
 msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 
 #: src/features/settings/addresses/AddressesPage.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Your addresses"
 msgstr "Địa chỉ của bạn"
 
@@ -23167,6 +23053,10 @@ msgstr "Tổ chức Microsoft 365 của bạn chỉ cho phép quản trị viên
 #: src/features/broadcasts/Composer.tsx
 msgid "Your name"
 msgstr "Tên của bạn"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Your name, photo, language and sign-in"
+msgstr "Tên, ảnh, ngôn ngữ và đăng nhập của bạn"
 
 #: src/features/home/HomeWork.tsx
 msgid "Your open conversations"
@@ -23273,10 +23163,6 @@ msgstr "Trang web của bạn"
 msgid "Your workspace asks for these fields on every conversation it closes."
 msgstr "Không gian làm việc của bạn yêu cầu các trường này ở mỗi cuộc trò chuyện được đóng."
 
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."
-msgstr "Tên không gian làm việc của bạn, thời gian lưu các cuộc trò chuyện đã đóng và ai được gửi thư hàng loạt."
-
 #: src/features/account/AccountPage.tsx
 msgid "Your Yuva account"
 msgstr "Tài khoản Yuva của bạn"
@@ -23367,10 +23253,6 @@ msgstr "Yuva không chạy máy chủ thư: thư của tên miền bạn đượ
 msgid "Yuva held back a command that would have changed the mailbox"
 msgstr "Yuva đã chặn một lệnh sẽ thay đổi hộp thư"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Yuva inbox"
-msgstr "Hộp thư Yuva"
-
 #: src/features/migrations/SwitchStep.tsx
 msgid "Yuva mails {address} a short test message. When it reaches Yuva by the new route, the switch works."
 msgstr "Yuva gửi {address} một tin nhắn thử ngắn. Khi nó đến Yuva qua đường mới, việc chuyển đổi hoạt động."
@@ -23402,10 +23284,6 @@ msgstr "Yuva chỉ đọc help desk. Lịch sử đến một cách lặng lẽ:
 #: src/features/migrations/Wizard.tsx
 msgid "Yuva only reads the mailbox. History arrives quietly: no notifications, no auto-replies."
 msgstr "Yuva chỉ đọc hộp thư. Lịch sử đến một cách lặng lẽ: không thông báo, không phản hồi tự động."
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Yuva only reads the source; nothing there is changed."
-msgstr "Yuva chỉ đọc nguồn; không có gì ở đó bị thay đổi."
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Yuva only reads. Besides signing in, its connection sends {provider} nothing but read requests, so no ticket, customer or setting changes."
@@ -23478,7 +23356,3 @@ msgstr "Yuva, về trang chủ"
 #: src/components/common/text.ts
 msgid "Yuva's own notes cannot be changed."
 msgstr "Không thể thay đổi ghi chú của chính Yuva."
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"
-msgstr "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"

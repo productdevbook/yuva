@@ -1448,7 +1448,7 @@ msgstr "대화"
 msgid "A conversation can copy at most 100 people."
 msgstr "한 대화에서 참조할 수 있는 사람은 최대 100명입니다."
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
 msgstr "이 필드에 값이 있어야 대화를 닫을 수 있습니다. 스팸은 제외됩니다."
 
@@ -1468,7 +1468,7 @@ msgstr "대화가 비활성 상태일 때"
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "마지막 업데이트가 범위 안에 있는 대화는 통째로 가져옵니다."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "A conversation must match every row you fill in. Leave a row empty to match anything."
 msgstr "입력한 모든 행과 일치하는 대화가 대상입니다. 빈 행은 모든 것과 일치합니다."
 
@@ -1739,7 +1739,7 @@ msgstr "각 구성 요소 옆의 백분율."
 msgid "A personal API key from Linear, under Settings, Account, Security and access."
 msgstr "A personal API key from Linear, under Settings, Account, Security and access."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "A policy that is off applies to nothing."
 msgstr "꺼진 정책은 아무것에도 적용되지 않습니다."
 
@@ -1799,7 +1799,7 @@ msgstr "필수 필드가 비어 있습니다"
 msgid "A roadmap idea moved to another stage"
 msgstr "로드맵 아이디어가 다른 단계로 이동했습니다"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "A rule that is off never runs. Rules run in the order of the list."
 msgstr "꺼진 규칙은 실행되지 않습니다. 규칙은 목록 순서대로 실행됩니다."
 
@@ -1974,10 +1974,6 @@ msgstr "{provider} 접근"
 msgid "Access to the mailbox"
 msgstr "메일함 접근"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Access to your mailbox: none"
-msgstr "메일함 접근: 없음"
-
 #: src/features/account/AccountPage.tsx
 msgid "Account"
 msgstr "계정"
@@ -2002,7 +1998,7 @@ msgstr "Acme 지원"
 msgid "ACS URL"
 msgstr "ACS URL"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Actions"
@@ -2017,6 +2013,7 @@ msgstr "동작만"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/text.ts
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
@@ -2032,7 +2029,7 @@ msgstr "활동"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "추가"
@@ -2050,7 +2047,7 @@ msgstr "블록 추가"
 msgid "Add a category"
 msgstr "카테고리 추가"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Add a channel"
 msgstr "채널 추가"
 
@@ -2099,7 +2096,7 @@ msgstr "이메일 주소로 참가자 추가"
 msgid "Add a passkey"
 msgstr "패스키 추가"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Add a product"
 msgstr "제품 추가"
 
@@ -2137,7 +2134,7 @@ msgstr "받은 편지함 설정에서 웹사이트 채팅 추가"
 msgid "Add a website or app"
 msgstr "웹사이트 또는 앱 추가"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Add an action"
 msgstr "작업 추가"
 
@@ -2154,6 +2151,10 @@ msgstr "서버에 주소를 추가하고 Yuva가 알려야 할 이벤트를 선�
 #: src/app/Palette.tsx
 msgid "Add an analytics property"
 msgstr "분석 속성 추가"
+
+#: src/features/settings/channels/ApiChannelForm.tsx
+msgid "Add an API channel"
+msgstr "API 채널 추가"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add an image"
@@ -2184,7 +2185,6 @@ msgstr "하나 더 추가"
 msgid "Add at least one origin."
 msgstr "오리진을 하나 이상 추가하세요."
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Add channel"
 msgstr "채널 추가"
@@ -2194,7 +2194,7 @@ msgstr "채널 추가"
 msgid "Add component"
 msgstr "구성 요소 추가"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Add condition"
 msgstr "조건 추가"
 
@@ -2228,6 +2228,10 @@ msgstr "Add image"
 #: src/features/mail/Compose.tsx
 msgid "Add it back"
 msgstr "Add it back"
+
+#: src/features/settings/labels/LabelForm.tsx
+msgid "Add label"
+msgstr "라벨 추가"
 
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
@@ -2386,6 +2390,7 @@ msgid "Address verified"
 msgstr "주소를 확인했습니다"
 
 #: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Addresses"
 msgstr "주소"
 
@@ -2496,6 +2501,7 @@ msgid "All good"
 msgstr "정상"
 
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/MigrationsPage.tsx
 msgid "All imports"
 msgstr "모든 가져오기"
 
@@ -2881,10 +2887,6 @@ msgstr "초대는 그 주소로 받은 코드로 로그인하면 수락됩니다
 msgid "An issue URL, owner/repo#12 or ENG-123."
 msgstr "An issue URL, owner/repo#12 or ENG-123."
 
-#: src/features/migrations/MigrationsPage.tsx
-msgid "An mbox export of a mailbox"
-msgstr "사서함의 mbox 내보내기"
-
 #: src/features/team/TeamPage.tsx
 msgid "An owner cannot be removed. Change their role first."
 msgstr "소유자는 제거할 수 없습니다. 먼저 역할을 변경하세요."
@@ -2960,7 +2962,7 @@ msgstr "다른 계정"
 msgid "Another address this channel receives mail at. Forward a mailbox here, for example {own} at its provider; forwarding to {own} itself would loop."
 msgstr "이 채널이 메일을 받는 다른 주소입니다. 메일함을 여기로 전달하세요(예: 제공업체에서 {own}(으)로). {own} 자체로 전달하면 순환됩니다."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 msgid "Another canned reply already uses this shortcut."
 msgstr "다른 자주 쓰는 답장이 이미 이 단축키를 사용 중입니다."
 
@@ -3092,7 +3094,7 @@ msgstr "모든 필드"
 msgid "Any label"
 msgstr "모든 레이블"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Any of the labels you pick."
 msgstr "선택한 라벨 중 하나."
 
@@ -3137,15 +3139,11 @@ msgstr "이 키를 사용하는 모든 것이 즉시 작동을 멈춥니다."
 msgid "API"
 msgstr "API"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "API & MCP"
 msgstr "API 및 MCP"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "API channel"
 msgstr "API 채널"
 
@@ -3158,7 +3156,6 @@ msgstr "API 키"
 #: src/app/Palette.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "API keys"
 msgstr "API 키"
@@ -3222,8 +3219,8 @@ msgstr "애플리케이션(클라이언트) ID"
 msgid "Applied"
 msgstr "적용됨"
 
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Applies to"
 msgstr "적용 대상"
 
@@ -3450,7 +3447,7 @@ msgstr "나에게 배정됨"
 
 #: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Assignee"
 msgstr "담당자"
 
@@ -3486,7 +3483,7 @@ msgid "Assistants work in Yuva through MCP, acting as the member who connected t
 msgstr "어시스턴트는 MCP를 통해 Yuva에서 작업하며, 연결한 멤버로서 그 멤버가 승인한 접근 권한만으로 동작합니다."
 
 #: src/components/common/text.ts
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Async"
 msgstr "비동기"
 
@@ -3585,7 +3582,6 @@ msgid "Audience"
 msgstr "대상"
 
 #: src/app/Palette.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Audit log"
 msgstr "감사 로그"
@@ -3618,7 +3614,6 @@ msgstr "자동 배정"
 msgid "Automatic mail never triggers an automatic reply."
 msgstr "자동 메일은 자동 응답을 일으키지 않습니다."
 
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Automation"
 msgstr "자동화"
@@ -3766,7 +3761,7 @@ msgstr "Best regards,"
 msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
 msgstr "1에서 500 사이이며 워크스페이스 전체에서 셉니다. 수동 배정은 무시합니다. 한도가 없으면 비워 두세요."
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Billing"
 msgstr "결제"
@@ -3776,7 +3771,7 @@ msgstr "결제"
 msgid "Billing bot"
 msgstr "결제 봇"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 msgid "Billing events"
 msgstr "결제 이벤트"
 
@@ -3924,17 +3919,13 @@ msgstr "위반"
 msgid "Breached, met late at {at}"
 msgstr "위반, {at}에 늦게 충족"
 
-#: src/features/settings/SettingsFrame.tsx
-msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
-msgstr "Gmail, Yandex 또는 모든 IMAP 서버에서 메일함 기록 가져오기"
-
 #: src/features/broadcasts/Import.tsx
 msgid "Bring subscribers who already agreed elsewhere. Each address is checked first and nothing is added until you start: invalid addresses, domains that take no mail, role addresses, duplicates and anyone who left or objected are left out."
 msgstr "이미 다른 곳에서 동의한 구독자를 가져옵니다. 각 주소는 먼저 확인되며, 시작하기 전에는 아무것도 추가되지 않습니다. 잘못된 주소, 메일을 받지 않는 도메인, 역할 주소, 중복, 탈퇴했거나 거부한 사람은 제외됩니다."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Bring the history of a mailbox you answer from today, then switch its mail over. Yuva only reads the mailbox; nothing there is changed."
-msgstr "지금 답장하고 있는 메일함의 기록을 가져온 다음 메일 수신을 전환하세요. Yuva는 메일함을 읽기만 하며 그곳의 어떤 것도 변경하지 않습니다."
+msgid "Bring the history of a mailbox or help desk you answer from today, then switch its mail over. Yuva only reads the source; nothing there is changed."
+msgstr "지금 답장하는 메일함이나 헬프데스크의 기록을 가져온 뒤 메일을 이곳으로 옮기세요. Yuva는 원본을 읽기만 하며 아무것도 바꾸지 않습니다."
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Bring your old mail"
@@ -3949,7 +3940,6 @@ msgstr "일괄 발송"
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/settings/workspace/BroadcastsSettings.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Broadcast sending"
 msgstr "일괄 발송 전송"
 
@@ -4047,13 +4037,9 @@ msgstr "캠페인 이름"
 #: src/features/docs/FromDocs.tsx
 #: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
-#: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -4136,8 +4122,6 @@ msgstr "취소했습니다. 그전에 추가된 항목은 유지됩니다."
 #: src/app/Palette.tsx
 #: src/features/conversation/composer/CannedMenu.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Canned replies"
 msgstr "자주 쓰는 답장"
 
@@ -4291,10 +4275,6 @@ msgstr "{host}(으)로 가는 웹훅을 변경했습니다"
 msgid "Changelog settings"
 msgstr "변경 내역 설정"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Changes made to {provider}: none"
-msgstr "{provider}에 가한 변경: 없음"
-
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
 msgstr "멤버, 키, 웹훅 및 기타 민감한 설정의 변경 내용이 여기에 표시됩니다."
@@ -4308,14 +4288,14 @@ msgstr "발송 도메인을 바꾸면 새 도메인에서 다시 켤 때까지 D
 #: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
 msgid "Channel"
 msgstr "채널"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Channel added"
 msgstr "채널을 추가했습니다"
 
@@ -4339,14 +4319,8 @@ msgstr "채널을 삭제했습니다"
 msgid "Channel settings"
 msgstr "채널 설정"
 
-#: src/app/places.tsx
-#: src/components/common/SettingsStrip.tsx
-#: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Channels"
 msgstr "채널"
 
@@ -4450,7 +4424,7 @@ msgstr "{when}에 확인됨"
 msgid "Checked and waiting for an owner or admin to start it."
 msgstr "확인되었으며 소유자 또는 관리자가 시작하기를 기다리고 있습니다."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Checked every 5 minutes, once per quiet period. Only open and pending conversations."
 msgstr "5분마다 확인하며, 조용한 기간마다 한 번만 실행합니다. 열려 있거나 대기 중인 대화만 해당합니다."
 
@@ -4649,7 +4623,6 @@ msgstr "{date}에 시계가 바뀝니다. 발송 시간은 현지 시간으로 {
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/Compose.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -4689,7 +4662,7 @@ msgstr "답장 후 각 대화 닫기"
 msgid "Close everything"
 msgstr "모두 종료"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Close idle conversations"
 msgstr "비활성 대화 닫기"
 
@@ -4777,11 +4750,11 @@ msgstr "접기"
 msgid "Collections"
 msgstr "컬렉션"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Color"
 msgstr "색상"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/colors.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Colour"
@@ -4972,7 +4945,6 @@ msgstr "Connect a tracker"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
 msgid "Connect an assistant"
 msgstr "어시스턴트 연결"
 
@@ -5038,12 +5010,10 @@ msgid "Connected {created}"
 msgstr "{created}에 연결됨"
 
 #: src/app/Palette.tsx
-#: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/DeveloperTabs.tsx
+#: src/features/settings/connected-apps/AssistantPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Connected apps"
 msgstr "연결된 앱"
 
@@ -5181,7 +5151,6 @@ msgstr "포함"
 
 #: src/app/places.tsx
 #: src/features/broadcasts/Composer.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Content"
 msgstr "콘텐츠"
 
@@ -5197,7 +5166,7 @@ msgstr "콘텐츠"
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
 #: src/features/setup/email/EmailReceiveStep.tsx
@@ -5256,7 +5225,6 @@ msgstr "대화를 시작했습니다"
 msgid "conversations"
 msgstr "대화"
 
-#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
@@ -5271,6 +5239,7 @@ msgstr "대화"
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Conversations"
 msgstr "대화"
@@ -5341,7 +5310,6 @@ msgstr "참조 주소"
 #: src/components/common/CopyButton.tsx
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/messages/MessageActions.tsx
-#: src/features/migrations/Wizard.tsx
 msgid "Copy"
 msgstr "복사"
 
@@ -5394,6 +5362,10 @@ msgstr "의견 상세 복사"
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Copy the feedback details (Y)"
 msgstr "의견 세부 정보 복사 (Y)"
+
+#: src/features/migrations/Wizard.tsx
+msgid "Copy the history of a mailbox or help desk into Yuva."
+msgstr "메일함이나 헬프데스크의 기록을 Yuva로 복사합니다."
 
 #: src/features/migrations/text.ts
 msgid "Copy the key under “Your API Key”. A Freshdesk key cannot be limited to reading; Yuva's connection only sends read requests."
@@ -5459,7 +5431,6 @@ msgid "Counts when a subscription becomes confirmed, not when it is still waitin
 msgstr "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/DeveloperTabs.tsx
 msgid "Create"
 msgstr "만들기"
 
@@ -5492,7 +5463,7 @@ msgstr "Create an issue"
 msgid "Create an OAuth client in Zendesk"
 msgstr "Zendesk에서 OAuth 클라이언트 만들기"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Create and add a channel"
 msgstr "만들고 채널 추가"
 
@@ -5516,11 +5487,11 @@ msgstr "채널 만들기"
 msgid "Create draft"
 msgstr "초안 만들기"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Create field"
 msgstr "필드 만들기"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Create filter"
 msgstr "필터 만들기"
 
@@ -5554,11 +5525,11 @@ msgstr "키 만들기"
 msgid "Create list"
 msgstr "리스트 만들기"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Create policy"
 msgstr "정책 만들기"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Create rule"
 msgstr "규칙 만들기"
 
@@ -5619,9 +5590,7 @@ msgstr "자동화 규칙 만들기, 변경, 순서 바꾸기, 삭제"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Created"
 msgstr "생성됨"
 
@@ -5690,11 +5659,6 @@ msgstr "사용자 지정"
 msgid "Custom field"
 msgstr "사용자 지정 필드"
 
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "Custom fields"
-msgstr "사용자 지정 필드"
-
 #: src/features/contact/ContactsPage.tsx
 msgid "Customers"
 msgstr "고객"
@@ -5725,7 +5689,6 @@ msgid "Daily limit reached · continues at {time} {city} time"
 msgstr "일일 한도 도달 · {city} 시간 {time}에 재개됩니다"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Danger zone"
 msgstr "위험 영역"
 
@@ -6075,10 +6038,6 @@ msgstr "{name} 팀을 삭제할까요?"
 msgid "Delete the view {name}?"
 msgstr "{name} 보기를 삭제할까요?"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-msgid "Delete this canned reply?"
-msgstr "이 자주 쓰는 답장을 삭제할까요?"
-
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Delete this DKIM key?"
 msgstr "이 DKIM 키를 삭제할까요?"
@@ -6102,6 +6061,10 @@ msgstr "이 메모 삭제"
 #: src/features/contact/ContactNotes.tsx
 msgid "Delete this note?"
 msgstr "이 메모를 삭제할까요?"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "Delete this saved reply?"
+msgstr "이 저장된 답장을 삭제할까요?"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete this subscription?"
@@ -6302,7 +6265,6 @@ msgstr "브라우저 설정에서 이 사이트의 데스크톱 알림이 차단
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
@@ -6310,8 +6272,11 @@ msgstr "브라우저 설정에서 이 사이트의 데스크톱 알림이 차단
 msgid "Details"
 msgstr "상세"
 
-#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsFrame.tsx
+msgid "Developer"
+msgstr "개발자"
+
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Developers"
 msgstr "개발자"
 
@@ -6519,7 +6484,7 @@ msgstr "문서는 내 사이트에서 관리하고 직접 호스팅하는 페이
 msgid "Documentation pages"
 msgstr "문서 페이지"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Documentation site"
 msgstr "문서 사이트"
@@ -6555,7 +6520,6 @@ msgstr "완료"
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/fields/BulkFailures.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -6738,7 +6702,7 @@ msgstr "중복"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/notifications/EventsSection.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -6816,7 +6780,7 @@ msgstr "이메일로 받은 코드"
 msgid "E-mails to the people who signed up"
 msgstr "가입한 사람들에게 보내는 이메일"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
 msgstr "각 작업은 한 번씩, 최대 10개입니다. 작업은 하나의 변경으로 실행되며, 하나라도 실패하면 아무것도 적용되지 않습니다."
 
@@ -6919,10 +6883,6 @@ msgstr "{name} 편집"
 msgid "Edit API key"
 msgstr "API 키 편집"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-msgid "Edit canned reply"
-msgstr "자주 쓰는 답장 편집"
-
 #: src/features/status/ComponentForms.tsx
 msgid "Edit component"
 msgstr "구성 요소 편집"
@@ -6940,11 +6900,11 @@ msgstr "세부 정보 편집"
 msgid "Edit details ({editKey})"
 msgstr "세부 정보 편집({editKey})"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Edit field"
 msgstr "필드 편집"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Edit filter"
 msgstr "필터 편집"
 
@@ -6952,11 +6912,11 @@ msgstr "필터 편집"
 msgid "Edit help center collections and article drafts"
 msgstr "도움말 센터 컬렉션과 문서 초안 편집"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Edit label"
 msgstr "레이블 편집"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Edit macro"
 msgstr "매크로 편집"
 
@@ -6964,13 +6924,17 @@ msgstr "매크로 편집"
 msgid "Edit monitor"
 msgstr "모니터 편집"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Edit policy"
 msgstr "정책 편집"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Edit rule"
 msgstr "규칙 편집"
+
+#: src/features/settings/canned/CannedReplyForm.tsx
+msgid "Edit saved reply"
+msgstr "저장된 답장 편집"
 
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Edit team"
@@ -7036,11 +7000,6 @@ msgstr "{editingWhen}에 예약된 메시지 편집 중"
 msgid "Elevated API errors"
 msgstr "API 오류 증가"
 
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "Elsewhere in settings"
-msgstr "설정의 다른 항목"
-
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Embed snippet"
 msgstr "삽입 스니펫"
@@ -7070,8 +7029,8 @@ msgstr "비워 두면 {baseLanguage} 제목을 사용합니다. 병합 필드도
 msgid "Emptying the Trash: {0} are being deleted"
 msgstr "휴지통을 비우는 중: {0}개 삭제 중"
 
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Enabled"
 msgstr "사용"
 
@@ -7243,7 +7202,7 @@ msgid "Every imported conversation is closed."
 msgstr "가져온 모든 대화가 종료되었습니다."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Every inbox"
 msgstr "모든 받은 편지함"
 
@@ -7319,7 +7278,7 @@ msgstr "모든 웹사이트와 앱의 방문자가 홈과 분석에 표시됩니
 
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Everyone"
 msgstr "모든 사람"
 
@@ -7469,7 +7428,6 @@ msgstr "Extra scopes"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/migrations/ConnectStep.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7584,6 +7542,7 @@ msgstr "열린 대화가 가장 적은 사람"
 
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Fields"
 msgstr "필드"
 
@@ -7602,10 +7561,6 @@ msgstr "파일"
 #: src/features/broadcasts/Import.tsx
 msgid "File and consent"
 msgstr "파일과 동의"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Files"
-msgstr "파일"
 
 #: src/features/fields/RequiredFieldsHost.tsx
 msgid "Fill in before closing"
@@ -7739,6 +7694,7 @@ msgstr "확인 없이 마치기"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/migrations/MigrationsPage.tsx
 msgid "Finished"
 msgstr "완료됨"
 
@@ -7766,7 +7722,7 @@ msgstr "첫 답장"
 #: src/features/home/HomeWork.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "First reply"
 msgstr "첫 답장"
 
@@ -7882,7 +7838,7 @@ msgid "For example Acme"
 msgstr "예: Acme"
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/setup/NameStep.tsx
 msgid "For example Fieldnote"
 msgstr "예: Fieldnote"
@@ -8071,15 +8027,15 @@ msgstr "보낸 주소(선택)"
 msgid "From blocked contacts"
 msgstr "차단된 연락처에서"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From each later contact message to the reply."
 msgstr "연락처의 이후 메시지마다 답변까지."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From the contact's first message to the first public reply."
 msgstr "연락처의 첫 메시지부터 첫 공개 답변까지."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "From the start of the conversation to its first close."
 msgstr "대화 시작부터 첫 종료까지."
 
@@ -8144,9 +8100,7 @@ msgstr "{person} 님에게 {inbox} 접근 권한을 부여했습니다"
 msgid "Gave the team {team} access to {inbox}"
 msgstr "{team} 팀에 {inbox} 접근 권한을 부여함"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/channels/sections.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "General"
@@ -8213,10 +8167,6 @@ msgstr "Gmail은 스팸이 아닌 새 메일만 전달합니다. Workspace 관�
 #: src/features/migrations/ConnectStep.tsx
 msgid "Gmail lets other apps read about 1.5 GB a day over IMAP, so a mailbox of many gigabytes takes days. Google Takeout exports it as one file that uploads as fast as your connection allows. Import that first, then come back here with an app password for the newer mail and the switch."
 msgstr "Gmail은 다른 앱이 IMAP으로 하루에 약 1.5GB만 읽도록 허용하므로, 수 GB 메일함은 며칠이 걸립니다. Google Takeout은 메일함을 하나의 파일로 내보내며, 연결 속도가 허용하는 한 빠르게 업로드됩니다. 먼저 그것을 가져온 다음, 최신 메일과 전환을 위해 앱 비밀번호로 여기로 돌아오세요."
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Gmail, Outlook, Yandex, any IMAP server"
-msgstr "Gmail, Outlook, Yandex, 모든 IMAP 서버"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "go back to operational when you post this"
@@ -8316,10 +8266,6 @@ msgstr "Groups attribute"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
 msgstr "Groups claim"
-
-#: src/features/settings/SettingsFrame.tsx
-msgid "Groups of members and the inboxes they cover"
-msgstr "멤버 그룹과 담당하는 받은 편지함"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -8436,10 +8382,6 @@ msgstr "도움말 센터"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Help center settings"
 msgstr "도움말 센터 설정"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Help desks"
-msgstr "헬프데스크"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Help report"
@@ -8580,7 +8522,7 @@ msgid "Hostname and certificate"
 msgstr "호스트 이름 및 인증서"
 
 #: src/features/broadcasts/Trigger.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "hours"
 msgstr "시간"
 
@@ -8605,7 +8547,7 @@ msgstr "구독자는 어떻게 동의했나요?"
 msgid "How do people sign up?"
 msgstr "사람들은 어떻게 가입하나요?"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "How do you answer?"
 msgstr "어떻게 답장하나요?"
 
@@ -8629,7 +8571,6 @@ msgstr "비트가 늦어도 되는 시간입니다."
 msgid "How mail reaches Yuva"
 msgstr "메일이 Yuva에 도착하는 방식"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "How messages arrive: chat, e-mail, apps"
 msgstr "메시지가 도착하는 방식: 채팅, 이메일, 앱"
@@ -8641,10 +8582,6 @@ msgstr "메시지가 각 제품에 도달하는 방식"
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "How should replies go out?"
 msgstr "답장은 어떻게 보낼까요?"
-
-#: src/components/common/SettingsStrip.tsx
-msgid "How software connects: keys, hooks, assistants"
-msgstr "소프트웨어가 연결되는 방식: 키, 웹훅, 어시스턴트"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "How the chat opens"
@@ -8728,7 +8665,7 @@ msgstr "{idle}분간 비활성"
 msgid "If {provider} mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "{provider}이(가) 그 주소로 확인 메일을 보내면 이 받은 편지함에 대화로 도착합니다. 거기서 여세요."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "If all of these match"
 msgstr "다음이 모두 일치하면"
 
@@ -8821,11 +8758,11 @@ msgid "Import people"
 msgstr "사람 가져오기"
 
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Import steps"
 msgstr "가져오기 단계"
 
 #: src/components/common/ImportedChip.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 msgid "Imported"
 msgstr "가져옴"
@@ -8856,6 +8793,8 @@ msgstr "가져오는 중…"
 
 #: src/app/nav.tsx
 #: src/app/places.tsx
+#: src/features/migrations/Wizard.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Imports"
 msgstr "가져오기 목록"
 
@@ -9018,7 +8957,7 @@ msgstr "Zoho Mail에서 설정 › 메일 계정 › IMAP 접근을 열고 IMAP�
 #: src/features/docs/InstallDialog.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "받은 편지함"
@@ -9051,10 +8990,15 @@ msgstr "{name}의 받은 편지함"
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Inboxes"
 msgstr "받은 편지함"
+
+#: src/features/settings/ProductsPage.tsx
+#: src/features/settings/SettingsFrame.tsx
+msgid "Inboxes and channels"
+msgstr "받은편지함 및 채널"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Inboxes cut off subjects longer than 80 characters."
@@ -9477,7 +9421,7 @@ msgstr "이 파일에서 가져오는 모든 구독에 동의 기록으로 함�
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Key"
 msgstr "키"
 
@@ -9517,12 +9461,6 @@ msgstr "키 및 연결된 앱"
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
 msgstr "이 제품에 접근할 수 있는 키입니다. API 및 MCP에서 만들고 폐기할 수 있습니다."
 
-#: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
-#: src/features/settings/webhooks/WebhooksPage.tsx
-msgid "Keys, webhooks and connected assistants"
-msgstr "키, 웹훅, 연결된 어시스턴트"
-
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Keyword"
 msgstr "키워드"
@@ -9558,10 +9496,9 @@ msgstr "레이블만: 메일은 전체 메일에서 가져오고 대화에 레�
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Labels"
 msgstr "레이블"
 
@@ -9762,7 +9699,7 @@ msgstr "런처 색상"
 msgid "Launcher position"
 msgstr "런처 위치"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Leave as is"
 msgstr "그대로 두기"
 
@@ -10075,7 +10012,7 @@ msgid "Live"
 msgstr "실시간"
 
 #: src/components/common/Source.tsx
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "Live chat"
 msgstr "실시간 채팅"
 
@@ -10197,8 +10134,8 @@ msgstr "낮음"
 msgid "Lowercase letters, digits and dashes, not at the start or end."
 msgstr "영문 소문자, 숫자, 하이픈. 처음이나 끝에는 쓸 수 없습니다."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Lowercase letters, digits and dashes."
 msgstr "영문 소문자, 숫자, 하이픈."
 
@@ -10213,7 +10150,6 @@ msgid "Macro"
 msgstr "매크로"
 
 #: src/app/Palette.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Macros"
 msgstr "매크로"
@@ -10345,7 +10281,6 @@ msgstr "메일함 주소"
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
-#: src/features/migrations/MigrationsPage.tsx
 msgid "Mailboxes"
 msgstr "메일함"
 
@@ -10452,10 +10387,6 @@ msgstr "웹훅 관리"
 #: src/features/settings/webhooks/parts.tsx
 msgid "manual"
 msgstr "수동"
-
-#: src/features/migrations/Wizard.tsx
-msgid "Map"
-msgstr "매핑"
 
 #: src/app/Header.tsx
 #: src/features/account/AccountPage.tsx
@@ -10636,7 +10567,6 @@ msgstr "멤버"
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/teams/TeamsPage.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "멤버"
@@ -10827,10 +10757,6 @@ msgstr "Microsoft의 토큰이 IMAP으로 메일을 읽는 것 이상의 권한�
 msgid "Migration cancelled"
 msgstr "이전을 취소했습니다"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Migration steps"
-msgstr "이전 단계"
-
 #: src/features/inbox/ChatList.tsx
 msgid "Mine"
 msgstr "내 것"
@@ -10841,7 +10767,7 @@ msgstr "작음"
 
 #: src/features/broadcasts/Trigger.tsx
 #: src/features/settings/automation/ActionRow.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "minutes"
 msgstr "분"
 
@@ -10849,7 +10775,7 @@ msgstr "분"
 msgid "Minutes"
 msgstr "분"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Minutes before a due time. 0 sends no warning."
 msgstr "기한 몇 분 전에 알릴지 정합니다. 0이면 경고를 보내지 않습니다."
 
@@ -10858,7 +10784,7 @@ msgid "Missed beat"
 msgstr "누락된 비트"
 
 #: src/components/common/text.ts
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/app/AppFields.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Mobile app"
@@ -11158,12 +11084,6 @@ msgstr "휴지통으로 이동 ({0})"
 msgid "Move to the Trash (#)"
 msgstr "휴지통으로 이동 (#)"
 
-#: src/features/migrations/Wizard.tsx
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "Move to Yuva"
-msgstr "Yuva로 옮기기"
-
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11202,8 +11122,8 @@ msgid "Moves the mail to the Trash. Runs after the other actions."
 msgstr "메일을 휴지통으로 옮깁니다. 다른 동작 뒤에 실행됩니다."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
-msgstr "Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX 또는 모든 IMAP 서버에서 옮겨 오시나요? Yuva는 팀이 계속 일하는 동안 메일함의 기록을 최신순으로 조용히 받은 편지함에 복사합니다. 그다음 메일함을 여기로 전달하면 그 사이에 아무것도 유실되지 않습니다."
+msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX, any IMAP server or another help desk? Yuva copies the history into an inbox, newest first, while your team keeps working."
+msgstr "Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX, IMAP 서버 또는 다른 헬프데스크에서 옮겨 오시나요? 팀이 계속 일하는 동안 Yuva가 최신 기록부터 받은편지함으로 복사합니다."
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Moving the idea to Planned, In progress or Shipped sets this for linked feedback that has no progress yet."
@@ -11247,20 +11167,19 @@ msgstr "내 보기"
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
-#: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -11300,6 +11219,10 @@ msgstr "이름을 Yuva로 짓습니다. <0>연결</0>에서 <1>공개 엔드포�
 #: src/features/migrations/MapStep.tsx
 msgid "Name of the new inbox"
 msgstr "새 받은 편지함 이름"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Name, closed conversations and broadcast sending"
+msgstr "이름, 종료된 대화, 대량 발송"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Name, colour and the first thing the chat says"
@@ -11411,11 +11334,6 @@ msgstr "새 문서"
 msgid "New broadcast"
 msgstr "새 일괄 발송"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
-msgid "New canned reply"
-msgstr "새 자주 쓰는 답장"
-
 #: src/components/common/ShortcutSheet.tsx
 msgid "New collection"
 msgstr "새 컬렉션"
@@ -11484,12 +11402,13 @@ msgstr "새 토론"
 msgid "New entry"
 msgstr "새 항목"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 msgid "New field"
 msgstr "새 필드"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/mail/FilterDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New filter"
 msgstr "새 필터"
@@ -11508,6 +11427,8 @@ msgid "New identity secret"
 msgstr "새 ID 시크릿"
 
 #: src/app/places.tsx
+#: src/features/migrations/MigrationsPage.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "New import"
 msgstr "새 가져오기"
 
@@ -11532,7 +11453,7 @@ msgstr "새 인시던트"
 msgid "New incident ({incidentKey})"
 msgstr "새 인시던트({incidentKey})"
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "New label"
 msgstr "새 레이블"
@@ -11546,7 +11467,7 @@ msgstr "새 레이블 \"{folder}\""
 msgid "New list"
 msgstr "새 리스트"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "New macro"
 msgstr "새 매크로"
@@ -11577,10 +11498,6 @@ msgstr "나에게 배정된 대화의 새 메시지"
 msgid "New message in an unassigned conversation"
 msgstr "배정되지 않은 대화의 새 메시지"
 
-#: src/features/migrations/MigrationsPage.tsx
-msgid "New migration"
-msgstr "새 이전"
-
 #: src/features/status/MonitorsPage.tsx
 msgid "new monitor"
 msgstr "새 모니터"
@@ -11601,7 +11518,7 @@ msgstr "{boxName}의 새 소유자"
 msgid "New password"
 msgstr "새 비밀번호"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "New policy"
 msgstr "새 정책"
@@ -11610,10 +11527,15 @@ msgstr "새 정책"
 msgid "New reply in <0>{title}</0>"
 msgstr "<0>{title}</0>에 새 답글"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "새 규칙"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+msgid "New saved reply"
+msgstr "새 저장된 답장"
 
 #: src/features/settings/webhooks/sections.tsx
 msgid "New signing secret"
@@ -11720,7 +11642,7 @@ msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "다음 메일은 {local}({utc} UTC)에 이 일괄 발송의 속도로 나갑니다."
 
 #: src/features/conversation/SlaPopover.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Next reply"
 msgstr "다음 답변"
 
@@ -11731,10 +11653,6 @@ msgstr "다음 답변 {next}"
 #: src/features/feedback/Lightbox.tsx
 msgid "Next screenshot"
 msgstr "다음 스크린샷"
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Next you pick the source and connect it. Nothing is copied until you start."
-msgstr "다음으로 소스를 선택하고 연결합니다. 시작하기 전에는 아무것도 복사되지 않습니다."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Next, choose what to bring. The scan reads the file once."
@@ -11825,10 +11743,6 @@ msgstr "아직 발송된 항목이 없습니다."
 msgid "No broadcasts yet"
 msgstr "아직 일괄 발송이 없습니다"
 
-#: src/features/settings/canned/CannedRepliesPage.tsx
-msgid "No canned replies yet"
-msgstr "아직 자주 쓰는 답장이 없습니다"
-
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "No canned replies yet. Add them in settings."
 msgstr "아직 자주 쓰는 답장이 없습니다. 설정에서 추가하세요."
@@ -11879,7 +11793,7 @@ msgstr "아직 구성 요소가 없습니다. 고객이 의존하는 제품의 �
 msgid "No components yet. Add the parts of your product that customers depend on."
 msgstr "아직 구성 요소가 없습니다. 고객이 의존하는 제품의 부분을 추가하세요."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "No conditions: the rule runs for every conversation the trigger fits."
 msgstr "조건 없음: 트리거에 해당하는 모든 대화에서 규칙이 실행됩니다."
 
@@ -12060,6 +11974,10 @@ msgstr "아직 ID가 없습니다. 앱이나 위젯이 이 사람을 식별하�
 #: src/features/status/text.tsx
 msgid "No impact"
 msgstr "영향 없음"
+
+#: src/features/migrations/MigrationsPage.tsx
+msgid "No imports match this filter."
+msgstr "이 필터와 일치하는 가져오기가 없습니다."
 
 #: src/features/broadcasts/Import.tsx
 msgid "No imports yet."
@@ -12244,6 +12162,10 @@ msgstr "아직 규칙이 없습니다."
 #: src/features/settings/automation/RunLog.tsx
 msgid "No runs in the last 30 days."
 msgstr "최근 30일간 실행 기록이 없습니다."
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "No saved replies yet"
+msgstr "아직 저장된 답장이 없습니다"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "No secret yet. Make one, then paste it into GitHub."
@@ -12667,7 +12589,7 @@ msgstr "다른 사람"
 msgid "Not there after a minute? Look in your spam or junk folder, or send a new code below."
 msgstr "1분이 지나도 오지 않나요? 스팸 또는 정크 폴더를 확인하거나 아래에서 새 코드를 보내세요."
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Not tracked"
 msgstr "추적 안 함"
 
@@ -13034,11 +12956,6 @@ msgstr "Team 및 Enterprise 요금제에서는 소유자가 <0>조직 설정 ›
 msgid "On the web"
 msgstr "웹에서"
 
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "On this page"
-msgstr "이 페이지"
-
 #: src/components/common/SlaBadge.tsx
 msgid "On track"
 msgstr "순조로움"
@@ -13056,7 +12973,7 @@ msgstr "테스트 메시지가 도착하면 Yuva는 {hours}시간 기다립니�
 msgid "One e-mail a month about what is new."
 msgstr "새 소식을 한 달에 한 번 이메일로 보내 드립니다."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "받은 편지함 하나"
@@ -13073,7 +12990,7 @@ msgstr "One mail to each person, a set time after they sign in"
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "한 줄에 하나씩, 1~20개. 이 오리진의 페이지만 위젯을 사용할 수 있습니다."
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "One per line, all different, at most 100."
 msgstr "한 줄에 하나씩, 모두 달라야 하며 최대 100개입니다."
 
@@ -13200,7 +13117,7 @@ msgid "Only mail since {date}"
 msgstr "{date} 이후 메일만"
 
 #: src/features/inbox/views/ViewDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Only me"
 msgstr "나만"
 
@@ -13702,7 +13619,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "선택 사항. 응답의 처음 64 KiB에 포함되어야 하며 대소문자를 구분합니다."
 
 #: src/features/broadcasts/Composer.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Options"
 msgstr "옵션"
 
@@ -13742,7 +13659,7 @@ msgstr "또는 내보내기 파일 업로드"
 msgid "Order and view"
 msgstr "순서 및 보기"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Order number"
 msgstr "주문 번호"
 
@@ -13839,7 +13756,6 @@ msgid "Own tenant"
 msgstr "전용 테넌트"
 
 #: src/components/common/text.ts
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Owner"
 msgstr "소유자"
 
@@ -14241,7 +14157,7 @@ msgstr "저장된 답장 선택"
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "제품의 채팅 채널을 고르고 코드를 붙여 넣으세요. 평가와 질문은 해당 받은 편지함으로 들어옵니다."
 
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 msgid "Pick a color"
 msgstr "색상 선택"
 
@@ -14345,7 +14261,7 @@ msgid "Pick an endpoint"
 msgstr "엔드포인트 선택"
 
 #: src/features/migrations/MapStep.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Pick an inbox"
 msgstr "받은 편지함 선택"
 
@@ -14436,7 +14352,7 @@ msgstr "다른 연락처를 선택하세요. 이 연락처에 병합된 뒤 삭�
 msgid "Pick the platforms; the next step shows the lines to add to each app."
 msgstr "플랫폼을 선택하세요. 다음 단계에서 각 앱에 추가할 코드가 표시됩니다."
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 msgid "Pick the product and how customers reach it. The next steps set it up."
 msgstr "제품과 고객이 그곳에 도달하는 방법을 선택하세요. 다음 단계에서 설정합니다."
 
@@ -14607,7 +14523,7 @@ msgstr "준비 중"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
 #: src/features/status/PreviewDialog.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Preview"
@@ -14671,12 +14587,12 @@ msgstr "이전 스크린샷"
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Priority"
 msgstr "우선순위"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Priority customers"
 msgstr "우선 고객"
 
@@ -14707,19 +14623,17 @@ msgstr "pro, team"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageForm.tsx
 #: src/features/status/IncidentForm.tsx
 msgid "Product"
 msgstr "제품"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/setup/NameStep.tsx
 msgid "Product name"
 msgstr "제품 이름"
@@ -14729,7 +14643,6 @@ msgstr "제품 이름"
 msgid "Product news"
 msgstr "제품 소식"
 
-#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Product settings"
@@ -14744,7 +14657,6 @@ msgstr "프로덕션"
 msgid "Production backend"
 msgstr "프로덕션 백엔드"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomeSide.tsx
@@ -14755,7 +14667,6 @@ msgstr "프로덕션 백엔드"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Products"
 msgstr "제품"
@@ -14992,7 +14903,7 @@ msgstr "대기열에 추가했습니다. 새 시도가 곧 아래에 표시됩�
 msgid "Quick cleanup"
 msgstr "빠른 정리"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Quiet for (minutes)"
 msgstr "조용한 시간(분)"
 
@@ -15165,11 +15076,6 @@ msgstr "팀 주소를 제안하기 위해 읽습니다. 메일은 전체 메일�
 msgid "Read What's new changelogs and their entries"
 msgstr "'새 소식' 변경 내역과 항목 읽기"
 
-#: src/features/migrations/MigrationsPage.tsx
-#: src/features/migrations/Wizard.tsx
-msgid "Read-only"
-msgstr "읽기 전용"
-
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/account/ConnectPage.tsx
 msgid "Reader"
@@ -15327,11 +15233,11 @@ msgstr "참조"
 msgid "Refresh"
 msgstr "새로 고침"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Refund"
 msgstr "환불"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Refund approved"
 msgstr "환불 승인"
 
@@ -15379,7 +15285,7 @@ msgstr "원격 이미지는 보낸 사람에게 메일을 열었음을 알릴 �
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -15601,7 +15507,7 @@ msgstr "대화에서 메모를 삭제했습니다"
 msgid "Removed by {who}"
 msgstr "{who}님이 삭제함"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "삭제한 옵션은 그 옵션을 가진 모든 대화에서 지워집니다. 백그라운드에서 실행됩니다."
 
@@ -15854,6 +15760,10 @@ msgstr "답장 내용"
 msgid "Reply time"
 msgstr "답장 시간"
 
+#: src/features/settings/SettingsFrame.tsx
+msgid "Reply times"
+msgstr "응답 시간"
+
 #: src/features/conversation/BroadcastLine.tsx
 msgid "Reply to {name}"
 msgstr "{name}님에게 답장"
@@ -15960,7 +15870,7 @@ msgstr "평판 영향"
 msgid "Require single sign-on"
 msgstr "Require single sign-on"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 msgid "Required to close"
 msgstr "닫을 때 필수"
@@ -15982,7 +15892,7 @@ msgid "Reset to defaults"
 msgstr "기본값으로 재설정"
 
 #: src/features/conversation/SlaPopover.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Resolution"
 msgstr "해결"
 
@@ -16122,7 +16032,6 @@ msgstr "돌아갈 곳"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Import.tsx
-#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Review"
 msgstr "검토"
@@ -16203,7 +16112,6 @@ msgstr "구독 직후 구독 취소 링크가 포함된 확인용 짧은 메일�
 msgid "Roadmap"
 msgstr "로드맵"
 
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Role"
 msgstr "역할"
@@ -16294,7 +16202,6 @@ msgstr "규칙 {rule}이(가) 실행되었으며 바꿀 것이 없었습니다"
 msgid "Rule {rule} ran: {done}"
 msgstr "규칙 {rule}이(가) 실행되었습니다: {done}"
 
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Rules"
 msgstr "규칙"
@@ -16365,16 +16272,16 @@ msgstr "토요일"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
-#: src/features/settings/automation/RuleDialog.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/channels/ApiChannelDialog.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
+#: src/features/settings/fields/FieldForm.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
-#: src/features/settings/labels/LabelDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/labels/LabelForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/signature/SignaturePage.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/ui.tsx
@@ -16461,6 +16368,10 @@ msgstr "목록을 보기로 저장"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "저장됨"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Saved replies"
+msgstr "저장된 답장"
 
 #: src/app/ViewsGroup.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
@@ -17536,13 +17447,12 @@ msgstr "설정하는 중…"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsFrame.tsx
-#: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "설정"
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "Settings (JSON)"
 msgstr "설정(JSON)"
@@ -17585,8 +17495,8 @@ msgstr "팀과 공유"
 msgid "Shipped"
 msgstr "출시됨"
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Shortcut"
 msgstr "단축키"
 
@@ -17597,6 +17507,7 @@ msgstr "단축키"
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -18029,7 +17940,6 @@ msgstr "단일 옵트인"
 
 #: src/app/Palette.tsx
 #: src/features/settings/profile/Sessions.tsx
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
 msgstr "Single sign-on"
@@ -18131,11 +18041,6 @@ msgstr "SLA 충족"
 msgid "SLA met / breached"
 msgstr "SLA 충족 / 위반"
 
-#: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "SLA policies"
-msgstr "SLA 정책"
-
 #: src/features/conversation/SlaPopover.tsx
 msgid "SLA targets (W)"
 msgstr "SLA 목표 (W)"
@@ -18223,7 +18128,7 @@ msgstr "다시 알림 (B)"
 msgid "Snooze (S)"
 msgstr "다시 알림(S)"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Snooze for (minutes)"
 msgstr "일시 중지 시간(분)"
 
@@ -18411,6 +18316,10 @@ msgstr "SPF, DKIM 또는 DMARC 확인 필요"
 msgid "Split by"
 msgstr "나누기"
 
+#: src/features/settings/SettingsFrame.tsx
+msgid "SSO"
+msgstr "SSO"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
 msgstr "단계"
@@ -18468,7 +18377,7 @@ msgstr "내가 별표를 단"
 msgid "Stars the mail for you."
 msgstr "나를 위해 메일에 별표를 답니다."
 
-#: src/features/migrations/MigrationsPage.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Start"
 msgstr "시작"
 
@@ -18487,6 +18396,10 @@ msgstr "토론 시작"
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Start a mailing list"
 msgstr "메일링 리스트 시작"
+
+#: src/features/migrations/MigrationsPage.tsx
+msgid "Start an import"
+msgstr "가져오기 시작"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "Start conversation"
@@ -18570,7 +18483,6 @@ msgstr "Starts when a change to the person’s attributes makes them match, and 
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS(포트 587)"
 
-#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
@@ -18612,7 +18524,7 @@ msgstr "다운 시 상태"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
 #: src/features/team/TeamPage.tsx
@@ -18874,10 +18786,6 @@ msgstr "정지됨"
 msgid "Suspended broadcasts"
 msgstr "일괄 발송을 중단했습니다"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Switch"
-msgstr "전환"
-
 #: src/features/migrations/SwitchStep.tsx
 msgid "Switch your mail to Yuva"
 msgstr "메일을 Yuva로 전환"
@@ -18934,11 +18842,11 @@ msgstr "다시 가입을 받고 목록을 발송 대상 선택에 되돌립니�
 msgid "Taking the recipients: {prepared} so far"
 msgstr "수신자를 확정하는 중: 지금까지 {prepared}명"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Targets"
 msgstr "목표"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Targets count in the business hours of the conversation's inbox, in its time zone. Leave one empty to not track it; at least one is required."
 msgstr "목표는 대화의 받은편지함 업무 시간과 시간대로 계산됩니다. 추적하지 않을 목표는 비워 두세요. 최소 하나는 필요합니다."
 
@@ -19031,7 +18939,6 @@ msgstr "teammate@company.com"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/features/conversation/HeaderActions.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -19075,9 +18982,9 @@ msgstr "테스트는 워크스페이스 멤버에게만, 한 번에 최대 5명�
 
 #: src/features/fields/value.ts
 #: src/features/settings/automation/ConditionRow.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Text"
 msgstr "텍스트"
 
@@ -19089,7 +18996,7 @@ msgstr "텍스트를 마지막으로 저장한 사람: {who}"
 msgid "Thanks for waiting. Your invoice is on its way."
 msgstr "기다려 주셔서 감사합니다. 청구서가 곧 도착합니다."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 msgid "Thanks for writing"
 msgstr "문의해 주셔서 감사합니다"
 
@@ -19214,12 +19121,12 @@ msgstr "스니펫을 넣은 모든 페이지의 모서리에 채팅이 표시됩
 msgid "The chat bubble appears on these addresses:"
 msgstr "채팅 말풍선이 다음 주소에 표시됩니다:"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "The chat shows when you usually reply"
 msgstr "채팅에 보통 답장하는 시간 표시"
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "The chat shows who is available and typing"
 msgstr "채팅에 응대 가능한 사람과 입력 중인 사람 표시"
@@ -19601,11 +19508,11 @@ msgstr "이 키는 해당 받은편지함만 볼 수 있으며 받은편지함, 
 msgid "The key stops working at the end of this day."
 msgstr "키는 이날이 끝나면 작동을 멈춥니다."
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "The key, the object and the type cannot change after creation."
 msgstr "키, 객체, 유형은 만든 뒤에 바꿀 수 없습니다."
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 msgid "The kind cannot be changed later."
 msgstr "종류는 나중에 변경할 수 없습니다."
 
@@ -19738,7 +19645,7 @@ msgstr "이전은 중단된 곳에서 이어집니다."
 msgid "The migration moved on in the meantime. Look at its state and try again."
 msgstr "그 사이 이전이 진행되었습니다. 상태를 확인하고 다시 시도하세요."
 
-#: src/features/settings/AddProductDialog.tsx
+#: src/features/settings/AddProductForm.tsx
 msgid "The next step adds its first channel: website chat, e-mail or a mobile app."
 msgstr "다음 단계에서 첫 채널을 추가합니다. 웹 채팅, 이메일 또는 모바일 앱입니다."
 
@@ -20203,10 +20110,6 @@ msgstr "웹훅 엔드포인트가 꺼져 있거나 여기서는 사용할 수 �
 msgid "The What’s new count shows on the chat button while no messages are unread. The widget’s Home always shows it."
 msgstr "읽지 않은 메시지가 없는 동안 채팅 버튼에 새 소식 수가 표시됩니다. 위젯 홈에는 항상 표시됩니다."
 
-#: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
-msgstr "워크스페이스 자체: 이름, 보관 기간, 라벨, 저장된 답변, 이전, 감사 로그"
-
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
 msgstr "워크스페이스가 현재 일괄 발송을 보낼 수 없습니다."
@@ -20214,11 +20117,6 @@ msgstr "워크스페이스가 현재 일괄 발송을 보낼 수 없습니다."
 #: src/features/status/Notices.tsx
 msgid "The workspace may not send bulk mail now"
 msgstr "현재 워크스페이스에서는 대량 메일을 발송할 수 없습니다"
-
-#: src/components/common/SettingsStrip.tsx
-#: src/features/settings/SettingsFrame.tsx
-msgid "The workspace: labels, replies, data"
-msgstr "워크스페이스: 레이블, 답장, 데이터"
 
 #: src/components/common/text.ts
 msgid "The zip cannot be read; it may be damaged or cut off. Make it again and upload it."
@@ -20272,7 +20170,7 @@ msgstr "테마"
 msgid "Theme and e-mail view on this device"
 msgstr "이 기기의 테마와 이메일 보기"
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Then"
 msgstr "실행할 작업"
 
@@ -20614,7 +20512,7 @@ msgstr "CSV 파일이 아닙니다. 스프레드시트를 CSV로 저장해 업�
 msgid "This is not a domain this page can use. Use a name like {example} that is not one of this server’s own addresses."
 msgstr "이 페이지는 이 도메인을 사용할 수 없습니다. 이 서버 자체 주소가 아닌 {example} 같은 이름을 사용하세요."
 
-#: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/channels/ApiChannelForm.tsx
 #: src/features/settings/channels/sections.tsx
 msgid "This is not a JSON object."
 msgstr "JSON 객체가 아닙니다."
@@ -20751,7 +20649,7 @@ msgstr "이 속성에는 같은 이름의 세그먼트가 이미 있습니다."
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "소유자나 관리자가 이 규칙과 저장된 답장 {title}을(를) 모두 저장하거나 API 키 설정에서 봇의 발송이 허용될 때까지 이 답장은 전송되지 않습니다."
 
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "소유자나 관리자가 저장된 답장 {title}을(를) 저장하거나 API 키 설정에서 봇의 발송이 허용될 때까지 이 답장은 전송되지 않습니다."
@@ -20966,7 +20864,7 @@ msgstr "제한 시간"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/issues/IssueDialog.tsx
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/status/IncidentForm.tsx
 msgid "Title"
 msgstr "제목"
@@ -21097,7 +20995,7 @@ msgstr "추세"
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "Trigger"
 msgstr "트리거"
 
@@ -21221,8 +21119,7 @@ msgid "TXT record"
 msgstr "TXT 레코드"
 
 #: src/features/inbox/SourceFilter.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Type"
 msgstr "유형"
 
@@ -21271,7 +21168,7 @@ msgstr "배정 해제"
 #: src/features/home/HomeWork.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Unassigned"
 msgstr "배정 안 됨"
 
@@ -21345,7 +21242,7 @@ msgid "Unfollowed"
 msgstr "팔로우를 취소했습니다"
 
 #: src/features/broadcasts/Trigger.tsx
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Unit"
 msgstr "단위"
 
@@ -21758,9 +21655,9 @@ msgstr "이 서버에 대한 베어러 토큰으로 사용하세요."
 msgid "Use letters, digits, - and _, at most 64."
 msgstr "영문자, 숫자, - 및 _를 쓰며 최대 64자입니다."
 
-#: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/canned/CannedReplyForm.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Use lowercase letters, digits and single dashes."
 msgstr "소문자, 숫자, 하이픈 하나만 사용하세요."
 
@@ -21914,10 +21811,6 @@ msgstr "Verify"
 #: src/features/settings/webhooks/SignatureHint.tsx
 msgid "Verify every request before trusting it: the <0>webhook-signature</0> header follows the <1>Standard Webhooks</1> specification, so any of its libraries can check it with the endpoint's secret. Go backends can use the <2>sdk/go/webhook</2> package of the Yuva repository."
 msgstr "신뢰하기 전에 모든 요청을 검증하세요. <0>webhook-signature</0> 헤더는 <1>Standard Webhooks</1> 사양을 따르므로 그 라이브러리 중 무엇이든 엔드포인트의 시크릿으로 검증할 수 있습니다. Go 백엔드는 Yuva 저장소의 <2>sdk/go/webhook</2> 패키지를 쓸 수 있습니다."
-
-#: src/features/settings/SettingsFrame.tsx
-msgid "Version"
-msgstr "버전"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Versions"
@@ -22158,7 +22051,7 @@ msgstr "내 응답 대기 중"
 msgid "Warn about the certificate"
 msgstr "인증서에 대해 경고"
 
-#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/PolicyForm.tsx
 msgid "Warn before it is due"
 msgstr "기한 전에 경고"
 
@@ -22218,8 +22111,6 @@ msgstr "Webhook secret for {revealName}"
 
 #: src/app/Palette.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
-#: src/features/settings/channels/Frame.tsx
-#: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
@@ -22246,7 +22137,7 @@ msgstr "웹사이트"
 msgid "Website addresses"
 msgstr "웹사이트 주소"
 
-#: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/AddChannelForm.tsx
 #: src/features/setup/ChannelStep.tsx
 msgid "Website chat"
 msgstr "웹사이트 채팅"
@@ -22368,7 +22259,7 @@ msgstr "고객에게 보이는 것"
 msgid "What the import will do"
 msgstr "가져오기가 하는 일"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "What the team sees."
 msgstr "팀에 보이는 이름입니다."
 
@@ -22414,7 +22305,6 @@ msgstr "What your e-mailed replies end with, per inbox. Chat replies and notes c
 
 #: src/components/common/FocusChoice.tsx
 #: src/features/settings/workspace/FocusForm.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "What Yuva is for"
 msgstr "Yuva의 용도"
 
@@ -22429,7 +22319,7 @@ msgid "What’s new entry"
 msgstr "새 소식 항목"
 
 #: src/features/broadcasts/ReviewPanel.tsx
-#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleForm.tsx
 msgid "When"
 msgstr "시각"
 
@@ -22552,7 +22442,7 @@ msgstr "Where new issues go when nobody picks a team, as a team key such as ENG.
 msgid "Where should Yuva send events?"
 msgstr "Yuva가 이벤트를 어디로 보낼까요?"
 
-#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldForm.tsx
 msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
 msgstr "API가 값을 저장하는 이름입니다. 소문자, 숫자, 밑줄만 쓸 수 있으며 바꿀 수 없습니다."
 
@@ -22608,7 +22498,7 @@ msgstr "누가, 어디서 답변하고 누가 온라인인지"
 msgid "Who can reply"
 msgstr "답장할 수 있는 사람"
 
-#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacroForm.tsx
 msgid "Who can use it"
 msgstr "사용할 수 있는 사람"
 
@@ -22645,7 +22535,6 @@ msgstr "누가 보내며 무엇에 대한 것인가요?"
 msgid "Who should take it?"
 msgstr "누가 맡을까요?"
 
-#: src/components/common/SettingsStrip.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Who you support: name, hours, team, sender"
 msgstr "지원 대상: 이름, 운영 시간, 팀, 발신자"
@@ -22764,10 +22653,8 @@ msgstr "처리 중…"
 #: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/oauth/ConsentPage.tsx
-#: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
-#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Workspace"
 msgstr "워크스페이스"
 
@@ -23074,7 +22961,6 @@ msgid "Your account is not in a group that may use Yuva. Ask your administrator 
 msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 
 #: src/features/settings/addresses/AddressesPage.tsx
-#: src/features/settings/SettingsFrame.tsx
 msgid "Your addresses"
 msgstr "내 주소"
 
@@ -23167,6 +23053,10 @@ msgstr "Microsoft 365 조직에서는 관리자만 앱에 동의할 수 있습�
 #: src/features/broadcasts/Composer.tsx
 msgid "Your name"
 msgstr "이름"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Your name, photo, language and sign-in"
+msgstr "이름, 사진, 언어 및 로그인"
 
 #: src/features/home/HomeWork.tsx
 msgid "Your open conversations"
@@ -23273,10 +23163,6 @@ msgstr "내 웹사이트"
 msgid "Your workspace asks for these fields on every conversation it closes."
 msgstr "이 워크스페이스는 대화를 닫을 때마다 이 필드들을 요구합니다."
 
-#: src/features/settings/workspace/WorkspacePage.tsx
-msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."
-msgstr "워크스페이스 이름, 종료된 대화를 보관하는 기간, 대량 발송을 보낼 수 있는 사람."
-
 #: src/features/account/AccountPage.tsx
 msgid "Your Yuva account"
 msgstr "내 Yuva 계정"
@@ -23367,10 +23253,6 @@ msgstr "Yuva는 메일 서버를 운영하지 않습니다. 내 도메인의 메
 msgid "Yuva held back a command that would have changed the mailbox"
 msgstr "Yuva가 메일함을 변경할 수 있는 명령을 보류했습니다"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Yuva inbox"
-msgstr "Yuva 받은 편지함"
-
 #: src/features/migrations/SwitchStep.tsx
 msgid "Yuva mails {address} a short test message. When it reaches Yuva by the new route, the switch works."
 msgstr "Yuva가 {address}(으)로 짧은 테스트 메시지를 보냅니다. 새 경로로 Yuva에 도착하면 전환이 제대로 작동하는 것입니다."
@@ -23402,10 +23284,6 @@ msgstr "Yuva는 헬프 데스크를 읽기만 합니다. 기록은 조용히 도
 #: src/features/migrations/Wizard.tsx
 msgid "Yuva only reads the mailbox. History arrives quietly: no notifications, no auto-replies."
 msgstr "Yuva는 메일함을 읽기만 합니다. 기록은 조용히 도착합니다. 알림도 자동 응답도 없습니다."
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Yuva only reads the source; nothing there is changed."
-msgstr "Yuva는 소스를 읽기만 하며, 그곳에서는 아무것도 변경되지 않습니다."
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Yuva only reads. Besides signing in, its connection sends {provider} nothing but read requests, so no ticket, customer or setting changes."
@@ -23478,7 +23356,3 @@ msgstr "Yuva, 홈으로 이동"
 #: src/components/common/text.ts
 msgid "Yuva's own notes cannot be changed."
 msgstr "Yuva 자체의 메모는 변경할 수 없습니다."
-
-#: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"
-msgstr "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"

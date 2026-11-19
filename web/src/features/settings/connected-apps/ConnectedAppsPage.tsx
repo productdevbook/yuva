@@ -4,7 +4,6 @@ import { Link, useParams } from "react-router"
 
 import { ErrorLine, useConfirm } from "@/components/common"
 import { EmptyBox } from "@/components/common/EmptyBox"
-import { SettingsStrip } from "@/components/common/SettingsStrip"
 import { CodeLine } from "@/components/common"
 import { API_KEY_SCOPES, formatDate, formatDateTime, useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
@@ -15,10 +14,10 @@ import {
   useAssistantName,
   type AssistantId,
 } from "@/features/settings/connected-apps/assistants"
-import { AssistantSheet } from "@/features/settings/connected-apps/AssistantPage"
+import { AssistantDetail } from "@/features/settings/connected-apps/AssistantPage"
 import { useGrants, useRevokeGrant } from "@/features/settings/connected-apps/queries"
-import { CreateMenu, DeveloperTabs, DeveloperTitle } from "@/features/settings/DeveloperTabs"
-import { Card, PageHeader, Pill, Row, Rows, Section } from "@/features/settings/ui"
+import { DeveloperHeader } from "@/features/settings/DeveloperTabs"
+import { Card, Pill, Row, Rows, Section } from "@/features/settings/ui"
 import type { OAuthGrant } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { useMemberMap } from "@/lib/workspace"
@@ -156,23 +155,19 @@ export function ConnectedAppsPage() {
   const [confirm, confirmDialog] = useConfirm()
   const list = useGrants()
   const revoke = useRevokeGrant()
+  if (assistant) return <AssistantDetail id={assistant} />
   return (
     <>
-      <PageHeader
-        title={<DeveloperTitle />}
-        tabs={<DeveloperTabs current="connected-apps" />}
-        action={<CreateMenu current="connected-apps" />}
+      <DeveloperHeader
+        current="connected-apps"
         description={
-          canManage ? (
-            <Trans>Keys, webhooks and connected assistants</Trans>
-          ) : (
+          !canManage && (
             <Trans>
               Assistants and apps you connected with your sign-in. Each acts as you, only within the access you allowed.
             </Trans>
           )
         }
       />
-      <SettingsStrip current="developer" />
       <Card>
         <p className="text-muted-foreground">
           <Trans>
@@ -219,7 +214,6 @@ export function ConnectedAppsPage() {
       <Section title={<Trans>Connect an assistant</Trans>}>
         <Assistants grants={list.data} />
       </Section>
-      {assistant && <AssistantSheet id={assistant} />}
       {confirmDialog}
     </>
   )
