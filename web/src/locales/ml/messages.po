@@ -1953,6 +1953,7 @@ msgid "Accepted answer"
 msgstr "അംഗീകരിച്ച ഉത്തരം"
 
 #: src/features/oauth/ConsentPage.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
@@ -2206,6 +2207,7 @@ msgstr "കോൺടാക്റ്റ് ചേർക്കുക"
 msgid "Add domain"
 msgstr "ഡൊമെയ്ൻ ചേർക്കുക"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Add endpoint"
@@ -2507,6 +2509,7 @@ msgstr "എല്ലാ ഇറക്കുമതികളും"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/ChatsPage.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
@@ -2839,6 +2842,7 @@ msgid "An entry in the zip unpacks to more than 100 times its size, so the file 
 msgstr "zip-ലെ ഒരു എൻട്രി അതിന്റെ വലുപ്പത്തിന്റെ 100 ഇരട്ടിയിലധികമായി അൺപാക്ക് ആകുന്നു, അതിനാൽ ഫയൽ സുരക്ഷിതമല്ലെന്ന് കണ്ട് നിരസിച്ചു."
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "An https image URL."
 msgstr "ഒരു https ചിത്രത്തിന്റെ URL."
@@ -3045,6 +3049,7 @@ msgstr "മറ്റൊരു വർക്ക്‌സ്‌പേസ് ഈ വ
 msgid "Answer (optional)"
 msgstr "ഉത്തരം (ഓപ്ഷണൽ)"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Answer and organise conversations, write notes, keep contacts and labels up to date."
 msgstr "സംഭാഷണങ്ങൾക്ക് മറുപടി നൽകുകയും ക്രമീകരിക്കുകയും ചെയ്യുക, കുറിപ്പുകൾ എഴുതുക, കോൺടാക്റ്റുകളും ലേബലുകളും കാലികമായി സൂക്ഷിക്കുക."
@@ -3767,6 +3772,7 @@ msgid "Billing"
 msgstr "ബില്ലിംഗ്"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Billing bot"
 msgstr "ബില്ലിംഗ് ബോട്ട്"
@@ -3829,6 +3835,7 @@ msgstr "ബോട്ട്"
 msgid "Bot avatar"
 msgstr "ബോട്ട് അവതാർ"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot avatar (optional)"
 msgstr "ബോട്ട് അവതാർ (ഓപ്ഷണൽ)"
@@ -3837,6 +3844,7 @@ msgstr "ബോട്ട് അവതാർ (ഓപ്ഷണൽ)"
 msgid "Bot name"
 msgstr "ബോട്ടിന്റെ പേര്"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot name (optional)"
 msgstr "ബോട്ട് പേര് (ഓപ്ഷണൽ)"
@@ -5515,6 +5523,7 @@ msgstr "അത് ഉണ്ടാക്കി, അതിന്റെ App ID-യ�
 msgid "Create it, then copy the token, which Front shows only once, and paste it below."
 msgstr "ഇത് സൃഷ്ടിച്ച ശേഷം Front ഒരു തവണ മാത്രം കാണിക്കുന്ന ടോക്കൺ പകർത്തി താഴെ ഒട്ടിക്കുക."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create key"
@@ -5647,6 +5656,7 @@ msgid "CSV file"
 msgstr "CSV ഫയൽ"
 
 #: src/features/reports/TrendsReport.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -6213,6 +6223,7 @@ msgstr "വിവരണം"
 
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Description (optional)"
 msgstr "വിവരണം (ഓപ്ഷണൽ)"
@@ -6520,7 +6531,9 @@ msgstr "പൂർത്തിയായി"
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/fields/BulkFailures.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -7210,6 +7223,7 @@ msgstr "എല്ലാ ഇൻബോക്സും"
 msgid "Every inbox follows the settings above."
 msgstr "എല്ലാ ഇൻബോക്സും മുകളിലെ ക്രമീകരണങ്ങൾ പിന്തുടരുന്നു."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Every inbox of the workspace, including ones you add later."
 msgstr "നിങ്ങൾ പിന്നീട് ചേർക്കുന്നവയടക്കം വർക്ക്സ്പേസിലെ എല്ലാ ഇൻബോക്സും."
@@ -7251,6 +7265,7 @@ msgstr "ഈ എൻഡ്‌പോയിന്റിലേക്കുള്ള �
 msgid "Every run of the last 30 days, newest first."
 msgstr "കഴിഞ്ഞ 30 ദിവസത്തെ എല്ലാ റണ്ണുകളും, പുതിയവ ആദ്യം."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Every scope except sending broadcasts and reading the audit log."
 msgstr "ബ്രോഡ്‌കാസ്റ്റ് അയയ്ക്കലും ഓഡിറ്റ് ലോഗ് വായനയും ഒഴികെയുള്ള എല്ലാ അനുമതികളും."
@@ -7315,6 +7330,7 @@ msgstr "നിങ്ങൾ സ്പാം എന്ന് അടയാളപ്
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/Wizard.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -7379,6 +7395,7 @@ msgstr "{expires}-ന് കാലഹരണപ്പെട്ടു"
 msgid "Expires"
 msgstr "കാലഹരണപ്പെടുന്നു"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Expires (optional)"
 msgstr "കാലഹരണപ്പെടുന്നു (ഓപ്ഷണൽ)"
@@ -8958,6 +8975,7 @@ msgstr "Zoho Mail-ൽ Settings › Mail accounts › IMAP access തുറന്
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "ഇൻബോക്സ്"
@@ -8989,6 +9007,7 @@ msgstr "{name}-നുള്ള ഇൻബോക്സ്"
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10096,6 +10115,7 @@ msgstr "ലോഗോ URL"
 msgid "Look"
 msgstr "കാണുക"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Look at conversations, contacts, inboxes, lists, broadcasts and analytics. Change nothing."
 msgstr "സംഭാഷണങ്ങൾ, കോൺടാക്റ്റുകൾ, ഇൻബോക്സുകൾ, ലിസ്റ്റുകൾ, ബ്രോഡ്കാസ്റ്റുകൾ, അനലിറ്റിക്സ് എന്നിവ കാണുക. ഒന്നും മാറ്റരുത്."
@@ -11166,6 +11186,7 @@ msgstr "എന്റെ കാഴ്ചകൾ"
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/channels/ApiChannelForm.tsx
@@ -11204,6 +11225,7 @@ msgstr "പേരും രൂപവും"
 msgid "Name it “Yuva” and enter the redirect URL below as its redirection URL."
 msgstr "“Yuva” എന്ന് പേരിട്ട് താഴെയുള്ള റീഡയറക്ട് URL അതിന്റെ റീഡയറക്ഷൻ URL ആയി നൽകുക."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Name it after the backend, script or bot that will use it."
 msgstr "ഇത് ഉപയോഗിക്കുന്ന ബാക്കെൻഡ്, സ്ക്രിപ്റ്റ് അല്ലെങ്കിൽ ബോട്ടിന്റെ പേര് നൽകുക."
@@ -11319,6 +11341,7 @@ msgstr "{name}-ന് പുതിയ വിലാസം"
 msgid "New addresses that get a confirmation mail"
 msgstr "സ്ഥിരീകരണ മെയിൽ ലഭിക്കുന്ന പുതിയ വിലാസങ്ങൾ"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 msgid "New API key"
@@ -11407,7 +11430,6 @@ msgstr "പുതിയ എൻട്രി"
 msgid "New field"
 msgstr "പുതിയ ഫീൽഡ്"
 
-#: src/features/mail/FilterDialog.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New filter"
@@ -11570,6 +11592,7 @@ msgid "New value"
 msgstr "പുതിയ മൂല്യം"
 
 #: src/features/settings/DeveloperTabs.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 msgid "New webhook endpoint"
 msgstr "പുതിയ വെബ്ഹൂക്ക് എൻഡ്‌പോയിന്റ്"
 
@@ -12403,6 +12426,7 @@ msgstr "ഒന്നുമില്ല (ലോക്കൽ റിലേകളു
 msgid "None for now"
 msgstr "തൽക്കാലം ഒന്നുമില്ല"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "None picked: the key sees every inbox."
 msgstr "ഒന്നും തിരഞ്ഞെടുത്തിട്ടില്ല: കീ എല്ലാ ഇൻബോക്സും കാണുന്നു."
@@ -12974,6 +12998,7 @@ msgid "One e-mail a month about what is new."
 msgstr "പുതിയതെന്താണെന്ന് മാസത്തിൽ ഒരു ഇമെയിൽ."
 
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "ഒരു ഇൻബോക്സ്"
@@ -13456,6 +13481,7 @@ msgstr "ഡിസൈനുകൾ തുറക്കുക"
 msgid "Open the discussion"
 msgstr "ചർച്ച തുറക്കുക"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Open the endpoint"
 msgstr "എൻഡ്‌പോയിന്റ് തുറക്കുക"
@@ -14274,6 +14300,7 @@ msgid "Pick at least 30 minutes"
 msgstr "കുറഞ്ഞത് 30 മിനിറ്റ് തിരഞ്ഞെടുക്കുക"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Pick at least one event."
 msgstr "കുറഞ്ഞത് ഒരു ഇവന്റ് തിരഞ്ഞെടുക്കുക."
@@ -14287,6 +14314,7 @@ msgstr "ആർക്കാണ് മെയിൽ ലഭിക്കുന്ന�
 msgid "Pick at least one platform."
 msgstr "കുറഞ്ഞത് ഒരു പ്ലാറ്റ്ഫോം തിരഞ്ഞെടുക്കുക."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick at least one scope."
 msgstr "കുറഞ്ഞത് ഒരു സ്കോപ്പ് തിരഞ്ഞെടുക്കുക."
@@ -14295,6 +14323,7 @@ msgstr "കുറഞ്ഞത് ഒരു സ്കോപ്പ് തിരഞ
 msgid "Pick at least one."
 msgstr "കുറഞ്ഞത് ഒന്ന് തിരഞ്ഞെടുക്കുക."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "ഓരോ സ്കോപ്പും സ്വയം തിരഞ്ഞെടുക്കുക."
@@ -14653,6 +14682,7 @@ msgid "Production"
 msgstr "പ്രൊഡക്ഷൻ"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
 msgstr "പ്രൊഡക്ഷൻ ബാക്കെൻഡ്"
@@ -14847,6 +14877,7 @@ msgstr "പുഷും ഇമെയിലും"
 
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
 msgstr "പുഷ് അറിയിപ്പുകൾ"
@@ -15027,6 +15058,7 @@ msgstr "സഹായ കേന്ദ്രങ്ങൾ, ശേഖരങ്ങൾ
 msgid "Read mailing lists, subscribers and consent records"
 msgstr "മെയിലിംഗ് ലിസ്റ്റുകൾ, സബ്സ്ക്രൈബർമാർ, സമ്മത രേഖകൾ എന്നിവ വായിക്കുക"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Read only"
@@ -16032,6 +16064,7 @@ msgstr "നിങ്ങളെ ഇവിടേക്ക് തിരികെ ക
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Review"
 msgstr "അവലോകനം"
@@ -16495,11 +16528,13 @@ msgstr "ഷെഡ്യൂൾ ചെയ്ത സന്ദേശം"
 msgid "Scheduling…"
 msgstr "ഷെഡ്യൂൾ ചെയ്യുന്നു…"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Scopes"
 msgstr "സ്കോപ്പുകൾ"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Scopes and inboxes cannot be changed later. For different ones, create a new key."
 msgstr "സ്കോപ്പുകളും ഇൻബോക്സുകളും പിന്നീട് മാറ്റാൻ കഴിയില്ല. വ്യത്യസ്തമായവയ്ക്ക്, പുതിയ കീ ഉണ്ടാക്കുക."
@@ -16709,6 +16744,7 @@ msgstr "രണ്ടാമത്തെ സീക്രട്ട്"
 msgid "Seconds, 1 to 30."
 msgstr "സെക്കൻഡ്, 1 മുതൽ 30 വരെ."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Secret"
 msgstr "സീക്രട്ട്"
@@ -17660,6 +17696,7 @@ msgid "Shown instead of the logo in dark mode."
 msgstr "ഡാർക്ക് മോഡിൽ ലോഗോയ്ക്ക് പകരം കാണിക്കും."
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown on its messages. The key's name when empty."
 msgstr "അതിന്റെ സന്ദേശങ്ങളിൽ കാണിക്കുന്നു. ശൂന്യമാണെങ്കിൽ കീയുടെ പേര്."
@@ -17676,10 +17713,12 @@ msgstr "എല്ലാ ഡോക്യുമെന്റേഷൻ സൈറ്�
 msgid "Shown on your posts. Leave it empty to show as “Reader”."
 msgstr "നിങ്ങളുടെ പോസ്റ്റുകളിൽ കാണിക്കുന്നു. “വായനക്കാരൻ” ആയി കാണിക്കാൻ ശൂന്യമായി വിടുക."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown only now. Copy it and store it safely."
 msgstr "ഇപ്പോൾ മാത്രം കാണിക്കുന്നു. ഇത് പകർത്തി സുരക്ഷിതമായി സൂക്ഷിക്കുക."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Shown only now. Copy it and store it with your receiver."
 msgstr "ഇപ്പോൾ മാത്രം കാണിക്കുന്നു. ഇത് പകർത്തി നിങ്ങളുടെ റിസീവറിനൊപ്പം സൂക്ഷിക്കുക."
@@ -17915,6 +17954,7 @@ msgid "Signing in through your organisation did not work. Try again, or use an e
 msgstr "Signing in through your organisation did not work. Try again, or use an e-mailed code."
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Signing secret"
 msgstr "സൈനിംഗ് സീക്രട്ട്"
@@ -18377,10 +18417,6 @@ msgstr "നിങ്ങൾ നക്ഷത്രമിട്ടത്"
 msgid "Stars the mail for you."
 msgstr "നിങ്ങൾക്കായി മെയിലിന് നക്ഷത്രമിടുന്നു."
 
-#: src/features/migrations/Wizard.tsx
-msgid "Start"
-msgstr "ആരംഭിക്കുക"
-
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Start “{name}” now?"
 msgstr "Start “{name}” now?"
@@ -18747,6 +18783,7 @@ msgstr "സപ്പോർട്ട്"
 msgid "Support address"
 msgstr "സപ്പോർട്ട് വിലാസം"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Support bot"
@@ -19280,6 +19317,7 @@ msgstr "അവസാനം തുടക്കത്തിന് മുമ്പ�
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "എൻഡ്‌പോയിന്റ് പ്രവർത്തനരഹിതമാണ്. ഡെലിവറികൾ വീണ്ടും അയയ്ക്കാൻ അത് പ്രവർത്തനക്ഷമമാക്കുക."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The endpoint is ready"
 msgstr "എൻഡ്‌പോയിന്റ് തയ്യാറാണ്"
@@ -19436,6 +19474,7 @@ msgstr "ഇറക്കുമതി ഇനി ആരംഭിക്കാൻ ക
 msgid "The inbox address"
 msgstr "ഇൻബോക്സിന്റെ വിലാസം"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "ഇൻബോക്സ് പിന്നീട് മാറ്റാൻ കഴിയില്ല."
@@ -19496,14 +19535,17 @@ msgstr "The issue's state sets the progress the person sees."
 msgid "The İYS file has one row per subscriber in İYS's columns, ONAY for subscribed and RET for unsubscribed, for Turkish senders to upload to İYS themselves. Pending subscriptions are left out."
 msgstr "İYS ഫയലിൽ İYS-ന്റെ കോളങ്ങളിൽ ഓരോ സബ്സ്ക്രൈബർക്കും ഒരു വരിയുണ്ട്, സബ്സ്ക്രൈബ് ചെയ്തവർക്ക് ONAY, അൺസബ്സ്ക്രൈബ് ചെയ്തവർക്ക് RET, ടർക്കിഷ് അയയ്ക്കുന്നവർക്ക് İYS-ലേക്ക് സ്വയം അപ്‌ലോഡ് ചെയ്യാൻ. തീർപ്പാക്കാത്ത സബ്സ്ക്രിപ്ഷനുകൾ ഒഴിവാക്കിയിരിക്കുന്നു."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key is ready"
 msgstr "കീ തയ്യാറാണ്"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
 msgstr "ഈ കീ ഈ ഇൻബോക്സുകൾ മാത്രമേ കാണൂ; ഇൻബോക്സുകളോ വെബ്‌ഹുക്കുകളോ വർക്ക്‌സ്‌പേസോ നിയന്ത്രിക്കാനോ ഓഡിറ്റ് ലോഗ് വായിക്കാനോ കഴിയില്ല."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
 msgstr "ഈ ദിവസത്തിന്റെ അവസാനത്തിൽ കീ പ്രവർത്തനം നിർത്തുന്നു."
@@ -20431,6 +20473,7 @@ msgstr "This domain is already in the list."
 msgid "This e-mail address bounced or complained, so the reply was not sent. Clear it on the contact to send again."
 msgstr "ഈ ഇമെയിൽ വിലാസം ബൗൺസ് ആയി അല്ലെങ്കിൽ പരാതിപ്പെട്ടു, അതിനാൽ മറുപടി അയച്ചില്ല. വീണ്ടും അയയ്ക്കാൻ കോൺടാക്റ്റിൽ അത് മായ്ക്കുക."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "This endpoint receives only the events of {lockedName}."
 msgstr "ഈ എൻഡ്‌പോയിന്റ് {lockedName}-ന്റെ ഇവന്റുകൾ മാത്രം സ്വീകരിക്കുന്നു."
@@ -21570,6 +21613,7 @@ msgid "Urgent"
 msgstr "അടിയന്തരം"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "URL"
 msgstr "URL"
@@ -21646,6 +21690,7 @@ msgstr "പരമാവധി 200 അക്ഷരങ്ങൾ ഉപയോഗി
 msgid "Use at most 500 characters."
 msgstr "പരമാവധി 500 അക്ഷരങ്ങൾ ഉപയോഗിക്കുക."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Use it as a bearer token against this server."
 msgstr "ഇത് ഈ സെർവറിനെതിരെ ബെയറർ ടോക്കണായി ഉപയോഗിക്കുക."
@@ -23265,6 +23310,7 @@ msgstr "Yuva വിലാസത്തിലേക്ക് 8 അക്ക കോ
 msgid "Yuva may now read your organization's mailboxes over IMAP, each once its owner signs in. Whoever started the migration can open it and sign in with Microsoft again."
 msgstr "Yuva-യ്ക്ക് ഇപ്പോൾ നിങ്ങളുടെ ഓർഗനൈസേഷന്റെ മെയിൽബോക്സുകൾ IMAP വഴി വായിക്കാം, ഓരോന്നും അതിന്റെ ഉടമ സൈൻ ഇൻ ചെയ്ത ശേഷം. മൈഗ്രേഷൻ ആരംഭിച്ചയാൾക്ക് അത് തുറന്ന് Microsoft ഉപയോഗിച്ച് വീണ്ടും സൈൻ ഇൻ ചെയ്യാം."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva now sends the events you picked to this address."
 msgstr "Yuva ഇപ്പോൾ നിങ്ങൾ തിരഞ്ഞെടുത്ത ഇവന്റുകൾ ഈ വിലാസത്തിലേക്ക് അയയ്ക്കുന്നു."
@@ -23313,6 +23359,7 @@ msgstr "Yuva നിങ്ങൾ അപ്‌ലോഡ് ചെയ്യുന�
 msgid "Yuva requests an address on a schedule and checks the answer."
 msgstr "Yuva കൃത്യമായ ഇടവേളകളിൽ ഒരു വിലാസം അഭ്യർഥിച്ച് ഉത്തരം പരിശോധിക്കുന്നു."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva sends a signed POST request with a JSON body for every event you pick."
 msgstr "നിങ്ങൾ തിരഞ്ഞെടുക്കുന്ന ഓരോ ഇവന്റിനും Yuva JSON ബോഡിയുള്ള ഒപ്പിട്ട POST അഭ്യർത്ഥന അയയ്ക്കുന്നു."

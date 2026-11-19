@@ -1953,6 +1953,7 @@ msgid "Accepted answer"
 msgstr "ఆమోదించిన సమాధానం"
 
 #: src/features/oauth/ConsentPage.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
@@ -2206,6 +2207,7 @@ msgstr "కాంటాక్ట్ జోడించండి"
 msgid "Add domain"
 msgstr "డొమైన్ జోడించండి"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Add endpoint"
@@ -2507,6 +2509,7 @@ msgstr "అన్ని దిగుమతులు"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/ChatsPage.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
@@ -2839,6 +2842,7 @@ msgid "An entry in the zip unpacks to more than 100 times its size, so the file 
 msgstr "జిప్‌లోని ఒక ఎంట్రీ దాని పరిమాణానికి 100 రెట్లకు పైగా అన్‌ప్యాక్ అవుతుంది, కాబట్టి ఫైల్ అసురక్షితమని తిరస్కరించబడింది."
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "An https image URL."
 msgstr "https ఇమేజ్ URL."
@@ -3045,6 +3049,7 @@ msgstr "మరొక వర్క్‌స్పేస్ ఈ చిరునా
 msgid "Answer (optional)"
 msgstr "జవాబు (ఐచ్ఛికం)"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Answer and organise conversations, write notes, keep contacts and labels up to date."
 msgstr "సంభాషణలకు జవాబివ్వండి మరియు క్రమబద్ధీకరించండి, గమనికలు రాయండి, కాంటాక్ట్‌లు మరియు లేబుల్‌లను తాజాగా ఉంచండి."
@@ -3767,6 +3772,7 @@ msgid "Billing"
 msgstr "బిల్లింగ్"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Billing bot"
 msgstr "బిల్లింగ్ బాట్"
@@ -3829,6 +3835,7 @@ msgstr "బాట్"
 msgid "Bot avatar"
 msgstr "బాట్ అవతార్"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot avatar (optional)"
 msgstr "బాట్ అవతార్ (ఐచ్ఛికం)"
@@ -3837,6 +3844,7 @@ msgstr "బాట్ అవతార్ (ఐచ్ఛికం)"
 msgid "Bot name"
 msgstr "బాట్ పేరు"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot name (optional)"
 msgstr "బాట్ పేరు (ఐచ్ఛికం)"
@@ -5515,6 +5523,7 @@ msgstr "దాన్ని సృష్టించి, దాని యాప�
 msgid "Create it, then copy the token, which Front shows only once, and paste it below."
 msgstr "దాన్ని సృష్టించి, Front ఒక్కసారి మాత్రమే చూపించే టోకెన్‌ను కాపీ చేసి కింద అతికించండి."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create key"
@@ -5647,6 +5656,7 @@ msgid "CSV file"
 msgstr "CSV ఫైల్"
 
 #: src/features/reports/TrendsReport.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -6213,6 +6223,7 @@ msgstr "వివరణ"
 
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Description (optional)"
 msgstr "వివరణ (ఐచ్ఛికం)"
@@ -6520,7 +6531,9 @@ msgstr "పూర్తయింది"
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/fields/BulkFailures.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -7210,6 +7223,7 @@ msgstr "ప్రతి ఇన్‌బాక్స్"
 msgid "Every inbox follows the settings above."
 msgstr "ప్రతి ఇన్‌బాక్స్ పై సెట్టింగ్‌లను అనుసరిస్తుంది."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Every inbox of the workspace, including ones you add later."
 msgstr "వర్క్‌స్పేస్‌లోని ప్రతి ఇన్‌బాక్స్, మీరు తర్వాత జోడించేవి కూడా."
@@ -7251,6 +7265,7 @@ msgstr "ఈ ఎండ్‌పాయింట్‌కు ప్రతి అభ
 msgid "Every run of the last 30 days, newest first."
 msgstr "గత 30 రోజుల అన్ని రన్‌లు, కొత్తవి ముందు."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Every scope except sending broadcasts and reading the audit log."
 msgstr "బ్రాడ్‌కాస్ట్‌లు పంపడం మరియు ఆడిట్ లాగ్ చదవడం మినహా అన్ని అనుమతులు."
@@ -7315,6 +7330,7 @@ msgstr "స్పామ్‌గా మీరు గుర్తించిన 
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/Wizard.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -7379,6 +7395,7 @@ msgstr "{expires}న గడువు ముగిసింది"
 msgid "Expires"
 msgstr "గడువు ముగుస్తుంది"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Expires (optional)"
 msgstr "గడువు (ఐచ్ఛికం)"
@@ -8958,6 +8975,7 @@ msgstr "Zoho Mail లో Settings › Mail accounts › IMAP access తెరి
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "ఇన్‌బాక్స్"
@@ -8989,6 +9007,7 @@ msgstr "{name} కోసం ఇన్‌బాక్స్"
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10096,6 +10115,7 @@ msgstr "లోగో URL"
 msgid "Look"
 msgstr "చూడండి"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Look at conversations, contacts, inboxes, lists, broadcasts and analytics. Change nothing."
 msgstr "సంభాషణలు, కాంటాక్ట్‌లు, ఇన్‌బాక్స్‌లు, లిస్ట్‌లు, బ్రాడ్‌కాస్ట్‌లు మరియు అనలిటిక్స్‌ను చూడండి. ఏదీ మార్చవద్దు."
@@ -11166,6 +11186,7 @@ msgstr "నా వీక్షణలు"
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/channels/ApiChannelForm.tsx
@@ -11204,6 +11225,7 @@ msgstr "పేరు, రూపం"
 msgid "Name it “Yuva” and enter the redirect URL below as its redirection URL."
 msgstr "దానికి “Yuva” అని పేరు పెట్టి, దిగువ రీడైరెక్ట్ URL ను దాని రీడైరెక్షన్ URL గా నమోదు చేయండి."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Name it after the backend, script or bot that will use it."
 msgstr "దాన్ని ఉపయోగించే బ్యాకెండ్, స్క్రిప్ట్ లేదా బాట్ పేరు పెట్టండి."
@@ -11319,6 +11341,7 @@ msgstr "{name} కోసం కొత్త చిరునామా"
 msgid "New addresses that get a confirmation mail"
 msgstr "నిర్ధారణ మెయిల్ అందుకునే కొత్త చిరునామాలు"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 msgid "New API key"
@@ -11407,7 +11430,6 @@ msgstr "కొత్త ఎంట్రీ"
 msgid "New field"
 msgstr "కొత్త ఫీల్డ్"
 
-#: src/features/mail/FilterDialog.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New filter"
@@ -11570,6 +11592,7 @@ msgid "New value"
 msgstr "కొత్త విలువ"
 
 #: src/features/settings/DeveloperTabs.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 msgid "New webhook endpoint"
 msgstr "కొత్త వెబ్‌హుక్ ఎండ్‌పాయింట్"
 
@@ -12403,6 +12426,7 @@ msgstr "ఏదీ లేదు (లోకల్ రిలేలు మరియ�
 msgid "None for now"
 msgstr "ప్రస్తుతానికి ఏదీ లేదు"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "None picked: the key sees every inbox."
 msgstr "ఏదీ ఎంచుకోలేదు: కీ ప్రతి ఇన్‌బాక్స్‌ను చూస్తుంది."
@@ -12974,6 +12998,7 @@ msgid "One e-mail a month about what is new."
 msgstr "కొత్తవి ఏమిటో నెలకు ఒక ఇమెయిల్."
 
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "ఒక ఇన్‌బాక్స్"
@@ -13456,6 +13481,7 @@ msgstr "డిజైన్‌లను తెరవండి"
 msgid "Open the discussion"
 msgstr "చర్చను తెరవండి"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Open the endpoint"
 msgstr "ఎండ్‌పాయింట్‌ను తెరవండి"
@@ -14274,6 +14300,7 @@ msgid "Pick at least 30 minutes"
 msgstr "కనీసం 30 నిమిషాలు ఎంచుకోండి"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Pick at least one event."
 msgstr "కనీసం ఒక ఈవెంట్‌ను ఎంచుకోండి."
@@ -14287,6 +14314,7 @@ msgstr "మెయిల్ ఎవరికి వస్తుందో చూడ
 msgid "Pick at least one platform."
 msgstr "కనీసం ఒక ప్లాట్‌ఫామ్‌ను ఎంచుకోండి."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick at least one scope."
 msgstr "కనీసం ఒక స్కోప్‌ను ఎంచుకోండి."
@@ -14295,6 +14323,7 @@ msgstr "కనీసం ఒక స్కోప్‌ను ఎంచుకోం
 msgid "Pick at least one."
 msgstr "కనీసం ఒకదాన్ని ఎంచుకోండి."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "ప్రతి స్కోప్‌ను మీరే ఎంచుకోండి."
@@ -14653,6 +14682,7 @@ msgid "Production"
 msgstr "ప్రొడక్షన్"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
 msgstr "ప్రొడక్షన్ బ్యాకెండ్"
@@ -14847,6 +14877,7 @@ msgstr "పుష్ మరియు ఇమెయిల్"
 
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
 msgstr "పుష్ నోటిఫికేషన్‌లు"
@@ -15027,6 +15058,7 @@ msgstr "సహాయ కేంద్రాలు, సేకరణలు, వ్�
 msgid "Read mailing lists, subscribers and consent records"
 msgstr "మెయిలింగ్ లిస్ట్‌లు, సబ్‌స్క్రైబర్‌లు మరియు సమ్మతి రికార్డ్‌లను చదవండి"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Read only"
@@ -16032,6 +16064,7 @@ msgstr "మిమ్మల్ని దీనికి తిరిగి పం
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Review"
 msgstr "సమీక్ష"
@@ -16495,11 +16528,13 @@ msgstr "షెడ్యూల్ చేసిన సందేశం"
 msgid "Scheduling…"
 msgstr "షెడ్యూల్ చేస్తున్నారు…"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Scopes"
 msgstr "స్కోప్‌లు"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Scopes and inboxes cannot be changed later. For different ones, create a new key."
 msgstr "స్కోప్‌లు మరియు ఇన్‌బాక్స్‌లను తర్వాత మార్చలేరు. వేరేవి కావాలంటే, కొత్త కీని సృష్టించండి."
@@ -16709,6 +16744,7 @@ msgstr "రెండవ సీక్రెట్"
 msgid "Seconds, 1 to 30."
 msgstr "సెకన్లు, 1 నుండి 30 వరకు."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Secret"
 msgstr "సీక్రెట్"
@@ -17660,6 +17696,7 @@ msgid "Shown instead of the logo in dark mode."
 msgstr "డార్క్ మోడ్‌లో లోగోకు బదులుగా చూపబడుతుంది."
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown on its messages. The key's name when empty."
 msgstr "దాని సందేశాలపై చూపబడుతుంది. ఖాళీగా ఉంటే కీ పేరు."
@@ -17676,10 +17713,12 @@ msgstr "ప్రతి డాక్యుమెంటేషన్ సైట్�
 msgid "Shown on your posts. Leave it empty to show as “Reader”."
 msgstr "మీ పోస్ట్‌లపై చూపబడుతుంది. “Reader” గా కనిపించడానికి ఖాళీగా వదలండి."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown only now. Copy it and store it safely."
 msgstr "ఇప్పుడు మాత్రమే చూపబడుతుంది. దీన్ని కాపీ చేసి భద్రంగా ఉంచండి."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Shown only now. Copy it and store it with your receiver."
 msgstr "ఇప్పుడు మాత్రమే చూపబడుతుంది. దీన్ని కాపీ చేసి మీ రిసీవర్‌తో పాటు నిల్వ చేయండి."
@@ -17915,6 +17954,7 @@ msgid "Signing in through your organisation did not work. Try again, or use an e
 msgstr "Signing in through your organisation did not work. Try again, or use an e-mailed code."
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Signing secret"
 msgstr "సైనింగ్ సీక్రెట్"
@@ -18377,10 +18417,6 @@ msgstr "మీరు నక్షత్రం పెట్టినవి"
 msgid "Stars the mail for you."
 msgstr "మీ కోసం మెయిల్‌కు నక్షత్రం పెడుతుంది."
 
-#: src/features/migrations/Wizard.tsx
-msgid "Start"
-msgstr "ప్రారంభించండి"
-
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Start “{name}” now?"
 msgstr "Start “{name}” now?"
@@ -18747,6 +18783,7 @@ msgstr "సపోర్ట్"
 msgid "Support address"
 msgstr "సపోర్ట్ చిరునామా"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Support bot"
@@ -19280,6 +19317,7 @@ msgstr "ముగింపు ప్రారంభానికి ముంద�
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "ఎండ్‌పాయింట్ నిలిపివేయబడింది. మళ్లీ డెలివరీలు పంపడానికి దాన్ని ప్రారంభించండి."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The endpoint is ready"
 msgstr "ఎండ్‌పాయింట్ సిద్ధంగా ఉంది"
@@ -19436,6 +19474,7 @@ msgstr "దిగుమతి ఇకపై ప్రారంభం కోసం
 msgid "The inbox address"
 msgstr "ఇన్‌బాక్స్ చిరునామా"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "ఇన్‌బాక్స్‌ను తర్వాత మార్చలేరు."
@@ -19496,14 +19535,17 @@ msgstr "The issue's state sets the progress the person sees."
 msgid "The İYS file has one row per subscriber in İYS's columns, ONAY for subscribed and RET for unsubscribed, for Turkish senders to upload to İYS themselves. Pending subscriptions are left out."
 msgstr "İYS ఫైల్‌లో İYS కాలమ్‌లలో ఒక్కో సబ్‌స్క్రైబర్‌కు ఒక అడ్డు వరుస ఉంది, సబ్‌స్క్రైబ్ చేసిన వారికి ONAY, అన్‌సబ్‌స్క్రైబ్ చేసిన వారికి RET; టర్కిష్ పంపేవారు స్వయంగా İYS కు అప్‌లోడ్ చేయడానికి. పెండింగ్ సబ్‌స్క్రిప్షన్‌లు మినహాయించబడతాయి."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key is ready"
 msgstr "కీ సిద్ధంగా ఉంది"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
 msgstr "ఈ కీ ఈ ఇన్‌బాక్స్‌లను మాత్రమే చూస్తుంది; ఇన్‌బాక్స్‌లు, వెబ్‌హుక్‌లు లేదా వర్క్‌స్పేస్‌ను నిర్వహించలేదు, ఆడిట్ లాగ్ చదవలేదు."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
 msgstr "కీ ఈ రోజు చివరన పనిచేయడం ఆగిపోతుంది."
@@ -20431,6 +20473,7 @@ msgstr "This domain is already in the list."
 msgid "This e-mail address bounced or complained, so the reply was not sent. Clear it on the contact to send again."
 msgstr "ఈ ఇమెయిల్ చిరునామా బౌన్స్ అయింది లేదా ఫిర్యాదు చేసింది, కాబట్టి జవాబు పంపబడలేదు. మళ్లీ పంపడానికి కాంటాక్ట్‌పై దాన్ని క్లియర్ చేయండి."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "This endpoint receives only the events of {lockedName}."
 msgstr "ఈ ఎండ్‌పాయింట్ {lockedName} ఈవెంట్‌లను మాత్రమే స్వీకరిస్తుంది."
@@ -21570,6 +21613,7 @@ msgid "Urgent"
 msgstr "అత్యవసరం"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "URL"
 msgstr "URL"
@@ -21646,6 +21690,7 @@ msgstr "గరిష్టంగా 200 అక్షరాలు ఉపయోగ
 msgid "Use at most 500 characters."
 msgstr "గరిష్టంగా 500 అక్షరాలు ఉపయోగించండి."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Use it as a bearer token against this server."
 msgstr "ఈ సర్వర్‌కు వ్యతిరేకంగా దీన్ని బేరర్ టోకెన్‌గా ఉపయోగించండి."
@@ -23265,6 +23310,7 @@ msgstr "Yuva చిరునామాకు 8 అంకెల కోడ్‌న
 msgid "Yuva may now read your organization's mailboxes over IMAP, each once its owner signs in. Whoever started the migration can open it and sign in with Microsoft again."
 msgstr "Yuva ఇప్పుడు మీ సంస్థ మెయిల్‌బాక్స్‌లను IMAP ద్వారా చదవవచ్చు, ప్రతిదీ దాని యజమాని సైన్ ఇన్ చేసిన తర్వాత. మైగ్రేషన్‌ను ప్రారంభించినవారు దాన్ని తెరిచి Microsoft తో మళ్లీ సైన్ ఇన్ చేయవచ్చు."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva now sends the events you picked to this address."
 msgstr "Yuva ఇప్పుడు మీరు ఎంచుకున్న ఈవెంట్‌లను ఈ చిరునామాకు పంపుతుంది."
@@ -23313,6 +23359,7 @@ msgstr "Yuva మీరు అప్‌లోడ్ చేసిన ఫైల్�
 msgid "Yuva requests an address on a schedule and checks the answer."
 msgstr "Yuva క్రమం తప్పకుండా ఒక చిరునామాను అభ్యర్థించి సమాధానాన్ని తనిఖీ చేస్తుంది."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva sends a signed POST request with a JSON body for every event you pick."
 msgstr "మీరు ఎంచుకున్న ప్రతి ఈవెంట్‌కు Yuva JSON బాడీతో సంతకం చేసిన POST అభ్యర్థనను పంపుతుంది."

@@ -1953,6 +1953,7 @@ msgid "Accepted answer"
 msgstr "Принятое решение"
 
 #: src/features/oauth/ConsentPage.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
@@ -2206,6 +2207,7 @@ msgstr "Добавить контакт"
 msgid "Add domain"
 msgstr "Добавить домен"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Add endpoint"
@@ -2507,6 +2509,7 @@ msgstr "Все импорты"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/ChatsPage.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
@@ -2839,6 +2842,7 @@ msgid "An entry in the zip unpacks to more than 100 times its size, so the file 
 msgstr "Файл в zip распаковывается в объём, более чем в 100 раз превышающий его размер, поэтому файл отклонён как небезопасный."
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "An https image URL."
 msgstr "URL изображения по https."
@@ -3045,6 +3049,7 @@ msgstr "Другое рабочее пространство подтверди�
 msgid "Answer (optional)"
 msgstr "Ответ (необязательно)"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Answer and organise conversations, write notes, keep contacts and labels up to date."
 msgstr "Отвечать на диалоги и упорядочивать их, писать заметки, поддерживать контакты и метки в актуальном состоянии."
@@ -3767,6 +3772,7 @@ msgid "Billing"
 msgstr "Оплата"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Billing bot"
 msgstr "Бот оплаты"
@@ -3829,6 +3835,7 @@ msgstr "Бот"
 msgid "Bot avatar"
 msgstr "Аватар бота"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot avatar (optional)"
 msgstr "Аватар бота (необязательно)"
@@ -3837,6 +3844,7 @@ msgstr "Аватар бота (необязательно)"
 msgid "Bot name"
 msgstr "Имя бота"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot name (optional)"
 msgstr "Имя бота (необязательно)"
@@ -5515,6 +5523,7 @@ msgstr "Создайте его, затем скопируйте его ID пр�
 msgid "Create it, then copy the token, which Front shows only once, and paste it below."
 msgstr "Создайте его, затем скопируйте токен, который Front показывает только один раз, и вставьте ниже."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create key"
@@ -5647,6 +5656,7 @@ msgid "CSV file"
 msgstr "Файл CSV"
 
 #: src/features/reports/TrendsReport.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -6213,6 +6223,7 @@ msgstr "Описание"
 
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Description (optional)"
 msgstr "Описание (необязательно)"
@@ -6520,7 +6531,9 @@ msgstr "готово"
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/fields/BulkFailures.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -7210,6 +7223,7 @@ msgstr "Каждый ящик"
 msgid "Every inbox follows the settings above."
 msgstr "Каждый ящик следует настройкам выше."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Every inbox of the workspace, including ones you add later."
 msgstr "Каждый ящик рабочего пространства, включая те, что вы добавите позже."
@@ -7251,6 +7265,7 @@ msgstr "Каждый запрос к этому эндпоинту, сначал
 msgid "Every run of the last 30 days, newest first."
 msgstr "Все запуски за последние 30 дней, сначала новые."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Every scope except sending broadcasts and reading the audit log."
 msgstr "Все права, кроме отправки рассылок и чтения журнала аудита."
@@ -7315,6 +7330,7 @@ msgstr "Сообщения всех публикуются сразу, кром�
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/Wizard.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -7379,6 +7395,7 @@ msgstr "истёк {expires}"
 msgid "Expires"
 msgstr "Истекает"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Expires (optional)"
 msgstr "Истекает (необязательно)"
@@ -8958,6 +8975,7 @@ msgstr "В Zoho Mail откройте «Настройки › Почтовые 
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "Входящие"
@@ -8989,6 +9007,7 @@ msgstr "Ящик для {name}"
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10096,6 +10115,7 @@ msgstr "URL логотипа"
 msgid "Look"
 msgstr "Вид"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Look at conversations, contacts, inboxes, lists, broadcasts and analytics. Change nothing."
 msgstr "Смотреть диалоги, контакты, ящики, списки, рассылки и аналитику. Ничего не менять."
@@ -11166,6 +11186,7 @@ msgstr "Мои представления"
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/channels/ApiChannelForm.tsx
@@ -11204,6 +11225,7 @@ msgstr "Название и вид"
 msgid "Name it “Yuva” and enter the redirect URL below as its redirection URL."
 msgstr "Назовите его «Yuva» и введите ниже URL перенаправления как его URL переадресации."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Name it after the backend, script or bot that will use it."
 msgstr "Назовите его по бэкенду, скрипту или боту, которые будут его использовать."
@@ -11319,6 +11341,7 @@ msgstr "Новый адрес для «{name}»"
 msgid "New addresses that get a confirmation mail"
 msgstr "Новые адреса, получающие письмо с подтверждением"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 msgid "New API key"
@@ -11407,7 +11430,6 @@ msgstr "Новая запись"
 msgid "New field"
 msgstr "Новое поле"
 
-#: src/features/mail/FilterDialog.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New filter"
@@ -11570,6 +11592,7 @@ msgid "New value"
 msgstr "Новое значение"
 
 #: src/features/settings/DeveloperTabs.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 msgid "New webhook endpoint"
 msgstr "Новый эндпоинт вебхука"
 
@@ -12403,6 +12426,7 @@ msgstr "Нет (только локальные ретрансляторы и т
 msgid "None for now"
 msgstr "Пока нет"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "None picked: the key sees every inbox."
 msgstr "Ничего не выбрано: ключ видит каждый ящик."
@@ -12974,6 +12998,7 @@ msgid "One e-mail a month about what is new."
 msgstr "Одно письмо в месяц о новостях."
 
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "Один ящик"
@@ -13456,6 +13481,7 @@ msgstr "Открыть дизайны"
 msgid "Open the discussion"
 msgstr "Открыть обсуждение"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Open the endpoint"
 msgstr "Открыть эндпоинт"
@@ -14274,6 +14300,7 @@ msgid "Pick at least 30 minutes"
 msgstr "Выберите не менее 30 минут"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Pick at least one event."
 msgstr "Выберите хотя бы одно событие."
@@ -14287,6 +14314,7 @@ msgstr "Выберите хотя бы один список, чтобы уви�
 msgid "Pick at least one platform."
 msgstr "Выберите хотя бы одну платформу."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick at least one scope."
 msgstr "Выберите хотя бы одну область доступа."
@@ -14295,6 +14323,7 @@ msgstr "Выберите хотя бы одну область доступа."
 msgid "Pick at least one."
 msgstr "Выберите хотя бы один."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "Выберите каждую область доступа сами."
@@ -14653,6 +14682,7 @@ msgid "Production"
 msgstr "Продакшен"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
 msgstr "Рабочий бэкенд"
@@ -14847,6 +14877,7 @@ msgstr "Push и e-mail"
 
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
 msgstr "Push-уведомления"
@@ -15027,6 +15058,7 @@ msgstr "Чтение справочных центров, коллекций и 
 msgid "Read mailing lists, subscribers and consent records"
 msgstr "Читать списки рассылки, подписчиков и записи о согласии"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Read only"
@@ -16032,6 +16064,7 @@ msgstr "Возвращает вас на"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Review"
 msgstr "Проверка"
@@ -16495,11 +16528,13 @@ msgstr "Запланированное сообщение"
 msgid "Scheduling…"
 msgstr "Планирование…"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Scopes"
 msgstr "Области доступа"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Scopes and inboxes cannot be changed later. For different ones, create a new key."
 msgstr "Области доступа и ящики позже изменить нельзя. Для других создайте новый ключ."
@@ -16709,6 +16744,7 @@ msgstr "Второй секрет"
 msgid "Seconds, 1 to 30."
 msgstr "Секунды, от 1 до 30."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Secret"
 msgstr "Секрет"
@@ -17660,6 +17696,7 @@ msgid "Shown instead of the logo in dark mode."
 msgstr "Показывается вместо логотипа в тёмной теме."
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown on its messages. The key's name when empty."
 msgstr "Показывается в его сообщениях. Если пусто, название ключа."
@@ -17676,10 +17713,12 @@ msgstr "Показывается в ваших сообщениях на каж�
 msgid "Shown on your posts. Leave it empty to show as “Reader”."
 msgstr "Показывается в ваших сообщениях. Оставьте пустым, чтобы отображаться как «Читатель»."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown only now. Copy it and store it safely."
 msgstr "Показывается только сейчас. Скопируйте и сохраните в надёжном месте."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Shown only now. Copy it and store it with your receiver."
 msgstr "Показывается только сейчас. Скопируйте и сохраните вместе с вашим приёмником."
@@ -17915,6 +17954,7 @@ msgid "Signing in through your organisation did not work. Try again, or use an e
 msgstr "Signing in through your organisation did not work. Try again, or use an e-mailed code."
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Signing secret"
 msgstr "Секрет подписи"
@@ -18377,10 +18417,6 @@ msgstr "отмечено вами звёздочкой"
 msgid "Stars the mail for you."
 msgstr "Ставит письму звезду для вас."
 
-#: src/features/migrations/Wizard.tsx
-msgid "Start"
-msgstr "Начать"
-
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Start “{name}” now?"
 msgstr "Start “{name}” now?"
@@ -18747,6 +18783,7 @@ msgstr "Поддержка"
 msgid "Support address"
 msgstr "Адрес поддержки"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Support bot"
@@ -19280,6 +19317,7 @@ msgstr "Конец не может быть раньше начала, а диа
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "Эндпоинт отключён. Включите его, чтобы доставки снова отправлялись."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The endpoint is ready"
 msgstr "Эндпоинт готов"
@@ -19436,6 +19474,7 @@ msgstr "Импорт больше не ждёт запуска. Посмотри
 msgid "The inbox address"
 msgstr "Адрес ящика"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "Ящик нельзя изменить позже."
@@ -19496,14 +19535,17 @@ msgstr "The issue's state sets the progress the person sees."
 msgid "The İYS file has one row per subscriber in İYS's columns, ONAY for subscribed and RET for unsubscribed, for Turkish senders to upload to İYS themselves. Pending subscriptions are left out."
 msgstr "В файле İYS одна строка на подписчика в столбцах İYS, ONAY для подписанных и RET для отписавшихся, чтобы турецкие отправители сами загрузили его в İYS. Ожидающие подписки исключены."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key is ready"
 msgstr "Ключ готов"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
 msgstr "Ключ видит только эти ящики и не может управлять ящиками, вебхуками и рабочим пространством, а также читать журнал аудита."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
 msgstr "Ключ перестанет работать в конце этого дня."
@@ -20431,6 +20473,7 @@ msgstr "This domain is already in the list."
 msgid "This e-mail address bounced or complained, so the reply was not sent. Clear it on the contact to send again."
 msgstr "Этот адрес электронной почты вернул письмо или пожаловался, поэтому ответ не отправлен. Очистите это в контакте, чтобы отправить снова."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "This endpoint receives only the events of {lockedName}."
 msgstr "Этот эндпоинт получает только события {lockedName}."
@@ -21570,6 +21613,7 @@ msgid "Urgent"
 msgstr "Срочный"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "URL"
 msgstr "URL"
@@ -21646,6 +21690,7 @@ msgstr "Не более 200 символов."
 msgid "Use at most 500 characters."
 msgstr "Не более 500 символов."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Use it as a bearer token against this server."
 msgstr "Используйте его как bearer-токен для этого сервера."
@@ -23265,6 +23310,7 @@ msgstr "Yuva отправит на адрес 8-значный код. Введ�
 msgid "Yuva may now read your organization's mailboxes over IMAP, each once its owner signs in. Whoever started the migration can open it and sign in with Microsoft again."
 msgstr "Теперь Yuva может читать ящики вашей организации по IMAP, каждый — когда его владелец войдёт. Тот, кто начал миграцию, может открыть её и снова войти через Microsoft."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva now sends the events you picked to this address."
 msgstr "Теперь Yuva отправляет выбранные вами события на этот адрес."
@@ -23313,6 +23359,7 @@ msgstr "Yuva читает только загруженный вами файл 
 msgid "Yuva requests an address on a schedule and checks the answer."
 msgstr "Yuva регулярно запрашивает адрес и проверяет ответ."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva sends a signed POST request with a JSON body for every event you pick."
 msgstr "Yuva отправляет подписанный POST-запрос с телом JSON на каждое выбранное вами событие."

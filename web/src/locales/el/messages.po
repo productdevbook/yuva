@@ -1953,6 +1953,7 @@ msgid "Accepted answer"
 msgstr "Αποδεκτή απάντηση"
 
 #: src/features/oauth/ConsentPage.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
@@ -2206,6 +2207,7 @@ msgstr "Προσθήκη επαφής"
 msgid "Add domain"
 msgstr "Προσθήκη domain"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Add endpoint"
@@ -2507,6 +2509,7 @@ msgstr "Όλες οι εισαγωγές"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/ChatsPage.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
@@ -2839,6 +2842,7 @@ msgid "An entry in the zip unpacks to more than 100 times its size, so the file 
 msgstr "Μια εγγραφή στο zip αποσυμπιέζεται σε περισσότερο από 100 φορές το μέγεθός της, οπότε το αρχείο απορρίφθηκε ως μη ασφαλές."
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "An https image URL."
 msgstr "Μια διεύθυνση URL εικόνας https."
@@ -3045,6 +3049,7 @@ msgstr "Άλλος χώρος εργασίας απέδειξε αυτή τη δ
 msgid "Answer (optional)"
 msgstr "Απάντηση (προαιρετικά)"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Answer and organise conversations, write notes, keep contacts and labels up to date."
 msgstr "Απαντήστε και οργανώστε συνομιλίες, γράψτε σημειώσεις, κρατήστε επαφές και ετικέτες ενημερωμένες."
@@ -3767,6 +3772,7 @@ msgid "Billing"
 msgstr "Χρεώσεις"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Billing bot"
 msgstr "Bot χρεώσεων"
@@ -3829,6 +3835,7 @@ msgstr "Bot"
 msgid "Bot avatar"
 msgstr "Avatar του bot"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot avatar (optional)"
 msgstr "Avatar του bot (προαιρετικά)"
@@ -3837,6 +3844,7 @@ msgstr "Avatar του bot (προαιρετικά)"
 msgid "Bot name"
 msgstr "Όνομα του bot"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot name (optional)"
 msgstr "Όνομα του bot (προαιρετικά)"
@@ -5515,6 +5523,7 @@ msgstr "Δημιουργήστε την, μετά αντιγράψτε το αν
 msgid "Create it, then copy the token, which Front shows only once, and paste it below."
 msgstr "Δημιουργήστε το, αντιγράψτε το διακριτικό, που το Front εμφανίζει μόνο μία φορά, και επικολλήστε το παρακάτω."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create key"
@@ -5647,6 +5656,7 @@ msgid "CSV file"
 msgstr "Αρχείο CSV"
 
 #: src/features/reports/TrendsReport.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -6213,6 +6223,7 @@ msgstr "Περιγραφή"
 
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Description (optional)"
 msgstr "Περιγραφή (προαιρετικά)"
@@ -6520,7 +6531,9 @@ msgstr "έγινε"
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/fields/BulkFailures.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -7210,6 +7223,7 @@ msgstr "Κάθε εισερχόμενα"
 msgid "Every inbox follows the settings above."
 msgstr "Όλα τα εισερχόμενα ακολουθούν τις παραπάνω ρυθμίσεις."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Every inbox of the workspace, including ones you add later."
 msgstr "Όλα τα εισερχόμενα του χώρου εργασίας, και όσα προσθέσετε αργότερα."
@@ -7251,6 +7265,7 @@ msgstr "Κάθε αίτημα προς αυτό το endpoint, τα νεότερ
 msgid "Every run of the last 30 days, newest first."
 msgstr "Όλες οι εκτελέσεις των τελευταίων 30 ημερών, οι νεότερες πρώτα."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Every scope except sending broadcasts and reading the audit log."
 msgstr "Κάθε δικαίωμα εκτός από την αποστολή μαζικών μηνυμάτων και την ανάγνωση του αρχείου ελέγχου."
@@ -7315,6 +7330,7 @@ msgstr "Οι αναρτήσεις όλων δημοσιεύονται αμέσω
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/Wizard.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -7379,6 +7395,7 @@ msgstr "έληξε {expires}"
 msgid "Expires"
 msgstr "Λήγει"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Expires (optional)"
 msgstr "Λήγει (προαιρετικά)"
@@ -8958,6 +8975,7 @@ msgstr "Στο Zoho Mail, ανοίξτε Ρυθμίσεις › Λογαριασ
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "Εισερχόμενα"
@@ -8989,6 +9007,7 @@ msgstr "Εισερχόμενα για {name}"
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10096,6 +10115,7 @@ msgstr "URL λογοτύπου"
 msgid "Look"
 msgstr "Εμφάνιση"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Look at conversations, contacts, inboxes, lists, broadcasts and analytics. Change nothing."
 msgstr "Δείτε συνομιλίες, επαφές, εισερχόμενα, λίστες, μαζικές αποστολές και αναλυτικά στοιχεία. Μην αλλάξετε τίποτα."
@@ -11166,6 +11186,7 @@ msgstr "Οι προβολές μου"
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/channels/ApiChannelForm.tsx
@@ -11204,6 +11225,7 @@ msgstr "Όνομα και εμφάνιση"
 msgid "Name it “Yuva” and enter the redirect URL below as its redirection URL."
 msgstr "Ονομάστε την «Yuva» και εισαγάγετε τη διεύθυνση ανακατεύθυνσης παρακάτω ως διεύθυνση ανακατεύθυνσής της."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Name it after the backend, script or bot that will use it."
 msgstr "Ονομάστε το με το backend, το script ή το bot που θα το χρησιμοποιεί."
@@ -11319,6 +11341,7 @@ msgstr "Νέα διεύθυνση για το «{name}»"
 msgid "New addresses that get a confirmation mail"
 msgstr "Νέες διευθύνσεις που λαμβάνουν e-mail επιβεβαίωσης"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 msgid "New API key"
@@ -11407,7 +11430,6 @@ msgstr "Νέα καταχώριση"
 msgid "New field"
 msgstr "Νέο πεδίο"
 
-#: src/features/mail/FilterDialog.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New filter"
@@ -11570,6 +11592,7 @@ msgid "New value"
 msgstr "Νέα τιμή"
 
 #: src/features/settings/DeveloperTabs.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 msgid "New webhook endpoint"
 msgstr "Νέο endpoint webhook"
 
@@ -12403,6 +12426,7 @@ msgstr "Κανένα (μόνο τοπικοί αναμεταδότες και δ
 msgid "None for now"
 msgstr "Προς το παρόν κανένας"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "None picked: the key sees every inbox."
 msgstr "Δεν επιλέχθηκε κανένα: το κλειδί βλέπει όλα τα εισερχόμενα."
@@ -12974,6 +12998,7 @@ msgid "One e-mail a month about what is new."
 msgstr "Ένα e-mail τον μήνα για τα νέα."
 
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "Ένα εισερχόμενο"
@@ -13456,6 +13481,7 @@ msgstr "Άνοιγμα των σχεδίων"
 msgid "Open the discussion"
 msgstr "Άνοιγμα της συζήτησης"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Open the endpoint"
 msgstr "Άνοιγμα του endpoint"
@@ -14274,6 +14300,7 @@ msgid "Pick at least 30 minutes"
 msgstr "Επιλέξτε τουλάχιστον 30 λεπτά"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Pick at least one event."
 msgstr "Επιλέξτε τουλάχιστον ένα συμβάν."
@@ -14287,6 +14314,7 @@ msgstr "Επιλέξτε τουλάχιστον μία λίστα για να δ
 msgid "Pick at least one platform."
 msgstr "Επιλέξτε τουλάχιστον μία πλατφόρμα."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick at least one scope."
 msgstr "Επιλέξτε τουλάχιστον ένα εύρος πρόσβασης."
@@ -14295,6 +14323,7 @@ msgstr "Επιλέξτε τουλάχιστον ένα εύρος πρόσβασ
 msgid "Pick at least one."
 msgstr "Επιλέξτε τουλάχιστον ένα."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "Επιλέξτε μόνοι σας κάθε εύρος πρόσβασης."
@@ -14653,6 +14682,7 @@ msgid "Production"
 msgstr "Παραγωγή"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
 msgstr "Backend παραγωγής"
@@ -14847,6 +14877,7 @@ msgstr "Push και e-mail"
 
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
 msgstr "Ειδοποιήσεις push"
@@ -15027,6 +15058,7 @@ msgstr "Ανάγνωση κέντρων βοήθειας, συλλογών κα�
 msgid "Read mailing lists, subscribers and consent records"
 msgstr "Ανάγνωση λιστών αλληλογραφίας, συνδρομητών και καταγραφών συναίνεσης"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Read only"
@@ -16032,6 +16064,7 @@ msgstr "Σας επιστρέφει στο"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Review"
 msgstr "Αναθεώρηση"
@@ -16495,11 +16528,13 @@ msgstr "Προγραμματισμένο μήνυμα"
 msgid "Scheduling…"
 msgstr "Προγραμματισμός…"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Scopes"
 msgstr "Εύρη πρόσβασης"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Scopes and inboxes cannot be changed later. For different ones, create a new key."
 msgstr "Τα εύρη πρόσβασης και τα εισερχόμενα δεν αλλάζουν αργότερα. Για διαφορετικά, δημιουργήστε νέο κλειδί."
@@ -16709,6 +16744,7 @@ msgstr "Δεύτερο μυστικό"
 msgid "Seconds, 1 to 30."
 msgstr "Δευτερόλεπτα, από 1 έως 30."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Secret"
 msgstr "Μυστικό"
@@ -17660,6 +17696,7 @@ msgid "Shown instead of the logo in dark mode."
 msgstr "Εμφανίζεται αντί για το λογότυπο στη σκούρα λειτουργία."
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown on its messages. The key's name when empty."
 msgstr "Εμφανίζεται στα μηνύματά του. Αν είναι κενό, το όνομα του κλειδιού."
@@ -17676,10 +17713,12 @@ msgstr "Εμφανίζεται στις αναρτήσεις σας σε κάθ�
 msgid "Shown on your posts. Leave it empty to show as “Reader”."
 msgstr "Εμφανίζεται στις αναρτήσεις σας. Αφήστε το κενό για να εμφανίζεστε ως «Αναγνώστης»."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown only now. Copy it and store it safely."
 msgstr "Εμφανίζεται μόνο τώρα. Αντιγράψτε το και φυλάξτε το καλά."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Shown only now. Copy it and store it with your receiver."
 msgstr "Εμφανίζεται μόνο τώρα. Αντιγράψτε το και φυλάξτε το με τον δέκτη σας."
@@ -17915,6 +17954,7 @@ msgid "Signing in through your organisation did not work. Try again, or use an e
 msgstr "Signing in through your organisation did not work. Try again, or use an e-mailed code."
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Signing secret"
 msgstr "Μυστικό υπογραφής"
@@ -18377,10 +18417,6 @@ msgstr "με αστέρι από εσάς"
 msgid "Stars the mail for you."
 msgstr "Επισημαίνει το μήνυμα με αστέρι για εσάς."
 
-#: src/features/migrations/Wizard.tsx
-msgid "Start"
-msgstr "Έναρξη"
-
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Start “{name}” now?"
 msgstr "Start “{name}” now?"
@@ -18747,6 +18783,7 @@ msgstr "Υποστήριξη"
 msgid "Support address"
 msgstr "Διεύθυνση υποστήριξης"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Support bot"
@@ -19280,6 +19317,7 @@ msgstr "Το τέλος δεν μπορεί να είναι πριν από τη
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "Το endpoint είναι απενεργοποιημένο. Ενεργοποιήστε το για να στέλνονται ξανά παραδόσεις."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The endpoint is ready"
 msgstr "Το endpoint είναι έτοιμο"
@@ -19436,6 +19474,7 @@ msgstr "Η εισαγωγή δεν περιμένει πλέον να ξεκιν
 msgid "The inbox address"
 msgstr "Η διεύθυνση του εισερχομένου"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "Τα εισερχόμενα δεν αλλάζουν αργότερα."
@@ -19496,14 +19535,17 @@ msgstr "The issue's state sets the progress the person sees."
 msgid "The İYS file has one row per subscriber in İYS's columns, ONAY for subscribed and RET for unsubscribed, for Turkish senders to upload to İYS themselves. Pending subscriptions are left out."
 msgstr "Το αρχείο İYS έχει μία γραμμή ανά συνδρομητή στις στήλες του İYS, ONAY για εγγεγραμμένους και RET για όσους διαγράφηκαν, ώστε οι Τούρκοι αποστολείς να το ανεβάσουν μόνοι τους στο İYS. Οι εκκρεμείς συνδρομές εξαιρούνται."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key is ready"
 msgstr "Το κλειδί είναι έτοιμο"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
 msgstr "Το κλειδί βλέπει μόνο αυτά τα εισερχόμενα και δεν μπορεί να διαχειριστεί εισερχόμενα, webhooks ή τον χώρο εργασίας, ούτε να διαβάσει το αρχείο ελέγχου."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
 msgstr "Το κλειδί σταματά να λειτουργεί στο τέλος αυτής της ημέρας."
@@ -20431,6 +20473,7 @@ msgstr "This domain is already in the list."
 msgid "This e-mail address bounced or complained, so the reply was not sent. Clear it on the contact to send again."
 msgstr "Αυτή η διεύθυνση e-mail επέστρεψε ή παραπονέθηκε, οπότε η απάντηση δεν στάλθηκε. Καθαρίστε την στην επαφή για να στείλετε ξανά."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "This endpoint receives only the events of {lockedName}."
 msgstr "Αυτό το endpoint λαμβάνει μόνο τα συμβάντα του {lockedName}."
@@ -21570,6 +21613,7 @@ msgid "Urgent"
 msgstr "Επείγον"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "URL"
 msgstr "URL"
@@ -21646,6 +21690,7 @@ msgstr "Χρησιμοποιήστε το πολύ 200 χαρακτήρες."
 msgid "Use at most 500 characters."
 msgstr "Χρησιμοποιήστε το πολύ 500 χαρακτήρες."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Use it as a bearer token against this server."
 msgstr "Χρησιμοποιήστε το ως bearer token απέναντι σε αυτόν τον διακομιστή."
@@ -23265,6 +23310,7 @@ msgstr "Το Yuva στέλνει στη διεύθυνση έναν 8ψήφιο 
 msgid "Yuva may now read your organization's mailboxes over IMAP, each once its owner signs in. Whoever started the migration can open it and sign in with Microsoft again."
 msgstr "Το Yuva μπορεί τώρα να διαβάζει τα γραμματοκιβώτια του οργανισμού σας μέσω IMAP, καθένα μόλις συνδεθεί ο κάτοχός του. Όποιος ξεκίνησε τη μεταφορά μπορεί να την ανοίξει και να συνδεθεί ξανά με Microsoft."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva now sends the events you picked to this address."
 msgstr "Το Yuva στέλνει πλέον τα συμβάντα που επιλέξατε σε αυτή τη διεύθυνση."
@@ -23313,6 +23359,7 @@ msgstr "Το Yuva διαβάζει μόνο το αρχείο που ανεβά�
 msgid "Yuva requests an address on a schedule and checks the answer."
 msgstr "Το Yuva ζητά τακτικά μια διεύθυνση και ελέγχει την απάντηση."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva sends a signed POST request with a JSON body for every event you pick."
 msgstr "Το Yuva στέλνει ένα υπογεγραμμένο αίτημα POST με σώμα JSON για κάθε συμβάν που επιλέγετε."

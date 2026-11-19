@@ -109,7 +109,7 @@ export function WizardLayout({
     source: t`Source`,
     connect: t`Connect`,
     choose: t`Choose`,
-    start: t`Start`,
+    start: t`Review`,
   }
   const lineHref = (key: string) => {
     if (!m) return undefined

@@ -1,6 +1,5 @@
 import { Trans } from "@lingui/react/macro"
 import { PlusIcon } from "lucide-react"
-import { useLocation, useNavigate } from "react-router"
 
 import { Button } from "@/components/ui/button"
 import { useSettingsAbout, useSettingsNames } from "@/features/settings/SettingsFrame"
@@ -9,7 +8,17 @@ import { useSession } from "@/lib/session"
 
 type Tab = "api-keys" | "webhooks" | "connected-apps"
 
-export function DeveloperHeader({ current, description }: { current: Tab; description?: React.ReactNode }) {
+export function DeveloperHeader({
+  current,
+  description,
+  onCreate,
+  creating,
+}: {
+  current: Tab
+  description?: React.ReactNode
+  onCreate?: () => void
+  creating?: boolean
+}) {
   const names = useSettingsNames()
   const about = useSettingsAbout()
   return (
@@ -17,24 +26,21 @@ export function DeveloperHeader({ current, description }: { current: Tab; descri
       back={false}
       title={names.place[current]}
       description={description ?? about[current]}
-      action={<CreateButton current={current} />}
+      action={<CreateButton current={current} onCreate={onCreate} creating={creating} />}
     />
   )
 }
 
-function CreateButton({ current }: { current: Tab }) {
-  const navigate = useNavigate()
-  const { pathname } = useLocation()
+function CreateButton({ current, onCreate, creating }: { current: Tab; onCreate?: () => void; creating?: boolean }) {
   const { canManage } = useSession()
-  if (!canManage || current === "connected-apps") return null
-  const state = { back: pathname }
+  if (!canManage || !onCreate || current === "connected-apps") return null
   return current === "api-keys" ? (
-    <Button onClick={() => navigate("/setup/api-key", { state })} data-testid="api-key-new">
+    <Button onClick={onCreate} disabled={creating} data-testid="api-key-new">
       <PlusIcon />
       <Trans>New API key</Trans>
     </Button>
   ) : (
-    <Button onClick={() => navigate("/setup/webhook", { state })} data-testid="webhook-add">
+    <Button onClick={onCreate} disabled={creating} data-testid="webhook-add">
       <PlusIcon />
       <Trans>New webhook endpoint</Trans>
     </Button>

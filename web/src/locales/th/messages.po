@@ -1953,6 +1953,7 @@ msgid "Accepted answer"
 msgstr "คำตอบที่ยอมรับ"
 
 #: src/features/oauth/ConsentPage.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
@@ -2206,6 +2207,7 @@ msgstr "เพิ่มผู้ติดต่อ"
 msgid "Add domain"
 msgstr "เพิ่มโดเมน"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Add endpoint"
@@ -2507,6 +2509,7 @@ msgstr "การนำเข้าทั้งหมด"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/ChatsPage.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
@@ -2839,6 +2842,7 @@ msgid "An entry in the zip unpacks to more than 100 times its size, so the file 
 msgstr "รายการในไฟล์ zip คลายแล้วมีขนาดเกิน 100 เท่าของขนาดเดิม ไฟล์จึงถูกปฏิเสธเพราะไม่ปลอดภัย"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "An https image URL."
 msgstr "URL รูปภาพ https"
@@ -3045,6 +3049,7 @@ msgstr "เวิร์กสเปซอื่นพิสูจน์ที่
 msgid "Answer (optional)"
 msgstr "คำตอบ (ไม่บังคับ)"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Answer and organise conversations, write notes, keep contacts and labels up to date."
 msgstr "ตอบและจัดระเบียบการสนทนา เขียนบันทึก ดูแลผู้ติดต่อและป้ายกำกับให้เป็นปัจจุบัน"
@@ -3767,6 +3772,7 @@ msgid "Billing"
 msgstr "การเรียกเก็บเงิน"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Billing bot"
 msgstr "บอทการเรียกเก็บเงิน"
@@ -3829,6 +3835,7 @@ msgstr "บอท"
 msgid "Bot avatar"
 msgstr "อวาตาร์บอท"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot avatar (optional)"
 msgstr "อวาตาร์บอท (ไม่บังคับ)"
@@ -3837,6 +3844,7 @@ msgstr "อวาตาร์บอท (ไม่บังคับ)"
 msgid "Bot name"
 msgstr "ชื่อบอท"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot name (optional)"
 msgstr "ชื่อบอท (ไม่บังคับ)"
@@ -5515,6 +5523,7 @@ msgstr "สร้างแล้วคัดลอก App ID และ App Secre
 msgid "Create it, then copy the token, which Front shows only once, and paste it below."
 msgstr "สร้างโทเค็น จากนั้นคัดลอกโทเค็นซึ่ง Front แสดงเพียงครั้งเดียว แล้ววางด้านล่าง"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create key"
@@ -5647,6 +5656,7 @@ msgid "CSV file"
 msgstr "ไฟล์ CSV"
 
 #: src/features/reports/TrendsReport.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -6213,6 +6223,7 @@ msgstr "คำอธิบาย"
 
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Description (optional)"
 msgstr "คำอธิบาย (ไม่บังคับ)"
@@ -6520,7 +6531,9 @@ msgstr "เสร็จแล้ว"
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/fields/BulkFailures.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -7210,6 +7223,7 @@ msgstr "ทุกกล่องข้อความ"
 msgid "Every inbox follows the settings above."
 msgstr "ทุกกล่องข้อความเป็นไปตามการตั้งค่าด้านบน"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Every inbox of the workspace, including ones you add later."
 msgstr "ทุกกล่องข้อความของพื้นที่ทำงาน รวมถึงที่คุณเพิ่มภายหลัง"
@@ -7251,6 +7265,7 @@ msgstr "ทุกคำขอไปยังเอนด์พอยต์นี
 msgid "Every run of the last 30 days, newest first."
 msgstr "การทำงานทั้งหมดใน 30 วันที่ผ่านมา ล่าสุดก่อน"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Every scope except sending broadcasts and reading the audit log."
 msgstr "ทุกสิทธิ์ ยกเว้นการส่งบรอดแคสต์และการอ่านบันทึกการตรวจสอบ"
@@ -7315,6 +7330,7 @@ msgstr "โพสต์ของทุกคนเผยแพร่ทันท
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/Wizard.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -7379,6 +7395,7 @@ msgstr "หมดอายุ {expires}"
 msgid "Expires"
 msgstr "หมดอายุ"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Expires (optional)"
 msgstr "หมดอายุ (ไม่บังคับ)"
@@ -8958,6 +8975,7 @@ msgstr "ใน Zoho Mail เปิด Settings › Mail accounts › IMAP access
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "กล่องข้อความ"
@@ -8989,6 +9007,7 @@ msgstr "กล่องข้อความสำหรับ {name}"
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10096,6 +10115,7 @@ msgstr "URL ของโลโก้"
 msgid "Look"
 msgstr "ดู"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Look at conversations, contacts, inboxes, lists, broadcasts and analytics. Change nothing."
 msgstr "ดูการสนทนา ผู้ติดต่อ กล่องข้อความ รายชื่อ บรอดคาสต์ และการวิเคราะห์ ไม่เปลี่ยนแปลงอะไร"
@@ -11166,6 +11186,7 @@ msgstr "มุมมองของฉัน"
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/channels/ApiChannelForm.tsx
@@ -11204,6 +11225,7 @@ msgstr "ชื่อและรูปลักษณ์"
 msgid "Name it “Yuva” and enter the redirect URL below as its redirection URL."
 msgstr "ตั้งชื่อ “Yuva” และใส่ URL เปลี่ยนเส้นทางด้านล่างเป็น URL เปลี่ยนเส้นทางของแอปนั้น"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Name it after the backend, script or bot that will use it."
 msgstr "ตั้งชื่อตามแบ็กเอนด์ สคริปต์ หรือบอทที่จะใช้"
@@ -11319,6 +11341,7 @@ msgstr "ที่อยู่ใหม่สำหรับ {name}"
 msgid "New addresses that get a confirmation mail"
 msgstr "ที่อยู่ใหม่ที่ได้รับอีเมลยืนยัน"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 msgid "New API key"
@@ -11407,7 +11430,6 @@ msgstr "รายการใหม่"
 msgid "New field"
 msgstr "ฟิลด์ใหม่"
 
-#: src/features/mail/FilterDialog.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New filter"
@@ -11570,6 +11592,7 @@ msgid "New value"
 msgstr "ค่าใหม่"
 
 #: src/features/settings/DeveloperTabs.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 msgid "New webhook endpoint"
 msgstr "เอนด์พอยต์เว็บฮุกใหม่"
 
@@ -12403,6 +12426,7 @@ msgstr "ไม่มี (เฉพาะรีเลย์ภายในเค�
 msgid "None for now"
 msgstr "ยังไม่มี"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "None picked: the key sees every inbox."
 msgstr "ไม่ได้เลือก: คีย์เห็นทุกกล่องข้อความ"
@@ -12974,6 +12998,7 @@ msgid "One e-mail a month about what is new."
 msgstr "หนึ่งอีเมลต่อเดือนเกี่ยวกับสิ่งใหม่"
 
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "หนึ่งกล่องข้อความ"
@@ -13456,6 +13481,7 @@ msgstr "เปิดดีไซน์"
 msgid "Open the discussion"
 msgstr "เปิดกระทู้"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Open the endpoint"
 msgstr "เปิดเอนด์พอยต์"
@@ -14274,6 +14300,7 @@ msgid "Pick at least 30 minutes"
 msgstr "เลือกอย่างน้อย 30 นาที"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Pick at least one event."
 msgstr "เลือกอย่างน้อยหนึ่งเหตุการณ์"
@@ -14287,6 +14314,7 @@ msgstr "เลือกอย่างน้อยหนึ่งรายชื
 msgid "Pick at least one platform."
 msgstr "เลือกอย่างน้อยหนึ่งแพลตฟอร์ม"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick at least one scope."
 msgstr "เลือกอย่างน้อยหนึ่งขอบเขต"
@@ -14295,6 +14323,7 @@ msgstr "เลือกอย่างน้อยหนึ่งขอบเข
 msgid "Pick at least one."
 msgstr "เลือกอย่างน้อยหนึ่งรายการ"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "เลือกแต่ละขอบเขตเอง"
@@ -14653,6 +14682,7 @@ msgid "Production"
 msgstr "โปรดักชัน"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
 msgstr "แบ็กเอนด์โปรดักชัน"
@@ -14847,6 +14877,7 @@ msgstr "พุชและอีเมล"
 
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
 msgstr "การแจ้งเตือนแบบพุช"
@@ -15027,6 +15058,7 @@ msgstr "อ่านศูนย์ช่วยเหลือ คอลเล�
 msgid "Read mailing lists, subscribers and consent records"
 msgstr "อ่านรายชื่อผู้รับจดหมาย ผู้สมัครรับ และบันทึกความยินยอม"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Read only"
@@ -16032,6 +16064,7 @@ msgstr "พาคุณกลับไปที่"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Review"
 msgstr "ตรวจทาน"
@@ -16495,11 +16528,13 @@ msgstr "ข้อความที่ตั้งเวลาไว้"
 msgid "Scheduling…"
 msgstr "กำลังตั้งเวลา…"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Scopes"
 msgstr "ขอบเขต"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Scopes and inboxes cannot be changed later. For different ones, create a new key."
 msgstr "เปลี่ยนขอบเขตและกล่องข้อความภายหลังไม่ได้ หากต้องการต่างออกไป ให้สร้างคีย์ใหม่"
@@ -16709,6 +16744,7 @@ msgstr "ข้อมูลลับที่สอง"
 msgid "Seconds, 1 to 30."
 msgstr "วินาที 1 ถึง 30"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Secret"
 msgstr "Secret"
@@ -17660,6 +17696,7 @@ msgid "Shown instead of the logo in dark mode."
 msgstr "แสดงแทนโลโก้ในโหมดมืด"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown on its messages. The key's name when empty."
 msgstr "แสดงบนข้อความของคีย์ ชื่อของคีย์เมื่อเว้นว่าง"
@@ -17676,10 +17713,12 @@ msgstr "แสดงบนโพสต์ของคุณในทุกไซ
 msgid "Shown on your posts. Leave it empty to show as “Reader”."
 msgstr "แสดงบนโพสต์ของคุณ เว้นว่างไว้เพื่อแสดงเป็น “ผู้อ่าน”"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown only now. Copy it and store it safely."
 msgstr "แสดงเฉพาะตอนนี้ คัดลอกแล้วเก็บไว้อย่างปลอดภัย"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Shown only now. Copy it and store it with your receiver."
 msgstr "แสดงเฉพาะตอนนี้ คัดลอกแล้วเก็บไว้กับผู้รับของคุณ"
@@ -17915,6 +17954,7 @@ msgid "Signing in through your organisation did not work. Try again, or use an e
 msgstr "Signing in through your organisation did not work. Try again, or use an e-mailed code."
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Signing secret"
 msgstr "Signing secret"
@@ -18377,10 +18417,6 @@ msgstr "ที่คุณติดดาว"
 msgid "Stars the mail for you."
 msgstr "ติดดาวอีเมลให้คุณ"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Start"
-msgstr "เริ่ม"
-
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Start “{name}” now?"
 msgstr "Start “{name}” now?"
@@ -18747,6 +18783,7 @@ msgstr "ฝ่ายสนับสนุน"
 msgid "Support address"
 msgstr "ที่อยู่ฝ่ายสนับสนุน"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Support bot"
@@ -19280,6 +19317,7 @@ msgstr "วันสิ้นสุดต้องไม่ก่อนวัน
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "เอนด์พอยต์ถูกปิด เปิดเพื่อส่งการส่งอีกครั้ง"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The endpoint is ready"
 msgstr "เอนด์พอยต์พร้อมแล้ว"
@@ -19436,6 +19474,7 @@ msgstr "การนำเข้าไม่ได้รอเริ่มอี
 msgid "The inbox address"
 msgstr "ที่อยู่ของกล่องจดหมาย"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "เปลี่ยนกล่องข้อความภายหลังไม่ได้"
@@ -19496,14 +19535,17 @@ msgstr "The issue's state sets the progress the person sees."
 msgid "The İYS file has one row per subscriber in İYS's columns, ONAY for subscribed and RET for unsubscribed, for Turkish senders to upload to İYS themselves. Pending subscriptions are left out."
 msgstr "ไฟล์ İYS มีหนึ่งแถวต่อผู้สมัครรับตามคอลัมน์ของ İYS โดย ONAY สำหรับสมัครรับแล้วและ RET สำหรับยกเลิกการสมัครรับ ให้ผู้ส่งชาวตุรกีอัปโหลดไป İYS เอง การสมัครรับที่รออยู่ถูกตัดออก"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key is ready"
 msgstr "คีย์พร้อมแล้ว"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
 msgstr "คีย์นี้เห็นเฉพาะกล่องจดหมายเหล่านี้ และไม่สามารถจัดการกล่องจดหมาย webhook หรือพื้นที่ทำงาน หรืออ่านบันทึกการตรวจสอบได้"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
 msgstr "คีย์หยุดทำงานเมื่อสิ้นสุดวันนี้"
@@ -20431,6 +20473,7 @@ msgstr "This domain is already in the list."
 msgid "This e-mail address bounced or complained, so the reply was not sent. Clear it on the contact to send again."
 msgstr "ที่อยู่อีเมลนี้ตีกลับหรือร้องเรียน จึงไม่ได้ส่งการตอบกลับ ล้างที่อยู่ในผู้ติดต่อเพื่อส่งอีกครั้ง"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "This endpoint receives only the events of {lockedName}."
 msgstr "เอนด์พอยต์นี้รับเฉพาะเหตุการณ์ของ {lockedName}"
@@ -21570,6 +21613,7 @@ msgid "Urgent"
 msgstr "ด่วน"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "URL"
 msgstr "URL"
@@ -21646,6 +21690,7 @@ msgstr "ใช้ไม่เกิน 200 ตัวอักษร"
 msgid "Use at most 500 characters."
 msgstr "ใช้ไม่เกิน 500 ตัวอักษร"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Use it as a bearer token against this server."
 msgstr "ใช้เป็นโทเค็น bearer กับเซิร์ฟเวอร์นี้"
@@ -23265,6 +23310,7 @@ msgstr "Yuva ส่งรหัส 8 หลักไปยังที่อย�
 msgid "Yuva may now read your organization's mailboxes over IMAP, each once its owner signs in. Whoever started the migration can open it and sign in with Microsoft again."
 msgstr "ตอนนี้ Yuva อ่านกล่องจดหมายขององค์กรคุณผ่าน IMAP ได้ แต่ละกล่องหลังเจ้าของลงชื่อเข้าใช้ ผู้เริ่มการย้ายเปิดและลงชื่อเข้าใช้ด้วย Microsoft อีกครั้งได้"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva now sends the events you picked to this address."
 msgstr "ตอนนี้ Yuva ส่งเหตุการณ์ที่คุณเลือกไปยังที่อยู่นี้"
@@ -23313,6 +23359,7 @@ msgstr "Yuva อ่านเฉพาะไฟล์ที่คุณอัป�
 msgid "Yuva requests an address on a schedule and checks the answer."
 msgstr "Yuva ขอที่อยู่หนึ่งเป็นระยะและตรวจสอบคำตอบ"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva sends a signed POST request with a JSON body for every event you pick."
 msgstr "Yuva ส่งคำขอ POST ที่ลงนามพร้อมเนื้อหา JSON สำหรับทุกเหตุการณ์ที่คุณเลือก"

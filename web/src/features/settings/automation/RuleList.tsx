@@ -30,7 +30,7 @@ import { useAuthorityCheck, useAutomationRules } from "@/features/settings/autom
 import { LIMIT, useAutomationText } from "@/features/settings/automation/text"
 import { Intro } from "@/features/settings/GeneralTabs"
 import { Card, Pill, Row, Rows } from "@/features/settings/ui"
-import { api, unwrap, type AutomationRule } from "@/lib/api"
+import { api, unwrap, type AutomationRule, type MailFilterSuggestion } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
@@ -195,10 +195,14 @@ export function RuleList({
   inboxId,
   filter = false,
   intro,
+  prefill,
+  onPrefillClose,
 }: {
   inboxId?: string
   filter?: boolean
   intro: React.ReactNode
+  prefill?: MailFilterSuggestion
+  onPrefillClose?: () => void
 }) {
   const inboxes = useInboxes().data ?? []
   const personal = isPersonal(inboxes.find((i) => i.id === inboxId))
@@ -269,7 +273,11 @@ export function RuleList({
             <span className="text-small text-faint tabular-nums" data-testid="automation-count">
               {rules.length}/{LIMIT}
             </span>
-            <Button disabled={full || !!editing} onClick={() => setEditing("new")} data-testid="automation-new">
+            <Button
+              disabled={full || !!editing || !!prefill}
+              onClick={() => setEditing("new")}
+              data-testid="automation-new"
+            >
               {filter ? <Trans>New filter</Trans> : <Trans>New rule</Trans>}
             </Button>
           </span>
@@ -277,6 +285,16 @@ export function RuleList({
       >
         {intro}
       </Intro>
+      {prefill && !editing && (
+        <RuleForm
+          key={`prefill-${JSON.stringify(prefill)}`}
+          rule={null}
+          prefill={prefill}
+          inboxId={inboxId}
+          filter={filter}
+          onClose={() => onPrefillClose?.()}
+        />
+      )}
       {editing && (
         <RuleForm
           key={editing === "new" ? "new" : editing.id}

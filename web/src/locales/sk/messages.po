@@ -1953,6 +1953,7 @@ msgid "Accepted answer"
 msgstr "Prijatá odpoveď"
 
 #: src/features/oauth/ConsentPage.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
@@ -2206,6 +2207,7 @@ msgstr "Pridať kontakt"
 msgid "Add domain"
 msgstr "Pridať doménu"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Add endpoint"
@@ -2507,6 +2509,7 @@ msgstr "Všetky importy"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/ChatsPage.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
@@ -2839,6 +2842,7 @@ msgid "An entry in the zip unpacks to more than 100 times its size, so the file 
 msgstr "Položka v archíve zip sa rozbalí na viac než 100-násobok svojej veľkosti, takže súbor bol odmietnutý ako nebezpečný."
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "An https image URL."
 msgstr "URL obrázka https."
@@ -3045,6 +3049,7 @@ msgstr "Iný pracovný priestor túto adresu overil neskôr"
 msgid "Answer (optional)"
 msgstr "Odpoveď (voliteľné)"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Answer and organise conversations, write notes, keep contacts and labels up to date."
 msgstr "Odpovedajte na konverzácie a triedte ich, píšte poznámky, udržiavajte kontakty a štítky aktuálne."
@@ -3767,6 +3772,7 @@ msgid "Billing"
 msgstr "Fakturácia"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Billing bot"
 msgstr "Fakturačný bot"
@@ -3829,6 +3835,7 @@ msgstr "Bot"
 msgid "Bot avatar"
 msgstr "Avatar bota"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot avatar (optional)"
 msgstr "Avatar bota (voliteľné)"
@@ -3837,6 +3844,7 @@ msgstr "Avatar bota (voliteľné)"
 msgid "Bot name"
 msgstr "Meno bota"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot name (optional)"
 msgstr "Meno bota (voliteľné)"
@@ -5515,6 +5523,7 @@ msgstr "Vytvorte ju, potom skopírujte jej App ID a App Secret a vložte ich ni�
 msgid "Create it, then copy the token, which Front shows only once, and paste it below."
 msgstr "Vytvorte ho, potom skopírujte token, ktorý Front zobrazí iba raz, a vložte ho nižšie."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create key"
@@ -5647,6 +5656,7 @@ msgid "CSV file"
 msgstr "Súbor CSV"
 
 #: src/features/reports/TrendsReport.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -6213,6 +6223,7 @@ msgstr "Popis"
 
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Description (optional)"
 msgstr "Popis (voliteľné)"
@@ -6520,7 +6531,9 @@ msgstr "hotovo"
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/fields/BulkFailures.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -7210,6 +7223,7 @@ msgstr "Každá schránka"
 msgid "Every inbox follows the settings above."
 msgstr "Každá schránka sa riadi nastavením vyššie."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Every inbox of the workspace, including ones you add later."
 msgstr "Každá schránka pracovného priestoru, vrátane tých, ktoré pridáte neskôr."
@@ -7251,6 +7265,7 @@ msgstr "Každá požiadavka na tento koncový bod, od najnovšej. Uchováva sa n
 msgid "Every run of the last 30 days, newest first."
 msgstr "Všetky spustenia za posledných 30 dní, najnovšie prvé."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Every scope except sending broadcasts and reading the audit log."
 msgstr "Všetky oprávnenia okrem odosielania hromadných správ a čítania auditného záznamu."
@@ -7315,6 +7330,7 @@ msgstr "Príspevky všetkých sa publikujú hneď, okrem príspevkov autorov, kt
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/Wizard.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -7379,6 +7395,7 @@ msgstr "vypršalo {expires}"
 msgid "Expires"
 msgstr "Vyprší"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Expires (optional)"
 msgstr "Vyprší (voliteľné)"
@@ -8958,6 +8975,7 @@ msgstr "V Zoho Mail otvorte Settings › Mail accounts › IMAP access a zapnite
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "Schránka"
@@ -8989,6 +9007,7 @@ msgstr "Schránka pre {name}"
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10096,6 +10115,7 @@ msgstr "URL loga"
 msgid "Look"
 msgstr "Náhľad"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Look at conversations, contacts, inboxes, lists, broadcasts and analytics. Change nothing."
 msgstr "Prezerať konverzácie, kontakty, schránky, zoznamy, hromadné správy a analytiku. Nič nemeniť."
@@ -11166,6 +11186,7 @@ msgstr "Moje pohľady"
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/channels/ApiChannelForm.tsx
@@ -11204,6 +11225,7 @@ msgstr "Názov a vzhľad"
 msgid "Name it “Yuva” and enter the redirect URL below as its redirection URL."
 msgstr "Pomenujte ju „Yuva“ a nižšie uvedenú presmerovaciu URL zadajte ako jej presmerovaciu URL."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Name it after the backend, script or bot that will use it."
 msgstr "Pomenujte ho podľa backendu, skriptu alebo bota, ktorý ho bude používať."
@@ -11319,6 +11341,7 @@ msgstr "Nová adresa pre „{name}“"
 msgid "New addresses that get a confirmation mail"
 msgstr "Nové adresy, ktoré dostanú potvrdzovaciu správu"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 msgid "New API key"
@@ -11407,7 +11430,6 @@ msgstr "Nový záznam"
 msgid "New field"
 msgstr "Nové pole"
 
-#: src/features/mail/FilterDialog.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New filter"
@@ -11570,6 +11592,7 @@ msgid "New value"
 msgstr "Nová hodnota"
 
 #: src/features/settings/DeveloperTabs.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 msgid "New webhook endpoint"
 msgstr "Nový koncový bod webhooku"
 
@@ -12403,6 +12426,7 @@ msgstr "Žiadne (len lokálne relé a testovacie servery)"
 msgid "None for now"
 msgstr "Zatiaľ žiadny"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "None picked: the key sees every inbox."
 msgstr "Nič nevybrané: kľúč vidí každú schránku."
@@ -12974,6 +12998,7 @@ msgid "One e-mail a month about what is new."
 msgstr "Jeden e-mail mesačne o novinkách."
 
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "Jedna schránka"
@@ -13456,6 +13481,7 @@ msgstr "Otvoriť návrhy"
 msgid "Open the discussion"
 msgstr "Otvoriť diskusiu"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Open the endpoint"
 msgstr "Otvoriť koncový bod"
@@ -14274,6 +14300,7 @@ msgid "Pick at least 30 minutes"
 msgstr "Vyberte aspoň 30 minút"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Pick at least one event."
 msgstr "Vyberte aspoň jednu udalosť."
@@ -14287,6 +14314,7 @@ msgstr "Vyberte aspoň jeden zoznam, aby ste videli, kto správu dostane."
 msgid "Pick at least one platform."
 msgstr "Vyberte aspoň jednu platformu."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick at least one scope."
 msgstr "Vyberte aspoň jeden rozsah."
@@ -14295,6 +14323,7 @@ msgstr "Vyberte aspoň jeden rozsah."
 msgid "Pick at least one."
 msgstr "Vyberte aspoň jedno."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "Každý rozsah vyberte sami."
@@ -14653,6 +14682,7 @@ msgid "Production"
 msgstr "Produkcia"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
 msgstr "Produkčný backend"
@@ -14847,6 +14877,7 @@ msgstr "Push a e-mail"
 
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
 msgstr "Push oznámenia"
@@ -15027,6 +15058,7 @@ msgstr "Čítanie centier pomoci, kolekcií a článkov"
 msgid "Read mailing lists, subscribers and consent records"
 msgstr "Čítať e-mailové zoznamy, odberateľov a záznamy o súhlase"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Read only"
@@ -16032,6 +16064,7 @@ msgstr "Vracia vás na"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Review"
 msgstr "Prehľad"
@@ -16495,11 +16528,13 @@ msgstr "Naplánovaná správa"
 msgid "Scheduling…"
 msgstr "Plánovanie…"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Scopes"
 msgstr "Rozsahy"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Scopes and inboxes cannot be changed later. For different ones, create a new key."
 msgstr "Rozsahy a schránky nemožno neskôr zmeniť. Pre iné vytvorte nový kľúč."
@@ -16709,6 +16744,7 @@ msgstr "Druhý tajný kľúč"
 msgid "Seconds, 1 to 30."
 msgstr "Sekundy, 1 až 30."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Secret"
 msgstr "Tajný kľúč"
@@ -17660,6 +17696,7 @@ msgid "Shown instead of the logo in dark mode."
 msgstr "V tmavom režime sa zobrazí namiesto loga."
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown on its messages. The key's name when empty."
 msgstr "Zobrazuje sa pri jeho správach. Keď je prázdne, názov kľúča."
@@ -17676,10 +17713,12 @@ msgstr "Zobrazuje sa pri vašich príspevkoch na každom dokumentačnom webe. Be
 msgid "Shown on your posts. Leave it empty to show as “Reader”."
 msgstr "Zobrazuje sa pri vašich príspevkoch. Nechajte prázdne, aby ste sa zobrazovali ako „Čitateľ“."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown only now. Copy it and store it safely."
 msgstr "Zobrazené len teraz. Skopírujte ho a uložte bezpečne."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Shown only now. Copy it and store it with your receiver."
 msgstr "Zobrazené len teraz. Skopírujte ho a uložte u svojho príjemcu."
@@ -17915,6 +17954,7 @@ msgid "Signing in through your organisation did not work. Try again, or use an e
 msgstr "Signing in through your organisation did not work. Try again, or use an e-mailed code."
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Signing secret"
 msgstr "Podpisový tajný kľúč"
@@ -18377,10 +18417,6 @@ msgstr "označené vami hviezdičkou"
 msgid "Stars the mail for you."
 msgstr "Označí e-mail hviezdičkou pre vás."
 
-#: src/features/migrations/Wizard.tsx
-msgid "Start"
-msgstr "Začať"
-
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Start “{name}” now?"
 msgstr "Start “{name}” now?"
@@ -18747,6 +18783,7 @@ msgstr "Podpora"
 msgid "Support address"
 msgstr "Adresa podpory"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Support bot"
@@ -19280,6 +19317,7 @@ msgstr "Koniec nesmie byť pred začiatkom a rozsah môže byť najviac 13 mesia
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "Koncový bod je vypnutý. Zapnite ho, aby sa doručenia posielali znova."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The endpoint is ready"
 msgstr "Koncový bod je pripravený"
@@ -19436,6 +19474,7 @@ msgstr "Import už nečaká na spustenie. Pozrite sa na jeho stav."
 msgid "The inbox address"
 msgstr "Adresa schránky"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "Schránku nemožno neskôr zmeniť."
@@ -19496,14 +19535,17 @@ msgstr "The issue's state sets the progress the person sees."
 msgid "The İYS file has one row per subscriber in İYS's columns, ONAY for subscribed and RET for unsubscribed, for Turkish senders to upload to İYS themselves. Pending subscriptions are left out."
 msgstr "Súbor İYS má jeden riadok na odberateľa v stĺpcoch İYS, ONAY pre prihlásených a RET pre odhlásených, aby ho tureckí odosielatelia mohli sami nahrať do İYS. Čakajúce odbery sa vynechávajú."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key is ready"
 msgstr "Kľúč je pripravený"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
 msgstr "Kľúč vidí len tieto schránky a nemôže spravovať schránky, webhooky ani pracovný priestor ani čítať auditný záznam."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
 msgstr "Kľúč prestane fungovať na konci tohto dňa."
@@ -20431,6 +20473,7 @@ msgstr "This domain is already in the list."
 msgid "This e-mail address bounced or complained, so the reply was not sent. Clear it on the contact to send again."
 msgstr "Táto e-mailová adresa sa nedoručila alebo si sťažovala, takže odpoveď nebola odoslaná. Vymažte ju pri kontakte, aby ste mohli odoslať znova."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "This endpoint receives only the events of {lockedName}."
 msgstr "Tento koncový bod prijíma len udalosti {lockedName}."
@@ -21570,6 +21613,7 @@ msgid "Urgent"
 msgstr "Naliehavé"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "URL"
 msgstr "URL"
@@ -21646,6 +21690,7 @@ msgstr "Použite najviac 200 znakov."
 msgid "Use at most 500 characters."
 msgstr "Použite najviac 500 znakov."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Use it as a bearer token against this server."
 msgstr "Použite ho ako token bearer proti tomuto serveru."
@@ -23265,6 +23310,7 @@ msgstr "Yuva pošle na adresu osemmiestny kód. Napíšte ho sem."
 msgid "Yuva may now read your organization's mailboxes over IMAP, each once its owner signs in. Whoever started the migration can open it and sign in with Microsoft again."
 msgstr "Yuva teraz smie čítať schránky vašej organizácie cez IMAP, každú, keď sa jej vlastník prihlási. Kto migráciu začal, môže ju otvoriť a znova sa prihlásiť cez Microsoft."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva now sends the events you picked to this address."
 msgstr "Yuva teraz posiela vybrané udalosti na túto adresu."
@@ -23313,6 +23359,7 @@ msgstr "Yuva číta len súbor, ktorý nahráte, a po skončení migrácie ho od
 msgid "Yuva requests an address on a schedule and checks the answer."
 msgstr "Yuva pravidelne načíta adresu a skontroluje odpoveď."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva sends a signed POST request with a JSON body for every event you pick."
 msgstr "Yuva pre každú vybranú udalosť pošle podpísanú požiadavku POST s telom JSON."

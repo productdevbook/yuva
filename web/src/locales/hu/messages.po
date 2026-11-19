@@ -1953,6 +1953,7 @@ msgid "Accepted answer"
 msgstr "Elfogadott válasz"
 
 #: src/features/oauth/ConsentPage.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
@@ -2206,6 +2207,7 @@ msgstr "Kontakt hozzáadása"
 msgid "Add domain"
 msgstr "Domain hozzáadása"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Add endpoint"
@@ -2507,6 +2509,7 @@ msgstr "Minden import"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/ChatsPage.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
@@ -2839,6 +2842,7 @@ msgid "An entry in the zip unpacks to more than 100 times its size, so the file 
 msgstr "A zip egyik bejegyzése a méretének több mint 100-szorosára csomagolódik ki, ezért a fájlt veszélyesként elutasítottuk."
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "An https image URL."
 msgstr "Egy https képi URL."
@@ -3045,6 +3049,7 @@ msgstr "Egy másik munkaterület később igazolta ezt a címet"
 msgid "Answer (optional)"
 msgstr "Válasz (nem kötelező)"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Answer and organise conversations, write notes, keep contacts and labels up to date."
 msgstr "Válaszolj a beszélgetésekre és rendezd őket, írj jegyzeteket, tartsd naprakészen a kontaktokat és címkéket."
@@ -3767,6 +3772,7 @@ msgid "Billing"
 msgstr "Számlázás"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Billing bot"
 msgstr "Számlázási bot"
@@ -3829,6 +3835,7 @@ msgstr "Bot"
 msgid "Bot avatar"
 msgstr "Bot avatarja"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot avatar (optional)"
 msgstr "Bot avatarja (nem kötelező)"
@@ -3837,6 +3844,7 @@ msgstr "Bot avatarja (nem kötelező)"
 msgid "Bot name"
 msgstr "Bot neve"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot name (optional)"
 msgstr "Bot neve (nem kötelező)"
@@ -5515,6 +5523,7 @@ msgstr "Hozd létre, majd másold ki az App ID-t és az App Secretet, és illesz
 msgid "Create it, then copy the token, which Front shows only once, and paste it below."
 msgstr "Hozza létre, majd másolja ki a tokent, amelyet a Front csak egyszer mutat meg, és illessze be alább."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create key"
@@ -5647,6 +5656,7 @@ msgid "CSV file"
 msgstr "CSV-fájl"
 
 #: src/features/reports/TrendsReport.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -6213,6 +6223,7 @@ msgstr "Leírás"
 
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Description (optional)"
 msgstr "Leírás (nem kötelező)"
@@ -6520,7 +6531,9 @@ msgstr "kész"
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/fields/BulkFailures.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -7210,6 +7223,7 @@ msgstr "Minden postafiók"
 msgid "Every inbox follows the settings above."
 msgstr "Minden postafiók a fenti beállításokat követi."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Every inbox of the workspace, including ones you add later."
 msgstr "A munkaterület minden postafiókja, a később hozzáadottakat is beleértve."
@@ -7251,6 +7265,7 @@ msgstr "A végpontra érkezett minden kérés, legújabbal kezdve. A legutóbbi 
 msgid "Every run of the last 30 days, newest first."
 msgstr "Az elmúlt 30 nap összes futása, a legújabb elöl."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Every scope except sending broadcasts and reading the audit log."
 msgstr "Minden jogosultság, kivéve a körlevélküldést és a napló olvasását."
@@ -7315,6 +7330,7 @@ msgstr "Mindenki bejegyzései azonnal megjelennek, kivéve azokét a szerzőkét
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/Wizard.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -7379,6 +7395,7 @@ msgstr "lejárt: {expires}"
 msgid "Expires"
 msgstr "Lejár"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Expires (optional)"
 msgstr "Lejár (nem kötelező)"
@@ -8958,6 +8975,7 @@ msgstr "A Zoho Mailben nyisd meg a Settings › Mail accounts › IMAP access r�
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "Postafiók"
@@ -8989,6 +9007,7 @@ msgstr "Postafiók: {name}"
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10096,6 +10115,7 @@ msgstr "A logó URL-je"
 msgid "Look"
 msgstr "Megtekintés"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Look at conversations, contacts, inboxes, lists, broadcasts and analytics. Change nothing."
 msgstr "Nézd meg a beszélgetéseket, kontaktokat, postafiókokat, listákat, tömeges leveleket és az analitikát. Semmit ne módosíts."
@@ -11166,6 +11186,7 @@ msgstr "Saját nézeteim"
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/channels/ApiChannelForm.tsx
@@ -11204,6 +11225,7 @@ msgstr "Név és megjelenés"
 msgid "Name it “Yuva” and enter the redirect URL below as its redirection URL."
 msgstr "Nevezd el „Yuva”-nak, és add meg az alábbi átirányítási URL-t az átirányítási URL-jeként."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Name it after the backend, script or bot that will use it."
 msgstr "Nevezd el a háttérrendszerről, szkriptről vagy botról, amely használni fogja."
@@ -11319,6 +11341,7 @@ msgstr "Új cím ehhez: {name}"
 msgid "New addresses that get a confirmation mail"
 msgstr "Új címek, amelyek megerősítő levelet kapnak"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 msgid "New API key"
@@ -11407,7 +11430,6 @@ msgstr "Új bejegyzés"
 msgid "New field"
 msgstr "Új mező"
 
-#: src/features/mail/FilterDialog.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New filter"
@@ -11570,6 +11592,7 @@ msgid "New value"
 msgstr "Új érték"
 
 #: src/features/settings/DeveloperTabs.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 msgid "New webhook endpoint"
 msgstr "Új webhook-végpont"
 
@@ -12403,6 +12426,7 @@ msgstr "Nincs (csak helyi relék és tesztszerverek)"
 msgid "None for now"
 msgstr "Egyelőre nincs"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "None picked: the key sees every inbox."
 msgstr "Nincs kiválasztva: a kulcs minden postafiókot lát."
@@ -12974,6 +12998,7 @@ msgid "One e-mail a month about what is new."
 msgstr "Havonta egy e-mail az újdonságokról."
 
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "Egy postafiók"
@@ -13456,6 +13481,7 @@ msgstr "Sablonok megnyitása"
 msgid "Open the discussion"
 msgstr "Vita megnyitása"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Open the endpoint"
 msgstr "Végpont megnyitása"
@@ -14274,6 +14300,7 @@ msgid "Pick at least 30 minutes"
 msgstr "Válasszon legalább 30 percet"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Pick at least one event."
 msgstr "Válassz legalább egy eseményt."
@@ -14287,6 +14314,7 @@ msgstr "Válassz legalább egy listát, hogy lásd, ki kapja a levelet."
 msgid "Pick at least one platform."
 msgstr "Válassz legalább egy platformot."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick at least one scope."
 msgstr "Válassz legalább egy hatókört."
@@ -14295,6 +14323,7 @@ msgstr "Válassz legalább egy hatókört."
 msgid "Pick at least one."
 msgstr "Válassz legalább egyet."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "Válaszd ki magad az egyes hatóköröket."
@@ -14653,6 +14682,7 @@ msgid "Production"
 msgstr "Éles"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
 msgstr "Éles háttérrendszer"
@@ -14847,6 +14877,7 @@ msgstr "Push és e-mail"
 
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
 msgstr "Push-értesítések"
@@ -15027,6 +15058,7 @@ msgstr "Súgóközpontok, gyűjtemények és cikkek olvasása"
 msgid "Read mailing lists, subscribers and consent records"
 msgstr "Levelezési listák, feliratkozók és hozzájárulási rekordok olvasása"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Read only"
@@ -16032,6 +16064,7 @@ msgstr "Visszavisz ide"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Review"
 msgstr "Áttekintés"
@@ -16495,11 +16528,13 @@ msgstr "Ütemezett üzenet"
 msgid "Scheduling…"
 msgstr "Ütemezés…"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Scopes"
 msgstr "Hatókörök"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Scopes and inboxes cannot be changed later. For different ones, create a new key."
 msgstr "A hatóköröket és postafiókokat később nem lehet módosítani. Másokhoz hozz létre új kulcsot."
@@ -16709,6 +16744,7 @@ msgstr "Második titkos kulcs"
 msgid "Seconds, 1 to 30."
 msgstr "Másodperc, 1-től 30-ig."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Secret"
 msgstr "Titok"
@@ -17660,6 +17696,7 @@ msgid "Shown instead of the logo in dark mode."
 msgstr "Sötét módban a logó helyett jelenik meg."
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown on its messages. The key's name when empty."
 msgstr "Az üzenetein jelenik meg. Üresen a kulcs neve."
@@ -17676,10 +17713,12 @@ msgstr "A bejegyzéseiden jelenik meg minden dokumentációs webhelyen. Nélkül
 msgid "Shown on your posts. Leave it empty to show as “Reader”."
 msgstr "A bejegyzéseiden jelenik meg. Hagyd üresen, hogy „Olvasó”-ként jelenj meg."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown only now. Copy it and store it safely."
 msgstr "Csak most látható. Másold ki, és tárold biztonságosan."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Shown only now. Copy it and store it with your receiver."
 msgstr "Csak most látható. Másold ki, és tárold a fogadódnál."
@@ -17915,6 +17954,7 @@ msgid "Signing in through your organisation did not work. Try again, or use an e
 msgstr "Signing in through your organisation did not work. Try again, or use an e-mailed code."
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Signing secret"
 msgstr "Aláírási titok"
@@ -18377,10 +18417,6 @@ msgstr "Ön által csillagozott"
 msgid "Stars the mail for you."
 msgstr "Csillagozza a levelet neked."
 
-#: src/features/migrations/Wizard.tsx
-msgid "Start"
-msgstr "Indítás"
-
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Start “{name}” now?"
 msgstr "Start “{name}” now?"
@@ -18747,6 +18783,7 @@ msgstr "Támogatás"
 msgid "Support address"
 msgstr "Támogatási cím"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Support bot"
@@ -19280,6 +19317,7 @@ msgstr "A vég nem lehet a kezdet előtt, és a tartomány legfeljebb 13 hónap 
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "A végpont le van tiltva. Engedélyezd, hogy újra küldjön kézbesítéseket."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The endpoint is ready"
 msgstr "A végpont kész"
@@ -19436,6 +19474,7 @@ msgstr "Az import már nem vár indításra. Nézd meg az állapotát."
 msgid "The inbox address"
 msgstr "A postafiók címe"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "A postafiókot később nem lehet módosítani."
@@ -19496,14 +19535,17 @@ msgstr "The issue's state sets the progress the person sees."
 msgid "The İYS file has one row per subscriber in İYS's columns, ONAY for subscribed and RET for unsubscribed, for Turkish senders to upload to İYS themselves. Pending subscriptions are left out."
 msgstr "Az İYS-fájlban feliratkozónként egy sor van az İYS oszlopaiban, ONAY a feliratkozottakhoz és RET a leiratkozottakhoz, hogy a török feladók maguk tölthessék fel az İYS-be. A függő feliratkozások kimaradnak."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key is ready"
 msgstr "A kulcs kész"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
 msgstr "A kulcs csak ezeket a postaládákat látja, nem kezelhet postaládákat, webhookokat vagy a munkaterületet, és a naplót sem olvashatja."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
 msgstr "A kulcs a mai nap végén megszűnik működni."
@@ -20431,6 +20473,7 @@ msgstr "This domain is already in the list."
 msgid "This e-mail address bounced or complained, so the reply was not sent. Clear it on the contact to send again."
 msgstr "Ez az e-mail-cím visszapattant vagy panaszt tett, ezért a válasz nem lett elküldve. Töröld a kontaktnál, hogy újra küldhess."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "This endpoint receives only the events of {lockedName}."
 msgstr "Ez a végpont csak a(z) {lockedName} eseményeit fogadja."
@@ -21570,6 +21613,7 @@ msgid "Urgent"
 msgstr "Sürgős"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "URL"
 msgstr "URL"
@@ -21646,6 +21690,7 @@ msgstr "Legfeljebb 200 karaktert használj."
 msgid "Use at most 500 characters."
 msgstr "Legfeljebb 500 karaktert használj."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Use it as a bearer token against this server."
 msgstr "Használd bearer tokenként ennél a szervernél."
@@ -23265,6 +23310,7 @@ msgstr "A Yuva 8 számjegyű kódot küld a címre. Írja be ide."
 msgid "Yuva may now read your organization's mailboxes over IMAP, each once its owner signs in. Whoever started the migration can open it and sign in with Microsoft again."
 msgstr "A Yuva most már olvashatja a szervezeted postafiókjait IMAP-on, mindegyiket, amikor a tulajdonosa bejelentkezik. Aki az átvitelt indította, megnyithatja, és újra bejelentkezhet Microsofttal."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva now sends the events you picked to this address."
 msgstr "A Yuva most elküldi a kiválasztott eseményeket erre a címre."
@@ -23313,6 +23359,7 @@ msgstr "A Yuva csak az általad feltöltött fájlt olvassa, és törli, amikor 
 msgid "Yuva requests an address on a schedule and checks the answer."
 msgstr "A Yuva rendszeresen lekér egy címet, és ellenőrzi a választ."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva sends a signed POST request with a JSON body for every event you pick."
 msgstr "A Yuva minden kiválasztott eseményhez aláírt POST-kérést küld JSON-törzzsel."

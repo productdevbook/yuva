@@ -1953,6 +1953,7 @@ msgid "Accepted answer"
 msgstr "સ્વીકૃત જવાબ"
 
 #: src/features/oauth/ConsentPage.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
@@ -2206,6 +2207,7 @@ msgstr "સંપર્ક ઉમેરો"
 msgid "Add domain"
 msgstr "ડોમેન ઉમેરો"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Add endpoint"
@@ -2507,6 +2509,7 @@ msgstr "બધી આયાતો"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/ChatsPage.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
@@ -2839,6 +2842,7 @@ msgid "An entry in the zip unpacks to more than 100 times its size, so the file 
 msgstr "ઝિપની એક એન્ટ્રી તેના કદથી 100 ગણાથી વધુ અનપૅક થાય છે, તેથી ફાઇલ અસુરક્ષિત ગણી નકારવામાં આવી."
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "An https image URL."
 msgstr "https ઇમેજ URL."
@@ -3045,6 +3049,7 @@ msgstr "બીજા વર્કસ્પેસે આ સરનામું �
 msgid "Answer (optional)"
 msgstr "જવાબ (વૈકલ્પિક)"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Answer and organise conversations, write notes, keep contacts and labels up to date."
 msgstr "વાતચીતોના જવાબ આપો અને ગોઠવો, નોંધો લખો, સંપર્કો અને લેબલ અપ ટુ ડેટ રાખો."
@@ -3767,6 +3772,7 @@ msgid "Billing"
 msgstr "બિલિંગ"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Billing bot"
 msgstr "બિલિંગ બૉટ"
@@ -3829,6 +3835,7 @@ msgstr "બૉટ"
 msgid "Bot avatar"
 msgstr "બૉટ અવતાર"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot avatar (optional)"
 msgstr "બૉટ અવતાર (વૈકલ્પિક)"
@@ -3837,6 +3844,7 @@ msgstr "બૉટ અવતાર (વૈકલ્પિક)"
 msgid "Bot name"
 msgstr "બૉટનું નામ"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot name (optional)"
 msgstr "બૉટનું નામ (વૈકલ્પિક)"
@@ -5515,6 +5523,7 @@ msgstr "તેને બનાવો, પછી તેનું ઍપ ID અન
 msgid "Create it, then copy the token, which Front shows only once, and paste it below."
 msgstr "તેને બનાવો, પછી ટોકન કૉપિ કરો, જે Front ફક્ત એક જ વાર બતાવે છે, અને નીચે પેસ્ટ કરો."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create key"
@@ -5647,6 +5656,7 @@ msgid "CSV file"
 msgstr "CSV ફાઇલ"
 
 #: src/features/reports/TrendsReport.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -6213,6 +6223,7 @@ msgstr "વર્ણન"
 
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Description (optional)"
 msgstr "વર્ણન (વૈકલ્પિક)"
@@ -6520,7 +6531,9 @@ msgstr "થઈ ગયું"
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/fields/BulkFailures.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -7210,6 +7223,7 @@ msgstr "દરેક ઇનબૉક્સ"
 msgid "Every inbox follows the settings above."
 msgstr "દરેક ઇનબૉક્સ ઉપરના સેટિંગ્સને અનુસરે છે."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Every inbox of the workspace, including ones you add later."
 msgstr "વર્કસ્પેસનું દરેક ઇનબૉક્સ, તમે પછી ઉમેરો તે પણ."
@@ -7251,6 +7265,7 @@ msgstr "આ એન્ડપૉઇન્ટની દરેક વિનંતી
 msgid "Every run of the last 30 days, newest first."
 msgstr "છેલ્લા 30 દિવસના બધા રન, નવા પહેલા."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Every scope except sending broadcasts and reading the audit log."
 msgstr "બ્રોડકાસ્ટ મોકલવા અને ઓડિટ લૉગ વાંચવા સિવાયની બધી પરવાનગીઓ."
@@ -7315,6 +7330,7 @@ msgstr "દરેકની પોસ્ટ તરત પ્રકાશિત �
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/Wizard.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -7379,6 +7395,7 @@ msgstr "{expires} એ સમાપ્ત થયું"
 msgid "Expires"
 msgstr "સમાપ્ત થાય છે"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Expires (optional)"
 msgstr "સમાપ્તિ (વૈકલ્પિક)"
@@ -8958,6 +8975,7 @@ msgstr "Zoho Mail માં Settings › Mail accounts › IMAP access ખોલ
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "ઇનબૉક્સ"
@@ -8989,6 +9007,7 @@ msgstr "{name} માટે ઇનબૉક્સ"
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10096,6 +10115,7 @@ msgstr "લોગોનો URL"
 msgid "Look"
 msgstr "જુઓ"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Look at conversations, contacts, inboxes, lists, broadcasts and analytics. Change nothing."
 msgstr "વાતચીતો, સંપર્કો, ઇનબૉક્સ, લિસ્ટ, બ્રૉડકાસ્ટ અને ઍનાલિટિક્સ જુઓ. કશું બદલશો નહીં."
@@ -11166,6 +11186,7 @@ msgstr "મારા વ્યૂ"
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/channels/ApiChannelForm.tsx
@@ -11204,6 +11225,7 @@ msgstr "નામ અને દેખાવ"
 msgid "Name it “Yuva” and enter the redirect URL below as its redirection URL."
 msgstr "તેને “Yuva” નામ આપો અને નીચેનું રિડાયરેક્ટ URL તેના રિડાયરેક્શન URL તરીકે દાખલ કરો."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Name it after the backend, script or bot that will use it."
 msgstr "જે બૅકએન્ડ, સ્ક્રિપ્ટ કે બૉટ તેને વાપરશે તેના નામ પરથી નામ આપો."
@@ -11319,6 +11341,7 @@ msgstr "{name} માટે નવું સરનામું"
 msgid "New addresses that get a confirmation mail"
 msgstr "નવાં સરનામાં જેમને પુષ્ટિ મેઇલ મળે છે"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 msgid "New API key"
@@ -11407,7 +11430,6 @@ msgstr "નવી એન્ટ્રી"
 msgid "New field"
 msgstr "નવું ફીલ્ડ"
 
-#: src/features/mail/FilterDialog.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New filter"
@@ -11570,6 +11592,7 @@ msgid "New value"
 msgstr "નવી કિંમત"
 
 #: src/features/settings/DeveloperTabs.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 msgid "New webhook endpoint"
 msgstr "નવો વેબહૂક એન્ડપૉઇન્ટ"
 
@@ -12403,6 +12426,7 @@ msgstr "કંઈ નહીં (ફક્ત લોકલ રિલે અને
 msgid "None for now"
 msgstr "હમણાં કોઈ નહીં"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "None picked: the key sees every inbox."
 msgstr "કંઈ પસંદ નથી: કી દરેક ઇનબૉક્સ જુએ છે."
@@ -12974,6 +12998,7 @@ msgid "One e-mail a month about what is new."
 msgstr "નવું શું છે તે વિશે મહિને એક ઇમેઇલ."
 
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "એક ઇનબૉક્સ"
@@ -13456,6 +13481,7 @@ msgstr "ડિઝાઇન ખોલો"
 msgid "Open the discussion"
 msgstr "ચર્ચા ખોલો"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Open the endpoint"
 msgstr "એન્ડપૉઇન્ટ ખોલો"
@@ -14274,6 +14300,7 @@ msgid "Pick at least 30 minutes"
 msgstr "ઓછામાં ઓછી 30 મિનિટ પસંદ કરો"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Pick at least one event."
 msgstr "ઓછામાં ઓછી એક ઇવેન્ટ પસંદ કરો."
@@ -14287,6 +14314,7 @@ msgstr "મેઇલ કોને મળશે તે જોવા ઓછામ�
 msgid "Pick at least one platform."
 msgstr "ઓછામાં ઓછું એક પ્લૅટફૉર્મ પસંદ કરો."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick at least one scope."
 msgstr "ઓછામાં ઓછો એક સ્કોપ પસંદ કરો."
@@ -14295,6 +14323,7 @@ msgstr "ઓછામાં ઓછો એક સ્કોપ પસંદ કર�
 msgid "Pick at least one."
 msgstr "ઓછામાં ઓછું એક પસંદ કરો."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "દરેક સ્કોપ જાતે પસંદ કરો."
@@ -14653,6 +14682,7 @@ msgid "Production"
 msgstr "પ્રોડક્શન"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
 msgstr "પ્રોડક્શન બૅકએન્ડ"
@@ -14847,6 +14877,7 @@ msgstr "પુશ અને ઇમેઇલ"
 
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
 msgstr "પુશ સૂચનાઓ"
@@ -15027,6 +15058,7 @@ msgstr "સહાય કેન્દ્રો, સંગ્રહો અને �
 msgid "Read mailing lists, subscribers and consent records"
 msgstr "મેઇલિંગ લિસ્ટ, સબ્સ્ક્રાઇબર અને સંમતિ રેકોર્ડ વાંચો"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Read only"
@@ -16032,6 +16064,7 @@ msgstr "તમને આના પર પાછા લઈ જાય છે"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Review"
 msgstr "સમીક્ષા"
@@ -16495,11 +16528,13 @@ msgstr "શેડ્યૂલ કરેલો સંદેશ"
 msgid "Scheduling…"
 msgstr "શેડ્યૂલ થઈ રહ્યું છે…"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Scopes"
 msgstr "સ્કોપ"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Scopes and inboxes cannot be changed later. For different ones, create a new key."
 msgstr "સ્કોપ અને ઇનબૉક્સ પછી બદલી શકાતાં નથી. અલગ માટે, નવી કી બનાવો."
@@ -16709,6 +16744,7 @@ msgstr "બીજું સિક્રેટ"
 msgid "Seconds, 1 to 30."
 msgstr "સેકન્ડ, 1 થી 30."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Secret"
 msgstr "સિક્રેટ"
@@ -17660,6 +17696,7 @@ msgid "Shown instead of the logo in dark mode."
 msgstr "ડાર્ક મોડમાં લોગોને બદલે આ બતાવાય છે."
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown on its messages. The key's name when empty."
 msgstr "તેના સંદેશા પર બતાવાય છે. ખાલી હોય તો કીનું નામ."
@@ -17676,10 +17713,12 @@ msgstr "દરેક ડૉક્યુમેન્ટેશન સાઇટ પ
 msgid "Shown on your posts. Leave it empty to show as “Reader”."
 msgstr "તમારી પોસ્ટ પર બતાવાય છે. “Reader” તરીકે દેખાવા ખાલી છોડો."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown only now. Copy it and store it safely."
 msgstr "ફક્ત હમણાં બતાવાયું. તેને કૉપિ કરો અને સુરક્ષિત રાખો."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Shown only now. Copy it and store it with your receiver."
 msgstr "ફક્ત હમણાં બતાવાય છે. તેને કૉપિ કરો અને તમારા રિસીવર સાથે સંગ્રહો."
@@ -17915,6 +17954,7 @@ msgid "Signing in through your organisation did not work. Try again, or use an e
 msgstr "Signing in through your organisation did not work. Try again, or use an e-mailed code."
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Signing secret"
 msgstr "સાઇનિંગ સિક્રેટ"
@@ -18377,10 +18417,6 @@ msgstr "તમે તારો મૂક્યો હોય તે"
 msgid "Stars the mail for you."
 msgstr "તમારા માટે મેલ પર તારો લગાવે છે."
 
-#: src/features/migrations/Wizard.tsx
-msgid "Start"
-msgstr "શરૂ કરો"
-
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Start “{name}” now?"
 msgstr "Start “{name}” now?"
@@ -18747,6 +18783,7 @@ msgstr "સપોર્ટ"
 msgid "Support address"
 msgstr "સપોર્ટ સરનામું"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Support bot"
@@ -19280,6 +19317,7 @@ msgstr "અંત શરૂઆત પહેલાં ન હોઈ શકે, �
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "એન્ડપૉઇન્ટ અક્ષમ છે. ફરી ડિલિવરી મોકલવા તેને સક્ષમ કરો."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The endpoint is ready"
 msgstr "એન્ડપૉઇન્ટ તૈયાર છે"
@@ -19436,6 +19474,7 @@ msgstr "આયાત હવે શરૂ થવાની રાહ જોતી 
 msgid "The inbox address"
 msgstr "ઇનબૉક્સનું સરનામું"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "ઇનબૉક્સ પછી બદલી શકાતું નથી."
@@ -19496,14 +19535,17 @@ msgstr "The issue's state sets the progress the person sees."
 msgid "The İYS file has one row per subscriber in İYS's columns, ONAY for subscribed and RET for unsubscribed, for Turkish senders to upload to İYS themselves. Pending subscriptions are left out."
 msgstr "İYS ફાઇલમાં İYS ની કૉલમમાં દરેક સબ્સ્ક્રાઇબર દીઠ એક પંક્તિ છે, સબ્સ્ક્રાઇબ માટે ONAY અને અનસબ્સ્ક્રાઇબ માટે RET, તુર્કી મોકલનારાઓ પોતે İYS પર અપલોડ કરી શકે તે માટે. બાકી સબ્સ્ક્રિપ્શન બાકાત છે."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key is ready"
 msgstr "કી તૈયાર છે"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
 msgstr "આ કી ફક્ત આ ઇનબૉક્સ જોઈ શકે છે; તે ઇનબૉક્સ, વેબહૂક કે વર્કસ્પેસ મેનેજ કરી શકતી નથી અને ઓડિટ લૉગ વાંચી શકતી નથી."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
 msgstr "કી આ દિવસના અંતે કામ કરવાનું બંધ કરે છે."
@@ -20431,6 +20473,7 @@ msgstr "This domain is already in the list."
 msgid "This e-mail address bounced or complained, so the reply was not sent. Clear it on the contact to send again."
 msgstr "આ ઇમેઇલ સરનામું બાઉન્સ થયું કે ફરિયાદ કરી, તેથી જવાબ મોકલાયો નહીં. ફરી મોકલવા સંપર્ક પર તેને સાફ કરો."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "This endpoint receives only the events of {lockedName}."
 msgstr "આ એન્ડપૉઇન્ટ ફક્ત {lockedName} ની ઇવેન્ટ મેળવે છે."
@@ -21570,6 +21613,7 @@ msgid "Urgent"
 msgstr "તાત્કાલિક"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "URL"
 msgstr "URL"
@@ -21646,6 +21690,7 @@ msgstr "વધુમાં વધુ 200 અક્ષર વાપરો."
 msgid "Use at most 500 characters."
 msgstr "વધુમાં વધુ 500 અક્ષર વાપરો."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Use it as a bearer token against this server."
 msgstr "આ સર્વર સામે તેને બિયરર ટોકન તરીકે વાપરો."
@@ -23265,6 +23310,7 @@ msgstr "Yuva સરનામે 8 અંકનો કોડ મોકલે છ�
 msgid "Yuva may now read your organization's mailboxes over IMAP, each once its owner signs in. Whoever started the migration can open it and sign in with Microsoft again."
 msgstr "Yuva હવે તમારી સંસ્થાનાં મેઇલબૉક્સ IMAP પર વાંચી શકે છે, દરેક તેના માલિક સાઇન ઇન કરે ત્યારે. જેણે માઇગ્રેશન શરૂ કર્યું તે તેને ખોલી શકે છે અને Microsoft થી ફરી સાઇન ઇન કરી શકે છે."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva now sends the events you picked to this address."
 msgstr "Yuva હવે તમે પસંદ કરેલી ઇવેન્ટ આ સરનામે મોકલે છે."
@@ -23313,6 +23359,7 @@ msgstr "Yuva ફક્ત તમે અપલોડ કરેલી ફાઇલ
 msgid "Yuva requests an address on a schedule and checks the answer."
 msgstr "Yuva સમયાંતરે સરનામાને વિનંતી મોકલે છે અને જવાબ તપાસે છે."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva sends a signed POST request with a JSON body for every event you pick."
 msgstr "Yuva તમે પસંદ કરેલી દરેક ઇવેન્ટ માટે JSON બૉડી સાથે સહી કરેલી POST વિનંતી મોકલે છે."

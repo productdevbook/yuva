@@ -1,6 +1,7 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { useQuery } from "@tanstack/react-query"
-import { Link, useLocation, useNavigate } from "react-router"
+import { useState } from "react"
+import { Link } from "react-router"
 
 import { ErrorLine } from "@/components/common"
 import { EmptyBox } from "@/components/common/EmptyBox"
@@ -11,6 +12,7 @@ import { Card, EmptyRow, headButton, LinkRow, ProductTag, Rows, Section } from "
 import { EndpointStatus } from "@/features/settings/webhooks/parts"
 import { useWebhooks } from "@/features/settings/webhooks/queries"
 import { SignatureHint } from "@/features/settings/webhooks/SignatureHint"
+import { WebhookForm, WebhookSecret, type CreatedEndpoint } from "@/features/settings/webhooks/WebhookForm"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 import { api, unwrap, type WebhookEndpoint } from "@/lib/api"
@@ -63,10 +65,8 @@ function LastDelivery({ e }: { e: WebhookEndpoint }) {
   )
 }
 
-export function WebhookTable() {
+export function WebhookTable({ onAdd }: { onAdd?: () => void }) {
   const { canManage } = useSession()
-  const navigate = useNavigate()
-  const location = useLocation()
   const inboxes = useInboxes().data ?? []
   const list = useWebhooks(undefined)
   if (!canManage) return null
@@ -83,12 +83,11 @@ export function WebhookTable() {
           title={<Trans>No endpoints yet</Trans>}
           testId="webhooks-empty"
           actions={
-            <Button
-              className={headButton.primary}
-              onClick={() => navigate("/setup/webhook", { state: { back: location.pathname } })}
-            >
-              <Trans>Add endpoint</Trans>
-            </Button>
+            onAdd && (
+              <Button className={headButton.primary} onClick={onAdd}>
+                <Trans>Add endpoint</Trans>
+              </Button>
+            )
           }
         >
           <Trans>Add an address on your server and pick the events Yuva should tell it about.</Trans>
@@ -170,8 +169,8 @@ export function WebhookList({ inboxId }: { inboxId?: string }) {
   const { canManage } = useSession()
   const inboxes = useInboxes().data ?? []
   const list = useWebhooks(inboxId)
-  const navigate = useNavigate()
-  const location = useLocation()
+  const [adding, setAdding] = useState(false)
+  const [created, setCreated] = useState<CreatedEndpoint | null>(null)
   if (!canManage) return null
   return (
     <Section
@@ -190,17 +189,28 @@ export function WebhookList({ inboxId }: { inboxId?: string }) {
         <Button
           variant="outline"
           size="sm"
-          onClick={() =>
-            navigate(inboxId ? `/setup/webhook?inbox=${inboxId}` : "/setup/webhook", {
-              state: { back: location.pathname },
-            })
-          }
+          disabled={adding}
+          onClick={() => {
+            setCreated(null)
+            setAdding(true)
+          }}
           data-testid="webhook-add"
         >
           <Trans>Add endpoint</Trans>
         </Button>
       }
     >
+      {adding && (
+        <WebhookForm
+          lockedInbox={inboxId}
+          onClose={() => setAdding(false)}
+          onCreated={(e) => {
+            setAdding(false)
+            setCreated(e)
+          }}
+        />
+      )}
+      {created && <WebhookSecret created={created} onDone={() => setCreated(null)} />}
       <Card flush>
         {list.isPending ? (
           <Skeleton className="m-5 h-10" />

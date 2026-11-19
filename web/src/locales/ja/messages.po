@@ -1953,6 +1953,7 @@ msgid "Accepted answer"
 msgstr "承認済みの回答"
 
 #: src/features/oauth/ConsentPage.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
@@ -2206,6 +2207,7 @@ msgstr "連絡先を追加"
 msgid "Add domain"
 msgstr "ドメインを追加"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Add endpoint"
@@ -2507,6 +2509,7 @@ msgstr "すべてのインポート"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/ChatsPage.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
@@ -2839,6 +2842,7 @@ msgid "An entry in the zip unpacks to more than 100 times its size, so the file 
 msgstr "zip 内のエントリが元のサイズの 100 倍を超えて展開されるため、安全でないファイルとして拒否されました。"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "An https image URL."
 msgstr "https の画像 URL。"
@@ -3045,6 +3049,7 @@ msgstr "別のワークスペースが後からこのアドレスを証明しま
 msgid "Answer (optional)"
 msgstr "回答(任意)"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Answer and organise conversations, write notes, keep contacts and labels up to date."
 msgstr "会話に回答して整理し、メモを書き、連絡先とラベルを最新に保ちます。"
@@ -3767,6 +3772,7 @@ msgid "Billing"
 msgstr "請求"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Billing bot"
 msgstr "請求ボット"
@@ -3829,6 +3835,7 @@ msgstr "ボット"
 msgid "Bot avatar"
 msgstr "ボットのアバター"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot avatar (optional)"
 msgstr "ボットのアバター(任意)"
@@ -3837,6 +3844,7 @@ msgstr "ボットのアバター(任意)"
 msgid "Bot name"
 msgstr "ボット名"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot name (optional)"
 msgstr "ボット名(任意)"
@@ -5515,6 +5523,7 @@ msgstr "作成したら、アプリ ID とアプリシークレットをコピ�
 msgid "Create it, then copy the token, which Front shows only once, and paste it below."
 msgstr "作成したら、Front が一度しか表示しないトークンをコピーして、下に貼り付けます。"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create key"
@@ -5647,6 +5656,7 @@ msgid "CSV file"
 msgstr "CSV ファイル"
 
 #: src/features/reports/TrendsReport.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -6213,6 +6223,7 @@ msgstr "説明"
 
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Description (optional)"
 msgstr "説明(任意)"
@@ -6520,7 +6531,9 @@ msgstr "完了"
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/fields/BulkFailures.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -7210,6 +7223,7 @@ msgstr "すべての受信トレイ"
 msgid "Every inbox follows the settings above."
 msgstr "すべての受信トレイが上の設定に従います。"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Every inbox of the workspace, including ones you add later."
 msgstr "ワークスペースのすべての受信トレイ(後から追加するものを含む)。"
@@ -7251,6 +7265,7 @@ msgstr "このエンドポイントへのすべてのリクエスト(新しい�
 msgid "Every run of the last 30 days, newest first."
 msgstr "過去30日間のすべての実行を新しい順に表示します。"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Every scope except sending broadcasts and reading the audit log."
 msgstr "一斉送信と監査ログの閲覧を除くすべての権限。"
@@ -7315,6 +7330,7 @@ msgstr "スパムとして記録した投稿者を除き、全員の投稿がす
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/Wizard.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -7379,6 +7395,7 @@ msgstr "{expires} に期限切れ"
 msgid "Expires"
 msgstr "有効期限"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Expires (optional)"
 msgstr "有効期限(任意)"
@@ -8958,6 +8975,7 @@ msgstr "Zoho Mail で、設定 › メールアカウント › IMAP アクセ�
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "受信トレイ"
@@ -8989,6 +9007,7 @@ msgstr "{name} の受信トレイ"
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10096,6 +10115,7 @@ msgstr "ロゴの URL"
 msgid "Look"
 msgstr "表示"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Look at conversations, contacts, inboxes, lists, broadcasts and analytics. Change nothing."
 msgstr "会話、連絡先、受信トレイ、リスト、一斉配信、アナリティクスを閲覧します。変更はしません。"
@@ -11166,6 +11186,7 @@ msgstr "自分のビュー"
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/channels/ApiChannelForm.tsx
@@ -11204,6 +11225,7 @@ msgstr "名前と見た目"
 msgid "Name it “Yuva” and enter the redirect URL below as its redirection URL."
 msgstr "名前を「Yuva」にして、下のリダイレクト URL をそのリダイレクト先に入力します。"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Name it after the backend, script or bot that will use it."
 msgstr "使用するバックエンド、スクリプト、ボットにちなんで名前を付けてください。"
@@ -11319,6 +11341,7 @@ msgstr "{name} の新しいアドレス"
 msgid "New addresses that get a confirmation mail"
 msgstr "確認メールを送る新しいアドレス"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 msgid "New API key"
@@ -11407,7 +11430,6 @@ msgstr "新しいエントリ"
 msgid "New field"
 msgstr "新しいフィールド"
 
-#: src/features/mail/FilterDialog.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New filter"
@@ -11570,6 +11592,7 @@ msgid "New value"
 msgstr "新しい値"
 
 #: src/features/settings/DeveloperTabs.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 msgid "New webhook endpoint"
 msgstr "新しい Webhook エンドポイント"
 
@@ -12403,6 +12426,7 @@ msgstr "なし(ローカルリレーとテストサーバー専用)"
 msgid "None for now"
 msgstr "今はなし"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "None picked: the key sees every inbox."
 msgstr "選択なし: このキーはすべての受信トレイを参照できます。"
@@ -12974,6 +12998,7 @@ msgid "One e-mail a month about what is new."
 msgstr "新着情報を月に 1 通お届けします。"
 
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "1 つの受信トレイ"
@@ -13456,6 +13481,7 @@ msgstr "デザインを開く"
 msgid "Open the discussion"
 msgstr "ディスカッションを開く"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Open the endpoint"
 msgstr "エンドポイントを開く"
@@ -14274,6 +14300,7 @@ msgid "Pick at least 30 minutes"
 msgstr "30分以上を選んでください"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Pick at least one event."
 msgstr "イベントを 1 つ以上選択してください。"
@@ -14287,6 +14314,7 @@ msgstr "メールを受け取る人を確認するには、リストを 1 つ以
 msgid "Pick at least one platform."
 msgstr "プラットフォームを 1 つ以上選択してください。"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick at least one scope."
 msgstr "スコープを 1 つ以上選択してください。"
@@ -14295,6 +14323,7 @@ msgstr "スコープを 1 つ以上選択してください。"
 msgid "Pick at least one."
 msgstr "1 つ以上選択してください。"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "スコープを 1 つずつ自分で選びます。"
@@ -14653,6 +14682,7 @@ msgid "Production"
 msgstr "本番"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
 msgstr "本番バックエンド"
@@ -14847,6 +14877,7 @@ msgstr "プッシュとメール"
 
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
 msgstr "プッシュ通知"
@@ -15027,6 +15058,7 @@ msgstr "ヘルプセンター、コレクション、記事を閲覧"
 msgid "Read mailing lists, subscribers and consent records"
 msgstr "メーリングリスト、登録者、同意記録を読み取り"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Read only"
@@ -16032,6 +16064,7 @@ msgstr "戻り先"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Review"
 msgstr "確認"
@@ -16495,11 +16528,13 @@ msgstr "予約済みのメッセージ"
 msgid "Scheduling…"
 msgstr "予約中…"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Scopes"
 msgstr "スコープ"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Scopes and inboxes cannot be changed later. For different ones, create a new key."
 msgstr "スコープと受信トレイは後から変更できません。変更したい場合は、新しいキーを作成してください。"
@@ -16709,6 +16744,7 @@ msgstr "2 つ目のシークレット"
 msgid "Seconds, 1 to 30."
 msgstr "秒単位、1 から 30 まで。"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Secret"
 msgstr "シークレット"
@@ -17660,6 +17696,7 @@ msgid "Shown instead of the logo in dark mode."
 msgstr "ダークモードではロゴの代わりに表示されます。"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown on its messages. The key's name when empty."
 msgstr "そのメッセージに表示されます。空の場合はキーの名前を使います。"
@@ -17676,10 +17713,12 @@ msgstr "すべてのドキュメントサイトでの投稿に表示されます
 msgid "Shown on your posts. Leave it empty to show as “Reader”."
 msgstr "投稿に表示されます。空のままにすると「閲覧者」と表示されます。"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown only now. Copy it and store it safely."
 msgstr "今回のみ表示されます。コピーして安全な場所に保管してください。"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Shown only now. Copy it and store it with your receiver."
 msgstr "今回のみ表示されます。コピーして、受信側で保管してください。"
@@ -17915,6 +17954,7 @@ msgid "Signing in through your organisation did not work. Try again, or use an e
 msgstr "Signing in through your organisation did not work. Try again, or use an e-mailed code."
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Signing secret"
 msgstr "署名シークレット"
@@ -18377,10 +18417,6 @@ msgstr "自分がスターを付けた"
 msgid "Stars the mail for you."
 msgstr "あなたのためにメールにスターを付けます。"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Start"
-msgstr "開始"
-
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Start “{name}” now?"
 msgstr "Start “{name}” now?"
@@ -18747,6 +18783,7 @@ msgstr "サポート"
 msgid "Support address"
 msgstr "サポート用アドレス"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Support bot"
@@ -19280,6 +19317,7 @@ msgstr "終了日は開始日より前にできず、範囲は最大13か月で�
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "エンドポイントは無効です。配信を再開するには有効にしてください。"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The endpoint is ready"
 msgstr "エンドポイントの準備ができました"
@@ -19436,6 +19474,7 @@ msgstr "インポートは開始待ちではなくなりました。状態を確
 msgid "The inbox address"
 msgstr "受信箱のアドレス"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "受信トレイは後から変更できません。"
@@ -19496,14 +19535,17 @@ msgstr "The issue's state sets the progress the person sees."
 msgid "The İYS file has one row per subscriber in İYS's columns, ONAY for subscribed and RET for unsubscribed, for Turkish senders to upload to İYS themselves. Pending subscriptions are left out."
 msgstr "İYS ファイルには、İYS の列に合わせて登録者ごとに 1 行が入り、登録は ONAY、配信停止は RET です。トルコの送信者が自分で İYS にアップロードするためのものです。保留中の登録は含まれません。"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key is ready"
 msgstr "キーの準備ができました"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
 msgstr "このキーはこれらの受信トレイしか見られず、受信トレイ・Webhook・ワークスペースの管理や監査ログの閲覧はできません。"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
 msgstr "キーはこの日の終わりに動作しなくなります。"
@@ -20431,6 +20473,7 @@ msgstr "This domain is already in the list."
 msgid "This e-mail address bounced or complained, so the reply was not sent. Clear it on the contact to send again."
 msgstr "このメールアドレスはバウンスまたは苦情が発生したため、返信は送信されませんでした。連絡先で解除すると再送信できます。"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "This endpoint receives only the events of {lockedName}."
 msgstr "このエンドポイントは {lockedName} のイベントのみ受信します。"
@@ -21570,6 +21613,7 @@ msgid "Urgent"
 msgstr "至急"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "URL"
 msgstr "URL"
@@ -21646,6 +21690,7 @@ msgstr "200 文字以内で入力してください。"
 msgid "Use at most 500 characters."
 msgstr "500 文字以内で入力してください。"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Use it as a bearer token against this server."
 msgstr "このサーバーに対するベアラートークンとして使います。"
@@ -23265,6 +23310,7 @@ msgstr "Yuvaが8桁のコードをこのアドレスにメールで送ります�
 msgid "Yuva may now read your organization's mailboxes over IMAP, each once its owner signs in. Whoever started the migration can open it and sign in with Microsoft again."
 msgstr "Yuva は、組織のメールボックスを IMAP で読み取れるようになりました(各所有者がサインインした後)。移行を開始した人が、それを開いて再度 Microsoft でサインインできます。"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva now sends the events you picked to this address."
 msgstr "Yuva は選択したイベントをこのアドレスに送信するようになりました。"
@@ -23313,6 +23359,7 @@ msgstr "Yuva はアップロードされたファイルだけを読み取り、�
 msgid "Yuva requests an address on a schedule and checks the answer."
 msgstr "Yuva は定期的にアドレスへリクエストし、応答を確認します。"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva sends a signed POST request with a JSON body for every event you pick."
 msgstr "Yuva は、選択したイベントごとに、JSON 本文付きの署名済み POST リクエストを送信します。"

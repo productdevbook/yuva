@@ -16,10 +16,10 @@ import {
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { ApiKeyDialog } from "@/features/settings/api-keys/ApiKeyDialog"
+import { ApiKeyForm, ApiKeySecret } from "@/features/settings/api-keys/ApiKeyForm"
 import { useWorkspaceSettings } from "@/features/settings/connected-apps/queries"
 import { DeveloperHeader } from "@/features/settings/DeveloperTabs"
 import { Card, headButton, ProductTag, tableHeadClass, ToggleRow } from "@/features/settings/ui"
-import { useNavigate, useLocation } from "react-router"
 import { api, unwrap, type ApiKey } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { meKey, useSession } from "@/lib/session"
@@ -203,9 +203,9 @@ function KeyRow({ k, onEdit, onRevoke }: { k: ApiKey; onEdit: () => void; onRevo
 export function ApiKeysPage() {
   const qc = useQueryClient()
   const { workspaceId: ws, canManage } = useSession()
-  const navigate = useNavigate()
-  const location = useLocation()
   const [editing, setEditing] = useState<ApiKey | null>(null)
+  const [adding, setAdding] = useState(false)
+  const [secret, setSecret] = useState<string | null>(null)
   const [showRevoked, setShowRevoked] = useState(false)
   const [confirm, confirmDialog] = useConfirm()
   const list = useQuery({
@@ -224,19 +224,41 @@ export function ApiKeysPage() {
   const nRevoked = revoked.length
   return (
     <>
-      <DeveloperHeader current="api-keys" />
+      <DeveloperHeader
+        current="api-keys"
+        onCreate={() => {
+          setSecret(null)
+          setAdding(true)
+        }}
+        creating={adding}
+      />
+      {adding && (
+        <ApiKeyForm
+          onClose={() => setAdding(false)}
+          onCreated={(s) => {
+            setAdding(false)
+            setSecret(s)
+          }}
+        />
+      )}
+      {secret && <ApiKeySecret secret={secret} onDone={() => setSecret(null)} />}
       <BotSending />
       {list.data && all.length === 0 ? (
         <EmptyBox
           title={<Trans>No API keys yet</Trans>}
           testId="api-keys-empty"
           actions={
-            <Button
-              className={headButton.primary}
-              onClick={() => navigate("/setup/api-key", { state: { back: location.pathname } })}
-            >
-              <Trans>New API key</Trans>
-            </Button>
+            !adding && (
+              <Button
+                className={headButton.primary}
+                onClick={() => {
+                  setSecret(null)
+                  setAdding(true)
+                }}
+              >
+                <Trans>New API key</Trans>
+              </Button>
+            )
           }
         >
           <Trans>

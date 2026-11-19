@@ -1953,6 +1953,7 @@ msgid "Accepted answer"
 msgstr "Prihvaćen odgovor"
 
 #: src/features/oauth/ConsentPage.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
@@ -2206,6 +2207,7 @@ msgstr "Dodaj kontakt"
 msgid "Add domain"
 msgstr "Dodaj domenu"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Add endpoint"
@@ -2507,6 +2509,7 @@ msgstr "Svi uvozi"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/ChatsPage.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
@@ -2839,6 +2842,7 @@ msgid "An entry in the zip unpacks to more than 100 times its size, so the file 
 msgstr "Unos u zip arhivi raspakira se na više od 100 puta svoje veličine pa je datoteka odbijena kao nesigurna."
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "An https image URL."
 msgstr "URL slike https."
@@ -3045,6 +3049,7 @@ msgstr "Drugi radni prostor potvrdio je ovu adresu kasnije"
 msgid "Answer (optional)"
 msgstr "Odgovor (neobavezno)"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Answer and organise conversations, write notes, keep contacts and labels up to date."
 msgstr "Odgovarajte na razgovore i organizirajte ih, pišite bilješke, održavajte kontakte i oznake ažurnima."
@@ -3767,6 +3772,7 @@ msgid "Billing"
 msgstr "Naplata"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Billing bot"
 msgstr "Bot za naplatu"
@@ -3829,6 +3835,7 @@ msgstr "Bot"
 msgid "Bot avatar"
 msgstr "Avatar bota"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot avatar (optional)"
 msgstr "Avatar bota (neobavezno)"
@@ -3837,6 +3844,7 @@ msgstr "Avatar bota (neobavezno)"
 msgid "Bot name"
 msgstr "Ime bota"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot name (optional)"
 msgstr "Ime bota (neobavezno)"
@@ -5515,6 +5523,7 @@ msgstr "Izradite je, zatim kopirajte njezin App ID i App Secret i zalijepite ih 
 msgid "Create it, then copy the token, which Front shows only once, and paste it below."
 msgstr "Izradite ga, zatim kopirajte token, koji Front prikazuje samo jednom, i zalijepite ga ispod."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create key"
@@ -5647,6 +5656,7 @@ msgid "CSV file"
 msgstr "CSV datoteka"
 
 #: src/features/reports/TrendsReport.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -6213,6 +6223,7 @@ msgstr "Opis"
 
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Description (optional)"
 msgstr "Opis (neobavezno)"
@@ -6520,7 +6531,9 @@ msgstr "gotovo"
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/fields/BulkFailures.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -7210,6 +7223,7 @@ msgstr "Svaki pretinac"
 msgid "Every inbox follows the settings above."
 msgstr "Svaki pretinac slijedi gornje postavke."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Every inbox of the workspace, including ones you add later."
 msgstr "Svaki pretinac radnog prostora, uključujući one koje dodate poslije."
@@ -7251,6 +7265,7 @@ msgstr "Svaki zahtjev prema ovoj krajnjoj točki, od najnovijeg. Čuva se najnov
 msgid "Every run of the last 30 days, newest first."
 msgstr "Sva pokretanja posljednjih 30 dana, najnovija prva."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Every scope except sending broadcasts and reading the audit log."
 msgstr "Sva dopuštenja osim slanja masovnih poruka i čitanja revizijskog zapisnika."
@@ -7315,6 +7330,7 @@ msgstr "Objave svih objavljuju se odmah, osim objava autora koje ste označili k
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/Wizard.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -7379,6 +7395,7 @@ msgstr "isteklo {expires}"
 msgid "Expires"
 msgstr "Istječe"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Expires (optional)"
 msgstr "Istječe (neobavezno)"
@@ -8958,6 +8975,7 @@ msgstr "U Zoho Mailu otvorite Settings › Mail accounts › IMAP access i uklju
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "Pretinac"
@@ -8989,6 +9007,7 @@ msgstr "Pretinac za {name}"
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10096,6 +10115,7 @@ msgstr "URL logotipa"
 msgid "Look"
 msgstr "Pogledaj"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Look at conversations, contacts, inboxes, lists, broadcasts and analytics. Change nothing."
 msgstr "Pregledavajte razgovore, kontakte, pretince, popise, masovne poruke i analitiku. Ništa ne mijenjajte."
@@ -11166,6 +11186,7 @@ msgstr "Moji prikazi"
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/channels/ApiChannelForm.tsx
@@ -11204,6 +11225,7 @@ msgstr "Naziv i izgled"
 msgid "Name it “Yuva” and enter the redirect URL below as its redirection URL."
 msgstr "Nazovite je „Yuva” i donji URL za preusmjeravanje unesite kao njezin URL za preusmjeravanje."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Name it after the backend, script or bot that will use it."
 msgstr "Nazovite ga po pozadini, skripti ili botu koji će ga koristiti."
@@ -11319,6 +11341,7 @@ msgstr "Nova adresa za „{name}”"
 msgid "New addresses that get a confirmation mail"
 msgstr "Nove adrese koje dobivaju poruku potvrde"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 msgid "New API key"
@@ -11407,7 +11430,6 @@ msgstr "Novi zapis"
 msgid "New field"
 msgstr "Novo polje"
 
-#: src/features/mail/FilterDialog.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New filter"
@@ -11570,6 +11592,7 @@ msgid "New value"
 msgstr "Nova vrijednost"
 
 #: src/features/settings/DeveloperTabs.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 msgid "New webhook endpoint"
 msgstr "Nova krajnja točka webhooka"
 
@@ -12403,6 +12426,7 @@ msgstr "Nema (samo lokalni releji i testni poslužitelji)"
 msgid "None for now"
 msgstr "Zasad nijedan"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "None picked: the key sees every inbox."
 msgstr "Ništa odabrano: ključ vidi svaki pretinac."
@@ -12974,6 +12998,7 @@ msgid "One e-mail a month about what is new."
 msgstr "Jedna e-poruka mjesečno o novostima."
 
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "Jedan pretinac"
@@ -13456,6 +13481,7 @@ msgstr "Otvori dizajne"
 msgid "Open the discussion"
 msgstr "Otvori raspravu"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Open the endpoint"
 msgstr "Otvori krajnju točku"
@@ -14274,6 +14300,7 @@ msgid "Pick at least 30 minutes"
 msgstr "Odaberite barem 30 minuta"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Pick at least one event."
 msgstr "Odaberite barem jedan događaj."
@@ -14287,6 +14314,7 @@ msgstr "Odaberite barem jedan popis da vidite tko dobiva poruku."
 msgid "Pick at least one platform."
 msgstr "Odaberite barem jednu platformu."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick at least one scope."
 msgstr "Odaberite barem jedan doseg."
@@ -14295,6 +14323,7 @@ msgstr "Odaberite barem jedan doseg."
 msgid "Pick at least one."
 msgstr "Odaberite barem jedno."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "Svaki doseg odaberite sami."
@@ -14653,6 +14682,7 @@ msgid "Production"
 msgstr "Produkcija"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
 msgstr "Produkcijska pozadina"
@@ -14847,6 +14877,7 @@ msgstr "Push i e-pošta"
 
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
 msgstr "Push obavijesti"
@@ -15027,6 +15058,7 @@ msgstr "Čitanje centara za pomoć, zbirki i članaka"
 msgid "Read mailing lists, subscribers and consent records"
 msgstr "Čitaj popise e-pošte, pretplatnike i zapise o privoli"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Read only"
@@ -16032,6 +16064,7 @@ msgstr "Vraća vas na"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Review"
 msgstr "Pregled"
@@ -16495,11 +16528,13 @@ msgstr "Zakazana poruka"
 msgid "Scheduling…"
 msgstr "Zakazivanje…"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Scopes"
 msgstr "Dosezi"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Scopes and inboxes cannot be changed later. For different ones, create a new key."
 msgstr "Dosezi i pretinci ne mogu se poslije promijeniti. Za drugačije izradite novi ključ."
@@ -16709,6 +16744,7 @@ msgstr "Druga tajna"
 msgid "Seconds, 1 to 30."
 msgstr "Sekunde, od 1 do 30."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Secret"
 msgstr "Tajna"
@@ -17660,6 +17696,7 @@ msgid "Shown instead of the logo in dark mode."
 msgstr "Prikazuje se umjesto logotipa u tamnom načinu."
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown on its messages. The key's name when empty."
 msgstr "Prikazuje se uz njegove poruke. Ako je prazno, naziv ključa."
@@ -17676,10 +17713,12 @@ msgstr "Prikazuje se uz vaše objave na svakom dokumentacijskom web-mjestu. Bez 
 msgid "Shown on your posts. Leave it empty to show as “Reader”."
 msgstr "Prikazuje se uz vaše objave. Ostavite prazno da se prikazujete kao „Čitatelj”."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown only now. Copy it and store it safely."
 msgstr "Prikazuje se samo sada. Kopirajte ga i spremite na sigurno."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Shown only now. Copy it and store it with your receiver."
 msgstr "Prikazano samo sada. Kopirajte ga i pohranite kod svog primatelja."
@@ -17915,6 +17954,7 @@ msgid "Signing in through your organisation did not work. Try again, or use an e
 msgstr "Signing in through your organisation did not work. Try again, or use an e-mailed code."
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Signing secret"
 msgstr "Tajna za potpisivanje"
@@ -18377,10 +18417,6 @@ msgstr "označeno vašom zvjezdicom"
 msgid "Stars the mail for you."
 msgstr "Označava e-poštu zvjezdicom za vas."
 
-#: src/features/migrations/Wizard.tsx
-msgid "Start"
-msgstr "Započni"
-
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Start “{name}” now?"
 msgstr "Start “{name}” now?"
@@ -18747,6 +18783,7 @@ msgstr "Podrška"
 msgid "Support address"
 msgstr "Adresa podrške"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Support bot"
@@ -19280,6 +19317,7 @@ msgstr "Kraj ne smije biti prije početka, a raspon može biti najviše 13 mjese
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "Krajnja točka je onemogućena. Omogućite je da ponovno šalje isporuke."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The endpoint is ready"
 msgstr "Krajnja točka je spremna"
@@ -19436,6 +19474,7 @@ msgstr "Uvoz više ne čeka početak. Pogledajte njegovo stanje."
 msgid "The inbox address"
 msgstr "Adresa sandučića"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "Pretinac se poslije ne može promijeniti."
@@ -19496,14 +19535,17 @@ msgstr "The issue's state sets the progress the person sees."
 msgid "The İYS file has one row per subscriber in İYS's columns, ONAY for subscribed and RET for unsubscribed, for Turkish senders to upload to İYS themselves. Pending subscriptions are left out."
 msgstr "İYS datoteka ima jedan redak po pretplatniku u İYS-ovim stupcima, ONAY za pretplaćene i RET za odjavljene, da je turski pošiljatelji mogu sami učitati u İYS. Pretplate na čekanju izostavljaju se."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key is ready"
 msgstr "Ključ je spreman"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
 msgstr "Ključ vidi samo ove sandučiće i ne može upravljati sandučićima, webhookovima ni radnim prostorom niti čitati revizijski zapisnik."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
 msgstr "Ključ prestaje raditi na kraju ovog dana."
@@ -20431,6 +20473,7 @@ msgstr "This domain is already in the list."
 msgid "This e-mail address bounced or complained, so the reply was not sent. Clear it on the contact to send again."
 msgstr "Ova e-adresa je vraćena ili se žalila pa odgovor nije poslan. Očistite je na kontaktu da pošaljete ponovno."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "This endpoint receives only the events of {lockedName}."
 msgstr "Ova krajnja točka prima samo događaje {lockedName}."
@@ -21570,6 +21613,7 @@ msgid "Urgent"
 msgstr "Hitno"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "URL"
 msgstr "URL"
@@ -21646,6 +21690,7 @@ msgstr "Koristite najviše 200 znakova."
 msgid "Use at most 500 characters."
 msgstr "Koristite najviše 500 znakova."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Use it as a bearer token against this server."
 msgstr "Koristite ga kao bearer token protiv ovog poslužitelja."
@@ -23265,6 +23310,7 @@ msgstr "Yuva šalje na adresu 8-znamenkasti kod. Upišite ga ovdje."
 msgid "Yuva may now read your organization's mailboxes over IMAP, each once its owner signs in. Whoever started the migration can open it and sign in with Microsoft again."
 msgstr "Yuva sada smije čitati pretince vaše organizacije preko IMAP-a, svaki kad se njegov vlasnik prijavi. Tko je započeo migraciju može je otvoriti i ponovno se prijaviti putem Microsofta."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva now sends the events you picked to this address."
 msgstr "Yuva sada šalje odabrane događaje na ovu adresu."
@@ -23313,6 +23359,7 @@ msgstr "Yuva čita samo datoteku koju učitate i briše je kad migracija završi
 msgid "Yuva requests an address on a schedule and checks the answer."
 msgstr "Yuva redovito dohvaća adresu i provjerava odgovor."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva sends a signed POST request with a JSON body for every event you pick."
 msgstr "Yuva šalje potpisan POST zahtjev s JSON tijelom za svaki odabrani događaj."

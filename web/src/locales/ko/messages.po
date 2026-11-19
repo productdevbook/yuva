@@ -1953,6 +1953,7 @@ msgid "Accepted answer"
 msgstr "채택된 답변"
 
 #: src/features/oauth/ConsentPage.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
@@ -2206,6 +2207,7 @@ msgstr "연락처 추가"
 msgid "Add domain"
 msgstr "도메인 추가"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Add endpoint"
@@ -2507,6 +2509,7 @@ msgstr "모든 가져오기"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/ChatsPage.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
@@ -2839,6 +2842,7 @@ msgid "An entry in the zip unpacks to more than 100 times its size, so the file 
 msgstr "zip 안의 항목이 압축을 풀면 원래 크기의 100배를 넘어 안전하지 않은 파일로 거부되었습니다."
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "An https image URL."
 msgstr "https 이미지 URL."
@@ -3045,6 +3049,7 @@ msgstr "다른 워크스페이스가 나중에 이 주소를 증명했습니다"
 msgid "Answer (optional)"
 msgstr "답변(선택)"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Answer and organise conversations, write notes, keep contacts and labels up to date."
 msgstr "대화에 답하고 정리하고, 메모를 쓰고, 연락처와 레이블을 최신으로 유지합니다."
@@ -3767,6 +3772,7 @@ msgid "Billing"
 msgstr "결제"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Billing bot"
 msgstr "결제 봇"
@@ -3829,6 +3835,7 @@ msgstr "봇"
 msgid "Bot avatar"
 msgstr "봇 아바타"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot avatar (optional)"
 msgstr "봇 아바타(선택)"
@@ -3837,6 +3844,7 @@ msgstr "봇 아바타(선택)"
 msgid "Bot name"
 msgstr "봇 이름"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot name (optional)"
 msgstr "봇 이름(선택)"
@@ -5515,6 +5523,7 @@ msgstr "만든 다음 앱 ID와 앱 시크릿을 복사해 아래에 붙여 넣�
 msgid "Create it, then copy the token, which Front shows only once, and paste it below."
 msgstr "토큰을 만든 뒤, Front가 한 번만 보여 주는 토큰을 복사해 아래에 붙여 넣으세요."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create key"
@@ -5647,6 +5656,7 @@ msgid "CSV file"
 msgstr "CSV 파일"
 
 #: src/features/reports/TrendsReport.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -6213,6 +6223,7 @@ msgstr "설명"
 
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Description (optional)"
 msgstr "설명(선택)"
@@ -6520,7 +6531,9 @@ msgstr "완료"
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/fields/BulkFailures.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -7210,6 +7223,7 @@ msgstr "모든 받은 편지함"
 msgid "Every inbox follows the settings above."
 msgstr "모든 받은 편지함이 위 설정을 따릅니다."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Every inbox of the workspace, including ones you add later."
 msgstr "워크스페이스의 모든 받은 편지함(나중에 추가하는 것 포함)."
@@ -7251,6 +7265,7 @@ msgstr "이 엔드포인트로 온 모든 요청, 최신순. 최근 100개를 �
 msgid "Every run of the last 30 days, newest first."
 msgstr "최근 30일간의 모든 실행을 최신순으로 보여 줍니다."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Every scope except sending broadcasts and reading the audit log."
 msgstr "일괄 발송과 감사 로그 읽기를 제외한 모든 권한."
@@ -7315,6 +7330,7 @@ msgstr "스팸으로 표시한 작성자를 제외하고 모두의 게시물이 
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/Wizard.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -7379,6 +7395,7 @@ msgstr "{expires}에 만료됨"
 msgid "Expires"
 msgstr "만료"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Expires (optional)"
 msgstr "만료(선택)"
@@ -8958,6 +8975,7 @@ msgstr "Zoho Mail에서 설정 › 메일 계정 › IMAP 접근을 열고 IMAP�
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "받은 편지함"
@@ -8989,6 +9007,7 @@ msgstr "{name}의 받은 편지함"
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10096,6 +10115,7 @@ msgstr "로고 URL"
 msgid "Look"
 msgstr "보기"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Look at conversations, contacts, inboxes, lists, broadcasts and analytics. Change nothing."
 msgstr "대화, 연락처, 받은 편지함, 리스트, 일괄 발송, 분석을 봅니다. 아무것도 변경하지 않습니다."
@@ -11166,6 +11186,7 @@ msgstr "내 보기"
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/channels/ApiChannelForm.tsx
@@ -11204,6 +11225,7 @@ msgstr "이름과 모양"
 msgid "Name it “Yuva” and enter the redirect URL below as its redirection URL."
 msgstr "이름을 \"Yuva\"로 짓고 아래 리디렉션 URL을 리디렉션 주소로 입력하세요."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Name it after the backend, script or bot that will use it."
 msgstr "사용할 백엔드, 스크립트 또는 봇의 이름으로 지으세요."
@@ -11319,6 +11341,7 @@ msgstr "{name}의 새 주소"
 msgid "New addresses that get a confirmation mail"
 msgstr "확인 메일을 받는 새 주소"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 msgid "New API key"
@@ -11407,7 +11430,6 @@ msgstr "새 항목"
 msgid "New field"
 msgstr "새 필드"
 
-#: src/features/mail/FilterDialog.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New filter"
@@ -11570,6 +11592,7 @@ msgid "New value"
 msgstr "새 값"
 
 #: src/features/settings/DeveloperTabs.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 msgid "New webhook endpoint"
 msgstr "새 웹훅 엔드포인트"
 
@@ -12403,6 +12426,7 @@ msgstr "없음(로컬 릴레이와 테스트 서버 전용)"
 msgid "None for now"
 msgstr "지금은 없음"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "None picked: the key sees every inbox."
 msgstr "선택 없음: 이 키는 모든 받은 편지함을 봅니다."
@@ -12974,6 +12998,7 @@ msgid "One e-mail a month about what is new."
 msgstr "새 소식을 한 달에 한 번 이메일로 보내 드립니다."
 
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "받은 편지함 하나"
@@ -13456,6 +13481,7 @@ msgstr "디자인 열기"
 msgid "Open the discussion"
 msgstr "토론 열기"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Open the endpoint"
 msgstr "엔드포인트 열기"
@@ -14274,6 +14300,7 @@ msgid "Pick at least 30 minutes"
 msgstr "30분 이상을 선택하세요"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Pick at least one event."
 msgstr "이벤트를 하나 이상 선택하세요."
@@ -14287,6 +14314,7 @@ msgstr "메일을 받을 사람을 보려면 리스트를 하나 이상 선택�
 msgid "Pick at least one platform."
 msgstr "플랫폼을 하나 이상 선택하세요."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick at least one scope."
 msgstr "스코프를 하나 이상 선택하세요."
@@ -14295,6 +14323,7 @@ msgstr "스코프를 하나 이상 선택하세요."
 msgid "Pick at least one."
 msgstr "하나 이상 선택하세요."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "스코프를 하나씩 직접 선택하세요."
@@ -14653,6 +14682,7 @@ msgid "Production"
 msgstr "프로덕션"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
 msgstr "프로덕션 백엔드"
@@ -14847,6 +14877,7 @@ msgstr "푸시와 이메일"
 
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
 msgstr "푸시 알림"
@@ -15027,6 +15058,7 @@ msgstr "도움말 센터, 컬렉션, 문서 읽기"
 msgid "Read mailing lists, subscribers and consent records"
 msgstr "메일링 리스트, 구독자, 동의 기록 읽기"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Read only"
@@ -16032,6 +16064,7 @@ msgstr "돌아갈 곳"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Review"
 msgstr "검토"
@@ -16495,11 +16528,13 @@ msgstr "예약된 메시지"
 msgid "Scheduling…"
 msgstr "예약 중…"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Scopes"
 msgstr "스코프"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Scopes and inboxes cannot be changed later. For different ones, create a new key."
 msgstr "스코프와 받은 편지함은 나중에 변경할 수 없습니다. 다르게 하려면 새 키를 만드세요."
@@ -16709,6 +16744,7 @@ msgstr "두 번째 비밀 키"
 msgid "Seconds, 1 to 30."
 msgstr "초 단위, 1에서 30까지."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Secret"
 msgstr "시크릿"
@@ -17660,6 +17696,7 @@ msgid "Shown instead of the logo in dark mode."
 msgstr "다크 모드에서 로고 대신 표시됩니다."
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown on its messages. The key's name when empty."
 msgstr "해당 메시지에 표시됩니다. 비워 두면 키의 이름을 사용합니다."
@@ -17676,10 +17713,12 @@ msgstr "모든 문서 사이트의 내 게시물에 표시됩니다. 없으면 \
 msgid "Shown on your posts. Leave it empty to show as “Reader”."
 msgstr "내 게시물에 표시됩니다. 비워 두면 \"독자\"로 표시됩니다."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown only now. Copy it and store it safely."
 msgstr "지금만 표시됩니다. 복사해서 안전하게 보관하세요."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Shown only now. Copy it and store it with your receiver."
 msgstr "지금만 표시됩니다. 복사해서 수신 측과 함께 보관하세요."
@@ -17915,6 +17954,7 @@ msgid "Signing in through your organisation did not work. Try again, or use an e
 msgstr "Signing in through your organisation did not work. Try again, or use an e-mailed code."
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Signing secret"
 msgstr "서명 시크릿"
@@ -18377,10 +18417,6 @@ msgstr "내가 별표를 단"
 msgid "Stars the mail for you."
 msgstr "나를 위해 메일에 별표를 답니다."
 
-#: src/features/migrations/Wizard.tsx
-msgid "Start"
-msgstr "시작"
-
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Start “{name}” now?"
 msgstr "Start “{name}” now?"
@@ -18747,6 +18783,7 @@ msgstr "지원"
 msgid "Support address"
 msgstr "지원 주소"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Support bot"
@@ -19280,6 +19317,7 @@ msgstr "종료일은 시작일보다 앞설 수 없고 범위는 최대 13개월
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "엔드포인트가 비활성화되어 있습니다. 전송을 다시 하려면 활성화하세요."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The endpoint is ready"
 msgstr "엔드포인트가 준비되었습니다"
@@ -19436,6 +19474,7 @@ msgstr "가져오기가 더 이상 시작을 기다리고 있지 않습니다. �
 msgid "The inbox address"
 msgstr "받은편지함 주소"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "받은 편지함은 나중에 변경할 수 없습니다."
@@ -19496,14 +19535,17 @@ msgstr "The issue's state sets the progress the person sees."
 msgid "The İYS file has one row per subscriber in İYS's columns, ONAY for subscribed and RET for unsubscribed, for Turkish senders to upload to İYS themselves. Pending subscriptions are left out."
 msgstr "İYS 파일에는 구독자마다 İYS의 열 형식으로 한 행이 있으며, 구독은 ONAY, 구독 취소는 RET입니다. 튀르키예 발송자가 직접 İYS에 업로드하기 위한 것입니다. 대기 중인 구독은 제외됩니다."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key is ready"
 msgstr "키가 준비되었습니다"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
 msgstr "이 키는 해당 받은편지함만 볼 수 있으며 받은편지함, 웹훅, 워크스페이스를 관리하거나 감사 로그를 읽을 수 없습니다."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
 msgstr "키는 이날이 끝나면 작동을 멈춥니다."
@@ -20431,6 +20473,7 @@ msgstr "This domain is already in the list."
 msgid "This e-mail address bounced or complained, so the reply was not sent. Clear it on the contact to send again."
 msgstr "이 이메일 주소가 반송되었거나 불만이 접수되어 답장을 보내지 못했습니다. 연락처에서 해제하면 다시 보낼 수 있습니다."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "This endpoint receives only the events of {lockedName}."
 msgstr "이 엔드포인트는 {lockedName}의 이벤트만 받습니다."
@@ -21570,6 +21613,7 @@ msgid "Urgent"
 msgstr "긴급"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "URL"
 msgstr "URL"
@@ -21646,6 +21690,7 @@ msgstr "200자 이내로 쓰세요."
 msgid "Use at most 500 characters."
 msgstr "500자 이내로 쓰세요."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Use it as a bearer token against this server."
 msgstr "이 서버에 대한 베어러 토큰으로 사용하세요."
@@ -23265,6 +23310,7 @@ msgstr "Yuva가 8자리 코드를 이 주소로 보냅니다. 여기에 입력�
 msgid "Yuva may now read your organization's mailboxes over IMAP, each once its owner signs in. Whoever started the migration can open it and sign in with Microsoft again."
 msgstr "이제 Yuva가 조직의 메일함을 IMAP으로 읽을 수 있습니다(각 소유자가 로그인한 뒤에). 이전을 시작한 사람이 그것을 열어 Microsoft로 다시 로그인할 수 있습니다."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva now sends the events you picked to this address."
 msgstr "이제 Yuva가 선택한 이벤트를 이 주소로 보냅니다."
@@ -23313,6 +23359,7 @@ msgstr "Yuva는 업로드한 파일만 읽고 이전이 끝나면 삭제합니�
 msgid "Yuva requests an address on a schedule and checks the answer."
 msgstr "Yuva가 주기적으로 주소를 요청하고 응답을 확인합니다."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva sends a signed POST request with a JSON body for every event you pick."
 msgstr "Yuva는 선택한 이벤트마다 JSON 본문이 있는 서명된 POST 요청을 보냅니다."

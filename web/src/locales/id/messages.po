@@ -1953,6 +1953,7 @@ msgid "Accepted answer"
 msgstr "Jawaban yang diterima"
 
 #: src/features/oauth/ConsentPage.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
@@ -2206,6 +2207,7 @@ msgstr "Tambah kontak"
 msgid "Add domain"
 msgstr "Tambah domain"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Add endpoint"
@@ -2507,6 +2509,7 @@ msgstr "Semua impor"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/ChatsPage.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
@@ -2839,6 +2842,7 @@ msgid "An entry in the zip unpacks to more than 100 times its size, so the file 
 msgstr "Satu entri di zip diekstrak menjadi lebih dari 100 kali ukurannya, sehingga file ditolak karena tidak aman."
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "An https image URL."
 msgstr "URL gambar https."
@@ -3045,6 +3049,7 @@ msgstr "Ruang kerja lain membuktikan alamat ini belakangan"
 msgid "Answer (optional)"
 msgstr "Jawaban (opsional)"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Answer and organise conversations, write notes, keep contacts and labels up to date."
 msgstr "Jawab dan atur percakapan, tulis catatan, jaga kontak dan label tetap mutakhir."
@@ -3767,6 +3772,7 @@ msgid "Billing"
 msgstr "Penagihan"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Billing bot"
 msgstr "Bot penagihan"
@@ -3829,6 +3835,7 @@ msgstr "Bot"
 msgid "Bot avatar"
 msgstr "Avatar bot"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot avatar (optional)"
 msgstr "Avatar bot (opsional)"
@@ -3837,6 +3844,7 @@ msgstr "Avatar bot (opsional)"
 msgid "Bot name"
 msgstr "Nama bot"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot name (optional)"
 msgstr "Nama bot (opsional)"
@@ -5515,6 +5523,7 @@ msgstr "Buat, lalu salin ID aplikasi dan rahasia aplikasinya dan tempel di bawah
 msgid "Create it, then copy the token, which Front shows only once, and paste it below."
 msgstr "Buat token, lalu salin token yang hanya ditampilkan Front sekali dan tempel di bawah."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create key"
@@ -5647,6 +5656,7 @@ msgid "CSV file"
 msgstr "File CSV"
 
 #: src/features/reports/TrendsReport.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -6213,6 +6223,7 @@ msgstr "Deskripsi"
 
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Description (optional)"
 msgstr "Deskripsi (opsional)"
@@ -6520,7 +6531,9 @@ msgstr "selesai"
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/fields/BulkFailures.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -7210,6 +7223,7 @@ msgstr "Setiap kotak masuk"
 msgid "Every inbox follows the settings above."
 msgstr "Setiap kotak masuk mengikuti pengaturan di atas."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Every inbox of the workspace, including ones you add later."
 msgstr "Setiap kotak masuk di ruang kerja, termasuk yang Anda tambahkan nanti."
@@ -7251,6 +7265,7 @@ msgstr "Setiap permintaan ke endpoint ini, terbaru dulu. 100 terbaru disimpan."
 msgid "Every run of the last 30 days, newest first."
 msgstr "Semua eksekusi 30 hari terakhir, terbaru lebih dulu."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Every scope except sending broadcasts and reading the audit log."
 msgstr "Semua izin kecuali mengirim siaran dan membaca log audit."
@@ -7315,6 +7330,7 @@ msgstr "Kiriman semua orang langsung dipublikasikan, kecuali penulis yang Anda t
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/Wizard.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -7379,6 +7395,7 @@ msgstr "kedaluwarsa {expires}"
 msgid "Expires"
 msgstr "Kedaluwarsa"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Expires (optional)"
 msgstr "Kedaluwarsa (opsional)"
@@ -8958,6 +8975,7 @@ msgstr "Di Zoho Mail, buka Pengaturan › Akun email › Akses IMAP dan aktifkan
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "Kotak masuk"
@@ -8989,6 +9007,7 @@ msgstr "Kotak masuk untuk {name}"
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10096,6 +10115,7 @@ msgstr "URL logo"
 msgid "Look"
 msgstr "Tampilan"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Look at conversations, contacts, inboxes, lists, broadcasts and analytics. Change nothing."
 msgstr "Lihat percakapan, kontak, kotak masuk, milis, siaran massal, dan analitik. Jangan ubah apa pun."
@@ -11166,6 +11186,7 @@ msgstr "Tampilan saya"
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/channels/ApiChannelForm.tsx
@@ -11204,6 +11225,7 @@ msgstr "Nama dan tampilan"
 msgid "Name it “Yuva” and enter the redirect URL below as its redirection URL."
 msgstr "Beri nama “Yuva” dan masukkan URL pengalihan di bawah sebagai URL redirect-nya."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Name it after the backend, script or bot that will use it."
 msgstr "Beri nama sesuai backend, skrip, atau bot yang akan memakainya."
@@ -11319,6 +11341,7 @@ msgstr "Alamat baru untuk {name}"
 msgid "New addresses that get a confirmation mail"
 msgstr "Alamat baru yang mendapat email konfirmasi"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 msgid "New API key"
@@ -11407,7 +11430,6 @@ msgstr "Entri baru"
 msgid "New field"
 msgstr "Kolom baru"
 
-#: src/features/mail/FilterDialog.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New filter"
@@ -11570,6 +11592,7 @@ msgid "New value"
 msgstr "Nilai baru"
 
 #: src/features/settings/DeveloperTabs.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 msgid "New webhook endpoint"
 msgstr "Endpoint webhook baru"
 
@@ -12403,6 +12426,7 @@ msgstr "Tidak ada (hanya relay lokal dan server uji)"
 msgid "None for now"
 msgstr "Belum ada untuk saat ini"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "None picked: the key sees every inbox."
 msgstr "Tidak ada yang dipilih: kunci melihat semua kotak masuk."
@@ -12974,6 +12998,7 @@ msgid "One e-mail a month about what is new."
 msgstr "Satu email sebulan tentang yang baru."
 
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "Satu kotak masuk"
@@ -13456,6 +13481,7 @@ msgstr "Buka desain"
 msgid "Open the discussion"
 msgstr "Buka diskusi"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Open the endpoint"
 msgstr "Buka endpoint"
@@ -14274,6 +14300,7 @@ msgid "Pick at least 30 minutes"
 msgstr "Pilih minimal 30 menit"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Pick at least one event."
 msgstr "Pilih setidaknya satu peristiwa."
@@ -14287,6 +14314,7 @@ msgstr "Pilih setidaknya satu milis untuk melihat siapa yang menerima email."
 msgid "Pick at least one platform."
 msgstr "Pilih setidaknya satu platform."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick at least one scope."
 msgstr "Pilih setidaknya satu cakupan."
@@ -14295,6 +14323,7 @@ msgstr "Pilih setidaknya satu cakupan."
 msgid "Pick at least one."
 msgstr "Pilih setidaknya satu."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "Pilih sendiri setiap cakupan."
@@ -14653,6 +14682,7 @@ msgid "Production"
 msgstr "Produksi"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
 msgstr "Backend produksi"
@@ -14847,6 +14877,7 @@ msgstr "Push dan email"
 
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
 msgstr "Notifikasi push"
@@ -15027,6 +15058,7 @@ msgstr "Baca pusat bantuan, koleksi, dan artikel"
 msgid "Read mailing lists, subscribers and consent records"
 msgstr "Baca milis, pelanggan, dan catatan persetujuan"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Read only"
@@ -16032,6 +16064,7 @@ msgstr "Mengembalikan Anda ke"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Review"
 msgstr "Tinjau"
@@ -16495,11 +16528,13 @@ msgstr "Pesan terjadwal"
 msgid "Scheduling…"
 msgstr "Menjadwalkan…"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Scopes"
 msgstr "Cakupan"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Scopes and inboxes cannot be changed later. For different ones, create a new key."
 msgstr "Cakupan dan kotak masuk tidak dapat diubah nanti. Untuk yang berbeda, buat kunci baru."
@@ -16709,6 +16744,7 @@ msgstr "Rahasia kedua"
 msgid "Seconds, 1 to 30."
 msgstr "Detik, 1 sampai 30."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Secret"
 msgstr "Rahasia"
@@ -17660,6 +17696,7 @@ msgid "Shown instead of the logo in dark mode."
 msgstr "Ditampilkan sebagai ganti logo dalam mode gelap."
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown on its messages. The key's name when empty."
 msgstr "Ditampilkan di pesannya. Nama kunci jika kosong."
@@ -17676,10 +17713,12 @@ msgstr "Ditampilkan di kiriman Anda di setiap situs dokumentasi. Tanpa itu Anda 
 msgid "Shown on your posts. Leave it empty to show as “Reader”."
 msgstr "Ditampilkan di kiriman Anda. Kosongkan untuk tampil sebagai “Pembaca”."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown only now. Copy it and store it safely."
 msgstr "Hanya ditampilkan sekarang. Salin dan simpan dengan aman."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Shown only now. Copy it and store it with your receiver."
 msgstr "Hanya ditampilkan sekarang. Salin dan simpan bersama penerima Anda."
@@ -17915,6 +17954,7 @@ msgid "Signing in through your organisation did not work. Try again, or use an e
 msgstr "Signing in through your organisation did not work. Try again, or use an e-mailed code."
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Signing secret"
 msgstr "Rahasia penandatanganan"
@@ -18377,10 +18417,6 @@ msgstr "Anda beri bintang"
 msgid "Stars the mail for you."
 msgstr "Memberi bintang pada email untuk Anda."
 
-#: src/features/migrations/Wizard.tsx
-msgid "Start"
-msgstr "Mulai"
-
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Start “{name}” now?"
 msgstr "Start “{name}” now?"
@@ -18747,6 +18783,7 @@ msgstr "Dukungan"
 msgid "Support address"
 msgstr "Alamat dukungan"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Support bot"
@@ -19280,6 +19317,7 @@ msgstr "Akhir tidak boleh sebelum awal, dan rentang paling lama 13 bulan."
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "Endpoint dinonaktifkan. Aktifkan untuk mengirim pengiriman lagi."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The endpoint is ready"
 msgstr "Endpoint siap"
@@ -19436,6 +19474,7 @@ msgstr "Impor tidak lagi menunggu untuk dimulai. Lihat statusnya."
 msgid "The inbox address"
 msgstr "Alamat kotak masuk"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "Kotak masuk tidak dapat diubah nanti."
@@ -19496,14 +19535,17 @@ msgstr "The issue's state sets the progress the person sees."
 msgid "The İYS file has one row per subscriber in İYS's columns, ONAY for subscribed and RET for unsubscribed, for Turkish senders to upload to İYS themselves. Pending subscriptions are left out."
 msgstr "File İYS memiliki satu baris per pelanggan dalam kolom İYS, ONAY untuk berlangganan dan RET untuk berhenti, agar pengirim Turki mengunggahnya sendiri ke İYS. Langganan tertunda dikecualikan."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key is ready"
 msgstr "Kunci siap"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
 msgstr "Kunci hanya melihat kotak masuk ini dan tidak dapat mengelola kotak masuk, webhook, atau ruang kerja, maupun membaca log audit."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
 msgstr "Kunci berhenti bekerja di akhir hari ini."
@@ -20431,6 +20473,7 @@ msgstr "This domain is already in the list."
 msgid "This e-mail address bounced or complained, so the reply was not sent. Clear it on the contact to send again."
 msgstr "Alamat email ini terpental atau mengeluh, sehingga balasan tidak terkirim. Hapus di kontak untuk mengirim lagi."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "This endpoint receives only the events of {lockedName}."
 msgstr "Endpoint ini hanya menerima peristiwa {lockedName}."
@@ -21570,6 +21613,7 @@ msgid "Urgent"
 msgstr "Mendesak"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "URL"
 msgstr "URL"
@@ -21646,6 +21690,7 @@ msgstr "Gunakan paling banyak 200 karakter."
 msgid "Use at most 500 characters."
 msgstr "Gunakan paling banyak 500 karakter."
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Use it as a bearer token against this server."
 msgstr "Gunakan sebagai bearer token terhadap server ini."
@@ -23265,6 +23310,7 @@ msgstr "Yuva mengirim kode 8 digit ke alamat. Ketik di sini."
 msgid "Yuva may now read your organization's mailboxes over IMAP, each once its owner signs in. Whoever started the migration can open it and sign in with Microsoft again."
 msgstr "Yuva kini dapat membaca kotak surat organisasi Anda lewat IMAP, masing-masing setelah pemiliknya masuk. Siapa pun yang memulai migrasi dapat membukanya dan masuk dengan Microsoft lagi."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva now sends the events you picked to this address."
 msgstr "Yuva kini mengirim peristiwa yang Anda pilih ke alamat ini."
@@ -23313,6 +23359,7 @@ msgstr "Yuva hanya membaca file yang Anda unggah dan menghapusnya saat migrasi b
 msgid "Yuva requests an address on a schedule and checks the answer."
 msgstr "Yuva meminta sebuah alamat secara berkala dan memeriksa jawabannya."
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva sends a signed POST request with a JSON body for every event you pick."
 msgstr "Yuva mengirim permintaan POST bertanda tangan dengan isi JSON untuk setiap peristiwa yang Anda pilih."

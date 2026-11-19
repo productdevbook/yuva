@@ -17,6 +17,7 @@ import {
   Trash2Icon,
 } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
+import { useNavigate } from "react-router"
 
 import { ContactAvatar, EmptyState, Kbd, Notice, PersonAvatar, toast, useContactName } from "@/components/common"
 import { TopPortal, usePhoneBackTarget } from "@/components/common/PageLayout"
@@ -62,7 +63,6 @@ import {
   useTrashConversation,
 } from "@/features/conversation/queries"
 import { useListActions } from "@/features/inbox/memberState"
-import { FilterDialog } from "@/features/mail/FilterDialog"
 import { useFilterAccess } from "@/features/mail/folders"
 import { useStar } from "@/features/mail/queries"
 import { useHotkeys } from "@/hooks/use-hotkeys"
@@ -496,7 +496,9 @@ function Loaded({ c, contact, flat, onBack, onLeave, openDraft }: Props & { c: C
   const reply = useRef<ReplyHandle>(null)
   const scroller = useRef<HTMLDivElement>(null)
   const [snoozing, setSnoozing] = useState(false)
-  const [filtering, setFiltering] = useState<string | null>(null)
+  const navigate = useNavigate()
+  const setFiltering = (messageId: string) =>
+    navigate(`/mail/${c.inbox_id}/filters?message=${encodeURIComponent(messageId)}`)
   const mayFilter = useFilterAccess(c.inbox_id)
   const [timing, setTiming] = useState<string | null>(null)
   const draftActions = useDraftActions()
@@ -930,7 +932,6 @@ function Loaded({ c, contact, flat, onBack, onLeave, openDraft }: Props & { c: C
         )}
         {!trashed && write && <div className="mt-2 flex flex-col gap-2 border-t pt-[18px]">{replyArea}</div>}
         {confirmDialog}
-        {filtering && <FilterDialog messageId={filtering} onClose={() => setFiltering(null)} />}
       </article>
     )
   }
@@ -991,7 +992,6 @@ function Loaded({ c, contact, flat, onBack, onLeave, openDraft }: Props & { c: C
         </div>
       )}
       {confirmDialog}
-      {filtering && <FilterDialog messageId={filtering} onClose={() => setFiltering(null)} />}
     </section>
   )
 }

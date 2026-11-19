@@ -1953,6 +1953,7 @@ msgid "Accepted answer"
 msgstr "被採納的回答"
 
 #: src/features/oauth/ConsentPage.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
@@ -2206,6 +2207,7 @@ msgstr "新增聯絡人"
 msgid "Add domain"
 msgstr "新增網域"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Add endpoint"
@@ -2507,6 +2509,7 @@ msgstr "所有匯入"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/ChatsPage.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
@@ -2839,6 +2842,7 @@ msgid "An entry in the zip unpacks to more than 100 times its size, so the file 
 msgstr "zip 中的某個條目解壓後超過其大小的 100 倍,因此該檔案被當作不安全而拒絕。"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "An https image URL."
 msgstr "一個 https 圖片 URL。"
@@ -3045,6 +3049,7 @@ msgstr "另一個工作區後來驗證了此位址"
 msgid "Answer (optional)"
 msgstr "回答(可選)"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Answer and organise conversations, write notes, keep contacts and labels up to date."
 msgstr "回答並整理對話、撰寫備註、保持聯絡人和標籤最新。"
@@ -3767,6 +3772,7 @@ msgid "Billing"
 msgstr "帳單"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Billing bot"
 msgstr "帳單機器人"
@@ -3829,6 +3835,7 @@ msgstr "機器人"
 msgid "Bot avatar"
 msgstr "機器人頭像"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot avatar (optional)"
 msgstr "機器人頭像(可選)"
@@ -3837,6 +3844,7 @@ msgstr "機器人頭像(可選)"
 msgid "Bot name"
 msgstr "機器人名稱"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bot name (optional)"
 msgstr "機器人名稱(可選)"
@@ -5515,6 +5523,7 @@ msgstr "建立後,複製其應用程式 ID 和應用程式金鑰,貼上到下面
 msgid "Create it, then copy the token, which Front shows only once, and paste it below."
 msgstr "建立後，複製 Front 只顯示一次的權杖，並貼到下方。"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create key"
@@ -5647,6 +5656,7 @@ msgid "CSV file"
 msgstr "CSV 檔案"
 
 #: src/features/reports/TrendsReport.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -6213,6 +6223,7 @@ msgstr "說明"
 
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Description (optional)"
 msgstr "描述(可選)"
@@ -6520,7 +6531,9 @@ msgstr "完成"
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/fields/BulkFailures.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -7210,6 +7223,7 @@ msgstr "所有收件匣"
 msgid "Every inbox follows the settings above."
 msgstr "所有收件匣都遵循上面的設定。"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Every inbox of the workspace, including ones you add later."
 msgstr "工作區的所有收件匣,包括以後新增的。"
@@ -7251,6 +7265,7 @@ msgstr "發往此端點的每個請求,最新的在前。保留最新的 100 個
 msgid "Every run of the last 30 days, newest first."
 msgstr "最近 30 天的所有執行,最新的在前。"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Every scope except sending broadcasts and reading the audit log."
 msgstr "除寄送群發郵件和讀取稽核記錄外的所有權限。"
@@ -7315,6 +7330,7 @@ msgstr "所有人的帖子都會立即釋出,但你標記為垃圾的作者除�
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/Wizard.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -7379,6 +7395,7 @@ msgstr "{expires} 已過期"
 msgid "Expires"
 msgstr "過期時間"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Expires (optional)"
 msgstr "過期時間(可選)"
@@ -8958,6 +8975,7 @@ msgstr "在 Zoho Mail 中,開啟「設定 › 郵件帳戶 › IMAP 存取」並
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "收件匣"
@@ -8989,6 +9007,7 @@ msgstr "{name} 的收件匣"
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/sla/PolicyForm.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10096,6 +10115,7 @@ msgstr "Logo 網址"
 msgid "Look"
 msgstr "檢視"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Look at conversations, contacts, inboxes, lists, broadcasts and analytics. Change nothing."
 msgstr "檢視對話、聯絡人、收件匣、列表、群發和分析。不做任何更改。"
@@ -11166,6 +11186,7 @@ msgstr "我的檢視"
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/channels/ApiChannelForm.tsx
@@ -11204,6 +11225,7 @@ msgstr "名稱與外觀"
 msgid "Name it “Yuva” and enter the redirect URL below as its redirection URL."
 msgstr "命名為「Yuva」,並把下面的重定向 URL 填為它的重定向地址。"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Name it after the backend, script or bot that will use it."
 msgstr "以將使用它的後端、指令碼或機器人來命名。"
@@ -11319,6 +11341,7 @@ msgstr "{name} 的新位址"
 msgid "New addresses that get a confirmation mail"
 msgstr "會收到確認郵件的新地址"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 msgid "New API key"
@@ -11407,7 +11430,6 @@ msgstr "新項目"
 msgid "New field"
 msgstr "新增欄位"
 
-#: src/features/mail/FilterDialog.tsx
 #: src/features/settings/automation/RuleForm.tsx
 #: src/features/settings/automation/RuleList.tsx
 msgid "New filter"
@@ -11570,6 +11592,7 @@ msgid "New value"
 msgstr "新值"
 
 #: src/features/settings/DeveloperTabs.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 msgid "New webhook endpoint"
 msgstr "新的 Webhook 端點"
 
@@ -12403,6 +12426,7 @@ msgstr "無(僅限本地中繼和測試伺服器)"
 msgid "None for now"
 msgstr "暫時沒有"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "None picked: the key sees every inbox."
 msgstr "未選擇:該金鑰可看到所有收件匣。"
@@ -12974,6 +12998,7 @@ msgid "One e-mail a month about what is new."
 msgstr "每月一封郵件,介紹新動態。"
 
 #: src/features/settings/automation/RuleForm.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "一個收件匣"
@@ -13456,6 +13481,7 @@ msgstr "開啟設計"
 msgid "Open the discussion"
 msgstr "開啟討論"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Open the endpoint"
 msgstr "開啟端點"
@@ -14274,6 +14300,7 @@ msgid "Pick at least 30 minutes"
 msgstr "請至少選擇 30 分鐘"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Pick at least one event."
 msgstr "請至少選擇一個事件。"
@@ -14287,6 +14314,7 @@ msgstr "請至少選擇一個列表,以檢視誰會收到郵件。"
 msgid "Pick at least one platform."
 msgstr "請至少選擇一個平臺。"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick at least one scope."
 msgstr "請至少選擇一個許可權範圍。"
@@ -14295,6 +14323,7 @@ msgstr "請至少選擇一個許可權範圍。"
 msgid "Pick at least one."
 msgstr "請至少選擇一個。"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "自己逐個選擇許可權範圍。"
@@ -14653,6 +14682,7 @@ msgid "Production"
 msgstr "正式環境"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
 msgstr "生產環境後端"
@@ -14847,6 +14877,7 @@ msgstr "推送和郵件"
 
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
 msgstr "推送通知"
@@ -15027,6 +15058,7 @@ msgstr "讀取說明中心、合集和文章"
 msgid "Read mailing lists, subscribers and consent records"
 msgstr "讀取郵件列表、訂閱者和同意記錄"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Read only"
@@ -16032,6 +16064,7 @@ msgstr "將返回到"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Review"
 msgstr "稽覈"
@@ -16495,11 +16528,13 @@ msgstr "已排程的訊息"
 msgid "Scheduling…"
 msgstr "正在排程…"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Scopes"
 msgstr "許可權範圍"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Scopes and inboxes cannot be changed later. For different ones, create a new key."
 msgstr "許可權範圍和收件匣之後無法更改。如需不同的設定,請建立新金鑰。"
@@ -16709,6 +16744,7 @@ msgstr "第二個密鑰"
 msgid "Seconds, 1 to 30."
 msgstr "秒,1 到 30。"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Secret"
 msgstr "金鑰"
@@ -17660,6 +17696,7 @@ msgid "Shown instead of the logo in dark mode."
 msgstr "深色模式下顯示此 Logo，以取代一般 Logo。"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown on its messages. The key's name when empty."
 msgstr "顯示在它的訊息上。留空則使用金鑰的名稱。"
@@ -17676,10 +17713,12 @@ msgstr "顯示在你在所有文件站點的帖子上。未設定時顯示為「
 msgid "Shown on your posts. Leave it empty to show as “Reader”."
 msgstr "顯示在你的帖子上。留空則顯示為「讀者」。"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Shown only now. Copy it and store it safely."
 msgstr "僅此刻顯示。請複製並妥善儲存。"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Shown only now. Copy it and store it with your receiver."
 msgstr "僅此刻顯示。請複製並與你的接收端一起妥善儲存。"
@@ -17915,6 +17954,7 @@ msgid "Signing in through your organisation did not work. Try again, or use an e
 msgstr "Signing in through your organisation did not work. Try again, or use an e-mailed code."
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Signing secret"
 msgstr "簽名金鑰"
@@ -18377,10 +18417,6 @@ msgstr "你已加星號"
 msgid "Stars the mail for you."
 msgstr "為你為郵件加上星號。"
 
-#: src/features/migrations/Wizard.tsx
-msgid "Start"
-msgstr "開始"
-
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Start “{name}” now?"
 msgstr "Start “{name}” now?"
@@ -18747,6 +18783,7 @@ msgstr "支援"
 msgid "Support address"
 msgstr "支援地址"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Support bot"
@@ -19280,6 +19317,7 @@ msgstr "結束日期不能早於開始日期，範圍最多 13 個月。"
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "該端點已停用。啟用後才會再次傳送投遞。"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The endpoint is ready"
 msgstr "端點已就緒"
@@ -19436,6 +19474,7 @@ msgstr "該匯入不再等待開始。請檢視其狀態。"
 msgid "The inbox address"
 msgstr "收件匣的地址"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "收件匣之後無法更改。"
@@ -19496,14 +19535,17 @@ msgstr "The issue's state sets the progress the person sees."
 msgid "The İYS file has one row per subscriber in İYS's columns, ONAY for subscribed and RET for unsubscribed, for Turkish senders to upload to İYS themselves. Pending subscriptions are left out."
 msgstr "İYS 檔案按 İYS 的列格式,每位訂閱者一行,訂閱為 ONAY,退訂為 RET,供土耳其的發件人自行上傳到 İYS。待確認的訂閱不包含在內。"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key is ready"
 msgstr "金鑰已就緒"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
 msgstr "此金鑰只能看到這些收件匣，不能管理收件匣、Webhook 或工作區，也不能讀取稽核記錄。"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
 msgstr "該金鑰會在這一天結束時失效。"
@@ -20431,6 +20473,7 @@ msgstr "This domain is already in the list."
 msgid "This e-mail address bounced or complained, so the reply was not sent. Clear it on the contact to send again."
 msgstr "此電子郵件地址已退回或投訴,因此回覆未傳送。請在聯絡人上清除後再傳送。"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "This endpoint receives only the events of {lockedName}."
 msgstr "此端點只接收 {lockedName} 的事件。"
@@ -21570,6 +21613,7 @@ msgid "Urgent"
 msgstr "緊急"
 
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "URL"
 msgstr "URL"
@@ -21646,6 +21690,7 @@ msgstr "最多使用 200 個字元。"
 msgid "Use at most 500 characters."
 msgstr "最多使用 500 個字元。"
 
+#: src/features/settings/api-keys/ApiKeyForm.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Use it as a bearer token against this server."
 msgstr "在此伺服器上將它用作 bearer 權杖。"
@@ -23265,6 +23310,7 @@ msgstr "Yuva 會向該位址傳送 8 位數驗證碼。請在此輸入。"
 msgid "Yuva may now read your organization's mailboxes over IMAP, each once its owner signs in. Whoever started the migration can open it and sign in with Microsoft again."
 msgstr "Yuva 現在可以透過 IMAP 讀取你組織的信箱,每個信箱在其所有者登入後生效。發起遷移的人可以開啟它並再次使用 Microsoft 登入。"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva now sends the events you picked to this address."
 msgstr "Yuva 現在會把你選擇的事件傳送到此地址。"
@@ -23313,6 +23359,7 @@ msgstr "Yuva 只讀取你上傳的檔案,並在遷移結束時將其刪除。歷
 msgid "Yuva requests an address on a schedule and checks the answer."
 msgstr "Yuva 會定期請求一個位址並檢查回應。"
 
+#: src/features/settings/webhooks/WebhookForm.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Yuva sends a signed POST request with a JSON body for every event you pick."
 msgstr "Yuva 會為你選擇的每個事件傳送一個帶 JSON 正文的已簽名 POST 請求。"
