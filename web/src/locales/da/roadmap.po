@@ -16,6 +16,10 @@ msgstr "{inboxName} har ingen webchatkanal. Tilføj en først, fordi den offentl
 msgid "{linked, plural, one {# feedback} other {# feedback}}"
 msgstr "{linked, plural, one {# feedback} other {# feedback}}"
 
+#: src/features/roadmap/pages.tsx
+msgid "{openCount, plural, one {# idea} other {# ideas}}"
+msgstr "{openCount, plural, one {# idé} other {# idéer}}"
+
 #: src/features/roadmap/Board.tsx
 msgid "{pending} waiting for approval"
 msgstr "{pending} venter på godkendelse"
@@ -39,15 +43,9 @@ msgid "Add a web chat channel"
 msgstr "Tilføj en webchatkanal"
 
 #: src/features/roadmap/CreateBoardDialog.tsx
-#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Address"
 msgstr "Adresse"
-
-#: src/features/roadmap/BoardBar.tsx
-#: src/features/roadmap/RoadmapFrame.tsx
-msgid "All boards"
-msgstr "Alle tavler"
 
 #: src/features/roadmap/Settings.tsx
 msgid "All changes saved."
@@ -56,11 +54,6 @@ msgstr "Alle ændringer er gemt."
 #: src/features/roadmap/IdeaFeedback.tsx
 msgid "All feedback from {inboxName} that fits is already linked."
 msgstr "Al feedback fra {inboxName}, der passer, er allerede tilknyttet."
-
-#: src/features/roadmap/pages.tsx
-#: src/features/roadmap/RoadmapFrame.tsx
-msgid "All stages"
-msgstr "Alle faser"
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
 msgid "Already linked"
@@ -78,7 +71,7 @@ msgstr "Godkend"
 msgid "Approved"
 msgstr "Godkendt"
 
-#: src/features/roadmap/NewIdeaDialog.tsx
+#: src/features/roadmap/NewIdeaForm.tsx
 msgid "At least 3 characters."
 msgstr "Mindst 3 tegn."
 
@@ -87,7 +80,7 @@ msgid "Back"
 msgstr "Tilbage"
 
 #: src/features/roadmap/IdeaPane.tsx
-#: src/features/roadmap/NewIdeaDialog.tsx
+#: src/features/roadmap/NewIdeaForm.tsx
 #: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Board"
@@ -98,13 +91,11 @@ msgid "Board deleted"
 msgstr "Tavle slettet"
 
 #: src/features/roadmap/pages.tsx
-#: src/features/roadmap/RoadmapFrame.tsx
-msgid "Boards"
-msgstr "Tavler"
+msgid "Board settings"
+msgstr "Tavleindstillinger"
 
 #: src/features/roadmap/CreateBoardDialog.tsx
 #: src/features/roadmap/MoveDialog.tsx
-#: src/features/roadmap/NewIdeaDialog.tsx
 msgid "Cancel"
 msgstr "Annullér"
 
@@ -126,16 +117,16 @@ msgstr "Tæller sidevisninger på den offentlige tavle uden cookies."
 msgid "Create board"
 msgstr "Opret tavle"
 
-#: src/features/roadmap/BoardBar.tsx
-msgid "Create board ({newKey})"
-msgstr "Opret tavle ({newKey})"
+#. placeholder {0}: keyLabel(ROADMAP_KEYS.newBoard).join("")
+#: src/features/roadmap/pages.tsx
+msgid "Create board ({0})"
+msgstr "Opret tavle ({0})"
 
-#: src/features/roadmap/BoardBar.tsx
-#: src/features/roadmap/RoadmapFrame.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Create board for {name}"
 msgstr "Opret tavle til {name}"
 
-#: src/features/roadmap/NewIdeaDialog.tsx
+#: src/features/roadmap/NewIdeaForm.tsx
 msgid "Create idea"
 msgstr "Opret idé"
 
@@ -160,10 +151,14 @@ msgid "Deletes the board with its ideas, votes, replies and stage history. Linke
 msgstr "Sletter tavlen med dens idéer, stemmer, svar og fasehistorik. Tilknyttet feedback og dens fremdrift bliver stående. Den offentlige adresse holder op med at virke."
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
-#: src/features/roadmap/NewIdeaDialog.tsx
+#: src/features/roadmap/NewIdeaForm.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Description"
 msgstr "Beskrivelse"
+
+#: src/features/roadmap/pages.tsx
+msgid "Details"
+msgstr "Detaljer"
 
 #: src/features/roadmap/IdeaFeedback.tsx
 msgid "Dismiss"
@@ -172,6 +167,14 @@ msgstr "Skjul"
 #: src/features/roadmap/Board.tsx
 msgid "Done"
 msgstr "Færdig"
+
+#: src/features/roadmap/pages.tsx
+msgid "Every board"
+msgstr "Alle tavler"
+
+#: src/features/roadmap/pages.tsx
+msgid "Every stage"
+msgstr "Alle faser"
 
 #: src/features/roadmap/Settings.tsx
 msgid "Everyone's posts are published at once, except those of authors you marked as spam."
@@ -209,11 +212,11 @@ msgstr "Idéer, dine kunder stemmer på, med feedbacken bag dem"
 msgid "Ideas, votes and stages for {inboxName}, with the feedback behind each idea. It stays private until you make it public."
 msgstr "Idéer, stemmer og faser for {inboxName} med feedbacken bag hver idé. Den forbliver privat, til du gør den offentlig."
 
-#: src/features/roadmap/NewIdeaDialog.tsx
+#: src/features/roadmap/NewIdeaForm.tsx
 msgid "It goes into Ideas on the board, where customers can vote on it."
 msgstr "Den kommer under Idéer på tavlen, hvor kunder kan stemme på den."
 
-#: src/features/roadmap/NewIdeaDialog.tsx
+#: src/features/roadmap/NewIdeaForm.tsx
 msgid "It goes into Ideas on the board. The board is private, so only your team sees it."
 msgstr "Den lander i Idéer på tavlen. Tavlen er privat, så kun dit team ser den."
 
@@ -267,22 +270,18 @@ msgstr "Knyttet til {title}"
 msgid "Load more"
 msgstr "Indlæs flere"
 
-#: src/features/roadmap/BoardBar.tsx
 #: src/features/roadmap/pages.tsx
 msgid "Make private"
 msgstr "Gør privat"
 
-#: src/features/roadmap/BoardBar.tsx
 #: src/features/roadmap/pages.tsx
 msgid "Make private ({publicKey})"
 msgstr "Gør privat ({publicKey})"
 
-#: src/features/roadmap/BoardBar.tsx
 #: src/features/roadmap/pages.tsx
 msgid "Make public"
 msgstr "Gør offentlig"
 
-#: src/features/roadmap/BoardBar.tsx
 #: src/features/roadmap/pages.tsx
 msgid "Make public ({publicKey})"
 msgstr "Gør offentlig ({publicKey})"
@@ -321,10 +320,15 @@ msgstr "Idé flyttet til {stage}"
 msgid "Name"
 msgstr "Navn"
 
-#: src/features/roadmap/NewIdeaDialog.tsx
+#: src/features/roadmap/NewIdeaForm.tsx
 #: src/features/roadmap/pages.tsx
 msgid "New idea"
 msgstr "Ny idé"
+
+#. placeholder {0}: ROADMAP_KEYS.newIdea.toUpperCase()
+#: src/features/roadmap/pages.tsx
+msgid "New idea ({0})"
+msgstr "Ny idé ({0})"
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
 msgid "New idea from this feedback"
@@ -405,12 +409,10 @@ msgstr "Vælg en idé fra denne indbakkes tavle"
 msgid "Posted as your public reply on the idea. Markdown works."
 msgstr "Slås op som dit offentlige svar på idéen. Markdown virker."
 
-#: src/features/roadmap/BoardBar.tsx
 #: src/features/roadmap/pages.tsx
 msgid "Private"
 msgstr "Privat"
 
-#: src/features/roadmap/BoardBar.tsx
 #: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Public"
@@ -449,13 +451,8 @@ msgid "Review the reply"
 msgstr "Gennemgå svaret"
 
 #: src/features/roadmap/pages.tsx
-#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Roadmap"
 msgstr "Køreplan"
-
-#: src/features/roadmap/BoardBar.tsx
-msgid "Roadmap boards"
-msgstr "Køreplanstavler"
 
 #: src/features/roadmap/Settings.tsx
 msgid "Save"
@@ -470,7 +467,6 @@ msgid "Search ideas"
 msgstr "Søg i idéer"
 
 #: src/features/roadmap/pages.tsx
-#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Settings"
 msgstr "Indstillinger"
 
@@ -541,7 +537,7 @@ msgid "This inbox has no roadmap board. Create one under Roadmap first."
 msgstr "Denne indbakke har ingen køreplanstavle. Opret først en under Køreplan."
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
-#: src/features/roadmap/NewIdeaDialog.tsx
+#: src/features/roadmap/NewIdeaForm.tsx
 msgid "Title"
 msgstr "Titel"
 
@@ -565,7 +561,6 @@ msgstr "Brug 3 til 48 bogstaver, tal og indre bindestreger."
 msgid "View board"
 msgstr "Se tavlen"
 
-#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Visibility"
 msgstr "Synlighed"
@@ -575,8 +570,6 @@ msgid "Votes"
 msgstr "Stemmer"
 
 #: src/features/roadmap/Board.tsx
-#: src/features/roadmap/pages.tsx
-#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Waiting for approval"
 msgstr "Venter på godkendelse"
 

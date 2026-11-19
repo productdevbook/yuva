@@ -69,6 +69,11 @@ msgid "{0, plural, one {{shown} person} other {{shown} people}}"
 msgstr "{0, plural, other {אנשים: {shown}}}"
 
 #. placeholder {0}: rows.length
+#: src/features/feedback/FeedbackHome.tsx
+msgid "{0, plural, one {{shown} report} other {{shown} reports}}"
+msgstr "{0, plural, one {משוב אחד} two {{shown} משובים} other {{shown} משובים}}"
+
+#. placeholder {0}: rows.length
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "{0, plural, one {{shown} triggered e-mail} other {{shown} triggered e-mails}}"
 msgstr "{0, plural, other {מיילים אוטומטיים: {shown}}}"
@@ -208,6 +213,7 @@ msgid "{0} marked as spam · no reply needed"
 msgstr "{0} סומנו כספאם · אין צורך בתשובה"
 
 #. placeholder {0}: done.length
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "{0} moved to the Trash"
@@ -223,6 +229,16 @@ msgstr "{0} מתוך {1}"
 #: src/features/team/TeamPage.tsx
 msgid "{0} open, unassigned"
 msgstr "פתוחות ללא הקצאה: {0}"
+
+#. placeholder {0}: done.length
+#: src/features/feedback/FeedbackHome.tsx
+msgid "{0} reopened"
+msgstr "נפתחו מחדש: {0}"
+
+#. placeholder {0}: done.length
+#: src/features/feedback/FeedbackHome.tsx
+msgid "{0} resolved"
+msgstr "נפתרו: {0}"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
@@ -416,9 +432,9 @@ msgstr "{count, plural, one {# person} other {# people}} who confirmed before wo
 msgid "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 msgstr "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 
-#: src/features/feedback/FeedbackPage.tsx
-msgid "{count, plural, one {# report} other {# reports}}"
-msgstr "{count, plural, one {דיווח אחד} two {# דיווחים} other {# דיווחים}}"
+#: src/features/docs/DocsPage.tsx
+msgid "{count, plural, one {# post waiting for approval} other {# posts waiting for approval}}"
+msgstr "{count, plural, one {פוסט אחד ממתין לאישור} two {# פוסטים ממתינים לאישור} other {# פוסטים ממתינים לאישור}}"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "{count, plural, one {# scope} other {# scopes}}"
@@ -511,10 +527,6 @@ msgstr "{doneText} מתוך {total}"
 msgid "{doneText} of {total} done"
 msgstr "הושלמו {doneText} מתוך {total}"
 
-#: src/features/status/StatusPages.tsx
-msgid "{down, plural, one {# down} other {# down}}"
-msgstr "{down, plural, one {# לא זמין} two {# לא זמינים} other {# לא זמינים}}"
-
 #: src/features/docs/PagesTab.tsx
 msgid "{down} not helpful"
 msgstr "{down} לא עזר"
@@ -546,6 +558,10 @@ msgstr "{first} דירג/ה את השיחה 👍"
 #: src/features/conversation/messages/Thread.tsx
 msgid "{first} rated the conversation 👎"
 msgstr "{first} דירג/ה את השיחה 👎"
+
+#: src/features/status/StatusPages.tsx
+msgid "{fmtCount, plural, one {# page} other {# pages}}"
+msgstr "{fmtCount, plural, one {דף אחד} two {# דפים} other {# דפים}}"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "{from} has an SPF record. Whether it passes is known once the test mail is read."
@@ -774,10 +790,6 @@ msgstr "{n} סומנו כלא נקראו"
 #: src/features/mail/MailList.tsx
 msgid "{n} moved to the Inbox"
 msgstr "{n} הוחזרו לתיבת הדואר הנכנס"
-
-#: src/features/feedback/FeedbackPage.tsx
-msgid "{n} reports"
-msgstr "{n} דיווחים"
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -1152,10 +1164,6 @@ msgstr "{unreadText} שלא נקראו"
 msgid "{unseenText} unread of {totalText}"
 msgstr "{unseenText} שלא נקראו מתוך {totalText}"
 
-#: src/features/status/StatusPages.tsx
-msgid "{up, plural, one {# up} other {# up}}"
-msgstr "{up, plural, one {# זמין} two {# זמינים} other {# זמינים}}"
-
 #: src/features/docs/PagesTab.tsx
 msgid "{up} helpful"
 msgstr "{up} מועיל"
@@ -1332,7 +1340,7 @@ msgstr "24 חודשים"
 msgid "3 months"
 msgstr "3 חודשים"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "3 to 48 letters, numbers and hyphens. It is unique on this server."
 msgstr "3 עד 48 אותיות, ספרות ומקפים. ייחודי בשרת הזה."
 
@@ -1536,11 +1544,11 @@ msgstr "דיון קיבל תשובה מאושרת"
 msgid "A discussion started"
 msgstr "דיון התחיל"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "A draft incident opens for your team to review. Customers see nothing until a member publishes it."
 msgstr "נפתחת טיוטת אירוע לבדיקת הצוות שלכם. לקוחות לא רואים דבר עד שחבר צוות מפרסם אותה."
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "A draft is seen only by your team and changes no component until you publish it."
 msgstr "טיוטה גלויה רק לצוות שלכם ואינה משנה אף רכיב עד שתפרסמו אותה."
 
@@ -1751,7 +1759,7 @@ msgstr "לנכס יכולים להיות לכל היותר 100 פלחים. מח�
 msgid "A property can have at most 20 funnels. Delete one first."
 msgstr "לנכס יכולים להיות לכל היותר 20 משפכים. מחק קודם משפך אחד."
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "A public page that tells your customers whether {inboxName} works. It stays unpublished until you publish it."
 msgstr "דף ציבורי שמספר ללקוחות שלכם אם {inboxName} עובד. הוא נשאר לא מפורסם עד שתפרסמו אותו."
 
@@ -1759,7 +1767,7 @@ msgstr "דף ציבורי שמספר ללקוחות שלכם אם {inboxName} ע
 msgid "A published What's new entry was deleted"
 msgstr "רשומה שפורסמה ב״מה חדש״ נמחקה"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "A pushed state that names its own state keeps it."
 msgstr "מצב שנשלח ומציין את מצבו שלו שומר עליו."
 
@@ -1982,7 +1990,7 @@ msgstr "מספר חשבון"
 msgid "Acme docs"
 msgstr "התיעוד של Acme"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "Acme status"
 msgstr "הסטטוס של Acme"
 
@@ -2011,7 +2019,6 @@ msgstr "פעולות בלבד"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "Active"
 msgstr "פעיל"
 
@@ -2182,7 +2189,7 @@ msgstr "הוסף לפחות מקור אחד."
 msgid "Add channel"
 msgstr "הוספת ערוץ"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Add component"
 msgstr "הוספת רכיב"
@@ -2204,7 +2211,7 @@ msgstr "הוספת דומיין"
 msgid "Add endpoint"
 msgstr "הוספת נקודת קצה"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Add group"
 msgstr "הוספת קבוצה"
@@ -2230,7 +2237,7 @@ msgstr "הוספת התווית {labelName}"
 msgid "Add labels"
 msgstr "הוספת תוויות"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Add monitor"
 msgstr "הוספת מוניטור"
 
@@ -2344,7 +2351,7 @@ msgstr "הוסיף/ה את הדומיין {domain} להתחברות יחידה"
 #: src/features/mail/MailSide.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 #: src/features/status/MonitorHttpFields.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/MonitorToken.tsx
@@ -2404,7 +2411,6 @@ msgid "Admins see every inbox and manage products, channels and members."
 msgstr "מנהלים רואים כל תיבת דואר נכנס ומנהלים מוצרים, ערוצים וחברים."
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/StatusPages.tsx
 msgid "Affects"
 msgstr "משפיע על"
 
@@ -2525,7 +2531,6 @@ msgid "All mentions"
 msgstr "כל האזכורים"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/StatusPages.tsx
 msgid "All monitors"
 msgstr "כל המוניטורים"
 
@@ -2546,7 +2551,6 @@ msgid "all products"
 msgstr "כל המוצרים"
 
 #: src/components/common/WorkspaceSelector.tsx
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/SidePanels.tsx
@@ -2554,7 +2558,6 @@ msgstr "כל המוצרים"
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "All products"
 msgstr "כל המוצרים"
 
@@ -2575,10 +2578,6 @@ msgstr "כל השלבים"
 #: src/features/status/StatusPages.tsx
 msgid "All systems operational"
 msgstr "כל המערכות פועלות"
-
-#: src/features/status/StatusPages.tsx
-msgid "all up"
-msgstr "הכול זמין"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "All, drafts, scheduled or sent"
@@ -2850,7 +2849,7 @@ msgstr "An idea only shows its issues and their state. Its stage stays your deci
 msgid "An inbox collects the conversations of one product or brand. Name it after the product your customers know."
 msgstr "תיבת דואר אוספת את השיחות של מוצר או מותג אחד. תן לה את שם המוצר שהלקוחות שלך מכירים."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "An incident is published at once, so customers see it on the page."
 msgstr "האירוע מתפרסם מיד, כך שלקוחות רואים אותו בדף."
 
@@ -3056,7 +3055,7 @@ msgstr "התשובה נוקתה"
 msgid "Answer to a forward from {author}"
 msgstr "תשובה להעברה מאת {author}"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "answered"
 msgstr "נענתה"
 
@@ -3134,7 +3133,7 @@ msgstr "כל מה שמשתמש במפתח הזה מפסיק לעבוד מיד."
 
 #: src/components/common/Source.tsx
 #: src/components/common/text.ts
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "API"
 msgstr "API"
 
@@ -3333,7 +3332,7 @@ msgstr "כמו למעלה ({current})"
 msgid "As fast as allowed"
 msgstr "מהר ככל שמותר"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "As often as allowed"
 msgstr "בתדירות הגבוהה ביותר המותרת"
 
@@ -3746,12 +3745,6 @@ msgstr "שולח אות רק כשהמשימה הצליחה."
 msgid "Before"
 msgstr "קודם"
 
-#. placeholder {0}: date(before)
-#. placeholder {1}: took(before)
-#: src/features/status/StatusPages.tsx
-msgid "before that: {0}, {1}"
-msgstr "לפני כן: {0}, {1}"
-
 #: src/features/migrations/ConnectStep.tsx
 msgid "Before you connect"
 msgstr "לפני שמתחברים"
@@ -3985,8 +3978,7 @@ msgstr "שליחות המוניות מהערוץ הזה יוצאות דרך חש
 msgid "Browser"
 msgstr "דפדפן"
 
-#: src/features/feedback/FeedbackList.tsx
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Bugs, ideas and praise sent from your apps and pages"
 msgstr "באגים, רעיונות ומחמאות שנשלחו מהאפליקציות והדפים שלך"
 
@@ -3999,10 +3991,6 @@ msgstr "Bundle ID"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
 msgstr "שעות עבודה"
-
-#: src/features/status/StatusPages.tsx
-msgid "by e-mail"
-msgstr "בדואר"
 
 #: src/features/conversation/Feedback.tsx
 msgid "By e-mail"
@@ -4071,11 +4059,9 @@ msgstr "שם הקמפיין"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/NewsletterStep.tsx
 #: src/features/status/AddSubscriberDialog.tsx
-#: src/features/status/ComponentDialogs.tsx
-#: src/features/status/CreatePageDialog.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/IncidentForm.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Cancel"
@@ -4169,7 +4155,6 @@ msgid "Catch-all without a From address"
 msgstr "קליטת הכול בלי כתובת שולח"
 
 #: src/features/conversation/Feedback.tsx
-#: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Category"
 msgstr "קטגוריה"
@@ -4416,7 +4401,7 @@ msgstr "בדיקת DNS"
 msgid "Check DNS and start signing"
 msgstr "בדיקת DNS והתחלת חתימה"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Check every"
 msgstr "בדיקה כל"
@@ -4503,10 +4488,6 @@ msgstr "בודק…"
 msgid "Checks"
 msgstr "בדיקות"
 
-#: src/features/status/MonitorsPage.tsx
-msgid "Checks that watch your products and set component states"
-msgstr "בדיקות שעוקבות אחר המוצרים שלך וקובעות את מצב הרכיבים"
-
 #: src/features/migrations/Wizard.tsx
 msgid "Choose"
 msgstr "בחירה"
@@ -4542,10 +4523,6 @@ msgstr "בחירת ערך"
 #: src/app/Gate.tsx
 msgid "Choose a workspace"
 msgstr "בחר סביבת עבודה"
-
-#: src/features/feedback/FeedbackList.tsx
-msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
-msgstr "בחר אחד מהרשימה, או נווט עם ↑ ↓ ופתח אותו עם Enter."
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose the account that sends your answers. You can change it later in the channel settings."
@@ -4589,6 +4566,7 @@ msgstr "ניקוי"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Clear filters"
 msgstr "ניקוי מסננים"
 
@@ -4604,7 +4582,6 @@ msgstr "ניקוי התשובה"
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the search"
@@ -4868,7 +4845,7 @@ msgstr "הושלם"
 msgid "Completed at {endedAt}"
 msgstr "הושלם ב-{endedAt}"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Component"
 msgstr "רכיב"
@@ -4880,12 +4857,11 @@ msgstr "הרכיב נמחק"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Components"
 msgstr "רכיבים"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Components it touches"
 msgstr "רכיבים מושפעים"
 
@@ -5586,17 +5562,13 @@ msgstr "יצירת מדיניות"
 msgid "Create rule"
 msgstr "יצירת כלל"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "Create status page"
 msgstr "יצירת דף סטטוס"
 
 #: src/features/status/StatusPages.tsx
 msgid "Create status page ({newKey})"
 msgstr "יצירת דף סטטוס ({newKey})"
-
-#: src/features/status/StatusPages.tsx
-msgid "Create status page for {product}"
-msgstr "יצירת דף סטטוס עבור {product}"
 
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Create team"
@@ -5787,7 +5759,7 @@ msgstr "החשך את הצבעים כך שיתאימו לערכת הנושא"
 msgid "Data up to {builtText}"
 msgstr "נתונים עד {builtText}"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Database upgrade"
 msgstr "שדרוג מסד הנתונים"
 
@@ -6271,7 +6243,7 @@ msgstr "דחייה"
 
 #: src/features/issues/IssueDialog.tsx
 #: src/features/settings/teams/TeamEditor.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
 msgstr "תיאור"
@@ -6331,6 +6303,9 @@ msgstr "התראות שולחן עבודה חסומות לאתר הזה בהגד
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
+#: src/features/status/IncidentsPage.tsx
+#: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusPages.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Details"
 msgstr "פרטים"
@@ -6434,7 +6409,6 @@ msgstr "דיון התחיל"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
@@ -6826,10 +6800,6 @@ msgstr "מנויי הדוא״ל כבויים"
 msgid "E-mail subscribers are off. Nobody can subscribe and no notices go out, but the list is kept."
 msgstr "מנויי הדוא״ל כבויים. אי אפשר להירשם ולא נשלחות הודעות, אבל הרשימה נשמרת."
 
-#: src/features/status/StatusPages.tsx
-msgid "E-mail subscriptions are off"
-msgstr "מינויים בדואר כבויים"
-
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "E-mail view"
 msgstr "תצוגת אימייל"
@@ -6850,11 +6820,11 @@ msgstr "אימיילים לאנשים שנרשמו"
 msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
 msgstr "כל פעולה פעם אחת, עד 10. הפעולות רצות כשינוי אחד; אם אחת נכשלת, אף אחת לא מוחלת."
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Each component gets this state while the incident is open."
 msgstr "כל רכיב נמצא במצב הזה כל עוד האירוע פתוח."
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Each component gets this state while the maintenance is open."
 msgstr "כל רכיב נמצא במצב הזה כל עוד התחזוקה מתבצעת."
 
@@ -6953,7 +6923,7 @@ msgstr "עריכת מפתח API"
 msgid "Edit canned reply"
 msgstr "עריכת תשובה מוכנה"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Edit component"
 msgstr "עריכת רכיב"
 
@@ -6962,7 +6932,7 @@ msgid "Edit design"
 msgstr "עריכת עיצוב"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Edit details"
 msgstr "עריכת פרטים"
 
@@ -6990,7 +6960,7 @@ msgstr "עריכת תווית"
 msgid "Edit macro"
 msgstr "עריכת מאקרו"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Edit monitor"
 msgstr "עריכת מוניטור"
 
@@ -7062,7 +7032,7 @@ msgstr "עריכת טיוטה שלא ניתן היה לשלוח"
 msgid "Editing the message scheduled for {editingWhen}"
 msgstr "עריכת ההודעה המתוזמנת ל-{editingWhen}"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Elevated API errors"
 msgstr "עלייה בשגיאות API"
 
@@ -7137,7 +7107,7 @@ msgstr "נקודת קצה"
 msgid "Endpoints"
 msgstr "נקודות קצה"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Ends"
 msgstr "סיום"
 
@@ -7297,7 +7267,7 @@ msgstr "כל דואר"
 msgid "Every open conversation has someone."
 msgstr "לכל שיחה פתוחה יש אחראי."
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "Every open discussion has an answer."
 msgstr "לכל דיון פתוח יש תשובה."
 
@@ -7305,12 +7275,11 @@ msgstr "לכל דיון פתוח יש תשובה."
 msgid "Every other browser and device is signed out. This one stays signed in."
 msgstr "כל שאר הדפדפנים והמכשירים ינותקו. המכשיר הזה יישאר מחובר."
 
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
 msgstr "כל המוצרים"
 
-#: src/features/broadcasts/BroadcastsFrame.tsx
+#: src/components/common/ProductFilter.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
 msgstr "כל מוצר"
@@ -7339,7 +7308,7 @@ msgstr "כל השלבים עברו."
 msgid "Every subscriber keeps a consent record you can export."
 msgstr "לכל מנוי יש רישום הסכמה שאפשר לייצא."
 
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every type"
 msgstr "כל סוג"
@@ -7421,7 +7390,7 @@ msgstr "Example בע״מ"
 msgid "Expand or collapse every message"
 msgstr "הרחבה או כיווץ של כל ההודעות"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Expected every"
 msgstr "צפוי כל"
@@ -7530,7 +7499,7 @@ msgstr "נכשל"
 msgid "Fails the monitor at once, without waiting for the grace."
 msgstr "מפיל את המוניטור מיד, בלי להמתין לסובלנות."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Failures to go down"
 msgstr "כשלונות ברצף עד הנפילה"
@@ -7550,7 +7519,7 @@ msgstr "משוב"
 #: src/features/contact/ContactCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/PagesTab.tsx
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/webhooks/events.tsx
@@ -7578,10 +7547,15 @@ msgstr "קטגוריות משוב"
 msgid "Feedback category"
 msgstr "קטגוריית משוב"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Feedback form"
 msgstr "טופס משוב"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Feedback form ({formKey})"
+msgstr "טופס משוב ({formKey})"
 
 #: src/features/conversation/actions.ts
 msgid "Feedback resolved"
@@ -7669,7 +7643,7 @@ msgstr "סינון לפי תווית"
 msgid "Filter by plan"
 msgstr "סינון לפי תוכנית"
 
-#: src/features/broadcasts/BroadcastsFrame.tsx
+#: src/components/common/ProductFilter.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "סינון לפי מוצר"
@@ -7681,12 +7655,17 @@ msgstr "סינון לפי מצב"
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Filter by status"
 msgstr "סינון לפי סטטוס"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Filter by team"
 msgstr "סינון לפי צוות"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Filter by type"
+msgstr "סינון לפי סוג"
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
@@ -7812,7 +7791,7 @@ msgstr "תגובה ראשונה, חציון"
 msgid "First rows of the file"
 msgstr "השורות הראשונות של הקובץ"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "First update"
 msgstr "עדכון ראשון"
 
@@ -8300,7 +8279,7 @@ msgstr "Google שלחה קוד אישור"
 msgid "Google Takeout"
 msgstr "Google Takeout"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Grace"
 msgstr "סובלנות"
@@ -8318,7 +8297,7 @@ msgstr "ברכה"
 msgid "Greets new conversations by e-mail, once per contact within the interval. Never sent to automatic mail or spam."
 msgstr "מקבל שיחות חדשות באימייל, פעם אחת לכל איש קשר בתוך המרווח. לא נשלח לעולם לדואר אוטומטי או לספאם."
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Group"
 msgstr "קבוצה"
 
@@ -8500,7 +8479,7 @@ msgstr "היי! איך אפשר לעזור?"
 
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Hidden"
 msgstr "מוסתר"
@@ -8521,7 +8500,7 @@ msgstr "הסתרה"
 msgid "Hide from the page"
 msgstr "הסתרה מהדף"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Hide HTTP details"
 msgstr "הסתרת פרטי HTTP"
 
@@ -8583,7 +8562,7 @@ msgstr "ההיסטוריה הוסרה"
 msgid "Home"
 msgstr "בית"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Host"
 msgstr "מארח"
@@ -8642,7 +8621,7 @@ msgstr "באיזו מהירות ובאיזו איכות הצוות שלך עונ
 msgid "How HTML e-mails open. You can still switch each message."
 msgstr "איך נפתחים אימיילים ב-HTML. עדיין אפשר להחליף לכל הודעה."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "How late a beat may be."
 msgstr "כמה אות רשאי לאחר."
 
@@ -8791,7 +8770,7 @@ msgstr "אם ספק ה-DNS שלך מגביל מחרוזת TXT ל-255 תווים,
 msgid "If your mail provider mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "אם ספק הדואר שלך שולח אישור לכתובת הזאת, הוא מגיע לתיבת הדואר הזאת כשיחה; פתח אותו שם."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Ignores results and lets the component go back."
 msgstr "מתעלם מהתוצאות ומאפשר לרכיב לחזור."
 
@@ -8808,7 +8787,7 @@ msgid "IMAP server"
 msgstr "שרת IMAP"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Impact"
 msgstr "השפעה"
 
@@ -8901,7 +8880,7 @@ msgstr "אצל {contact} · {subject}"
 msgid "In 1 hour"
 msgstr "בעוד שעה"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "In a row, 1 to 10."
 msgstr "ברצף, 1 עד 10."
 
@@ -9098,7 +9077,6 @@ msgstr "אירוע: {title} · {state}"
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "Incidents"
 msgstr "אירועים"
 
@@ -9550,7 +9528,7 @@ msgid "Keyword"
 msgstr "מילת מפתח"
 
 #: src/features/settings/automation/text.ts
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "סוג"
@@ -9827,7 +9805,7 @@ msgstr "Leave your signature off this reply ({signatureKey})"
 msgid "Leave your signature off this reply, or put it back"
 msgstr "Leave your signature off this reply, or put it back"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Left off the public page and its overall state."
 msgstr "לא מופיע בדף הציבורי ובמצב הכולל שלו."
 
@@ -10119,6 +10097,7 @@ msgstr "טעינת תמונות"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/mail/MailDrafts.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
@@ -10391,7 +10370,6 @@ msgstr "Mails go out {sentence}, once to each person. Pausing stops sending but 
 msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
 msgstr "הודעות יוצאות בין {start} ל-{end} שעון {city} ({utcStart}–{utcEnd} UTC) וממשיכות למחרת."
 
-#: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
 msgid "Maintenance"
 msgstr "תחזוקה"
@@ -10913,7 +10891,6 @@ msgstr "במעקב"
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/MonitorsPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Monitors"
 msgstr "מוניטורים"
@@ -10974,10 +10951,6 @@ msgstr "הכי הרבה דירוגי „לא מועיל” קודם"
 msgid "Most active"
 msgstr "הכי פעילים"
 
-#: src/features/feedback/FeedbackPage.tsx
-msgid "Most asked for"
-msgstr "הכי מבוקשים"
-
 #: src/features/docs/Toolbar.tsx
 msgid "Most disliked"
 msgstr "הכי פחות אהובים"
@@ -11010,8 +10983,11 @@ msgstr "הכי הרבה הצבעות"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/status/IncidentsPage.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "move"
 msgstr "מעבר"
@@ -11020,6 +10996,10 @@ msgstr "מעבר"
 #: src/features/inbox/ChatList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "להעביר {0} לפח?"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Move {n} to the Trash?"
+msgstr "להעביר {n} לפח?"
 
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -11058,6 +11038,10 @@ msgstr "העברת האוסף שנבחר"
 msgid "Move the selected conversations to the Trash"
 msgstr "העברת השיחות שנבחרו לפח"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move the selected feedback to the Trash"
+msgstr "העברת המשוב שנבחר לפח"
+
 #: src/features/conversation/ChatView.tsx
 msgid "Move this conversation to the Trash?"
 msgstr "להעביר את השיחה הזו לפח?"
@@ -11085,6 +11069,10 @@ msgstr "מעבר בין העיצובים"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the entries"
 msgstr "מעבר בין הרשומות"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move through the feedback"
+msgstr "מעבר בין פריטי המשוב"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the ideas"
@@ -11152,6 +11140,7 @@ msgstr "העברה לשלב הקודם או הבא"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
@@ -11163,6 +11152,7 @@ msgstr "העברה לפח"
 msgid "Move to the Trash ({0})"
 msgstr "העברה לפח ({0})"
 
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Move to the Trash (#)"
@@ -11276,9 +11266,9 @@ msgstr "התצוגות שלי"
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
-#: src/features/status/ComponentDialogs.tsx
-#: src/features/status/CreatePageDialog.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/ComponentForms.tsx
+#: src/features/status/CreatePageForm.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Name"
 msgstr "שם"
@@ -11504,6 +11494,7 @@ msgstr "שדה חדש"
 msgid "New filter"
 msgstr "מסנן חדש"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "רעיון חדש"
@@ -11527,6 +11518,10 @@ msgstr "חדשים ב-{days} הימים האחרונים"
 #: src/features/migrations/MapStep.tsx
 msgid "New inbox…"
 msgstr "תיבת דואר חדשה…"
+
+#: src/features/status/IncidentsPage.tsx
+msgid "new incident"
+msgstr "אירוע חדש"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -11587,6 +11582,10 @@ msgid "New migration"
 msgstr "העברה חדשה"
 
 #: src/features/status/MonitorsPage.tsx
+msgid "new monitor"
+msgstr "מוניטור חדש"
+
+#: src/features/status/MonitorsPage.tsx
 msgid "New monitor"
 msgstr "מוניטור חדש"
 
@@ -11597,10 +11596,6 @@ msgstr "בעלים חדש"
 #: src/features/team/RemoveMemberDialog.tsx
 msgid "New owner of {boxName}"
 msgstr "בעלים חדש של {boxName}"
-
-#: src/features/status/StatusPages.tsx
-msgid "New page"
-msgstr "דף חדש"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "New password"
@@ -11625,6 +11620,7 @@ msgid "New signing secret"
 msgstr "סוד חתימה חדש"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/status/StatusPages.tsx
 msgid "New status page"
 msgstr "דף סטטוס חדש"
 
@@ -11748,7 +11744,7 @@ msgstr "בשלב הבא, בחר מה להביא. הסריקה קוראת את ה
 msgid "Next, choose where they go."
 msgstr "בשלב הבא, בחר לאן הם הולכים."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Nightly backup"
 msgstr "גיבוי לילי"
 
@@ -11871,7 +11867,7 @@ msgstr "לא צוין אף רכיב."
 msgid "No components in this group."
 msgstr "אין רכיבים בקבוצה הזו."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "No components yet. Add one to a status page first."
 msgstr "עדיין אין רכיבים. הוסיפו קודם רכיב לדף סטטוס."
 
@@ -11968,7 +11964,7 @@ msgstr "עדיין אין דיונים בדף הזה."
 msgid "No discussions under the pages of these sites."
 msgstr "אין דיונים מתחת לדפים של האתרים האלה."
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "No discussions yet. Readers start them under your documentation pages."
 msgstr "עדיין אין דיונים. קוראים פותחים אותם מתחת לדפי התיעוד שלך."
 
@@ -12048,12 +12044,12 @@ msgstr "אף קובץ לא מתקבל."
 msgid "No filters yet."
 msgstr "אין עדיין מסננים."
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
 msgstr "ללא קבוצה"
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "No hidden discussions."
 msgstr "אין דיונים מוסתרים."
 
@@ -12111,7 +12107,7 @@ msgstr "ללא הגבלה"
 msgid "No list matches “{q}”."
 msgstr "אין רשימה שתואמת ל„{q}”."
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "No locked discussions."
 msgstr "אין דיונים נעולים."
 
@@ -12176,7 +12172,7 @@ msgstr "ללא הערה"
 msgid "No notifications in the last 90 days."
 msgstr "אין התראות ב-90 הימים האחרונים."
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "No open feedback."
 msgstr "No open feedback."
 
@@ -12472,7 +12468,7 @@ msgstr "אף אחד לא יקבל את האימייל הזה. בחר רשימו�
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/setup/email/EmailTestStep.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "None"
 msgstr "ללא"
@@ -12809,7 +12805,7 @@ msgstr "שום דבר לא הולך לאיבוד: ברגע שנכנסים שוב
 msgid "Nothing is lost: when it continues, copying picks up where it stopped."
 msgstr "שום דבר לא הולך לאיבוד: כשזה ממשיך, ההעתקה נמשכת מהמקום שבו נעצרה."
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Nothing is resolved yet."
 msgstr "Nothing is resolved yet."
 
@@ -12823,7 +12819,7 @@ msgid "Nothing is snoozed."
 msgstr "שום דבר לא נדחה."
 
 #: src/features/docs/discussions/QueuePane.tsx
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "Nothing is waiting for approval."
 msgstr "שום דבר לא ממתין לאישור."
 
@@ -12835,7 +12831,7 @@ msgstr "כרגע הכול תקין. פתחו אירוע כשמשהו מתקלק�
 msgid "Nothing matches these filters."
 msgstr "שום דבר לא מתאים למסננים האלה."
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing matches your search here."
 msgstr "שום דבר לא מתאים לחיפוש שלך כאן."
@@ -12844,7 +12840,7 @@ msgstr "שום דבר לא מתאים לחיפוש שלך כאן."
 msgid "Nothing needs attention right now."
 msgstr "כרגע שום דבר לא דורש תשומת לב."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Nothing opens by itself. Open an incident from the monitor when you want one."
 msgstr "שום דבר לא נפתח מעצמו. פתחו אירוע מהמוניטור כשתרצו."
 
@@ -13301,10 +13297,6 @@ msgstr "רק ביקורים שנעשו אחרי שהסכימו למזהה קבו
 msgid "Only while the panel is open in this browser. Away, you are alerted only about conversations assigned to you."
 msgstr "רק כשהלוח פתוח בדפדפן הזה. כשאינך זמין, אתה מקבל התראות רק על שיחות המשויכות אליך."
 
-#: src/features/status/StatusPages.tsx
-msgid "only your team can preview it"
-msgstr "רק הצוות שלכם יכול לצפות בה בתצוגה מקדימה"
-
 #: src/features/broadcasts/NewBroadcastForm.tsx
 msgid "Only your team sees it."
 msgstr "רק הצוות שלך רואה את זה."
@@ -13317,8 +13309,11 @@ msgstr "פתוחה"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/status/IncidentsPage.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgctxt "keyboard hint"
 msgid "open"
@@ -13328,7 +13323,7 @@ msgstr "פתיחה"
 #: src/features/account/AccountPage.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -13338,7 +13333,9 @@ msgid "Open"
 msgstr "פתוחות"
 
 #. placeholder {0}: a.filename
+#. placeholder {0}: p.name
 #: src/features/conversation/messages/Attachments.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Open {0}"
 msgstr "פתיחת {0}"
 
@@ -13372,7 +13369,7 @@ msgid "Open Account security in your Yahoo account."
 msgstr "פתח את Account security בחשבון Yahoo שלך."
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Open an incident"
 msgstr "פתיחת אירוע"
@@ -13550,6 +13547,10 @@ msgstr "פתיחת נקודת הקצה"
 msgid "Open the entry"
 msgstr "פתיחת הרשומה"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Open the feedback"
+msgstr "פתיחת המשוב"
+
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Open the guide"
 msgstr "Open the guide"
@@ -13623,6 +13624,10 @@ msgid "Open the site, goal or funnel"
 msgstr "פתיחת האתר, היעד או המשפך"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Open the status page"
+msgstr "פתיחת דף הסטטוס"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Open the triggered e-mail"
 msgstr "Open the triggered e-mail"
 
@@ -13688,7 +13693,7 @@ msgstr "operational משחזר; degraded, partial_outage ו־major_outage מפי
 msgid "Operator"
 msgstr "מפעיל"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Optional. Shown on the public page."
 msgstr "אופציונלי. מוצג בדף הציבורי."
 
@@ -13821,7 +13826,6 @@ msgstr "לאורך זמן"
 
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
 msgstr "סקירה כללית"
@@ -13884,9 +13888,7 @@ msgstr "דף: {name}"
 
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
-#: src/features/status/StatusPages.tsx
 msgid "Pages"
 msgstr "דפים"
 
@@ -13957,7 +13959,6 @@ msgstr "הסיסמה נקבעה"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "Past"
 msgstr "קודמים"
 
@@ -14023,7 +14024,7 @@ msgstr "השהיית המוניטור או המשכו"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/setup/email/EmailTestStep.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Paused"
@@ -14268,10 +14269,6 @@ msgstr "בחר קודם עיצוב."
 msgid "Pick a design that renders without errors."
 msgstr "בחר עיצוב שמוצג בלי שגיאות."
 
-#: src/features/docs/DiscussionsTab.tsx
-msgid "Pick a discussion to read and answer it."
-msgstr "בחרו דיון כדי לקרוא ולענות."
-
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "Pick a field"
 msgstr "בחרו שדה"
@@ -14299,17 +14296,9 @@ msgstr "Pick a list under Who gets it to save"
 msgid "Pick a member"
 msgstr "בחרו חבר"
 
-#: src/features/status/MonitorsPage.tsx
-msgid "Pick a monitor to see what happened."
-msgstr "בחרו מוניטור כדי לראות מה קרה."
-
 #: src/features/docs/PagesTab.tsx
 msgid "Pick a page to see its ratings, discussions and questions."
 msgstr "בחרו דף כדי לראות את הדירוגים, הדיונים והשאלות שלו."
-
-#: src/features/feedback/FeedbackList.tsx
-msgid "Pick a piece of feedback"
-msgstr "Pick a piece of feedback"
 
 #: src/features/broadcasts/ListPage.tsx
 msgid "Pick a sender in the settings"
@@ -14359,10 +14348,6 @@ msgstr "בחרו נקודת קצה"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Pick an inbox"
 msgstr "בחר תיבת דואר"
-
-#: src/features/status/IncidentsPage.tsx
-msgid "Pick an incident to read it."
-msgstr "בחרו אירוע כדי לקרוא אותו."
 
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "Pick an open incident or maintenance"
@@ -14503,7 +14488,7 @@ msgstr "מוצמד"
 msgid "Pinned to the top of your list"
 msgstr "מוצמד לראש הרשימה שלך"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "טקסט רגיל עם קישורים ושבירות שורה, עד 5,000 תווים."
 
@@ -14515,8 +14500,12 @@ msgstr "טקסט פשוט, מוצג מעל ההודעה המועברת."
 msgid "Plan"
 msgstr "תוכנית"
 
+#: src/features/status/IncidentsPage.tsx
+msgid "plan maintenance"
+msgstr "תכנון תחזוקה"
+
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Plan maintenance"
 msgstr "תכנון תחזוקה"
@@ -14558,7 +14547,7 @@ msgstr "מצביע אל"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Port"
 msgstr "פורט"
 
@@ -14597,6 +14586,10 @@ msgstr "כתובת דואר"
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Posted by you and marked as the accepted answer."
 msgstr "פורסם על ידך וסומן כתשובה מאושרת."
+
+#: src/features/docs/DocsPage.tsx
+msgid "Posts from new readers wait here until a member approves them"
+msgstr "פוסטים של קוראים חדשים ממתינים כאן עד שחבר צוות מאשר אותם"
 
 #: src/components/common/text.ts
 msgid "Preference page"
@@ -14656,8 +14649,20 @@ msgid "Previous or next discussion"
 msgstr "הדיון הקודם או הבא"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Previous or next incident"
+msgstr "האירוע הקודם או הבא"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Previous or next language"
 msgstr "השפה הקודמת או הבאה"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Previous or next monitor"
+msgstr "המוניטור הקודם או הבא"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Previous or next status page"
+msgstr "דף הסטטוס הקודם או הבא"
 
 #: src/features/feedback/Lightbox.tsx
 msgid "Previous screenshot"
@@ -14709,8 +14714,8 @@ msgstr "pro, team"
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/sections.tsx
-#: src/features/status/CreatePageDialog.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/CreatePageForm.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Product"
 msgstr "מוצר"
 
@@ -14864,7 +14869,7 @@ msgstr "פרסום אירוע"
 msgid "Publish and unpublish help center articles"
 msgstr "פרסום וביטול פרסום של מאמרים במרכז העזרה"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Publish now"
 msgstr "פרסום עכשיו"
 
@@ -14970,6 +14975,10 @@ msgstr "הציבו את האלמנטים האלה מתחת לכל דף בתיע�
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Question"
 msgstr "שאלה"
+
+#: src/features/docs/DocsPage.tsx
+msgid "Questions readers ask under your documentation pages"
+msgstr "שאלות שקוראים שואלים מתחת לדפי התיעוד שלך"
 
 #: src/components/common/text.ts
 msgid "Queued"
@@ -15633,7 +15642,7 @@ msgstr "מסיר היסטוריה מיובאת…"
 msgid "Rename"
 msgstr "שינוי שם"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Rename group"
 msgstr "שינוי שם הקבוצה"
 
@@ -15642,9 +15651,14 @@ msgid "Rename the mailbox"
 msgstr "שינוי שם התיבה"
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Reopen"
 msgstr "פתיחה מחדש"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Reopen ({closeKey})"
+msgstr "פתיחה מחדש ({closeKey})"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reorder the selected view in the sidebar"
@@ -15977,10 +15991,15 @@ msgid "Resolution {resolution}"
 msgstr "פתרון {resolution}"
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "Resolve"
 msgstr "Resolve"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Resolve ({closeKey})"
+msgstr "פתרון ({closeKey})"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -15995,10 +16014,13 @@ msgstr "פתרון האירוע"
 msgid "Resolve or complete"
 msgstr "פתרון או השלמה"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Resolve or reopen the selected feedback"
+msgstr "פתרון או פתיחה מחדש של המשוב שנבחר"
+
 #: src/components/common/text.ts
 #: src/features/conversation/ConversationStatus.tsx
-#: src/features/feedback/FeedbackList.tsx
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/status/text.tsx
 msgid "Resolved"
 msgstr "Resolved"
@@ -16011,11 +16033,6 @@ msgstr "נפתר ב-{endedAt}"
 #: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "נפתר תוך"
-
-#. placeholder {0}: took(last)
-#: src/features/status/StatusPages.tsx
-msgid "resolved in {0}"
-msgstr "נפתר תוך {0}"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Resolved. It moved to the Resolved tab."
@@ -16182,7 +16199,6 @@ msgstr "מיד אחרי ההרשמה אנשים מקבלים אימייל קצר
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/feedback/RoadmapCard.tsx
 msgid "Roadmap"
 msgstr "מפת דרכים"
@@ -16363,10 +16379,10 @@ msgstr "יום שבת"
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/parts.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/IncidentForm.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Save"
 msgstr "שמירה"
 
@@ -16387,7 +16403,7 @@ msgstr "שמירה ותזמון מחדש"
 msgid "Save and test"
 msgstr "Save and test"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Save as draft"
 msgstr "שמירה כטיוטה"
 
@@ -16526,7 +16542,6 @@ msgstr "תזמון הרשומה"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/text.ts
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/text.tsx
 msgid "Scheduled"
 msgstr "מתוזמן"
@@ -16551,7 +16566,6 @@ msgid "Scheduled by"
 msgstr "תוזמן על ידי"
 
 #: src/features/status/Notices.tsx
-#: src/features/status/StatusPages.tsx
 msgid "Scheduled for {due}"
 msgstr "מתוזמן ל-{due}"
 
@@ -16604,7 +16618,7 @@ msgstr "גודל מסך"
 msgid "Screenshot"
 msgstr "צילום מסך"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Screenshots attached"
 msgstr "Screenshots attached"
 
@@ -16616,12 +16630,12 @@ msgstr "SDK"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "search"
 msgstr "חיפוש"
 
 #: src/app/Palette.tsx
-#: src/features/feedback/FeedbackList.tsx
 msgid "Search"
 msgstr "חיפוש"
 
@@ -16671,9 +16685,14 @@ msgstr "חיפוש אמוג׳י"
 msgid "Search emoji (in English)"
 msgstr "חיפוש אמוג׳י (באנגלית)"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Search feedback"
 msgstr "Search feedback"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Search feedback…"
+msgstr "חיפוש במשוב…"
 
 #: src/app/places.tsx
 msgid "Search gaps"
@@ -16775,7 +16794,7 @@ msgstr "חפש, מיין וכתוב טיוטות תשובה מהטרמינל ש�
 msgid "Second secret"
 msgstr "סוד שני"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Seconds, 1 to 30."
 msgstr "שניות, מ-1 עד 30."
 
@@ -16805,6 +16824,7 @@ msgstr "נראה על ידי המוניטור"
 
 #: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "select"
@@ -16826,6 +16846,10 @@ msgid "Select all"
 msgstr "בחירת הכול"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Select the article"
+msgstr "בחירת המאמר"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Select the broadcast under the cursor"
 msgstr "בחירת הדיוור שתחת הסמן"
 
@@ -16836,6 +16860,14 @@ msgstr "בחירת איש הקשר שמתחת לסמן"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "בחרו את השיחה שמתחת לסמן"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the entry"
+msgstr "בחירת הרשומה"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the feedback"
+msgstr "בחירת המשוב"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the mail under the cursor"
@@ -17506,7 +17538,6 @@ msgstr "מגדיר…"
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "הגדרות"
@@ -17568,6 +17599,7 @@ msgstr "קיצור"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Show"
 msgstr "הצגה"
@@ -17600,7 +17632,7 @@ msgstr "הצגת פיד, תג והטמעה"
 msgid "Show full draft"
 msgstr "הצגת הטיוטה המלאה"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Show HTTP details"
 msgstr "הצגת פרטי HTTP"
 
@@ -18513,7 +18545,7 @@ msgid "Starting"
 msgstr "מתחיל"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Starts"
 msgstr "התחלה"
 
@@ -18540,9 +18572,9 @@ msgstr "STARTTLS (פורט 587)"
 
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "State"
 msgstr "מצב"
@@ -18553,7 +18585,7 @@ msgid "State of {0}"
 msgstr "המצב של {0}"
 
 #. placeholder {0}: c.name
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "State of {0} while it is open"
 msgstr "המצב של {0} כל עוד הוא פתוח"
 
@@ -18561,7 +18593,7 @@ msgstr "המצב של {0} כל עוד הוא פתוח"
 msgid "state of the conversation"
 msgstr "מצב השיחה"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "State while down"
 msgstr "מצב בנפילה"
@@ -18573,7 +18605,6 @@ msgstr "מצב בנפילה"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
-#: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -18584,7 +18615,6 @@ msgstr "מצב בנפילה"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Status"
 msgstr "סטטוס"
@@ -18601,7 +18631,6 @@ msgstr "דף הסטטוס נמחק"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "דפי סטטוס"
@@ -18737,7 +18766,6 @@ msgstr "נרשם לרשימה הרגע"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Subscribers"
 msgstr "מנויים"
@@ -18763,7 +18791,7 @@ msgstr "המנוי נמחק"
 msgid "Succeeded"
 msgstr "הצליח"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Successes to recover"
 msgstr "הצלחות ברצף עד ההתאוששות"
@@ -19208,7 +19236,7 @@ msgstr "הקוד שגוי או שפג תוקפו."
 msgid "The columns are guessed from the header row. One must be the e-mail address; name the others as contact fields or attributes, or skip them. Attributes only fill keys a contact does not have yet."
 msgstr "העמודות מנוחשות משורת הכותרת. אחת חייבת להיות כתובת האימייל; תן לאחרות שם כשדות איש קשר או כמאפיינים, או דלג עליהן. מאפיינים ממלאים רק מפתחות שעדיין אין לאיש הקשר."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "The component whose state this monitor sets."
 msgstr "הרכיב שהמוניטור הזה מגדיר את מצבו."
 
@@ -19333,7 +19361,7 @@ msgstr "דומיין האימייל לא מאומת עבור סביבת עבוד
 msgid "The elements work on these addresses; add your dev server in the inbox settings:"
 msgstr "הרכיבים פועלים בכתובות האלה; הוסף את שרת הפיתוח שלך בהגדרות תיבת הדואר:"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "The end must be after the start."
 msgstr "הסיום חייב להיות אחרי ההתחלה."
 
@@ -19428,10 +19456,6 @@ msgstr "ההודעה הראשונה בשיחה בתיבת דואר שמציגה 
 #: src/features/settings/notifications/events.ts
 msgid "The first message of a conversation in an inbox that shows who is available."
 msgstr "ההודעה הראשונה בשיחה בתיבת דואר שמציגה מי זמין."
-
-#: src/features/status/StatusPages.tsx
-msgid "the first one"
-msgstr "הראשון"
 
 #: src/features/docs/PagesTab.tsx
 msgid "The first rating makes the page appear here."
@@ -20292,6 +20316,10 @@ msgstr "הם יוסתרו יחד עם כל שאר הפוסטים של הכותב
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "הן ייעלמו מהצוות שלכם ומהלקוחות. אפשר לשחזר אותן מהפח במשך 30 יום, ואז הן נמחקות לצמיתות יחד עם ההודעות והקבצים שלהן."
 
+#: src/features/feedback/FeedbackHome.tsx
+msgid "They disappear for your team. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
+msgstr "הם נעלמים מהצוות שלך. אפשר לשחזר אותם מהפח במשך 30 יום, ואז הם נמחקים לצמיתות יחד עם ההודעות והקבצים שלהם."
+
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They get a mail with a link and are subscribed only after they click it."
 msgstr "הם מקבלים אימייל עם קישור ונרשמים רק אחרי שלחצו עליו."
@@ -20691,7 +20719,7 @@ msgstr "המנטר הזה כבר לא קיים או שאין לך גישה אל�
 msgid "This month"
 msgstr "החודש"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "This page is not public yet, so visitors see nothing until you publish the page."
 msgstr "הדף הזה עדיין לא ציבורי, ולכן מבקרים לא רואים דבר עד שתפרסמו את הדף."
 
@@ -20808,6 +20836,10 @@ msgstr "האתר הזה לא יכול להתחבר"
 #: src/components/common/text.ts
 msgid "This site is not allowed to use this documentation channel."
 msgstr "האתר הזה אינו מורשה להשתמש בערוץ התיעוד הזה."
+
+#: src/features/status/StatusPages.tsx
+msgid "This status page no longer exists or you cannot see it."
+msgstr "דף הסטטוס הזה כבר לא קיים או שאין לך גישה אליו."
 
 #: src/components/common/text.ts
 msgid "This subscription is no longer waiting for confirmation."
@@ -20926,7 +20958,7 @@ msgstr "שעה"
 msgid "Time zone"
 msgstr "אזור זמן"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Timeout"
 msgstr "זמן קצוב"
@@ -20935,7 +20967,7 @@ msgstr "זמן קצוב"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/issues/IssueDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Title"
 msgstr "כותרת"
 
@@ -21093,6 +21125,7 @@ msgstr "סמוך על האישור הזה עבור השרת הזה. עשה זא�
 #: src/features/account/AccountLayout.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/migrations/UploadStep.tsx
@@ -21187,7 +21220,6 @@ msgstr "כובה על ידי Yuva"
 msgid "TXT record"
 msgstr "רשומת TXT"
 
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/fields/FieldDialog.tsx
@@ -21423,7 +21455,7 @@ msgstr "ביטול פרסום התרגום"
 msgid "Unpublished"
 msgstr "לא מפורסם"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/mail/MailList.tsx
@@ -22032,7 +22064,6 @@ msgstr "ממתינים לאישור"
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
-#: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "Waiting for approval"
@@ -22426,7 +22457,7 @@ msgstr "כשחבר צוות כותב @ ואת שמך בהערה, ההערה מו
 msgid "When did they agree?"
 msgstr "מתי הם הסכימו?"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "When it goes down"
 msgstr "כשהוא נופל"
@@ -22464,10 +22495,6 @@ msgstr "כשמישהו אחר משייך אותה אליך."
 #: src/features/broadcasts/Trigger.tsx
 msgid "when someone first signs in to {inbox}"
 msgstr "when someone first signs in to {inbox}"
-
-#: src/features/feedback/FeedbackList.tsx
-msgid "When someone sends feedback, it will be in the list."
-msgstr "When someone sends feedback, it will be in the list."
 
 #: src/features/broadcasts/Trigger.tsx
 msgid "when someone starts to match {match}"
@@ -22952,11 +22979,11 @@ msgstr "You get a new secret once. Webhooks from GitHub are refused until you pa
 msgid "You get a notification when someone replies in these"
 msgstr "תקבל התראה כשמישהו מגיב באלה"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "You get the address to call when you save. It is shown only once."
 msgstr "בשמירה תקבלו את הכתובת לקריאה. היא מוצגת פעם אחת בלבד."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "You get the address your alerting calls when you save, for Alertmanager, Grafana or your own script. It is shown only once."
 msgstr "בשמירה תקבלו את הכתובת שמערכת ההתראות שלכם קוראת לה, עבור Alertmanager, Grafana או סקריפט משלכם. היא מוצגת פעם אחת בלבד."
 
@@ -23115,7 +23142,7 @@ msgstr "Your identity provider has not verified your e-mail address, so Yuva can
 msgid "Your inbox is empty."
 msgstr "תיבת הדואר הנכנס ריקה."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Your job calls Yuva on a schedule. A missing call fails the monitor."
 msgstr "המשימה שלכם קוראת ל־Yuva במרווחים קבועים. קריאה חסרה מפילה את המוניטור."
 
@@ -23169,7 +23196,7 @@ msgstr "מנהל הארגון שלך צריך לאשר את Yuva"
 msgid "Your own"
 msgstr "Your own"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Your own monitoring sends its state, including Alertmanager and Grafana alerts."
 msgstr "מערכת הניטור שלכם שולחת את מצבה, כולל התראות של Alertmanager ו־Grafana."
 
@@ -23392,7 +23419,7 @@ msgstr "Yuva רק קוראת. היא לעולם לא מוחקת, מעבירה, �
 msgid "Yuva only reads. Its connection sends {provider} nothing but read requests, and the token only to {provider}'s API, so no ticket, customer or setting changes."
 msgstr "Yuva רק קוראת. החיבור שלה שולח ל-{provider} רק בקשות קריאה, ואת האסימון רק ל-API של {provider}, כך שאף פנייה, לקוח או הגדרה לא משתנים."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Yuva opens a connection to a host and port on a schedule."
 msgstr "Yuva פותחת מדי פעם חיבור למארח ולפורט."
 
@@ -23404,7 +23431,7 @@ msgstr "Yuva קוראת את {provider} עם אסימון API שאתם יוצר�
 msgid "Yuva reads only the file you upload and deletes it when the migration ends. History arrives quietly: no notifications, no auto-replies."
 msgstr "Yuva קוראת רק את הקובץ שאתה מעלה ומוחקת אותו כשההעברה מסתיימת. ההיסטוריה מגיעה בשקט: בלי התראות, בלי תשובות אוטומטיות."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Yuva requests an address on a schedule and checks the answer."
 msgstr "Yuva מבקשת מדי פעם כתובת ובודקת את התשובה."
 

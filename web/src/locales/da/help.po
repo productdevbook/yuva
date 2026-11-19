@@ -7,6 +7,11 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: da\n"
 
+#. placeholder {0}: items.length
+#: src/features/help/ArticlesTab.tsx
+msgid "{0, plural, one {{shown} article} other {{shown} articles}}"
+msgstr "{0, plural, one {{shown} artikel} other {{shown} artikler}}"
+
 #. placeholder {0}: c.articles
 #: src/features/help/ImportCard.tsx
 msgid "{0, plural, one {# article read} other {# articles read}}"
@@ -62,21 +67,13 @@ msgstr "{0, plural, one {Add the language in the settings, then import again.} o
 msgid "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 msgstr "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "{drafts, plural, one {# draft} other {# drafts}}"
-msgstr "{drafts, plural, one {# kladde} other {# kladder}}"
-
-#: src/features/help/HelpColumn.tsx
-msgid "{published} of {total} articles published"
-msgstr "{published} af {total} artikler udgivet"
-
 #: src/features/help/ImportCard.tsx
 msgid "{saved, plural, one {# draft saved} other {# drafts saved}}"
 msgstr "{saved, plural, one {# draft saved} other {# drafts saved}}"
 
 #: src/features/help/ArticlesTab.tsx
-msgid "{searches} searches"
-msgstr "{searches} søgninger"
+msgid "{views, plural, one {# view} other {# views}}"
+msgstr "{views, plural, one {# visning} other {# visninger}}"
 
 #: src/features/help/CreateCenterDialog.tsx
 msgid "3 to 48 letters, numbers and hyphens. It is unique on this server."
@@ -124,10 +121,6 @@ msgstr "Adressens slutning"
 msgid "Agents may publish"
 msgstr "Agenter må udgive"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "All"
-msgstr "Alle"
-
 #: src/features/help/Revisions.tsx
 msgid "An API key"
 msgstr "En API-nøgle"
@@ -152,11 +145,6 @@ msgstr "Et andet hjælpecenter bruger denne adresse, nu eller tidligere."
 msgid "Answer common questions once, in writing. Each product gets its own help center with articles, collections and a report of what people search for. Pages are hosted by Yuva, so there is nothing to install on your site."
 msgstr "Besvar almindelige spørgsmål én gang, skriftligt. Hvert produkt får sit eget hjælpecenter med artikler, samlinger og en rapport over, hvad folk søger efter. Siderne hostes af Yuva, så der er intet at installere på dit websted."
 
-#: src/features/help/pages.tsx
-msgid "Answer common questions once, in writing. Pick an inbox’s help center to write articles, group them in collections and see what customers search for."
-msgstr "Besvar almindelige spørgsmål én gang, skriftligt. Vælg en indbakkes hjælpecenter for at skrive artikler, gruppere dem i samlinger og se, hvad kunderne søger efter."
-
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Article"
 msgstr "Artikel"
@@ -179,7 +167,6 @@ msgstr "Artikelvisninger"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Articles"
 msgstr "Artikler"
@@ -192,7 +179,6 @@ msgstr "Artikler kan skrives og udgives på disse sprog. Besøgende ser deres eg
 msgid "Articles in this collection"
 msgstr "Artikler i denne samling"
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Articles people read before they write to you"
 msgstr "Artikler, folk læser, før de skriver til dig"
@@ -237,8 +223,6 @@ msgstr "Brings the collections and articles of another help center in as drafts.
 msgid "Bulleted list"
 msgstr "Punktliste"
 
-#: src/features/help/ArticlesTab.tsx
-#: src/features/help/CollectionsTab.tsx
 #: src/features/help/CreateCenterDialog.tsx
 #: src/features/help/ImportCard.tsx
 msgid "Cancel"
@@ -277,6 +261,11 @@ msgstr "Startede chats"
 msgid "Checking the sign-in"
 msgstr "Checking the sign-in"
 
+#: src/features/help/ArticlesTab.tsx
+#: src/features/help/pages.tsx
+msgid "Clear filters"
+msgstr "Ryd filtre"
+
 #: src/features/help/ImportCard.tsx
 msgid "Close"
 msgstr "Close"
@@ -295,8 +284,6 @@ msgstr "Kodeblok"
 msgid "Collection"
 msgstr "Samling"
 
-#: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Collections"
 msgstr "Samlinger"
@@ -318,14 +305,9 @@ msgid "Create collection"
 msgstr "Opret samling"
 
 #: src/features/help/CreateCenterDialog.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Create help center"
 msgstr "Opret hjælpecenter"
-
-#: src/features/help/HelpColumn.tsx
-msgid "Create help center ({newKey})"
-msgstr "Opret hjælpecenter ({newKey})"
 
 #: src/features/help/Bulk.tsx
 #: src/features/help/CollectionsTab.tsx
@@ -408,7 +390,6 @@ msgid "Draft submitted. An owner or admin can publish it."
 msgstr "Kladden er indsendt. En ejer eller administrator kan udgive den."
 
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Drafts"
 msgstr "Kladder"
@@ -429,9 +410,17 @@ msgstr "Rediger samling"
 msgid "Empty"
 msgstr "Tom"
 
+#: src/features/help/pages.tsx
+msgid "Every collection"
+msgstr "Alle samlinger"
+
 #: src/features/help/ReportTab.tsx
 msgid "Every search found something."
 msgstr "Hver søgning fandt noget."
+
+#: src/features/help/pages.tsx
+msgid "Every status"
+msgstr "Alle statusser"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
@@ -445,6 +434,14 @@ msgstr "Everything imported is a draft."
 #: src/features/help/ImportCard.tsx
 msgid "Failed"
 msgstr "Failed"
+
+#: src/features/help/pages.tsx
+msgid "Filter by collection"
+msgstr "Filtrér efter samling"
+
+#: src/features/help/pages.tsx
+msgid "Filter by status"
+msgstr "Filtrér efter status"
 
 #: src/features/help/EditorToolbar.tsx
 msgid "Formatting"
@@ -470,15 +467,12 @@ msgstr "Gruppér artikler, så besøgende kan gennemse dem. En samling kan indeh
 msgid "Heading"
 msgstr "Overskrift"
 
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Help center"
 msgstr "Hjælpecenter"
 
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help center created. Write the first article, then publish it."
 msgstr "Hjælpecenter oprettet. Skriv den første artikel, og udgiv den derefter."
@@ -486,12 +480,6 @@ msgstr "Hjælpecenter oprettet. Skriv den første artikel, og udgiv den derefter
 #: src/features/help/SettingsTab.tsx
 msgid "Help center deleted"
 msgstr "Hjælpecentret er slettet"
-
-#: src/features/help/HelpColumn.tsx
-#: src/features/help/HelpFrame.tsx
-#: src/features/help/pages.tsx
-msgid "Help centers"
-msgstr "Hjælpecentre"
 
 #: src/features/help/text.tsx
 msgid "Help centers are turned off on this server."
@@ -565,7 +553,6 @@ msgstr "Sprog"
 msgid "Language of the articles"
 msgstr "Language of the articles"
 
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Languages"
 msgstr "Sprog"
@@ -573,10 +560,6 @@ msgstr "Sprog"
 #: src/features/help/ReportTab.tsx
 msgid "Last {d} days"
 msgstr "Seneste {d} dage"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "last 7 days"
-msgstr "seneste 7 dage"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "Last 7 days"
@@ -626,6 +609,10 @@ msgstr "Mere"
 msgid "More for {name}"
 msgstr "Mere for {name}"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "move"
+msgstr "flyt"
+
 #: src/features/help/CollectionsTab.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "Flyt {name}. Træk, eller tryk Alt med piletasterne."
@@ -653,6 +640,10 @@ msgid "New address"
 msgstr "New address"
 
 #: src/features/help/ArticlesTab.tsx
+msgid "new article"
+msgstr "ny artikel"
+
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/pages.tsx
 msgid "New article"
 msgstr "Ny artikel"
@@ -661,16 +652,16 @@ msgstr "Ny artikel"
 msgid "New article ({newKey})"
 msgstr "Ny artikel ({newKey})"
 
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CollectionsTab.tsx
+#: src/features/help/pages.tsx
 msgid "New collection"
 msgstr "Ny samling"
 
-#: src/features/help/CollectionsTab.tsx
-msgid "New collection ({newKey})"
-msgstr "Ny samling ({newKey})"
+#: src/features/help/pages.tsx
+msgid "New collection ({colKey})"
+msgstr "Ny samling ({colKey})"
 
-#: src/features/help/HelpFrame.tsx
+#: src/features/help/pages.tsx
 msgid "New help center for {product}"
 msgstr "Nyt hjælpecenter til {product}"
 
@@ -713,12 +704,10 @@ msgstr "Ingen tidligere versioner endnu."
 msgid "No help center for {0} yet"
 msgstr "Der er endnu intet hjælpecenter for {0}"
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "No help center yet. Owners and admins create it."
 msgstr "Intet hjælpecenter endnu. Ejere og administratorer opretter det."
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "No inbox to show a help center for."
 msgstr "Ingen indbakke at vise et hjælpecenter for."
@@ -743,10 +732,6 @@ msgstr "Ikke skrevet"
 #: src/features/help/EditorToolbar.tsx
 msgid "Numbered list"
 msgstr "Nummereret liste"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "of {answers} answers"
-msgstr "af {answers} svar"
 
 #: src/features/help/ImportCard.tsx
 msgid "Off: a draft you edited in Yuva since the last import is kept."
@@ -775,6 +760,11 @@ msgstr "Kun ejere og administratorer kan gøre dette."
 #: src/features/help/ImportCard.tsx
 msgid "Only owners and admins can use a Zendesk migration."
 msgstr "Only owners and admins can use a Zendesk migration."
+
+#: src/features/help/ArticlesTab.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "åbn"
 
 #: src/features/help/ImportCard.tsx
 msgid "Open the drafts"
@@ -857,21 +847,17 @@ msgstr "Offentlig adresse"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Publish"
 msgstr "Udgiv"
 
 #: src/features/help/ArticleEditor.tsx
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Publish ({publishKey})"
 msgstr "Udgiv ({publishKey})"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/ImportCard.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/Revisions.tsx
@@ -900,11 +886,6 @@ msgstr "Redirects"
 #: src/features/help/SettingsTab.tsx
 msgid "Remove {0}"
 msgstr "Fjern {0}"
-
-#: src/features/help/HelpFrame.tsx
-#: src/features/help/pages.tsx
-msgid "Report"
-msgstr "Rapport"
 
 #: src/features/help/ReportTab.tsx
 msgid "Report period"
@@ -962,12 +943,20 @@ msgid "Saving…"
 msgstr "Gemmer…"
 
 #: src/features/help/ArticlesTab.tsx
+msgid "search"
+msgstr "søg"
+
+#: src/features/help/pages.tsx
+msgid "Search articles…"
+msgstr "Søg i artikler…"
+
+#: src/features/help/pages.tsx
+msgid "Search gaps"
+msgstr "Huller i søgningen"
+
+#: src/features/help/pages.tsx
 msgid "Search titles"
 msgstr "Søg i titler"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Search titles ({findKey})"
-msgstr "Søg i titler ({findKey})"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Search words"
@@ -982,13 +971,13 @@ msgstr "Søgt efter, intet fundet"
 msgid "Searches"
 msgstr "Søgninger"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "searches this week"
-msgstr "søgninger i denne uge"
-
 #: src/features/help/ReportTab.tsx
 msgid "Searches with no result"
 msgstr "Søgninger uden resultat"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "select"
+msgstr "vælg"
 
 #: src/features/help/ReportTab.tsx
 msgid "Sent"
@@ -998,7 +987,6 @@ msgstr "Sendt"
 msgid "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 msgstr "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/text.tsx
 msgid "Settings"
@@ -1067,10 +1055,6 @@ msgstr "Start med en titel. Teksten skriver du bagefter, og den forbliver en kla
 #: src/features/help/ImportCard.tsx
 msgid "State"
 msgstr "State"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Status"
-msgstr "Status"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Submit draft"
@@ -1177,6 +1161,10 @@ msgstr "Øverste niveau"
 msgid "Translation deleted"
 msgstr "Oversættelsen er slettet"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "Try again"
+msgstr "Prøv igen"
+
 #: src/features/help/text.tsx
 msgid "Type a word to search for."
 msgstr "Skriv et ord at søge efter."
@@ -1188,7 +1176,6 @@ msgstr "Skriv et ord at søge efter."
 msgid "Unpublish"
 msgstr "Fjern udgivelse"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Unpublish ({publishKey})"
 msgstr "Fjern udgivelse ({publishKey})"
@@ -1207,8 +1194,6 @@ msgstr "Fjerne udgivelsen af denne oversættelse?"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Unpublished"
 msgstr "Ikke udgivet"
@@ -1220,10 +1205,6 @@ msgstr "Uudgivne ændringer"
 #: src/features/help/ArticleEditor.tsx
 msgid "Unsaved changes"
 msgstr "Ikke gemte ændringer"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Updated"
-msgstr "Opdateret"
 
 #: src/features/help/SettingsTab.tsx
 msgid "Use 3 to 48 letters, numbers and inner hyphens."
@@ -1245,12 +1226,10 @@ msgstr "Versionen er gendannet i kladden"
 msgid "View"
 msgstr "Vis"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "View site"
 msgstr "Se webstedet"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "View site ({openKey})"
 msgstr "Se webstedet ({openKey})"
@@ -1259,10 +1238,6 @@ msgstr "Se webstedet ({openKey})"
 #: src/features/help/ReportTab.tsx
 msgid "Views"
 msgstr "Visninger"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Views · 7 days"
-msgstr "Visninger · 7 dage"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "Visibility"

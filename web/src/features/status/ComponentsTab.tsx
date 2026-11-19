@@ -25,7 +25,7 @@ import {
 import { STATUS_KEYS } from "@/components/common/ShortcutSheet"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useHotkeys } from "@/hooks/use-hotkeys"
-import { ComponentDialog, GroupDialog } from "@/features/status/ComponentDialogs"
+import { ComponentForm, GroupForm } from "@/features/status/ComponentForms"
 import {
   useComponentMutations,
   useGroupMutations,
@@ -231,6 +231,27 @@ export function ComponentsTab({ page }: { page: StatusPage }) {
           </div>
         )}
       </div>
+      {dialogState?.kind === "component" && (
+        <ComponentForm
+          key={dialogState.edit?.id ?? dialogState.group ?? "new"}
+          pageId={page.id}
+          groups={gs}
+          edit={dialogState.edit}
+          group={dialogState.group}
+          className="mt-0"
+          onClose={() => setDialog(null)}
+        />
+      )}
+      {dialogState?.kind === "group" && (
+        <GroupForm
+          key={dialogState.edit?.id ?? "new"}
+          pageId={page.id}
+          edit={dialogState.edit}
+          count={gs.length}
+          className="mt-0"
+          onClose={() => setDialog(null)}
+        />
+      )}
       <ErrorLine error={components.error ?? groups.error ?? gm.update.error ?? cm.update.error} />
       {sections.length === 0 && (
         <Card flush>
@@ -319,18 +340,6 @@ export function ComponentsTab({ page }: { page: StatusPage }) {
       })}
       <ErrorLine error={gm.remove.error} />
       {dialog}
-      {dialogState?.kind === "component" && (
-        <ComponentDialog
-          pageId={page.id}
-          groups={gs}
-          edit={dialogState.edit}
-          group={dialogState.group}
-          onClose={() => setDialog(null)}
-        />
-      )}
-      {dialogState?.kind === "group" && (
-        <GroupDialog pageId={page.id} edit={dialogState.edit} count={gs.length} onClose={() => setDialog(null)} />
-      )}
     </div>
   )
 }

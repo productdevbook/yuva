@@ -7,6 +7,11 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: ko\n"
 
+#. placeholder {0}: items.length
+#: src/features/help/ArticlesTab.tsx
+msgid "{0, plural, one {{shown} article} other {{shown} articles}}"
+msgstr "{0, plural, other {문서 {shown}개}}"
+
 #. placeholder {0}: c.articles
 #: src/features/help/ImportCard.tsx
 msgid "{0, plural, one {# article read} other {# articles read}}"
@@ -62,21 +67,13 @@ msgstr "{0, plural, one {Add the language in the settings, then import again.} o
 msgid "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 msgstr "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "{drafts, plural, one {# draft} other {# drafts}}"
-msgstr "{drafts, plural, other {초안 #개}}"
-
-#: src/features/help/HelpColumn.tsx
-msgid "{published} of {total} articles published"
-msgstr "문서 {total}개 중 {published}개 게시됨"
-
 #: src/features/help/ImportCard.tsx
 msgid "{saved, plural, one {# draft saved} other {# drafts saved}}"
 msgstr "{saved, plural, one {# draft saved} other {# drafts saved}}"
 
 #: src/features/help/ArticlesTab.tsx
-msgid "{searches} searches"
-msgstr "검색 {searches}회"
+msgid "{views, plural, one {# view} other {# views}}"
+msgstr "{views, plural, other {조회 #회}}"
 
 #: src/features/help/CreateCenterDialog.tsx
 msgid "3 to 48 letters, numbers and hyphens. It is unique on this server."
@@ -124,10 +121,6 @@ msgstr "주소 끝부분"
 msgid "Agents may publish"
 msgstr "상담원이 게시할 수 있음"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "All"
-msgstr "전체"
-
 #: src/features/help/Revisions.tsx
 msgid "An API key"
 msgstr "API 키"
@@ -152,11 +145,6 @@ msgstr "다른 도움말 센터가 현재 또는 이전에 이 주소를 사용�
 msgid "Answer common questions once, in writing. Each product gets its own help center with articles, collections and a report of what people search for. Pages are hosted by Yuva, so there is nothing to install on your site."
 msgstr "자주 묻는 질문에는 한 번만, 글로 답하세요. 제품마다 문서, 컬렉션, 사람들이 검색한 내용의 보고서가 있는 고유한 도움말 센터가 생깁니다. 페이지는 Yuva가 호스팅하므로 사이트에 설치할 것이 없습니다."
 
-#: src/features/help/pages.tsx
-msgid "Answer common questions once, in writing. Pick an inbox’s help center to write articles, group them in collections and see what customers search for."
-msgstr "자주 묻는 질문에 한 번만 글로 답하세요. 받은편지함의 도움말 센터를 선택해 문서를 작성하고, 컬렉션으로 묶고, 고객이 무엇을 검색하는지 확인하세요."
-
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Article"
 msgstr "문서"
@@ -179,7 +167,6 @@ msgstr "문서 조회수"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Articles"
 msgstr "문서"
@@ -192,7 +179,6 @@ msgstr "이 언어로 문서를 작성하고 게시할 수 있습니다. 방문�
 msgid "Articles in this collection"
 msgstr "이 컬렉션의 문서"
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Articles people read before they write to you"
 msgstr "문의하기 전에 사람들이 읽는 글"
@@ -237,8 +223,6 @@ msgstr "Brings the collections and articles of another help center in as drafts.
 msgid "Bulleted list"
 msgstr "글머리 기호 목록"
 
-#: src/features/help/ArticlesTab.tsx
-#: src/features/help/CollectionsTab.tsx
 #: src/features/help/CreateCenterDialog.tsx
 #: src/features/help/ImportCard.tsx
 msgid "Cancel"
@@ -277,6 +261,11 @@ msgstr "시작된 채팅"
 msgid "Checking the sign-in"
 msgstr "Checking the sign-in"
 
+#: src/features/help/ArticlesTab.tsx
+#: src/features/help/pages.tsx
+msgid "Clear filters"
+msgstr "필터 지우기"
+
 #: src/features/help/ImportCard.tsx
 msgid "Close"
 msgstr "Close"
@@ -295,8 +284,6 @@ msgstr "코드 블록"
 msgid "Collection"
 msgstr "컬렉션"
 
-#: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Collections"
 msgstr "컬렉션"
@@ -318,14 +305,9 @@ msgid "Create collection"
 msgstr "컬렉션 만들기"
 
 #: src/features/help/CreateCenterDialog.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Create help center"
 msgstr "도움말 센터 만들기"
-
-#: src/features/help/HelpColumn.tsx
-msgid "Create help center ({newKey})"
-msgstr "도움말 센터 만들기 ({newKey})"
 
 #: src/features/help/Bulk.tsx
 #: src/features/help/CollectionsTab.tsx
@@ -408,7 +390,6 @@ msgid "Draft submitted. An owner or admin can publish it."
 msgstr "초안을 제출했습니다. 소유자 또는 관리자가 게시할 수 있습니다."
 
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Drafts"
 msgstr "초안"
@@ -429,9 +410,17 @@ msgstr "컬렉션 편집"
 msgid "Empty"
 msgstr "비어 있음"
 
+#: src/features/help/pages.tsx
+msgid "Every collection"
+msgstr "모든 컬렉션"
+
 #: src/features/help/ReportTab.tsx
 msgid "Every search found something."
 msgstr "모든 검색에서 결과를 찾았습니다."
+
+#: src/features/help/pages.tsx
+msgid "Every status"
+msgstr "모든 상태"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
@@ -445,6 +434,14 @@ msgstr "Everything imported is a draft."
 #: src/features/help/ImportCard.tsx
 msgid "Failed"
 msgstr "Failed"
+
+#: src/features/help/pages.tsx
+msgid "Filter by collection"
+msgstr "컬렉션으로 필터"
+
+#: src/features/help/pages.tsx
+msgid "Filter by status"
+msgstr "상태로 필터"
 
 #: src/features/help/EditorToolbar.tsx
 msgid "Formatting"
@@ -470,15 +467,12 @@ msgstr "방문자가 둘러볼 수 있도록 문서를 묶으세요. 컬렉션�
 msgid "Heading"
 msgstr "제목"
 
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Help center"
 msgstr "도움말 센터"
 
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help center created. Write the first article, then publish it."
 msgstr "도움말 센터를 만들었습니다. 첫 문서를 쓰고 게시하세요."
@@ -486,12 +480,6 @@ msgstr "도움말 센터를 만들었습니다. 첫 문서를 쓰고 게시하�
 #: src/features/help/SettingsTab.tsx
 msgid "Help center deleted"
 msgstr "도움말 센터를 삭제했습니다"
-
-#: src/features/help/HelpColumn.tsx
-#: src/features/help/HelpFrame.tsx
-#: src/features/help/pages.tsx
-msgid "Help centers"
-msgstr "도움말 센터"
 
 #: src/features/help/text.tsx
 msgid "Help centers are turned off on this server."
@@ -565,7 +553,6 @@ msgstr "언어"
 msgid "Language of the articles"
 msgstr "Language of the articles"
 
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Languages"
 msgstr "언어"
@@ -573,10 +560,6 @@ msgstr "언어"
 #: src/features/help/ReportTab.tsx
 msgid "Last {d} days"
 msgstr "최근 {d}일"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "last 7 days"
-msgstr "최근 7일"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "Last 7 days"
@@ -626,6 +609,10 @@ msgstr "더 보기"
 msgid "More for {name}"
 msgstr "{name} 추가 작업"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "move"
+msgstr "이동"
+
 #: src/features/help/CollectionsTab.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "{name} 이동. 끌거나 Alt와 방향키를 누르세요."
@@ -653,6 +640,10 @@ msgid "New address"
 msgstr "New address"
 
 #: src/features/help/ArticlesTab.tsx
+msgid "new article"
+msgstr "새 문서"
+
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/pages.tsx
 msgid "New article"
 msgstr "새 문서"
@@ -661,16 +652,16 @@ msgstr "새 문서"
 msgid "New article ({newKey})"
 msgstr "새 문서 ({newKey})"
 
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CollectionsTab.tsx
+#: src/features/help/pages.tsx
 msgid "New collection"
 msgstr "새 컬렉션"
 
-#: src/features/help/CollectionsTab.tsx
-msgid "New collection ({newKey})"
-msgstr "새 컬렉션 ({newKey})"
+#: src/features/help/pages.tsx
+msgid "New collection ({colKey})"
+msgstr "새 컬렉션 ({colKey})"
 
-#: src/features/help/HelpFrame.tsx
+#: src/features/help/pages.tsx
 msgid "New help center for {product}"
 msgstr "{product}의 새 도움말 센터"
 
@@ -713,12 +704,10 @@ msgstr "이전 버전이 아직 없습니다."
 msgid "No help center for {0} yet"
 msgstr "{0}의 도움말 센터가 아직 없습니다"
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "No help center yet. Owners and admins create it."
 msgstr "아직 도움말 센터가 없습니다. 소유자와 관리자가 만듭니다."
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "No inbox to show a help center for."
 msgstr "도움말 센터를 표시할 받은편지함이 없습니다."
@@ -743,10 +732,6 @@ msgstr "작성 안 됨"
 #: src/features/help/EditorToolbar.tsx
 msgid "Numbered list"
 msgstr "번호 목록"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "of {answers} answers"
-msgstr "답변 {answers}개 중"
 
 #: src/features/help/ImportCard.tsx
 msgid "Off: a draft you edited in Yuva since the last import is kept."
@@ -775,6 +760,11 @@ msgstr "소유자와 관리자만 할 수 있습니다."
 #: src/features/help/ImportCard.tsx
 msgid "Only owners and admins can use a Zendesk migration."
 msgstr "Only owners and admins can use a Zendesk migration."
+
+#: src/features/help/ArticlesTab.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "열기"
 
 #: src/features/help/ImportCard.tsx
 msgid "Open the drafts"
@@ -857,21 +847,17 @@ msgstr "공개 주소"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Publish"
 msgstr "게시"
 
 #: src/features/help/ArticleEditor.tsx
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Publish ({publishKey})"
 msgstr "게시 ({publishKey})"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/ImportCard.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/Revisions.tsx
@@ -900,11 +886,6 @@ msgstr "Redirects"
 #: src/features/help/SettingsTab.tsx
 msgid "Remove {0}"
 msgstr "{0} 제거"
-
-#: src/features/help/HelpFrame.tsx
-#: src/features/help/pages.tsx
-msgid "Report"
-msgstr "보고서"
 
 #: src/features/help/ReportTab.tsx
 msgid "Report period"
@@ -962,12 +943,20 @@ msgid "Saving…"
 msgstr "저장 중…"
 
 #: src/features/help/ArticlesTab.tsx
+msgid "search"
+msgstr "검색"
+
+#: src/features/help/pages.tsx
+msgid "Search articles…"
+msgstr "문서 검색…"
+
+#: src/features/help/pages.tsx
+msgid "Search gaps"
+msgstr "검색 공백"
+
+#: src/features/help/pages.tsx
 msgid "Search titles"
 msgstr "제목 검색"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Search titles ({findKey})"
-msgstr "제목 검색 ({findKey})"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Search words"
@@ -982,13 +971,13 @@ msgstr "검색했지만 결과 없음"
 msgid "Searches"
 msgstr "검색"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "searches this week"
-msgstr "이번 주 검색"
-
 #: src/features/help/ReportTab.tsx
 msgid "Searches with no result"
 msgstr "결과 없는 검색"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "select"
+msgstr "선택"
 
 #: src/features/help/ReportTab.tsx
 msgid "Sent"
@@ -998,7 +987,6 @@ msgstr "전송됨"
 msgid "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 msgstr "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/text.tsx
 msgid "Settings"
@@ -1067,10 +1055,6 @@ msgstr "제목으로 시작하세요. 본문은 그다음에 쓰며, 게시되�
 #: src/features/help/ImportCard.tsx
 msgid "State"
 msgstr "State"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Status"
-msgstr "상태"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Submit draft"
@@ -1177,6 +1161,10 @@ msgstr "최상위"
 msgid "Translation deleted"
 msgstr "번역을 삭제했습니다"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "Try again"
+msgstr "다시 시도"
+
 #: src/features/help/text.tsx
 msgid "Type a word to search for."
 msgstr "검색할 단어를 입력하세요."
@@ -1188,7 +1176,6 @@ msgstr "검색할 단어를 입력하세요."
 msgid "Unpublish"
 msgstr "게시 취소"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Unpublish ({publishKey})"
 msgstr "게시 취소 ({publishKey})"
@@ -1207,8 +1194,6 @@ msgstr "이 번역의 게시를 취소할까요?"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Unpublished"
 msgstr "게시 안 됨"
@@ -1220,10 +1205,6 @@ msgstr "게시되지 않은 변경 사항"
 #: src/features/help/ArticleEditor.tsx
 msgid "Unsaved changes"
 msgstr "저장하지 않은 변경 사항"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Updated"
-msgstr "업데이트됨"
 
 #: src/features/help/SettingsTab.tsx
 msgid "Use 3 to 48 letters, numbers and inner hyphens."
@@ -1245,12 +1226,10 @@ msgstr "버전을 초안으로 복원했습니다"
 msgid "View"
 msgstr "보기"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "View site"
 msgstr "사이트 보기"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "View site ({openKey})"
 msgstr "사이트 보기 ({openKey})"
@@ -1259,10 +1238,6 @@ msgstr "사이트 보기 ({openKey})"
 #: src/features/help/ReportTab.tsx
 msgid "Views"
 msgstr "조회수"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Views · 7 days"
-msgstr "조회 · 7일"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "Visibility"

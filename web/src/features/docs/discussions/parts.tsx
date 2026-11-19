@@ -11,7 +11,7 @@ import {
 import { Link } from "react-router"
 
 import { Dot, toast, useConfirm } from "@/components/common"
-import { RowCheck } from "@/components/common/Selection"
+import { boxRowClass, RowCheckbox } from "@/components/common/ListBox"
 import { useAuthorName } from "@/components/common/DiscussionAuthor"
 import { formatShort, useErrorText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
@@ -178,7 +178,7 @@ export function ThreadRow({
   from?: string
   to?: string
   current?: boolean
-  check?: { checked: boolean; onToggle: (range: boolean) => void }
+  check?: { checked: boolean; selecting: boolean; onToggle: (range: boolean) => void }
 }) {
   const { t, i18n } = useLingui()
   const authorName = useAuthorName()(d.author)
@@ -188,17 +188,23 @@ export function ThreadRow({
   const [votes, replies, pending] = [d.votes, d.reply_count, d.pending_posts ?? 0].map((n) => fmt.format(n))
   const when = formatShort(d.last_activity_at, i18n.locale)
   return (
-    <li className="flex items-start">
-      {check && <RowCheck className="mt-3.5 ms-4" checked={check.checked} name={d.title} onToggle={check.onToggle} />}
+    <div
+      data-row
+      data-row-id={d.id}
+      className={boxRowClass({ current, cursor, checked: check?.checked })}
+      aria-selected={check?.checked || undefined}
+    >
+      {check && <RowCheckbox checked={check.checked} name={d.title} onToggle={check.onToggle} className="mt-[14px]" />}
       <Link
         to={to ?? threadLink(d.id)}
         state={from ? { from } : undefined}
         aria-current={current ? "page" : undefined}
-        className={cn(
-          "relative flex min-w-0 flex-1 items-start gap-3 px-4 py-3 outline-none transition-colors hover:bg-surface/60 focus-visible:bg-surface",
-          current && "bg-brand/5 before:absolute before:inset-y-0 before:start-0 before:w-[3px] before:bg-brand",
-          cursor && "bg-surface ring-2 ring-ring ring-inset"
-        )}
+        onClick={(e) => {
+          if (!check?.selecting || e.metaKey || e.ctrlKey) return
+          e.preventDefault()
+          check.onToggle(e.shiftKey)
+        }}
+        className={cn("relative flex min-w-0 flex-1 items-start gap-3 py-3 pe-3.5 outline-none", !check && "ps-0.5")}
         data-testid="thread-row"
       >
         <ThreadIcon d={d} className="mt-0.5" />
@@ -239,7 +245,7 @@ export function ThreadRow({
           </span>
         </span>
       </Link>
-    </li>
+    </div>
   )
 }
 
@@ -260,8 +266,8 @@ export function LoadMore({
 }) {
   if (!list.hasNextPage) return null
   return (
-    <div className="flex justify-center border-t p-2">
-      <Button variant="ghost" size="sm" onClick={() => void list.fetchNextPage()} disabled={list.isFetchingNextPage}>
+    <div className="mt-3">
+      <Button variant="outline" size="sm" onClick={() => void list.fetchNextPage()} disabled={list.isFetchingNextPage}>
         <Trans>Load more</Trans>
       </Button>
     </div>

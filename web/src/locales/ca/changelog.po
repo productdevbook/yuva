@@ -7,6 +7,11 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: ca\n"
 
+#. placeholder {0}: rows.length
+#: src/features/changelog/EntriesTab.tsx
+msgid "{0, plural, one {{shownCount} entry} other {{shownCount} entries}}"
+msgstr "{0, plural, one {{shownCount} entrada} other {{shownCount} entrades}}"
+
 #: src/features/changelog/ChangelogsPage.tsx
 msgid "{published} of {total} entries published"
 msgstr "{published} de {total} entrades publicades"
@@ -36,15 +41,6 @@ msgstr "Final de l’adreça"
 msgid "Agents may publish"
 msgstr "Els agents poden publicar"
 
-#: src/features/changelog/ChangelogFrame.tsx
-#: src/features/changelog/pages.tsx
-msgid "All"
-msgstr "Tot"
-
-#: src/features/changelog/ChangelogFrame.tsx
-msgid "All changelogs"
-msgstr "Tots els registres de canvis"
-
 #: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "All labels"
@@ -53,10 +49,6 @@ msgstr "Totes les etiquetes"
 #: src/features/changelog/pages.tsx
 msgid "All languages"
 msgstr "Tots els idiomes"
-
-#: src/features/changelog/ChangelogFrame.tsx
-msgid "All products"
-msgstr "Tots els productes"
 
 #: src/features/changelog/SettingsTab.tsx
 msgid "Analytics property"
@@ -75,7 +67,6 @@ msgid "At least 3 characters."
 msgstr "Almenys 3 caràcters."
 
 #: src/features/changelog/CreateChangelogDialog.tsx
-#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/MailDialog.tsx
 #: src/features/changelog/ScheduleDialog.tsx
 msgid "Cancel"
@@ -89,21 +80,25 @@ msgstr "Canvia"
 msgid "Change the time"
 msgstr "Canvia l’hora"
 
-#: src/features/changelog/pages.tsx
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/SettingsTab.tsx
 msgid "Changelog"
 msgstr "Registre de canvis"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/pages.tsx
 msgid "Changelogs"
 msgstr "Registres de canvis"
 
+#: src/features/changelog/pages.tsx
+msgid "Changelogs ({manageKey})"
+msgstr "Registres de canvis ({manageKey})"
+
 #: src/features/changelog/EntryEditor.tsx
 msgid "Choose a picture"
 msgstr "Tria una imatge"
 
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "Clear filters"
 msgstr "Esborra els filtres"
@@ -184,7 +179,6 @@ msgstr "Esborrany"
 msgid "Draft submitted. An owner or admin can publish it."
 msgstr "Esborrany enviat. Un propietari o administrador el pot publicar."
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/pages.tsx
 msgid "Drafts"
 msgstr "Esborranys"
@@ -193,12 +187,14 @@ msgstr "Esborranys"
 msgid "Each product has one changelog. Owners and admins create and publish them."
 msgstr "Cada producte té un registre de canvis. Els propietaris i els administradors el creen i el publiquen."
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
-#: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
 msgid "Entries"
 msgstr "Entrades"
+
+#: src/features/changelog/pages.tsx
+msgid "Entries ({entriesKey})"
+msgstr "Entrades ({entriesKey})"
 
 #: src/features/changelog/SettingsTab.tsx
 msgid "Entries and translations are deleted with it."
@@ -209,12 +205,8 @@ msgid "Entries can be written and published in these languages. Visitors see the
 msgstr "Les entrades es poden escriure i publicar en aquests idiomes. Els visitants veuen el seu si existeix."
 
 #: src/features/changelog/pages.tsx
-msgid "Entries show on the public page once they are published."
-msgstr "Les entrades apareixen a la pàgina pública quan es publiquen."
-
-#: src/features/changelog/pages.tsx
-msgid "Entries you have not published yet show up here."
-msgstr "Les entrades que encara no has publicat apareixen aquí."
+msgid "Every state"
+msgstr "Tots els estats"
 
 #: src/features/changelog/Bulk.tsx
 #: src/features/changelog/EntryEditor.tsx
@@ -301,6 +293,10 @@ msgstr "Marca com a actualitzada"
 msgid "More"
 msgstr "Més"
 
+#: src/features/changelog/EntriesTab.tsx
+msgid "move"
+msgstr "mou-te"
+
 #: src/features/changelog/CreateChangelogDialog.tsx
 #: src/features/changelog/SettingsTab.tsx
 msgid "Name"
@@ -311,9 +307,10 @@ msgid "New"
 msgstr "Nou"
 
 #: src/features/changelog/EntriesTab.tsx
-msgid "New entry"
-msgstr "Entrada nova"
+msgid "new post"
+msgstr "nova entrada"
 
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "New post"
 msgstr "Nova entrada"
@@ -351,10 +348,6 @@ msgstr "sense publicar"
 msgid "not written"
 msgstr "sense redactar"
 
-#: src/features/changelog/pages.tsx
-msgid "Nothing here."
-msgstr "Aquí no hi ha res."
-
 #: src/features/changelog/SettingsTab.tsx
 msgid "Off: agents write drafts and submit them, and owners and admins publish. On: agents with access to the inbox publish, schedule and unpublish too."
 msgstr "Desactivat: els agents escriuen esborranys i els envien, i els propietaris i els administradors publiquen. Activat: els agents amb accés a la safata també publiquen, programen i retiren."
@@ -362,6 +355,11 @@ msgstr "Desactivat: els agents escriuen esborranys i els envien, i els propietar
 #: src/features/changelog/text.tsx
 msgid "Only owners and admins can do this."
 msgstr "Només ho poden fer els propietaris i administradors."
+
+#: src/features/changelog/EntriesTab.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "obre"
 
 #: src/features/changelog/EntryEditor.tsx
 msgid "Original"
@@ -386,10 +384,6 @@ msgstr "Part de l’adreça web d’aquesta traducció. Es crea a partir del tí
 #: src/features/changelog/ScheduleDialog.tsx
 msgid "Pick a time in the next year, in your time zone, {zone}."
 msgstr "Tria un moment de l’any vinent, a la teva zona horària, {zone}."
-
-#: src/features/changelog/pages.tsx
-msgid "Pick a time when you write an entry and it goes public by itself."
-msgstr "Tria una hora en escriure una entrada i es publicarà sola."
 
 #: src/features/changelog/MailDialog.tsx
 msgid "Pick up to 10 lists of this inbox."
@@ -446,7 +440,6 @@ msgstr "Publica ara"
 msgid "Publish on"
 msgstr "Publica el"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
@@ -498,7 +491,6 @@ msgstr "Programa de nou"
 msgid "Schedule this entry"
 msgstr "Programa aquesta entrada"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
 #: src/features/changelog/text.tsx
@@ -513,15 +505,26 @@ msgstr "Programades: {scheduled}"
 msgid "Search entries"
 msgstr "Cerca entrades"
 
+#: src/features/changelog/pages.tsx
+msgid "Search entries…"
+msgstr "Cerca entrades…"
+
+#: src/features/changelog/EntriesTab.tsx
+msgid "select"
+msgstr "selecciona"
+
 #: src/features/changelog/MailDialog.tsx
 msgid "Send through"
 msgstr "Envia mitjançant"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/pages.tsx
 msgid "Settings"
 msgstr "Configuració"
+
+#: src/features/changelog/pages.tsx
+msgid "Settings ({settingsKey})"
+msgstr "Configuració ({settingsKey})"
 
 #: src/features/changelog/EntryEditor.tsx
 msgid "Show"
@@ -556,6 +559,7 @@ msgid "Start with a title. You write the text next, and it stays a draft until i
 msgstr "Comença amb un títol. El text l’escriuràs després i continua sent un esborrany fins que es publiqui."
 
 #: src/features/changelog/EntriesTab.tsx
+#: src/features/changelog/pages.tsx
 msgid "State"
 msgstr "Estat"
 
@@ -666,13 +670,9 @@ msgstr "Títol"
 msgid "Translation deleted"
 msgstr "Traducció eliminada"
 
-#: src/features/changelog/pages.tsx
+#: src/features/changelog/EntriesTab.tsx
 msgid "Try again"
 msgstr "Torna-ho a provar"
-
-#: src/features/changelog/pages.tsx
-msgid "Try another word, label or language."
-msgstr "Prova una altra paraula, etiqueta o idioma."
 
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntryEditor.tsx
@@ -709,6 +709,13 @@ msgstr "Canvis sense desar"
 msgid "Unschedule"
 msgstr "Desprograma"
 
+#: src/features/changelog/ChangelogFrame.tsx
+#: src/features/changelog/ChangelogsPage.tsx
+#: src/features/changelog/EntryEditor.tsx
+#: src/features/changelog/pages.tsx
+msgid "Updates"
+msgstr "Actualitzacions"
+
 #: src/features/changelog/SettingsTab.tsx
 msgid "Use 3 to 48 letters, numbers and inner hyphens."
 msgstr "Fes servir de 3 a 48 lletres, xifres i guionets interiors."
@@ -726,11 +733,9 @@ msgstr "Mostra"
 msgid "View changelog"
 msgstr "Mostra el registre de canvis"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/EntryEditor.tsx
-#: src/features/changelog/pages.tsx
 msgid "What’s new"
 msgstr "Novetats"
 

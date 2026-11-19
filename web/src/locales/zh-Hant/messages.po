@@ -69,6 +69,11 @@ msgid "{0, plural, one {{shown} person} other {{shown} people}}"
 msgstr "{0, plural, other {{shown} 人}}"
 
 #. placeholder {0}: rows.length
+#: src/features/feedback/FeedbackHome.tsx
+msgid "{0, plural, one {{shown} report} other {{shown} reports}}"
+msgstr "{0, plural, other {{shown} 則反饋}}"
+
+#. placeholder {0}: rows.length
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "{0, plural, one {{shown} triggered e-mail} other {{shown} triggered e-mails}}"
 msgstr "{0, plural, other {{shown} 封自動郵件}}"
@@ -208,6 +213,7 @@ msgid "{0} marked as spam · no reply needed"
 msgstr "{0} 個標記為垃圾郵件 · 無需回覆"
 
 #. placeholder {0}: done.length
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "{0} moved to the Trash"
@@ -223,6 +229,16 @@ msgstr "{0} / {1}"
 #: src/features/team/TeamPage.tsx
 msgid "{0} open, unassigned"
 msgstr "未指派的進行中 {0} 個"
+
+#. placeholder {0}: done.length
+#: src/features/feedback/FeedbackHome.tsx
+msgid "{0} reopened"
+msgstr "已重新開啟 {0} 則"
+
+#. placeholder {0}: done.length
+#: src/features/feedback/FeedbackHome.tsx
+msgid "{0} resolved"
+msgstr "已解決 {0} 則"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
@@ -416,9 +432,9 @@ msgstr "{count, plural, one {# person} other {# people}} who confirmed before wo
 msgid "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 msgstr "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 
-#: src/features/feedback/FeedbackPage.tsx
-msgid "{count, plural, one {# report} other {# reports}}"
-msgstr "{count, plural, other {# 則回饋}}"
+#: src/features/docs/DocsPage.tsx
+msgid "{count, plural, one {# post waiting for approval} other {# posts waiting for approval}}"
+msgstr "{count, plural, other {# 則貼文等待審核}}"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "{count, plural, one {# scope} other {# scopes}}"
@@ -511,10 +527,6 @@ msgstr "{doneText} / {total}"
 msgid "{doneText} of {total} done"
 msgstr "已完成 {doneText}/{total}"
 
-#: src/features/status/StatusPages.tsx
-msgid "{down, plural, one {# down} other {# down}}"
-msgstr "{down, plural, other {# 個中斷}}"
-
 #: src/features/docs/PagesTab.tsx
 msgid "{down} not helpful"
 msgstr "沒有幫助 {down}"
@@ -546,6 +558,10 @@ msgstr "{first} 給對話點了 👍"
 #: src/features/conversation/messages/Thread.tsx
 msgid "{first} rated the conversation 👎"
 msgstr "{first} 給對話點了 👎"
+
+#: src/features/status/StatusPages.tsx
+msgid "{fmtCount, plural, one {# page} other {# pages}}"
+msgstr "{fmtCount, plural, other {# 個頁面}}"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "{from} has an SPF record. Whether it passes is known once the test mail is read."
@@ -774,10 +790,6 @@ msgstr "已將 {n} 個標為未讀"
 #: src/features/mail/MailList.tsx
 msgid "{n} moved to the Inbox"
 msgstr "已將 {n} 個移回收件匣"
-
-#: src/features/feedback/FeedbackPage.tsx
-msgid "{n} reports"
-msgstr "{n} 則回饋"
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -1152,10 +1164,6 @@ msgstr "{unreadText} 則未讀"
 msgid "{unseenText} unread of {totalText}"
 msgstr "{totalText} 則中有 {unseenText} 則未讀"
 
-#: src/features/status/StatusPages.tsx
-msgid "{up, plural, one {# up} other {# up}}"
-msgstr "{up, plural, other {# 個上線}}"
-
 #: src/features/docs/PagesTab.tsx
 msgid "{up} helpful"
 msgstr "有幫助 {up}"
@@ -1332,7 +1340,7 @@ msgstr "24 個月"
 msgid "3 months"
 msgstr "3 個月"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "3 to 48 letters, numbers and hyphens. It is unique on this server."
 msgstr "3 到 48 個字母、數字和連字號，在此伺服器上不可重複。"
 
@@ -1536,11 +1544,11 @@ msgstr "討論有了被採納的回答時"
 msgid "A discussion started"
 msgstr "討論開始時"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "A draft incident opens for your team to review. Customers see nothing until a member publishes it."
 msgstr "會建立一份事件草稿供團隊審閱。在成員發布之前，客戶看不到任何內容。"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "A draft is seen only by your team and changes no component until you publish it."
 msgstr "草稿只有你的團隊看得到，發布之前不會變更任何元件。"
 
@@ -1751,7 +1759,7 @@ msgstr "每個屬性最多可有 100 個區隔。請先刪除一個。"
 msgid "A property can have at most 20 funnels. Delete one first."
 msgstr "每個屬性最多可有 20 個漏斗。請先刪除一個。"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "A public page that tells your customers whether {inboxName} works. It stays unpublished until you publish it."
 msgstr "一個公開頁面，告訴客戶 {inboxName} 是否正常運作。發布前不會公開。"
 
@@ -1759,7 +1767,7 @@ msgstr "一個公開頁面，告訴客戶 {inboxName} 是否正常運作。發�
 msgid "A published What's new entry was deleted"
 msgstr "已發佈的「最新動態」項目已被刪除"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "A pushed state that names its own state keeps it."
 msgstr "自帶狀態的推送狀態會保留該狀態。"
 
@@ -1982,7 +1990,7 @@ msgstr "帳戶編號"
 msgid "Acme docs"
 msgstr "Acme 文件"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "Acme status"
 msgstr "Acme 狀態"
 
@@ -2011,7 +2019,6 @@ msgstr "僅動作"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "Active"
 msgstr "已啟用"
 
@@ -2182,7 +2189,7 @@ msgstr "請至少新增一個來源。"
 msgid "Add channel"
 msgstr "新增頻道"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Add component"
 msgstr "新增元件"
@@ -2204,7 +2211,7 @@ msgstr "新增網域"
 msgid "Add endpoint"
 msgstr "新增端點"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Add group"
 msgstr "新增群組"
@@ -2230,7 +2237,7 @@ msgstr "新增標籤 {labelName}"
 msgid "Add labels"
 msgstr "新增標籤"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Add monitor"
 msgstr "新增監控"
 
@@ -2344,7 +2351,7 @@ msgstr "已為單一登入新增網域 {domain}"
 #: src/features/mail/MailSide.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 #: src/features/status/MonitorHttpFields.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/MonitorToken.tsx
@@ -2404,7 +2411,6 @@ msgid "Admins see every inbox and manage products, channels and members."
 msgstr "管理員可以查看所有收件匣，並管理產品、頻道和成員。"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/StatusPages.tsx
 msgid "Affects"
 msgstr "影響範圍"
 
@@ -2525,7 +2531,6 @@ msgid "All mentions"
 msgstr "所有提及"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/StatusPages.tsx
 msgid "All monitors"
 msgstr "所有監控"
 
@@ -2546,7 +2551,6 @@ msgid "all products"
 msgstr "所有產品"
 
 #: src/components/common/WorkspaceSelector.tsx
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/SidePanels.tsx
@@ -2554,7 +2558,6 @@ msgstr "所有產品"
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "All products"
 msgstr "所有產品"
 
@@ -2575,10 +2578,6 @@ msgstr "所有步驟"
 #: src/features/status/StatusPages.tsx
 msgid "All systems operational"
 msgstr "所有系統運作正常"
-
-#: src/features/status/StatusPages.tsx
-msgid "all up"
-msgstr "全部上線"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "All, drafts, scheduled or sent"
@@ -2850,7 +2849,7 @@ msgstr "An idea only shows its issues and their state. Its stage stays your deci
 msgid "An inbox collects the conversations of one product or brand. Name it after the product your customers know."
 msgstr "收件匣收納一個產品或品牌的對話。請用客戶熟悉的產品名稱來命名。"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "An incident is published at once, so customers see it on the page."
 msgstr "事件會立即發布，客戶可以在頁面上看到。"
 
@@ -3056,7 +3055,7 @@ msgstr "已清除回答"
 msgid "Answer to a forward from {author}"
 msgstr "對 {author} 轉寄的回覆"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "answered"
 msgstr "已回覆"
 
@@ -3134,7 +3133,7 @@ msgstr "所有使用此金鑰的內容會立即失效。"
 
 #: src/components/common/Source.tsx
 #: src/components/common/text.ts
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "API"
 msgstr "API"
 
@@ -3333,7 +3332,7 @@ msgstr "同上({current})"
 msgid "As fast as allowed"
 msgstr "儘可能快"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "As often as allowed"
 msgstr "允許的最高頻率"
 
@@ -3746,12 +3745,6 @@ msgstr "僅在工作成功時傳送心跳訊號。"
 msgid "Before"
 msgstr "先前"
 
-#. placeholder {0}: date(before)
-#. placeholder {1}: took(before)
-#: src/features/status/StatusPages.tsx
-msgid "before that: {0}, {1}"
-msgstr "在此之前：{0}、{1}"
-
 #: src/features/migrations/ConnectStep.tsx
 msgid "Before you connect"
 msgstr "連線之前"
@@ -3985,8 +3978,7 @@ msgstr "此頻道的群發透過用於回覆的 SMTP 帳號發出,或透過單�
 msgid "Browser"
 msgstr "瀏覽器"
 
-#: src/features/feedback/FeedbackList.tsx
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Bugs, ideas and praise sent from your apps and pages"
 msgstr "從你的應用程式和頁面傳來的問題、想法和好評"
 
@@ -3999,10 +3991,6 @@ msgstr "Bundle ID"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
 msgstr "營業時間"
-
-#: src/features/status/StatusPages.tsx
-msgid "by e-mail"
-msgstr "透過郵件"
 
 #: src/features/conversation/Feedback.tsx
 msgid "By e-mail"
@@ -4071,11 +4059,9 @@ msgstr "活動名稱"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/NewsletterStep.tsx
 #: src/features/status/AddSubscriberDialog.tsx
-#: src/features/status/ComponentDialogs.tsx
-#: src/features/status/CreatePageDialog.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/IncidentForm.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Cancel"
@@ -4169,7 +4155,6 @@ msgid "Catch-all without a From address"
 msgstr "不帶發件人地址的全部接收"
 
 #: src/features/conversation/Feedback.tsx
-#: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Category"
 msgstr "類別"
@@ -4416,7 +4401,7 @@ msgstr "檢查 DNS"
 msgid "Check DNS and start signing"
 msgstr "檢查 DNS 並開始簽名"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Check every"
 msgstr "檢查間隔"
@@ -4503,10 +4488,6 @@ msgstr "檢查中…"
 msgid "Checks"
 msgstr "檢查"
 
-#: src/features/status/MonitorsPage.tsx
-msgid "Checks that watch your products and set component states"
-msgstr "監控你的產品並設定元件狀態的檢查"
-
 #: src/features/migrations/Wizard.tsx
 msgid "Choose"
 msgstr "選擇"
@@ -4542,10 +4523,6 @@ msgstr "選擇一個值"
 #: src/app/Gate.tsx
 msgid "Choose a workspace"
 msgstr "選擇工作區"
-
-#: src/features/feedback/FeedbackList.tsx
-msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
-msgstr "從列表中選擇,或用 ↑ ↓ 移動並按 Enter 開啟。"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose the account that sends your answers. You can change it later in the channel settings."
@@ -4589,6 +4566,7 @@ msgstr "清除"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Clear filters"
 msgstr "清除篩選"
 
@@ -4604,7 +4582,6 @@ msgstr "清除回答"
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the search"
@@ -4868,7 +4845,7 @@ msgstr "已完成"
 msgid "Completed at {endedAt}"
 msgstr "已於 {endedAt} 完成"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Component"
 msgstr "元件"
@@ -4880,12 +4857,11 @@ msgstr "元件已刪除"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Components"
 msgstr "元件"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Components it touches"
 msgstr "涉及的元件"
 
@@ -5586,17 +5562,13 @@ msgstr "建立政策"
 msgid "Create rule"
 msgstr "建立規則"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "Create status page"
 msgstr "建立狀態頁"
 
 #: src/features/status/StatusPages.tsx
 msgid "Create status page ({newKey})"
 msgstr "建立狀態頁（{newKey}）"
-
-#: src/features/status/StatusPages.tsx
-msgid "Create status page for {product}"
-msgstr "為 {product} 建立狀態頁"
 
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Create team"
@@ -5787,7 +5759,7 @@ msgstr "調暗顏色以匹配主題"
 msgid "Data up to {builtText}"
 msgstr "資料截至 {builtText}"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Database upgrade"
 msgstr "資料庫升級"
 
@@ -6271,7 +6243,7 @@ msgstr "拒絕"
 
 #: src/features/issues/IssueDialog.tsx
 #: src/features/settings/teams/TeamEditor.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
 msgstr "說明"
@@ -6331,6 +6303,9 @@ msgstr "瀏覽器設定中已遮蔽此站點的桌面通知,因此只會播放�
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
+#: src/features/status/IncidentsPage.tsx
+#: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusPages.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Details"
 msgstr "詳情"
@@ -6434,7 +6409,6 @@ msgstr "討論已開始"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
@@ -6826,10 +6800,6 @@ msgstr "電子郵件訂閱者已關閉"
 msgid "E-mail subscribers are off. Nobody can subscribe and no notices go out, but the list is kept."
 msgstr "電子郵件訂閱者已關閉。無法訂閱,也不會傳送通知,但名單會保留。"
 
-#: src/features/status/StatusPages.tsx
-msgid "E-mail subscriptions are off"
-msgstr "郵件訂閱已關閉"
-
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "E-mail view"
 msgstr "郵件檢視"
@@ -6850,11 +6820,11 @@ msgstr "寄給已註冊使用者的郵件"
 msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
 msgstr "每個動作最多一次,至多 10 個。動作會作為一次變更執行;只要有一個失敗,全部都不會套用。"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Each component gets this state while the incident is open."
 msgstr "事件開啟期間，每個元件都處於此狀態。"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Each component gets this state while the maintenance is open."
 msgstr "維護進行期間，每個元件都處於此狀態。"
 
@@ -6953,7 +6923,7 @@ msgstr "編輯 API 金鑰"
 msgid "Edit canned reply"
 msgstr "編輯快捷回覆"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Edit component"
 msgstr "編輯元件"
 
@@ -6962,7 +6932,7 @@ msgid "Edit design"
 msgstr "編輯設計"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Edit details"
 msgstr "編輯詳細資料"
 
@@ -6990,7 +6960,7 @@ msgstr "編輯標籤"
 msgid "Edit macro"
 msgstr "編輯巨集"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Edit monitor"
 msgstr "編輯監控"
 
@@ -7062,7 +7032,7 @@ msgstr "正在編輯一份無法寄出的草稿"
 msgid "Editing the message scheduled for {editingWhen}"
 msgstr "正在編輯排定於 {editingWhen} 寄出的訊息"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Elevated API errors"
 msgstr "API 錯誤增加"
 
@@ -7137,7 +7107,7 @@ msgstr "端點"
 msgid "Endpoints"
 msgstr "端點"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Ends"
 msgstr "結束"
 
@@ -7297,7 +7267,7 @@ msgstr "每封郵件"
 msgid "Every open conversation has someone."
 msgstr "每個未關閉的對話都有人負責。"
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "Every open discussion has an answer."
 msgstr "每個未關閉的討論都有回答。"
 
@@ -7305,12 +7275,11 @@ msgstr "每個未關閉的討論都有回答。"
 msgid "Every other browser and device is signed out. This one stays signed in."
 msgstr "其他所有瀏覽器和裝置都將登出，目前裝置保持登入。"
 
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
 msgstr "所有產品"
 
-#: src/features/broadcasts/BroadcastsFrame.tsx
+#: src/components/common/ProductFilter.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
 msgstr "所有產品"
@@ -7339,7 +7308,7 @@ msgstr "每一步都已透過。"
 msgid "Every subscriber keeps a consent record you can export."
 msgstr "每位訂閱者都有可匯出的同意紀錄。"
 
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every type"
 msgstr "所有類型"
@@ -7421,7 +7390,7 @@ msgstr "Example Ltd."
 msgid "Expand or collapse every message"
 msgstr "展開或收合所有郵件"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Expected every"
 msgstr "預期間隔"
@@ -7530,7 +7499,7 @@ msgstr "失敗中"
 msgid "Fails the monitor at once, without waiting for the grace."
 msgstr "立即讓監控失敗，不等待寬限時間。"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Failures to go down"
 msgstr "連續失敗幾次後故障"
@@ -7550,7 +7519,7 @@ msgstr "反饋"
 #: src/features/contact/ContactCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/PagesTab.tsx
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/webhooks/events.tsx
@@ -7578,10 +7547,15 @@ msgstr "意見回饋分類"
 msgid "Feedback category"
 msgstr "意見回饋類別"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Feedback form"
 msgstr "反饋表單"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Feedback form ({formKey})"
+msgstr "反饋表單 ({formKey})"
 
 #: src/features/conversation/actions.ts
 msgid "Feedback resolved"
@@ -7669,7 +7643,7 @@ msgstr "依標籤篩選"
 msgid "Filter by plan"
 msgstr "依方案篩選"
 
-#: src/features/broadcasts/BroadcastsFrame.tsx
+#: src/components/common/ProductFilter.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "依產品篩選"
@@ -7681,12 +7655,17 @@ msgstr "依狀態篩選"
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Filter by status"
 msgstr "依狀態篩選"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Filter by team"
 msgstr "依團隊篩選"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Filter by type"
+msgstr "依類型篩選"
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
@@ -7812,7 +7791,7 @@ msgstr "首次回覆，中位數"
 msgid "First rows of the file"
 msgstr "檔案的前幾行"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "First update"
 msgstr "第一則更新"
 
@@ -8300,7 +8279,7 @@ msgstr "Google 已傳送確認碼"
 msgid "Google Takeout"
 msgstr "Google Takeout"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Grace"
 msgstr "寬限時間"
@@ -8318,7 +8297,7 @@ msgstr "問候語"
 msgid "Greets new conversations by e-mail, once per contact within the interval. Never sent to automatic mail or spam."
 msgstr "在間隔時間內,對每位聯絡人透過郵件問候新對話一次。不會發給自動郵件或垃圾郵件。"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Group"
 msgstr "群組"
 
@@ -8500,7 +8479,7 @@ msgstr "你好!有什麼可以幫你?"
 
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Hidden"
 msgstr "已隱藏"
@@ -8521,7 +8500,7 @@ msgstr "隱藏"
 msgid "Hide from the page"
 msgstr "在頁面上隱藏"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Hide HTTP details"
 msgstr "隱藏 HTTP 詳細資料"
 
@@ -8583,7 +8562,7 @@ msgstr "歷史記錄已移除"
 msgid "Home"
 msgstr "首頁"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Host"
 msgstr "主機"
@@ -8642,7 +8621,7 @@ msgstr "你的團隊回覆得多快、多好"
 msgid "How HTML e-mails open. You can still switch each message."
 msgstr "HTML 郵件的開啟方式。你仍可逐封切換。"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "How late a beat may be."
 msgstr "心跳訊號可以遲到多久。"
 
@@ -8791,7 +8770,7 @@ msgstr "如果你的 DNS 供應商把 TXT 字串限制為 255 個字元,請把�
 msgid "If your mail provider mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "如果你的郵件供應商向該地址傳送確認郵件,它會作為一個對話到達此收件匣;請在那裡開啟。"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Ignores results and lets the component go back."
 msgstr "忽略結果，讓元件恢復原狀。"
 
@@ -8808,7 +8787,7 @@ msgid "IMAP server"
 msgstr "IMAP 伺服器"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Impact"
 msgstr "影響"
 
@@ -8901,7 +8880,7 @@ msgstr "在 {contact} · {subject}"
 msgid "In 1 hour"
 msgstr "1 小時後"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "In a row, 1 to 10."
 msgstr "連續次數，1 到 10。"
 
@@ -9098,7 +9077,6 @@ msgstr "事件：{title} · {state}"
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "Incidents"
 msgstr "事件"
 
@@ -9550,7 +9528,7 @@ msgid "Keyword"
 msgstr "關鍵字"
 
 #: src/features/settings/automation/text.ts
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "類型"
@@ -9827,7 +9805,7 @@ msgstr "Leave your signature off this reply ({signatureKey})"
 msgid "Leave your signature off this reply, or put it back"
 msgstr "Leave your signature off this reply, or put it back"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Left off the public page and its overall state."
 msgstr "不顯示在公開頁面及其整體狀態中。"
 
@@ -10119,6 +10097,7 @@ msgstr "載入圖片"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/mail/MailDrafts.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
@@ -10391,7 +10370,6 @@ msgstr "Mails go out {sentence}, once to each person. Pausing stops sending but 
 msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
 msgstr "郵件在{city}時間 {start} 至 {end}（{utcStart}–{utcEnd} UTC）寄出，並於隔天繼續。"
 
-#: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
 msgid "Maintenance"
 msgstr "維護"
@@ -10913,7 +10891,6 @@ msgstr "觀察中"
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/MonitorsPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Monitors"
 msgstr "監控"
@@ -10974,10 +10951,6 @@ msgstr "「沒有幫助」評分最多的在前"
 msgid "Most active"
 msgstr "最活躍"
 
-#: src/features/feedback/FeedbackPage.tsx
-msgid "Most asked for"
-msgstr "呼聲最高"
-
 #: src/features/docs/Toolbar.tsx
 msgid "Most disliked"
 msgstr "最多踩"
@@ -11010,8 +10983,11 @@ msgstr "票數最多"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/status/IncidentsPage.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "move"
 msgstr "移動"
@@ -11020,6 +10996,10 @@ msgstr "移動"
 #: src/features/inbox/ChatList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "將 {0} 項移到垃圾箱？"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Move {n} to the Trash?"
+msgstr "將 {n} 項移到垃圾箱？"
 
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -11058,6 +11038,10 @@ msgstr "移動所選集合"
 msgid "Move the selected conversations to the Trash"
 msgstr "將所選對話移到垃圾箱"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move the selected feedback to the Trash"
+msgstr "將所選反饋移到垃圾箱"
+
 #: src/features/conversation/ChatView.tsx
 msgid "Move this conversation to the Trash?"
 msgstr "將此對話移到垃圾箱？"
@@ -11085,6 +11069,10 @@ msgstr "在設計之間移動"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the entries"
 msgstr "在項目之間移動"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move through the feedback"
+msgstr "在反饋之間移動"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the ideas"
@@ -11152,6 +11140,7 @@ msgstr "移到上一個或下一個階段"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
@@ -11163,6 +11152,7 @@ msgstr "移到垃圾箱"
 msgid "Move to the Trash ({0})"
 msgstr "移到垃圾箱 ({0})"
 
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Move to the Trash (#)"
@@ -11276,9 +11266,9 @@ msgstr "我的檢視"
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
-#: src/features/status/ComponentDialogs.tsx
-#: src/features/status/CreatePageDialog.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/ComponentForms.tsx
+#: src/features/status/CreatePageForm.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Name"
 msgstr "名稱"
@@ -11504,6 +11494,7 @@ msgstr "新增欄位"
 msgid "New filter"
 msgstr "新增篩選器"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "新想法"
@@ -11527,6 +11518,10 @@ msgstr "最近 {days} 天新增"
 #: src/features/migrations/MapStep.tsx
 msgid "New inbox…"
 msgstr "新建收件匣…"
+
+#: src/features/status/IncidentsPage.tsx
+msgid "new incident"
+msgstr "新增事件"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -11587,6 +11582,10 @@ msgid "New migration"
 msgstr "新建遷移"
 
 #: src/features/status/MonitorsPage.tsx
+msgid "new monitor"
+msgstr "新增監控"
+
+#: src/features/status/MonitorsPage.tsx
 msgid "New monitor"
 msgstr "新增監控"
 
@@ -11597,10 +11596,6 @@ msgstr "新擁有者"
 #: src/features/team/RemoveMemberDialog.tsx
 msgid "New owner of {boxName}"
 msgstr "{boxName}的新擁有者"
-
-#: src/features/status/StatusPages.tsx
-msgid "New page"
-msgstr "新頁面"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "New password"
@@ -11625,6 +11620,7 @@ msgid "New signing secret"
 msgstr "新簽名金鑰"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/status/StatusPages.tsx
 msgid "New status page"
 msgstr "新增狀態頁"
 
@@ -11748,7 +11744,7 @@ msgstr "接下來選擇要匯入的內容。掃描只會讀取一次檔案。"
 msgid "Next, choose where they go."
 msgstr "接下來選擇它們去哪裡。"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Nightly backup"
 msgstr "夜間備份"
 
@@ -11871,7 +11867,7 @@ msgstr "未指定元件。"
 msgid "No components in this group."
 msgstr "此群組中沒有元件。"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "No components yet. Add one to a status page first."
 msgstr "還沒有元件。請先在狀態頁中新增一個。"
 
@@ -11968,7 +11964,7 @@ msgstr "此頁面還沒有討論。"
 msgid "No discussions under the pages of these sites."
 msgstr "這些站點的頁面下沒有討論。"
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "No discussions yet. Readers start them under your documentation pages."
 msgstr "還沒有討論。讀者會在你的文件頁面下發起討論。"
 
@@ -12048,12 +12044,12 @@ msgstr "不接受任何檔案。"
 msgid "No filters yet."
 msgstr "尚無篩選器。"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
 msgstr "無群組"
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "No hidden discussions."
 msgstr "沒有已隱藏的討論。"
 
@@ -12111,7 +12107,7 @@ msgstr "無限制"
 msgid "No list matches “{q}”."
 msgstr "沒有符合「{q}」的名單。"
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "No locked discussions."
 msgstr "沒有已鎖定的討論。"
 
@@ -12176,7 +12172,7 @@ msgstr "無備註"
 msgid "No notifications in the last 90 days."
 msgstr "最近 90 天沒有通知。"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "No open feedback."
 msgstr "沒有未解決的意見回饋。"
 
@@ -12472,7 +12468,7 @@ msgstr "沒有人會收到這封郵件。請選擇有訂閱者的列表,或放�
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/setup/email/EmailTestStep.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "None"
 msgstr "無"
@@ -12809,7 +12805,7 @@ msgstr "不會丟失任何內容:一旦再次使用 Microsoft 登入,複製會�
 msgid "Nothing is lost: when it continues, copying picks up where it stopped."
 msgstr "不會丟失任何內容:繼續後,複製會從中斷處接著進行。"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Nothing is resolved yet."
 msgstr "尚無已解決的項目。"
 
@@ -12823,7 +12819,7 @@ msgid "Nothing is snoozed."
 msgstr "沒有被推遲的內容。"
 
 #: src/features/docs/discussions/QueuePane.tsx
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "Nothing is waiting for approval."
 msgstr "沒有等待稽覈的內容。"
 
@@ -12835,7 +12831,7 @@ msgstr "目前一切正常。出現問題時請建立事件。"
 msgid "Nothing matches these filters."
 msgstr "沒有符合這些篩選條件的內容。"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing matches your search here."
 msgstr "這裡沒有符合你搜尋的內容。"
@@ -12844,7 +12840,7 @@ msgstr "這裡沒有符合你搜尋的內容。"
 msgid "Nothing needs attention right now."
 msgstr "目前沒有需要處理的事項。"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Nothing opens by itself. Open an incident from the monitor when you want one."
 msgstr "不會自動建立任何內容。需要時請從監控中建立事件。"
 
@@ -13301,10 +13297,6 @@ msgstr "僅限在他們同意持久 ID 並登入之後的存取。"
 msgid "Only while the panel is open in this browser. Away, you are alerted only about conversations assigned to you."
 msgstr "僅在此瀏覽器中開啟面板時。離開時,只會提醒你指派給你的對話。"
 
-#: src/features/status/StatusPages.tsx
-msgid "only your team can preview it"
-msgstr "只有你的團隊可以預覽"
-
 #: src/features/broadcasts/NewBroadcastForm.tsx
 msgid "Only your team sees it."
 msgstr "僅團隊可見。"
@@ -13317,8 +13309,11 @@ msgstr "未結"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/status/IncidentsPage.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgctxt "keyboard hint"
 msgid "open"
@@ -13328,7 +13323,7 @@ msgstr "開啟"
 #: src/features/account/AccountPage.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -13338,7 +13333,9 @@ msgid "Open"
 msgstr "未關閉"
 
 #. placeholder {0}: a.filename
+#. placeholder {0}: p.name
 #: src/features/conversation/messages/Attachments.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Open {0}"
 msgstr "開啟 {0}"
 
@@ -13372,7 +13369,7 @@ msgid "Open Account security in your Yahoo account."
 msgstr "在你的 Yahoo 帳號中開啟「帳號安全」。"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Open an incident"
 msgstr "開啟事件"
@@ -13550,6 +13547,10 @@ msgstr "開啟端點"
 msgid "Open the entry"
 msgstr "開啟項目"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Open the feedback"
+msgstr "開啟反饋"
+
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Open the guide"
 msgstr "Open the guide"
@@ -13623,6 +13624,10 @@ msgid "Open the site, goal or funnel"
 msgstr "開啟網站、目標或漏斗"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Open the status page"
+msgstr "開啟狀態頁"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Open the triggered e-mail"
 msgstr "Open the triggered e-mail"
 
@@ -13688,7 +13693,7 @@ msgstr "operational 表示恢復；degraded、partial_outage 和 major_outage �
 msgid "Operator"
 msgstr "營運方"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Optional. Shown on the public page."
 msgstr "選填。顯示在公開頁面上。"
 
@@ -13821,7 +13826,6 @@ msgstr "隨時間變化"
 
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
 msgstr "概覽"
@@ -13884,9 +13888,7 @@ msgstr "頁面：{name}"
 
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
-#: src/features/status/StatusPages.tsx
 msgid "Pages"
 msgstr "頁面"
 
@@ -13957,7 +13959,6 @@ msgstr "已設定密碼"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "Past"
 msgstr "過往"
 
@@ -14023,7 +14024,7 @@ msgstr "暫停或繼續監控"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/setup/email/EmailTestStep.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Paused"
@@ -14268,10 +14269,6 @@ msgstr "請先選擇設計。"
 msgid "Pick a design that renders without errors."
 msgstr "請選擇能無錯誤渲染的設計。"
 
-#: src/features/docs/DiscussionsTab.tsx
-msgid "Pick a discussion to read and answer it."
-msgstr "選擇一則討論來閱讀與回覆。"
-
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "Pick a field"
 msgstr "選擇一個欄位"
@@ -14299,17 +14296,9 @@ msgstr "Pick a list under Who gets it to save"
 msgid "Pick a member"
 msgstr "選擇一位成員"
 
-#: src/features/status/MonitorsPage.tsx
-msgid "Pick a monitor to see what happened."
-msgstr "選擇一個監控，查看發生了什麼。"
-
 #: src/features/docs/PagesTab.tsx
 msgid "Pick a page to see its ratings, discussions and questions."
 msgstr "選擇一個頁面，查看它的評分、討論與問題。"
-
-#: src/features/feedback/FeedbackList.tsx
-msgid "Pick a piece of feedback"
-msgstr "選擇一則意見回饋"
 
 #: src/features/broadcasts/ListPage.tsx
 msgid "Pick a sender in the settings"
@@ -14359,10 +14348,6 @@ msgstr "選擇一個端點"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Pick an inbox"
 msgstr "選擇收件匣"
-
-#: src/features/status/IncidentsPage.tsx
-msgid "Pick an incident to read it."
-msgstr "選擇一個事件以查看內容。"
 
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "Pick an open incident or maintenance"
@@ -14503,7 +14488,7 @@ msgstr "已置頂"
 msgid "Pinned to the top of your list"
 msgstr "已置頂到你的列表頂部"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "純文字，可包含連結和換行，最多 5,000 個字元。"
 
@@ -14515,8 +14500,12 @@ msgstr "純文字，顯示在轉寄郵件上方。"
 msgid "Plan"
 msgstr "方案"
 
+#: src/features/status/IncidentsPage.tsx
+msgid "plan maintenance"
+msgstr "規劃維護"
+
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Plan maintenance"
 msgstr "規劃維護"
@@ -14558,7 +14547,7 @@ msgstr "指向"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Port"
 msgstr "埠"
 
@@ -14597,6 +14586,10 @@ msgstr "郵寄地址"
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Posted by you and marked as the accepted answer."
 msgstr "由你釋出,並已標為被採納的回答。"
+
+#: src/features/docs/DocsPage.tsx
+msgid "Posts from new readers wait here until a member approves them"
+msgstr "新讀者的貼文會在這裡等待，直到成員核准"
 
 #: src/components/common/text.ts
 msgid "Preference page"
@@ -14656,8 +14649,20 @@ msgid "Previous or next discussion"
 msgstr "上一則或下一則討論"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Previous or next incident"
+msgstr "上一個或下一個事件"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Previous or next language"
 msgstr "上一種或下一種語言"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Previous or next monitor"
+msgstr "上一個或下一個監控"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Previous or next status page"
+msgstr "上一個或下一個狀態頁"
 
 #: src/features/feedback/Lightbox.tsx
 msgid "Previous screenshot"
@@ -14709,8 +14714,8 @@ msgstr "pro、team"
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/sections.tsx
-#: src/features/status/CreatePageDialog.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/CreatePageForm.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Product"
 msgstr "產品"
 
@@ -14864,7 +14869,7 @@ msgstr "發布事件"
 msgid "Publish and unpublish help center articles"
 msgstr "發布和取消發布說明中心文章"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Publish now"
 msgstr "立即發布"
 
@@ -14970,6 +14975,10 @@ msgstr "把這些元素放在文件每個頁面的下方。它們使用產品的
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Question"
 msgstr "問題"
+
+#: src/features/docs/DocsPage.tsx
+msgid "Questions readers ask under your documentation pages"
+msgstr "讀者在你的文件頁面下提出的問題"
 
 #: src/components/common/text.ts
 msgid "Queued"
@@ -15633,7 +15642,7 @@ msgstr "正在移除匯入的歷史記錄…"
 msgid "Rename"
 msgstr "重新命名"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Rename group"
 msgstr "重新命名群組"
 
@@ -15642,9 +15651,14 @@ msgid "Rename the mailbox"
 msgstr "重新命名信箱"
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Reopen"
 msgstr "重新開啟"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Reopen ({closeKey})"
+msgstr "重新開啟 ({closeKey})"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reorder the selected view in the sidebar"
@@ -15977,10 +15991,15 @@ msgid "Resolution {resolution}"
 msgstr "解決 {resolution}"
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "Resolve"
 msgstr "標示為已解決"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Resolve ({closeKey})"
+msgstr "標示為已解決 ({closeKey})"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -15995,10 +16014,13 @@ msgstr "解決事件"
 msgid "Resolve or complete"
 msgstr "解決或完成"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Resolve or reopen the selected feedback"
+msgstr "解決或重新開啟所選反饋"
+
 #: src/components/common/text.ts
 #: src/features/conversation/ConversationStatus.tsx
-#: src/features/feedback/FeedbackList.tsx
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/status/text.tsx
 msgid "Resolved"
 msgstr "已解決"
@@ -16011,11 +16033,6 @@ msgstr "已於 {endedAt} 解決"
 #: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "解決所需時間"
-
-#. placeholder {0}: took(last)
-#: src/features/status/StatusPages.tsx
-msgid "resolved in {0}"
-msgstr "在 {0} 內解決"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Resolved. It moved to the Resolved tab."
@@ -16182,7 +16199,6 @@ msgstr "訂閱後,人們會立即收到一封帶退訂連結的簡短確認郵�
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/feedback/RoadmapCard.tsx
 msgid "Roadmap"
 msgstr "路線圖"
@@ -16363,10 +16379,10 @@ msgstr "星期六"
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/parts.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/IncidentForm.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Save"
 msgstr "儲存"
 
@@ -16387,7 +16403,7 @@ msgstr "儲存並重新排程"
 msgid "Save and test"
 msgstr "Save and test"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Save as draft"
 msgstr "儲存為草稿"
 
@@ -16526,7 +16542,6 @@ msgstr "安排項目"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/text.ts
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/text.tsx
 msgid "Scheduled"
 msgstr "已安排"
@@ -16551,7 +16566,6 @@ msgid "Scheduled by"
 msgstr "安排者"
 
 #: src/features/status/Notices.tsx
-#: src/features/status/StatusPages.tsx
 msgid "Scheduled for {due}"
 msgstr "排定於 {due}"
 
@@ -16604,7 +16618,7 @@ msgstr "螢幕尺寸"
 msgid "Screenshot"
 msgstr "截圖"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Screenshots attached"
 msgstr "附有螢幕截圖"
 
@@ -16616,12 +16630,12 @@ msgstr "SDK"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "search"
 msgstr "搜尋"
 
 #: src/app/Palette.tsx
-#: src/features/feedback/FeedbackList.tsx
 msgid "Search"
 msgstr "搜尋"
 
@@ -16671,9 +16685,14 @@ msgstr "搜尋表情符號"
 msgid "Search emoji (in English)"
 msgstr "搜尋表情符號(英文)"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Search feedback"
 msgstr "搜尋意見回饋"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Search feedback…"
+msgstr "搜尋反饋…"
 
 #: src/app/places.tsx
 msgid "Search gaps"
@@ -16775,7 +16794,7 @@ msgstr "在你的終端中搜尋、分診和起草回覆。它以你的身份執
 msgid "Second secret"
 msgstr "第二個密鑰"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Seconds, 1 to 30."
 msgstr "秒,1 到 30。"
 
@@ -16805,6 +16824,7 @@ msgstr "被監控看到"
 
 #: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "select"
@@ -16826,6 +16846,10 @@ msgid "Select all"
 msgstr "全選"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Select the article"
+msgstr "選取文章"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Select the broadcast under the cursor"
 msgstr "選取游標所在的群發"
 
@@ -16836,6 +16860,14 @@ msgstr "選取游標所在的聯絡人"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "選取游標所在的對話"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the entry"
+msgstr "選取項目"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the feedback"
+msgstr "選取反饋"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the mail under the cursor"
@@ -17506,7 +17538,6 @@ msgstr "正在設定…"
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "設定"
@@ -17568,6 +17599,7 @@ msgstr "快捷鍵"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Show"
 msgstr "顯示"
@@ -17600,7 +17632,7 @@ msgstr "顯示訂閱來源、徽章和嵌入"
 msgid "Show full draft"
 msgstr "顯示完整草稿"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Show HTTP details"
 msgstr "顯示 HTTP 詳細資料"
 
@@ -18513,7 +18545,7 @@ msgid "Starting"
 msgstr "正在開始"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Starts"
 msgstr "開始"
 
@@ -18540,9 +18572,9 @@ msgstr "STARTTLS(埠 587)"
 
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "State"
 msgstr "狀態"
@@ -18553,7 +18585,7 @@ msgid "State of {0}"
 msgstr "{0} 的狀態"
 
 #. placeholder {0}: c.name
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "State of {0} while it is open"
 msgstr "{0} 開啟期間的狀態"
 
@@ -18561,7 +18593,7 @@ msgstr "{0} 開啟期間的狀態"
 msgid "state of the conversation"
 msgstr "對話狀態"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "State while down"
 msgstr "故障時的狀態"
@@ -18573,7 +18605,6 @@ msgstr "故障時的狀態"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
-#: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -18584,7 +18615,6 @@ msgstr "故障時的狀態"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Status"
 msgstr "狀態"
@@ -18601,7 +18631,6 @@ msgstr "狀態頁已刪除"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "狀態頁"
@@ -18737,7 +18766,6 @@ msgstr "剛剛訂閱了清單"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Subscribers"
 msgstr "訂閱者"
@@ -18763,7 +18791,7 @@ msgstr "訂閱已刪除"
 msgid "Succeeded"
 msgstr "成功"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Successes to recover"
 msgstr "連續成功幾次後恢復"
@@ -19208,7 +19236,7 @@ msgstr "驗證碼錯誤或已過期。"
 msgid "The columns are guessed from the header row. One must be the e-mail address; name the others as contact fields or attributes, or skip them. Attributes only fill keys a contact does not have yet."
 msgstr "列是根據標題行猜測的。其中一列必須是電子郵件地址;其他列請命名為聯絡人欄位或屬性,或跳過。屬性只會填充聯絡人尚未擁有的鍵。"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "The component whose state this monitor sets."
 msgstr "此監控設定其狀態的元件。"
 
@@ -19333,7 +19361,7 @@ msgstr "此電子郵件網域尚未在此工作區中驗證"
 msgid "The elements work on these addresses; add your dev server in the inbox settings:"
 msgstr "這些元素在以下地址上有效;請在收件匣設定中新增你的開發伺服器:"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "The end must be after the start."
 msgstr "結束時間必須晚於開始時間。"
 
@@ -19428,10 +19456,6 @@ msgstr "在顯示回覆時間的收件匣中,對話的第一條訊息。"
 #: src/features/settings/notifications/events.ts
 msgid "The first message of a conversation in an inbox that shows who is available."
 msgstr "在顯示誰線上的收件匣中,對話的第一條訊息。"
-
-#: src/features/status/StatusPages.tsx
-msgid "the first one"
-msgstr "第一個"
 
 #: src/features/docs/PagesTab.tsx
 msgid "The first rating makes the page appear here."
@@ -20292,6 +20316,10 @@ msgstr "它們會與其作者其他待審核的貼文一起被隱藏,這些作�
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "它們會對你的團隊和客戶消失。30 天內可從垃圾箱恢復，之後會連同訊息和檔案一起被永久刪除。"
 
+#: src/features/feedback/FeedbackHome.tsx
+msgid "They disappear for your team. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
+msgstr "你的團隊將看不到它們。30 天內可從垃圾箱還原，之後會連同訊息和檔案永久刪除。"
+
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They get a mail with a link and are subscribed only after they click it."
 msgstr "他們會收到一封帶連結的郵件,點選後才會訂閱。"
@@ -20691,7 +20719,7 @@ msgstr "此監控已不存在，或你無權檢視。"
 msgid "This month"
 msgstr "本月"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "This page is not public yet, so visitors see nothing until you publish the page."
 msgstr "此頁面尚未公開，因此在你發布頁面之前訪客看不到任何內容。"
 
@@ -20808,6 +20836,10 @@ msgstr "此站點無法連線"
 #: src/components/common/text.ts
 msgid "This site is not allowed to use this documentation channel."
 msgstr "此站點不允許使用此文件頻道。"
+
+#: src/features/status/StatusPages.tsx
+msgid "This status page no longer exists or you cannot see it."
+msgstr "此狀態頁已不存在，或你無權檢視。"
 
 #: src/components/common/text.ts
 msgid "This subscription is no longer waiting for confirmation."
@@ -20926,7 +20958,7 @@ msgstr "時間"
 msgid "Time zone"
 msgstr "時區"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Timeout"
 msgstr "逾時"
@@ -20935,7 +20967,7 @@ msgstr "逾時"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/issues/IssueDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Title"
 msgstr "標題"
 
@@ -21093,6 +21125,7 @@ msgstr "為此伺服器信任此證書。僅當它是你自己的伺服器且指
 #: src/features/account/AccountLayout.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/migrations/UploadStep.tsx
@@ -21187,7 +21220,6 @@ msgstr "已被 Yuva 關閉"
 msgid "TXT record"
 msgstr "TXT 記錄"
 
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/fields/FieldDialog.tsx
@@ -21423,7 +21455,7 @@ msgstr "取消發佈翻譯"
 msgid "Unpublished"
 msgstr "未發布"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/mail/MailList.tsx
@@ -22032,7 +22064,6 @@ msgstr "等待稽覈"
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
-#: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "Waiting for approval"
@@ -22426,7 +22457,7 @@ msgstr "當隊友在備註中輸入 @ 和你的名字時，該備註會顯示在
 msgid "When did they agree?"
 msgstr "他們是什麼時候同意的?"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "When it goes down"
 msgstr "發生故障時"
@@ -22464,10 +22495,6 @@ msgstr "當其他人把它指派給你時。"
 #: src/features/broadcasts/Trigger.tsx
 msgid "when someone first signs in to {inbox}"
 msgstr "when someone first signs in to {inbox}"
-
-#: src/features/feedback/FeedbackList.tsx
-msgid "When someone sends feedback, it will be in the list."
-msgstr "有人傳送意見回饋後，會顯示在清單中。"
 
 #: src/features/broadcasts/Trigger.tsx
 msgid "when someone starts to match {match}"
@@ -22952,11 +22979,11 @@ msgstr "You get a new secret once. Webhooks from GitHub are refused until you pa
 msgid "You get a notification when someone replies in these"
 msgstr "有人在這些討論中回覆時,你會收到通知"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "You get the address to call when you save. It is shown only once."
 msgstr "儲存時會得到要呼叫的位址，且只顯示一次。"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "You get the address your alerting calls when you save, for Alertmanager, Grafana or your own script. It is shown only once."
 msgstr "儲存時會得到警示系統（Alertmanager、Grafana 或你自己的指令碼）要呼叫的位址，且只顯示一次。"
 
@@ -23115,7 +23142,7 @@ msgstr "Your identity provider has not verified your e-mail address, so Yuva can
 msgid "Your inbox is empty."
 msgstr "你的收件匣是空的。"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Your job calls Yuva on a schedule. A missing call fails the monitor."
 msgstr "你的工作會定期呼叫 Yuva。缺少呼叫會讓監控失敗。"
 
@@ -23169,7 +23196,7 @@ msgstr "你所在組織的管理員必須允許 Yuva"
 msgid "Your own"
 msgstr "Your own"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Your own monitoring sends its state, including Alertmanager and Grafana alerts."
 msgstr "你自己的監控系統傳送其狀態，包括 Alertmanager 和 Grafana 的警示。"
 
@@ -23392,7 +23419,7 @@ msgstr "Yuva 只讀取。它絕不會在 {provider} 中刪除、移動、歸檔�
 msgid "Yuva only reads. Its connection sends {provider} nothing but read requests, and the token only to {provider}'s API, so no ticket, customer or setting changes."
 msgstr "Yuva 只會讀取。它的連線只向 {provider} 傳送讀取要求,權杖也只傳送到 {provider} 的 API,因此不會變更任何工單、客戶或設定。"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Yuva opens a connection to a host and port on a schedule."
 msgstr "Yuva 會定期與主機和連接埠建立連線。"
 
@@ -23404,7 +23431,7 @@ msgstr "Yuva 使用你在自己帳戶中建立的 API 權杖讀取 {provider},�
 msgid "Yuva reads only the file you upload and deletes it when the migration ends. History arrives quietly: no notifications, no auto-replies."
 msgstr "Yuva 只讀取你上傳的檔案,並在遷移結束時將其刪除。歷史記錄會靜悄悄地到達:沒有通知,沒有自動回覆。"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Yuva requests an address on a schedule and checks the answer."
 msgstr "Yuva 會定期請求一個位址並檢查回應。"
 

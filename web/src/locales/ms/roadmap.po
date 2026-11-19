@@ -16,6 +16,10 @@ msgstr "{inboxName} tiada saluran sembang web. Tambah satu dahulu, kerana papan 
 msgid "{linked, plural, one {# feedback} other {# feedback}}"
 msgstr "{linked, plural, other {# maklum balas}}"
 
+#: src/features/roadmap/pages.tsx
+msgid "{openCount, plural, one {# idea} other {# ideas}}"
+msgstr "{openCount, plural, other {# idea}}"
+
 #: src/features/roadmap/Board.tsx
 msgid "{pending} waiting for approval"
 msgstr "{pending} menunggu kelulusan"
@@ -39,15 +43,9 @@ msgid "Add a web chat channel"
 msgstr "Tambah saluran sembang web"
 
 #: src/features/roadmap/CreateBoardDialog.tsx
-#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Address"
 msgstr "Alamat"
-
-#: src/features/roadmap/BoardBar.tsx
-#: src/features/roadmap/RoadmapFrame.tsx
-msgid "All boards"
-msgstr "Semua papan"
 
 #: src/features/roadmap/Settings.tsx
 msgid "All changes saved."
@@ -56,11 +54,6 @@ msgstr "Semua perubahan disimpan."
 #: src/features/roadmap/IdeaFeedback.tsx
 msgid "All feedback from {inboxName} that fits is already linked."
 msgstr "Semua maklum balas daripada {inboxName} yang sesuai sudah dipautkan."
-
-#: src/features/roadmap/pages.tsx
-#: src/features/roadmap/RoadmapFrame.tsx
-msgid "All stages"
-msgstr "Semua peringkat"
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
 msgid "Already linked"
@@ -78,7 +71,7 @@ msgstr "Lulus"
 msgid "Approved"
 msgstr "Diluluskan"
 
-#: src/features/roadmap/NewIdeaDialog.tsx
+#: src/features/roadmap/NewIdeaForm.tsx
 msgid "At least 3 characters."
 msgstr "Sekurang-kurangnya 3 aksara."
 
@@ -87,7 +80,7 @@ msgid "Back"
 msgstr "Kembali"
 
 #: src/features/roadmap/IdeaPane.tsx
-#: src/features/roadmap/NewIdeaDialog.tsx
+#: src/features/roadmap/NewIdeaForm.tsx
 #: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Board"
@@ -98,13 +91,11 @@ msgid "Board deleted"
 msgstr "Papan dipadam"
 
 #: src/features/roadmap/pages.tsx
-#: src/features/roadmap/RoadmapFrame.tsx
-msgid "Boards"
-msgstr "Papan"
+msgid "Board settings"
+msgstr "Tetapan papan"
 
 #: src/features/roadmap/CreateBoardDialog.tsx
 #: src/features/roadmap/MoveDialog.tsx
-#: src/features/roadmap/NewIdeaDialog.tsx
 msgid "Cancel"
 msgstr "Batal"
 
@@ -126,16 +117,16 @@ msgstr "Mengira paparan halaman papan awam tanpa kuki."
 msgid "Create board"
 msgstr "Cipta papan"
 
-#: src/features/roadmap/BoardBar.tsx
-msgid "Create board ({newKey})"
-msgstr "Cipta papan ({newKey})"
+#. placeholder {0}: keyLabel(ROADMAP_KEYS.newBoard).join("")
+#: src/features/roadmap/pages.tsx
+msgid "Create board ({0})"
+msgstr "Cipta papan ({0})"
 
-#: src/features/roadmap/BoardBar.tsx
-#: src/features/roadmap/RoadmapFrame.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Create board for {name}"
 msgstr "Cipta papan untuk {name}"
 
-#: src/features/roadmap/NewIdeaDialog.tsx
+#: src/features/roadmap/NewIdeaForm.tsx
 msgid "Create idea"
 msgstr "Cipta idea"
 
@@ -160,10 +151,14 @@ msgid "Deletes the board with its ideas, votes, replies and stage history. Linke
 msgstr "Memadam papan beserta idea, undi, balasan dan sejarah peringkatnya. Maklum balas yang dipautkan dan kemajuannya kekal. Alamat awam berhenti berfungsi."
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
-#: src/features/roadmap/NewIdeaDialog.tsx
+#: src/features/roadmap/NewIdeaForm.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Description"
 msgstr "Penerangan"
+
+#: src/features/roadmap/pages.tsx
+msgid "Details"
+msgstr "Butiran"
 
 #: src/features/roadmap/IdeaFeedback.tsx
 msgid "Dismiss"
@@ -172,6 +167,14 @@ msgstr "Tolak"
 #: src/features/roadmap/Board.tsx
 msgid "Done"
 msgstr "Selesai"
+
+#: src/features/roadmap/pages.tsx
+msgid "Every board"
+msgstr "Setiap papan"
+
+#: src/features/roadmap/pages.tsx
+msgid "Every stage"
+msgstr "Setiap peringkat"
 
 #: src/features/roadmap/Settings.tsx
 msgid "Everyone's posts are published at once, except those of authors you marked as spam."
@@ -209,11 +212,11 @@ msgstr "Idea yang diundi pelanggan anda, dengan maklum balas di sebaliknya"
 msgid "Ideas, votes and stages for {inboxName}, with the feedback behind each idea. It stays private until you make it public."
 msgstr "Idea, undi dan peringkat untuk {inboxName}, bersama maklum balas di sebalik setiap idea. Ia kekal persendirian sehingga anda menjadikannya awam."
 
-#: src/features/roadmap/NewIdeaDialog.tsx
+#: src/features/roadmap/NewIdeaForm.tsx
 msgid "It goes into Ideas on the board, where customers can vote on it."
 msgstr "Ia masuk ke Idea pada papan, tempat pelanggan boleh mengundi."
 
-#: src/features/roadmap/NewIdeaDialog.tsx
+#: src/features/roadmap/NewIdeaForm.tsx
 msgid "It goes into Ideas on the board. The board is private, so only your team sees it."
 msgstr "Ia masuk ke Idea pada papan. Papan ini peribadi, jadi hanya pasukan anda yang melihatnya."
 
@@ -267,22 +270,18 @@ msgstr "Dipautkan ke {title}"
 msgid "Load more"
 msgstr "Muatkan lagi"
 
-#: src/features/roadmap/BoardBar.tsx
 #: src/features/roadmap/pages.tsx
 msgid "Make private"
 msgstr "Jadikan persendirian"
 
-#: src/features/roadmap/BoardBar.tsx
 #: src/features/roadmap/pages.tsx
 msgid "Make private ({publicKey})"
 msgstr "Jadikan persendirian ({publicKey})"
 
-#: src/features/roadmap/BoardBar.tsx
 #: src/features/roadmap/pages.tsx
 msgid "Make public"
 msgstr "Jadikan awam"
 
-#: src/features/roadmap/BoardBar.tsx
 #: src/features/roadmap/pages.tsx
 msgid "Make public ({publicKey})"
 msgstr "Jadikan awam ({publicKey})"
@@ -321,10 +320,15 @@ msgstr "Idea dialihkan ke {stage}"
 msgid "Name"
 msgstr "Nama"
 
-#: src/features/roadmap/NewIdeaDialog.tsx
+#: src/features/roadmap/NewIdeaForm.tsx
 #: src/features/roadmap/pages.tsx
 msgid "New idea"
 msgstr "Idea baharu"
+
+#. placeholder {0}: ROADMAP_KEYS.newIdea.toUpperCase()
+#: src/features/roadmap/pages.tsx
+msgid "New idea ({0})"
+msgstr "Idea baharu ({0})"
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
 msgid "New idea from this feedback"
@@ -405,12 +409,10 @@ msgstr "Pilih idea daripada papan peti masuk ini"
 msgid "Posted as your public reply on the idea. Markdown works."
 msgstr "Disiarkan sebagai balasan awam anda pada idea. Markdown berfungsi."
 
-#: src/features/roadmap/BoardBar.tsx
 #: src/features/roadmap/pages.tsx
 msgid "Private"
 msgstr "Persendirian"
 
-#: src/features/roadmap/BoardBar.tsx
 #: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Public"
@@ -449,13 +451,8 @@ msgid "Review the reply"
 msgstr "Semak balasan"
 
 #: src/features/roadmap/pages.tsx
-#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Roadmap"
 msgstr "Peta hala tuju"
-
-#: src/features/roadmap/BoardBar.tsx
-msgid "Roadmap boards"
-msgstr "Papan peta hala tuju"
 
 #: src/features/roadmap/Settings.tsx
 msgid "Save"
@@ -470,7 +467,6 @@ msgid "Search ideas"
 msgstr "Cari idea"
 
 #: src/features/roadmap/pages.tsx
-#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Settings"
 msgstr "Tetapan"
 
@@ -541,7 +537,7 @@ msgid "This inbox has no roadmap board. Create one under Roadmap first."
 msgstr "Peti masuk ini tiada papan peta hala tuju. Cipta satu dahulu di Peta hala tuju."
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
-#: src/features/roadmap/NewIdeaDialog.tsx
+#: src/features/roadmap/NewIdeaForm.tsx
 msgid "Title"
 msgstr "Tajuk"
 
@@ -565,7 +561,6 @@ msgstr "Gunakan 3 hingga 48 huruf, nombor dan tanda sempang di dalam."
 msgid "View board"
 msgstr "Lihat papan"
 
-#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Visibility"
 msgstr "Keterlihatan"
@@ -575,8 +570,6 @@ msgid "Votes"
 msgstr "Undian"
 
 #: src/features/roadmap/Board.tsx
-#: src/features/roadmap/pages.tsx
-#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Waiting for approval"
 msgstr "Menunggu kelulusan"
 

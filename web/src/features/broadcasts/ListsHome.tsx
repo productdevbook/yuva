@@ -29,7 +29,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { keyHint, useNumber } from "@/features/broadcasts/BroadcastParts"
-import { BroadcastsLayout, ProductFilter, useProductScope, useViewNames } from "@/features/broadcasts/BroadcastsFrame"
+import { ProductFilter, useProductScope } from "@/components/common/ProductFilter"
+import { BroadcastsLayout, useViewNames } from "@/features/broadcasts/BroadcastsFrame"
 import {
   canSend,
   InboxField,

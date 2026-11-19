@@ -7,6 +7,11 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: zh-Hant\n"
 
+#. placeholder {0}: rows.length
+#: src/features/changelog/EntriesTab.tsx
+msgid "{0, plural, one {{shownCount} entry} other {{shownCount} entries}}"
+msgstr "{0, plural, other {{shownCount} 則項目}}"
+
 #: src/features/changelog/ChangelogsPage.tsx
 msgid "{published} of {total} entries published"
 msgstr "已發布 {published} / {total} 個項目"
@@ -36,15 +41,6 @@ msgstr "位址結尾"
 msgid "Agents may publish"
 msgstr "客服可以發佈"
 
-#: src/features/changelog/ChangelogFrame.tsx
-#: src/features/changelog/pages.tsx
-msgid "All"
-msgstr "全部"
-
-#: src/features/changelog/ChangelogFrame.tsx
-msgid "All changelogs"
-msgstr "所有更新日誌"
-
 #: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "All labels"
@@ -53,10 +49,6 @@ msgstr "所有標籤"
 #: src/features/changelog/pages.tsx
 msgid "All languages"
 msgstr "所有語言"
-
-#: src/features/changelog/ChangelogFrame.tsx
-msgid "All products"
-msgstr "所有產品"
 
 #: src/features/changelog/SettingsTab.tsx
 msgid "Analytics property"
@@ -75,7 +67,6 @@ msgid "At least 3 characters."
 msgstr "至少 3 個字元。"
 
 #: src/features/changelog/CreateChangelogDialog.tsx
-#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/MailDialog.tsx
 #: src/features/changelog/ScheduleDialog.tsx
 msgid "Cancel"
@@ -89,21 +80,25 @@ msgstr "更改"
 msgid "Change the time"
 msgstr "更改時間"
 
-#: src/features/changelog/pages.tsx
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/SettingsTab.tsx
 msgid "Changelog"
 msgstr "更新日誌"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/pages.tsx
 msgid "Changelogs"
 msgstr "更新日誌"
 
+#: src/features/changelog/pages.tsx
+msgid "Changelogs ({manageKey})"
+msgstr "更新日誌 ({manageKey})"
+
 #: src/features/changelog/EntryEditor.tsx
 msgid "Choose a picture"
 msgstr "選擇圖片"
 
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "Clear filters"
 msgstr "清除篩選"
@@ -184,7 +179,6 @@ msgstr "草稿"
 msgid "Draft submitted. An owner or admin can publish it."
 msgstr "草稿已提交。擁有者或管理員可以發佈。"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/pages.tsx
 msgid "Drafts"
 msgstr "草稿"
@@ -193,12 +187,14 @@ msgstr "草稿"
 msgid "Each product has one changelog. Owners and admins create and publish them."
 msgstr "每個產品有一個更新日誌。擁有者和管理員建立並發布。"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
-#: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
 msgid "Entries"
 msgstr "項目"
+
+#: src/features/changelog/pages.tsx
+msgid "Entries ({entriesKey})"
+msgstr "項目 ({entriesKey})"
 
 #: src/features/changelog/SettingsTab.tsx
 msgid "Entries and translations are deleted with it."
@@ -209,12 +205,8 @@ msgid "Entries can be written and published in these languages. Visitors see the
 msgstr "項目可以用這些語言撰寫和發布。訪客會看到自己的語言（如果有）。"
 
 #: src/features/changelog/pages.tsx
-msgid "Entries show on the public page once they are published."
-msgstr "項目發布後會顯示在公開頁面上。"
-
-#: src/features/changelog/pages.tsx
-msgid "Entries you have not published yet show up here."
-msgstr "尚未發布的項目會顯示在這裡。"
+msgid "Every state"
+msgstr "所有狀態"
 
 #: src/features/changelog/Bulk.tsx
 #: src/features/changelog/EntryEditor.tsx
@@ -301,6 +293,10 @@ msgstr "標記為最新"
 msgid "More"
 msgstr "更多"
 
+#: src/features/changelog/EntriesTab.tsx
+msgid "move"
+msgstr "移動"
+
 #: src/features/changelog/CreateChangelogDialog.tsx
 #: src/features/changelog/SettingsTab.tsx
 msgid "Name"
@@ -311,9 +307,10 @@ msgid "New"
 msgstr "新"
 
 #: src/features/changelog/EntriesTab.tsx
-msgid "New entry"
-msgstr "新項目"
+msgid "new post"
+msgstr "新增文章"
 
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "New post"
 msgstr "新增文章"
@@ -351,10 +348,6 @@ msgstr "未發布"
 msgid "not written"
 msgstr "未撰寫"
 
-#: src/features/changelog/pages.tsx
-msgid "Nothing here."
-msgstr "這裡什麼都沒有。"
-
 #: src/features/changelog/SettingsTab.tsx
 msgid "Off: agents write drafts and submit them, and owners and admins publish. On: agents with access to the inbox publish, schedule and unpublish too."
 msgstr "關閉：客服代理撰寫草稿並提交，由擁有者和管理員發布。開啟：有收件匣存取權限的客服代理也可以發布、安排和撤回。"
@@ -362,6 +355,11 @@ msgstr "關閉：客服代理撰寫草稿並提交，由擁有者和管理員發
 #: src/features/changelog/text.tsx
 msgid "Only owners and admins can do this."
 msgstr "只有擁有者和管理員可以這樣做。"
+
+#: src/features/changelog/EntriesTab.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "開啟"
 
 #: src/features/changelog/EntryEditor.tsx
 msgid "Original"
@@ -386,10 +384,6 @@ msgstr "此翻譯網址的一部分。為空時會依標題產生。"
 #: src/features/changelog/ScheduleDialog.tsx
 msgid "Pick a time in the next year, in your time zone, {zone}."
 msgstr "請選擇未來一年內的時間，使用你的時區 {zone}。"
-
-#: src/features/changelog/pages.tsx
-msgid "Pick a time when you write an entry and it goes public by itself."
-msgstr "寫項目時選擇時間，它會自動公開。"
 
 #: src/features/changelog/MailDialog.tsx
 msgid "Pick up to 10 lists of this inbox."
@@ -446,7 +440,6 @@ msgstr "立即發布"
 msgid "Publish on"
 msgstr "發布時間"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
@@ -498,7 +491,6 @@ msgstr "重新安排"
 msgid "Schedule this entry"
 msgstr "安排此項目"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
 #: src/features/changelog/text.tsx
@@ -513,15 +505,26 @@ msgstr "已安排：{scheduled}"
 msgid "Search entries"
 msgstr "搜尋項目"
 
+#: src/features/changelog/pages.tsx
+msgid "Search entries…"
+msgstr "搜尋項目…"
+
+#: src/features/changelog/EntriesTab.tsx
+msgid "select"
+msgstr "選取"
+
 #: src/features/changelog/MailDialog.tsx
 msgid "Send through"
 msgstr "傳送管道"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/pages.tsx
 msgid "Settings"
 msgstr "設定"
+
+#: src/features/changelog/pages.tsx
+msgid "Settings ({settingsKey})"
+msgstr "設定 ({settingsKey})"
 
 #: src/features/changelog/EntryEditor.tsx
 msgid "Show"
@@ -556,6 +559,7 @@ msgid "Start with a title. You write the text next, and it stays a draft until i
 msgstr "從標題開始。接著再寫內文，在發佈之前它一直是草稿。"
 
 #: src/features/changelog/EntriesTab.tsx
+#: src/features/changelog/pages.tsx
 msgid "State"
 msgstr "狀態"
 
@@ -666,13 +670,9 @@ msgstr "標題"
 msgid "Translation deleted"
 msgstr "翻譯已刪除"
 
-#: src/features/changelog/pages.tsx
+#: src/features/changelog/EntriesTab.tsx
 msgid "Try again"
 msgstr "重試"
-
-#: src/features/changelog/pages.tsx
-msgid "Try another word, label or language."
-msgstr "換個詞、標籤或語言試試。"
 
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntryEditor.tsx
@@ -709,6 +709,13 @@ msgstr "未儲存的變更"
 msgid "Unschedule"
 msgstr "取消安排"
 
+#: src/features/changelog/ChangelogFrame.tsx
+#: src/features/changelog/ChangelogsPage.tsx
+#: src/features/changelog/EntryEditor.tsx
+#: src/features/changelog/pages.tsx
+msgid "Updates"
+msgstr "更新"
+
 #: src/features/changelog/SettingsTab.tsx
 msgid "Use 3 to 48 letters, numbers and inner hyphens."
 msgstr "使用 3 到 48 個字母、數字和中間的連字號。"
@@ -726,11 +733,9 @@ msgstr "檢視"
 msgid "View changelog"
 msgstr "查看更新日誌"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/EntryEditor.tsx
-#: src/features/changelog/pages.tsx
 msgid "What’s new"
 msgstr "新動態"
 

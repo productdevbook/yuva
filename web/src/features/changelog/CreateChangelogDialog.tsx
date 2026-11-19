@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input"
 import { useCreateChangelog } from "@/features/changelog/queries"
 import { ErrorLine } from "@/features/changelog/text"
 import { Field } from "@/features/settings/ui"
-import { slugify, validSlug } from "@/features/status/CreatePageDialog"
+import { slugify, validSlug } from "@/features/status/CreatePageForm"
 import type { Changelog } from "@/lib/api"
 
 export function CreateChangelogDialog({

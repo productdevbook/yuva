@@ -15,6 +15,7 @@ export function FormCard({
   busy,
   ready = true,
   error,
+  footer,
   className,
   testId,
   children,
@@ -28,6 +29,7 @@ export function FormCard({
   busy?: boolean
   ready?: boolean
   error?: unknown
+  footer?: React.ReactNode
   className?: string
   testId?: string
   children: React.ReactNode
@@ -47,13 +49,17 @@ export function FormCard({
         <CardContent className="flex flex-col gap-4 px-4 pt-4">{children}</CardContent>
         <CardFooter className="flex-wrap gap-2 px-4 pt-4 pb-4">
           <ErrorLine error={error} className="basis-full" />
-          <Button type="submit" disabled={!ready || busy} data-testid={testId ? `${testId}-submit` : undefined}>
-            {submit}
-          </Button>
-          {onCancel && (
-            <Button type="button" variant="outline" onClick={onCancel}>
-              {cancel ?? <Trans>Cancel</Trans>}
-            </Button>
+          {footer ?? (
+            <>
+              <Button type="submit" disabled={!ready || busy} data-testid={testId ? `${testId}-submit` : undefined}>
+                {submit}
+              </Button>
+              {onCancel && (
+                <Button type="button" variant="outline" onClick={onCancel}>
+                  {cancel ?? <Trans>Cancel</Trans>}
+                </Button>
+              )}
+            </>
           )}
         </CardFooter>
       </form>

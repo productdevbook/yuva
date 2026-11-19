@@ -7,6 +7,11 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: sl\n"
 
+#. placeholder {0}: items.length
+#: src/features/help/ArticlesTab.tsx
+msgid "{0, plural, one {{shown} article} other {{shown} articles}}"
+msgstr "{0, plural, one {{shown} članek} two {{shown} članka} few {{shown} članki} other {{shown} člankov}}"
+
 #. placeholder {0}: c.articles
 #: src/features/help/ImportCard.tsx
 msgid "{0, plural, one {# article read} other {# articles read}}"
@@ -62,21 +67,13 @@ msgstr "{0, plural, one {Add the language in the settings, then import again.} o
 msgid "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 msgstr "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "{drafts, plural, one {# draft} other {# drafts}}"
-msgstr "{drafts, plural, one {# osnutek} two {# osnutka} few {# osnutki} other {# osnutkov}}"
-
-#: src/features/help/HelpColumn.tsx
-msgid "{published} of {total} articles published"
-msgstr "Objavljenih {published} od {total} člankov"
-
 #: src/features/help/ImportCard.tsx
 msgid "{saved, plural, one {# draft saved} other {# drafts saved}}"
 msgstr "{saved, plural, one {# draft saved} other {# drafts saved}}"
 
 #: src/features/help/ArticlesTab.tsx
-msgid "{searches} searches"
-msgstr "Iskanj: {searches}"
+msgid "{views, plural, one {# view} other {# views}}"
+msgstr "{views, plural, one {# ogled} two {# ogleda} few {# ogledi} other {# ogledov}}"
 
 #: src/features/help/CreateCenterDialog.tsx
 msgid "3 to 48 letters, numbers and hyphens. It is unique on this server."
@@ -124,10 +121,6 @@ msgstr "Konec naslova"
 msgid "Agents may publish"
 msgstr "Agenti lahko objavljajo"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "All"
-msgstr "Vse"
-
 #: src/features/help/Revisions.tsx
 msgid "An API key"
 msgstr "Ključ API"
@@ -152,11 +145,6 @@ msgstr "Ta naslov že uporablja drug center za pomoč, zdaj ali prej."
 msgid "Answer common questions once, in writing. Each product gets its own help center with articles, collections and a report of what people search for. Pages are hosted by Yuva, so there is nothing to install on your site."
 msgstr "Na pogosta vprašanja odgovorite enkrat, pisno. Vsak izdelek ima svoj center za pomoč s članki, zbirkami in poročilom o tem, kaj ljudje iščejo. Strani gosti Yuva, na vaše spletno mesto vam ni treba nič nameščati."
 
-#: src/features/help/pages.tsx
-msgid "Answer common questions once, in writing. Pick an inbox’s help center to write articles, group them in collections and see what customers search for."
-msgstr "Na pogosta vprašanja odgovorite enkrat, pisno. Izberite center za pomoč nabiralnika, da napišete članke, jih združite v zbirke in vidite, kaj iščejo stranke."
-
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Article"
 msgstr "Članek"
@@ -179,7 +167,6 @@ msgstr "Ogledi člankov"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Articles"
 msgstr "Članki"
@@ -192,7 +179,6 @@ msgstr "Članke je mogoče pisati in objavljati v teh jezikih. Obiskovalci vidij
 msgid "Articles in this collection"
 msgstr "Članki v tej zbirki"
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Articles people read before they write to you"
 msgstr "Članki, ki jih ljudje preberejo, preden vam pišejo"
@@ -237,8 +223,6 @@ msgstr "Brings the collections and articles of another help center in as drafts.
 msgid "Bulleted list"
 msgstr "Alinejski seznam"
 
-#: src/features/help/ArticlesTab.tsx
-#: src/features/help/CollectionsTab.tsx
 #: src/features/help/CreateCenterDialog.tsx
 #: src/features/help/ImportCard.tsx
 msgid "Cancel"
@@ -277,6 +261,11 @@ msgstr "Začeti klepeti"
 msgid "Checking the sign-in"
 msgstr "Checking the sign-in"
 
+#: src/features/help/ArticlesTab.tsx
+#: src/features/help/pages.tsx
+msgid "Clear filters"
+msgstr "Počisti filtre"
+
 #: src/features/help/ImportCard.tsx
 msgid "Close"
 msgstr "Close"
@@ -295,8 +284,6 @@ msgstr "Blok kode"
 msgid "Collection"
 msgstr "Zbirka"
 
-#: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Collections"
 msgstr "Zbirke"
@@ -318,14 +305,9 @@ msgid "Create collection"
 msgstr "Ustvari zbirko"
 
 #: src/features/help/CreateCenterDialog.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Create help center"
 msgstr "Ustvari center za pomoč"
-
-#: src/features/help/HelpColumn.tsx
-msgid "Create help center ({newKey})"
-msgstr "Ustvari center za pomoč ({newKey})"
 
 #: src/features/help/Bulk.tsx
 #: src/features/help/CollectionsTab.tsx
@@ -408,7 +390,6 @@ msgid "Draft submitted. An owner or admin can publish it."
 msgstr "Osnutek oddan. Objavi ga lahko lastnik ali skrbnik."
 
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Drafts"
 msgstr "Osnutki"
@@ -429,9 +410,17 @@ msgstr "Uredi zbirko"
 msgid "Empty"
 msgstr "Prazno"
 
+#: src/features/help/pages.tsx
+msgid "Every collection"
+msgstr "Vsaka zbirka"
+
 #: src/features/help/ReportTab.tsx
 msgid "Every search found something."
 msgstr "Vsako iskanje je nekaj našlo."
+
+#: src/features/help/pages.tsx
+msgid "Every status"
+msgstr "Vsak status"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
@@ -445,6 +434,14 @@ msgstr "Everything imported is a draft."
 #: src/features/help/ImportCard.tsx
 msgid "Failed"
 msgstr "Failed"
+
+#: src/features/help/pages.tsx
+msgid "Filter by collection"
+msgstr "Filtriraj po zbirki"
+
+#: src/features/help/pages.tsx
+msgid "Filter by status"
+msgstr "Filtriraj po stanju"
 
 #: src/features/help/EditorToolbar.tsx
 msgid "Formatting"
@@ -470,15 +467,12 @@ msgstr "Združite članke, da jih lahko obiskovalci brskajo. Zbirka lahko vsebuj
 msgid "Heading"
 msgstr "Naslov"
 
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Help center"
 msgstr "Center za pomoč"
 
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help center created. Write the first article, then publish it."
 msgstr "Center za pomoč je ustvarjen. Napišite prvi članek in ga nato objavite."
@@ -486,12 +480,6 @@ msgstr "Center za pomoč je ustvarjen. Napišite prvi članek in ga nato objavit
 #: src/features/help/SettingsTab.tsx
 msgid "Help center deleted"
 msgstr "Center za pomoč izbrisan"
-
-#: src/features/help/HelpColumn.tsx
-#: src/features/help/HelpFrame.tsx
-#: src/features/help/pages.tsx
-msgid "Help centers"
-msgstr "Centri za pomoč"
 
 #: src/features/help/text.tsx
 msgid "Help centers are turned off on this server."
@@ -565,7 +553,6 @@ msgstr "Jezik"
 msgid "Language of the articles"
 msgstr "Language of the articles"
 
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Languages"
 msgstr "Jeziki"
@@ -573,10 +560,6 @@ msgstr "Jeziki"
 #: src/features/help/ReportTab.tsx
 msgid "Last {d} days"
 msgstr "Zadnjih {d} dni"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "last 7 days"
-msgstr "zadnjih 7 dni"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "Last 7 days"
@@ -626,6 +609,10 @@ msgstr "Več"
 msgid "More for {name}"
 msgstr "Več za {name}"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "move"
+msgstr "premikanje"
+
 #: src/features/help/CollectionsTab.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "Premakni {name}. Povlecite ali pritisnite Alt s puščicami."
@@ -653,6 +640,10 @@ msgid "New address"
 msgstr "New address"
 
 #: src/features/help/ArticlesTab.tsx
+msgid "new article"
+msgstr "nov članek"
+
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/pages.tsx
 msgid "New article"
 msgstr "Nov članek"
@@ -661,16 +652,16 @@ msgstr "Nov članek"
 msgid "New article ({newKey})"
 msgstr "Nov članek ({newKey})"
 
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CollectionsTab.tsx
+#: src/features/help/pages.tsx
 msgid "New collection"
 msgstr "Nova zbirka"
 
-#: src/features/help/CollectionsTab.tsx
-msgid "New collection ({newKey})"
-msgstr "Nova zbirka ({newKey})"
+#: src/features/help/pages.tsx
+msgid "New collection ({colKey})"
+msgstr "Nova zbirka ({colKey})"
 
-#: src/features/help/HelpFrame.tsx
+#: src/features/help/pages.tsx
 msgid "New help center for {product}"
 msgstr "Nov center za pomoč za {product}"
 
@@ -713,12 +704,10 @@ msgstr "Še ni prejšnjih različic."
 msgid "No help center for {0} yet"
 msgstr "Za {0} še ni centra za pomoč"
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "No help center yet. Owners and admins create it."
 msgstr "Še ni centra za pomoč. Ustvarijo ga lastniki in skrbniki."
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "No inbox to show a help center for."
 msgstr "Ni nabiralnika, za katerega bi prikazali center za pomoč."
@@ -743,10 +732,6 @@ msgstr "Ni napisano"
 #: src/features/help/EditorToolbar.tsx
 msgid "Numbered list"
 msgstr "Oštevilčen seznam"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "of {answers} answers"
-msgstr "od {answers} odgovorov"
 
 #: src/features/help/ImportCard.tsx
 msgid "Off: a draft you edited in Yuva since the last import is kept."
@@ -775,6 +760,11 @@ msgstr "To lahko storijo samo lastniki in skrbniki."
 #: src/features/help/ImportCard.tsx
 msgid "Only owners and admins can use a Zendesk migration."
 msgstr "Only owners and admins can use a Zendesk migration."
+
+#: src/features/help/ArticlesTab.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "odpri"
 
 #: src/features/help/ImportCard.tsx
 msgid "Open the drafts"
@@ -857,21 +847,17 @@ msgstr "Javni naslov"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Publish"
 msgstr "Objavi"
 
 #: src/features/help/ArticleEditor.tsx
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Publish ({publishKey})"
 msgstr "Objavi ({publishKey})"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/ImportCard.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/Revisions.tsx
@@ -900,11 +886,6 @@ msgstr "Redirects"
 #: src/features/help/SettingsTab.tsx
 msgid "Remove {0}"
 msgstr "Odstrani {0}"
-
-#: src/features/help/HelpFrame.tsx
-#: src/features/help/pages.tsx
-msgid "Report"
-msgstr "Poročilo"
 
 #: src/features/help/ReportTab.tsx
 msgid "Report period"
@@ -962,12 +943,20 @@ msgid "Saving…"
 msgstr "Shranjevanje …"
 
 #: src/features/help/ArticlesTab.tsx
+msgid "search"
+msgstr "iskanje"
+
+#: src/features/help/pages.tsx
+msgid "Search articles…"
+msgstr "Išči po člankih…"
+
+#: src/features/help/pages.tsx
+msgid "Search gaps"
+msgstr "Vrzeli v iskanju"
+
+#: src/features/help/pages.tsx
 msgid "Search titles"
 msgstr "Išči po naslovih"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Search titles ({findKey})"
-msgstr "Išči po naslovih ({findKey})"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Search words"
@@ -982,13 +971,13 @@ msgstr "Iskano, nič najdeno"
 msgid "Searches"
 msgstr "Iskanja"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "searches this week"
-msgstr "iskanj ta teden"
-
 #: src/features/help/ReportTab.tsx
 msgid "Searches with no result"
 msgstr "Iskanja brez rezultata"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "select"
+msgstr "izberi"
 
 #: src/features/help/ReportTab.tsx
 msgid "Sent"
@@ -998,7 +987,6 @@ msgstr "Poslano"
 msgid "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 msgstr "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/text.tsx
 msgid "Settings"
@@ -1067,10 +1055,6 @@ msgstr "Začnite z naslovom. Besedilo napišete nato in ostane osnutek, dokler n
 #: src/features/help/ImportCard.tsx
 msgid "State"
 msgstr "State"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Status"
-msgstr "Stanje"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Submit draft"
@@ -1177,6 +1161,10 @@ msgstr "Najvišja raven"
 msgid "Translation deleted"
 msgstr "Prevod izbrisan"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "Try again"
+msgstr "Poskusi znova"
+
 #: src/features/help/text.tsx
 msgid "Type a word to search for."
 msgstr "Vtipkajte besedo za iskanje."
@@ -1188,7 +1176,6 @@ msgstr "Vtipkajte besedo za iskanje."
 msgid "Unpublish"
 msgstr "Prekliči objavo"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Unpublish ({publishKey})"
 msgstr "Prekliči objavo ({publishKey})"
@@ -1207,8 +1194,6 @@ msgstr "Preklicati objavo tega prevoda?"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Unpublished"
 msgstr "Neobjavljeno"
@@ -1220,10 +1205,6 @@ msgstr "Neobjavljene spremembe"
 #: src/features/help/ArticleEditor.tsx
 msgid "Unsaved changes"
 msgstr "Neshranjene spremembe"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Updated"
-msgstr "Posodobljeno"
 
 #: src/features/help/SettingsTab.tsx
 msgid "Use 3 to 48 letters, numbers and inner hyphens."
@@ -1245,12 +1226,10 @@ msgstr "Različica obnovljena v osnutek"
 msgid "View"
 msgstr "Ogled"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "View site"
 msgstr "Ogled spletnega mesta"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "View site ({openKey})"
 msgstr "Ogled spletnega mesta ({openKey})"
@@ -1259,10 +1238,6 @@ msgstr "Ogled spletnega mesta ({openKey})"
 #: src/features/help/ReportTab.tsx
 msgid "Views"
 msgstr "Ogledi"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Views · 7 days"
-msgstr "Ogledi · 7 dni"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "Visibility"

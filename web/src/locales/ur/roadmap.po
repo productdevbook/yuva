@@ -16,6 +16,10 @@ msgstr "{inboxName} کا کوئی ویب چیٹ چینل نہیں ہے۔ پہل�
 msgid "{linked, plural, one {# feedback} other {# feedback}}"
 msgstr "{linked, plural, one {# رائے} other {# آراء}}"
 
+#: src/features/roadmap/pages.tsx
+msgid "{openCount, plural, one {# idea} other {# ideas}}"
+msgstr "{openCount, plural, one {# آئیڈیا} other {# آئیڈیاز}}"
+
 #: src/features/roadmap/Board.tsx
 msgid "{pending} waiting for approval"
 msgstr "{pending} منظوری کے منتظر"
@@ -39,15 +43,9 @@ msgid "Add a web chat channel"
 msgstr "ویب چیٹ چینل شامل کریں"
 
 #: src/features/roadmap/CreateBoardDialog.tsx
-#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Address"
 msgstr "پتہ"
-
-#: src/features/roadmap/BoardBar.tsx
-#: src/features/roadmap/RoadmapFrame.tsx
-msgid "All boards"
-msgstr "تمام بورڈ"
 
 #: src/features/roadmap/Settings.tsx
 msgid "All changes saved."
@@ -56,11 +54,6 @@ msgstr "تمام تبدیلیاں محفوظ ہو گئیں۔"
 #: src/features/roadmap/IdeaFeedback.tsx
 msgid "All feedback from {inboxName} that fits is already linked."
 msgstr "{inboxName} کی تمام موزوں رائے پہلے ہی منسلک ہے۔"
-
-#: src/features/roadmap/pages.tsx
-#: src/features/roadmap/RoadmapFrame.tsx
-msgid "All stages"
-msgstr "تمام مراحل"
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
 msgid "Already linked"
@@ -78,7 +71,7 @@ msgstr "منظور کریں"
 msgid "Approved"
 msgstr "منظور شدہ"
 
-#: src/features/roadmap/NewIdeaDialog.tsx
+#: src/features/roadmap/NewIdeaForm.tsx
 msgid "At least 3 characters."
 msgstr "کم از کم 3 حروف۔"
 
@@ -87,7 +80,7 @@ msgid "Back"
 msgstr "واپس"
 
 #: src/features/roadmap/IdeaPane.tsx
-#: src/features/roadmap/NewIdeaDialog.tsx
+#: src/features/roadmap/NewIdeaForm.tsx
 #: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Board"
@@ -98,13 +91,11 @@ msgid "Board deleted"
 msgstr "بورڈ حذف کر دیا گیا"
 
 #: src/features/roadmap/pages.tsx
-#: src/features/roadmap/RoadmapFrame.tsx
-msgid "Boards"
-msgstr "بورڈز"
+msgid "Board settings"
+msgstr "بورڈ کی ترتیبات"
 
 #: src/features/roadmap/CreateBoardDialog.tsx
 #: src/features/roadmap/MoveDialog.tsx
-#: src/features/roadmap/NewIdeaDialog.tsx
 msgid "Cancel"
 msgstr "منسوخ کریں"
 
@@ -126,16 +117,16 @@ msgstr "کوکیز کے بغیر عوامی بورڈ کے صفحہ ملاحظا�
 msgid "Create board"
 msgstr "بورڈ بنائیں"
 
-#: src/features/roadmap/BoardBar.tsx
-msgid "Create board ({newKey})"
-msgstr "بورڈ بنائیں ({newKey})"
+#. placeholder {0}: keyLabel(ROADMAP_KEYS.newBoard).join("")
+#: src/features/roadmap/pages.tsx
+msgid "Create board ({0})"
+msgstr "بورڈ بنائیں ({0})"
 
-#: src/features/roadmap/BoardBar.tsx
-#: src/features/roadmap/RoadmapFrame.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Create board for {name}"
 msgstr "{name} کے لیے بورڈ بنائیں"
 
-#: src/features/roadmap/NewIdeaDialog.tsx
+#: src/features/roadmap/NewIdeaForm.tsx
 msgid "Create idea"
 msgstr "آئیڈیا بنائیں"
 
@@ -160,10 +151,14 @@ msgid "Deletes the board with its ideas, votes, replies and stage history. Linke
 msgstr "بورڈ کو اس کے خیالات، ووٹوں، جوابات اور مراحل کی تاریخ سمیت حذف کرتا ہے۔ منسلک رائے اور اس کی پیش رفت برقرار رہتی ہے۔ عوامی پتہ کام کرنا بند کر دیتا ہے۔"
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
-#: src/features/roadmap/NewIdeaDialog.tsx
+#: src/features/roadmap/NewIdeaForm.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Description"
 msgstr "وضاحت"
+
+#: src/features/roadmap/pages.tsx
+msgid "Details"
+msgstr "تفصیلات"
 
 #: src/features/roadmap/IdeaFeedback.tsx
 msgid "Dismiss"
@@ -172,6 +167,14 @@ msgstr "بند کریں"
 #: src/features/roadmap/Board.tsx
 msgid "Done"
 msgstr "مکمل"
+
+#: src/features/roadmap/pages.tsx
+msgid "Every board"
+msgstr "ہر بورڈ"
+
+#: src/features/roadmap/pages.tsx
+msgid "Every stage"
+msgstr "ہر مرحلہ"
 
 #: src/features/roadmap/Settings.tsx
 msgid "Everyone's posts are published at once, except those of authors you marked as spam."
@@ -209,11 +212,11 @@ msgstr "خیالات جن پر آپ کے صارفین ووٹ دیتے ہیں، �
 msgid "Ideas, votes and stages for {inboxName}, with the feedback behind each idea. It stays private until you make it public."
 msgstr "{inboxName} کے خیالات، ووٹ اور مراحل، ہر خیال کے پیچھے موجود رائے سمیت۔ جب تک آپ اسے عوامی نہیں بناتے، یہ نجی رہتا ہے۔"
 
-#: src/features/roadmap/NewIdeaDialog.tsx
+#: src/features/roadmap/NewIdeaForm.tsx
 msgid "It goes into Ideas on the board, where customers can vote on it."
 msgstr "یہ بورڈ پر آئیڈیاز میں جاتا ہے، جہاں صارفین ووٹ دے سکتے ہیں۔"
 
-#: src/features/roadmap/NewIdeaDialog.tsx
+#: src/features/roadmap/NewIdeaForm.tsx
 msgid "It goes into Ideas on the board. The board is private, so only your team sees it."
 msgstr "یہ بورڈ کے خیالات والے مرحلے میں جاتا ہے۔ بورڈ نجی ہے، اس لیے صرف آپ کی ٹیم اسے دیکھتی ہے۔"
 
@@ -267,22 +270,18 @@ msgstr "{title} سے منسلک ہو گئی"
 msgid "Load more"
 msgstr "مزید لوڈ کریں"
 
-#: src/features/roadmap/BoardBar.tsx
 #: src/features/roadmap/pages.tsx
 msgid "Make private"
 msgstr "نجی بنائیں"
 
-#: src/features/roadmap/BoardBar.tsx
 #: src/features/roadmap/pages.tsx
 msgid "Make private ({publicKey})"
 msgstr "نجی بنائیں ({publicKey})"
 
-#: src/features/roadmap/BoardBar.tsx
 #: src/features/roadmap/pages.tsx
 msgid "Make public"
 msgstr "عوامی بنائیں"
 
-#: src/features/roadmap/BoardBar.tsx
 #: src/features/roadmap/pages.tsx
 msgid "Make public ({publicKey})"
 msgstr "عوامی بنائیں ({publicKey})"
@@ -321,10 +320,15 @@ msgstr "خیال {stage} میں منتقل کر دیا گیا"
 msgid "Name"
 msgstr "نام"
 
-#: src/features/roadmap/NewIdeaDialog.tsx
+#: src/features/roadmap/NewIdeaForm.tsx
 #: src/features/roadmap/pages.tsx
 msgid "New idea"
 msgstr "نیا خیال"
+
+#. placeholder {0}: ROADMAP_KEYS.newIdea.toUpperCase()
+#: src/features/roadmap/pages.tsx
+msgid "New idea ({0})"
+msgstr "نیا خیال ({0})"
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
 msgid "New idea from this feedback"
@@ -405,12 +409,10 @@ msgstr "اس ان باکس کے بورڈ سے کوئی خیال چنیں"
 msgid "Posted as your public reply on the idea. Markdown works."
 msgstr "خیال پر آپ کے عوامی جواب کے طور پر پوسٹ ہوتا ہے۔ Markdown کام کرتا ہے۔"
 
-#: src/features/roadmap/BoardBar.tsx
 #: src/features/roadmap/pages.tsx
 msgid "Private"
 msgstr "نجی"
 
-#: src/features/roadmap/BoardBar.tsx
 #: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Public"
@@ -449,13 +451,8 @@ msgid "Review the reply"
 msgstr "جواب کا جائزہ لیں"
 
 #: src/features/roadmap/pages.tsx
-#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Roadmap"
 msgstr "روڈ میپ"
-
-#: src/features/roadmap/BoardBar.tsx
-msgid "Roadmap boards"
-msgstr "روڈ میپ بورڈز"
 
 #: src/features/roadmap/Settings.tsx
 msgid "Save"
@@ -470,7 +467,6 @@ msgid "Search ideas"
 msgstr "خیالات تلاش کریں"
 
 #: src/features/roadmap/pages.tsx
-#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Settings"
 msgstr "ترتیبات"
 
@@ -541,7 +537,7 @@ msgid "This inbox has no roadmap board. Create one under Roadmap first."
 msgstr "اس ان باکس کا کوئی روڈ میپ بورڈ نہیں ہے۔ پہلے روڈ میپ میں ایک بنائیں۔"
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
-#: src/features/roadmap/NewIdeaDialog.tsx
+#: src/features/roadmap/NewIdeaForm.tsx
 msgid "Title"
 msgstr "عنوان"
 
@@ -565,7 +561,6 @@ msgstr "3 سے 48 حروف، ہندسے اور اندرونی ڈیش استعم�
 msgid "View board"
 msgstr "بورڈ دیکھیں"
 
-#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Visibility"
 msgstr "نمائش"
@@ -575,8 +570,6 @@ msgid "Votes"
 msgstr "ووٹ"
 
 #: src/features/roadmap/Board.tsx
-#: src/features/roadmap/pages.tsx
-#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Waiting for approval"
 msgstr "منظوری کے منتظر"
 

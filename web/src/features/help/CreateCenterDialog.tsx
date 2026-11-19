@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input"
 import { useCreateHelpCenter } from "@/features/help/queries"
 import { ErrorLine } from "@/features/help/text"
 import { Field } from "@/features/settings/ui"
-import { slugify, validSlug } from "@/features/status/CreatePageDialog"
+import { slugify, validSlug } from "@/features/status/CreatePageForm"
 import type { HelpCenter } from "@/lib/api"
 
 export function CreateCenterDialog({

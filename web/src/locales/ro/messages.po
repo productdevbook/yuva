@@ -69,6 +69,11 @@ msgid "{0, plural, one {{shown} person} other {{shown} people}}"
 msgstr "{0, plural, one {{shown} persoană} few {{shown} persoane} other {{shown} de persoane}}"
 
 #. placeholder {0}: rows.length
+#: src/features/feedback/FeedbackHome.tsx
+msgid "{0, plural, one {{shown} report} other {{shown} reports}}"
+msgstr "{0, plural, one {{shown} feedback} few {{shown} feedbackuri} other {{shown} de feedbackuri}}"
+
+#. placeholder {0}: rows.length
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "{0, plural, one {{shown} triggered e-mail} other {{shown} triggered e-mails}}"
 msgstr "{0, plural, one {{shown} e-mail automat} few {{shown} e-mailuri automate} other {{shown} de e-mailuri automate}}"
@@ -208,6 +213,7 @@ msgid "{0} marked as spam · no reply needed"
 msgstr "{0} marcate ca spam · nu e nevoie de răspuns"
 
 #. placeholder {0}: done.length
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "{0} moved to the Trash"
@@ -223,6 +229,16 @@ msgstr "{0} din {1}"
 #: src/features/team/TeamPage.tsx
 msgid "{0} open, unassigned"
 msgstr "Deschise, neatribuite: {0}"
+
+#. placeholder {0}: done.length
+#: src/features/feedback/FeedbackHome.tsx
+msgid "{0} reopened"
+msgstr "Redeschise: {0}"
+
+#. placeholder {0}: done.length
+#: src/features/feedback/FeedbackHome.tsx
+msgid "{0} resolved"
+msgstr "Rezolvate: {0}"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
@@ -416,9 +432,9 @@ msgstr "{count, plural, one {# person} other {# people}} who confirmed before wo
 msgid "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 msgstr "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 
-#: src/features/feedback/FeedbackPage.tsx
-msgid "{count, plural, one {# report} other {# reports}}"
-msgstr "{count, plural, one {# raport} few {# rapoarte} other {# de rapoarte}}"
+#: src/features/docs/DocsPage.tsx
+msgid "{count, plural, one {# post waiting for approval} other {# posts waiting for approval}}"
+msgstr "{count, plural, one {# postare așteaptă aprobarea} few {# postări așteaptă aprobarea} other {# de postări așteaptă aprobarea}}"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "{count, plural, one {# scope} other {# scopes}}"
@@ -511,10 +527,6 @@ msgstr "{doneText} din {total}"
 msgid "{doneText} of {total} done"
 msgstr "{doneText} din {total} gata"
 
-#: src/features/status/StatusPages.tsx
-msgid "{down, plural, one {# down} other {# down}}"
-msgstr "{down, plural, one {# căzut} few {# căzute} other {# căzute}}"
-
 #: src/features/docs/PagesTab.tsx
 msgid "{down} not helpful"
 msgstr "{down} inutile"
@@ -546,6 +558,10 @@ msgstr "{first} a evaluat conversația 👍"
 #: src/features/conversation/messages/Thread.tsx
 msgid "{first} rated the conversation 👎"
 msgstr "{first} a evaluat conversația 👎"
+
+#: src/features/status/StatusPages.tsx
+msgid "{fmtCount, plural, one {# page} other {# pages}}"
+msgstr "{fmtCount, plural, one {# pagină} few {# pagini} other {# de pagini}}"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "{from} has an SPF record. Whether it passes is known once the test mail is read."
@@ -774,10 +790,6 @@ msgstr "{n} marcate ca necitite"
 #: src/features/mail/MailList.tsx
 msgid "{n} moved to the Inbox"
 msgstr "Mutate în Mesaje primite: {n}"
-
-#: src/features/feedback/FeedbackPage.tsx
-msgid "{n} reports"
-msgstr "{n} rapoarte"
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -1152,10 +1164,6 @@ msgstr "{unreadText} necitite"
 msgid "{unseenText} unread of {totalText}"
 msgstr "{unseenText} necitite din {totalText}"
 
-#: src/features/status/StatusPages.tsx
-msgid "{up, plural, one {# up} other {# up}}"
-msgstr "{up, plural, one {# activ} few {# active} other {# active}}"
-
 #: src/features/docs/PagesTab.tsx
 msgid "{up} helpful"
 msgstr "{up} utile"
@@ -1332,7 +1340,7 @@ msgstr "24 de luni"
 msgid "3 months"
 msgstr "3 luni"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "3 to 48 letters, numbers and hyphens. It is unique on this server."
 msgstr "De la 3 la 48 de litere, cifre și cratime. Unic pe acest server."
 
@@ -1536,11 +1544,11 @@ msgstr "O discuție a primit un răspuns acceptat"
 msgid "A discussion started"
 msgstr "O discuție a început"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "A draft incident opens for your team to review. Customers see nothing until a member publishes it."
 msgstr "Se deschide o ciornă de incident, pe care echipa ta o verifică. Clienții nu văd nimic până când un membru o publică."
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "A draft is seen only by your team and changes no component until you publish it."
 msgstr "O ciornă este văzută doar de echipa ta și nu schimbă nicio componentă până nu o publici."
 
@@ -1751,7 +1759,7 @@ msgstr "O proprietate poate avea cel mult 100 de segmente. Șterge mai întâi u
 msgid "A property can have at most 20 funnels. Delete one first."
 msgstr "O proprietate poate avea cel mult 20 de pâlnii. Șterge mai întâi una."
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "A public page that tells your customers whether {inboxName} works. It stays unpublished until you publish it."
 msgstr "O pagină publică ce le spune clienților tăi dacă {inboxName} funcționează. Rămâne nepublicată până o publici."
 
@@ -1759,7 +1767,7 @@ msgstr "O pagină publică ce le spune clienților tăi dacă {inboxName} funcț
 msgid "A published What's new entry was deleted"
 msgstr "O intrare publicată din Noutăți a fost ștearsă"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "A pushed state that names its own state keeps it."
 msgstr "O stare trimisă care își indică propria stare o păstrează."
 
@@ -1982,7 +1990,7 @@ msgstr "Număr de cont"
 msgid "Acme docs"
 msgstr "Acme docs"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "Acme status"
 msgstr "Starea Acme"
 
@@ -2011,7 +2019,6 @@ msgstr "Doar acțiuni"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "Active"
 msgstr "Activ"
 
@@ -2182,7 +2189,7 @@ msgstr "Adaugă cel puțin un origin."
 msgid "Add channel"
 msgstr "Adaugă canal"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Add component"
 msgstr "Adaugă componentă"
@@ -2204,7 +2211,7 @@ msgstr "Adaugă domeniu"
 msgid "Add endpoint"
 msgstr "Adaugă un endpoint"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Add group"
 msgstr "Adaugă grup"
@@ -2230,7 +2237,7 @@ msgstr "Adaugă eticheta {labelName}"
 msgid "Add labels"
 msgstr "Adaugă etichete"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Add monitor"
 msgstr "Adaugă monitor"
 
@@ -2344,7 +2351,7 @@ msgstr "A adăugat domeniul {domain} pentru autentificarea unică"
 #: src/features/mail/MailSide.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 #: src/features/status/MonitorHttpFields.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/MonitorToken.tsx
@@ -2404,7 +2411,6 @@ msgid "Admins see every inbox and manage products, channels and members."
 msgstr "Administratorii văd toate căsuțele de intrare și gestionează produse, canale și membri."
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/StatusPages.tsx
 msgid "Affects"
 msgstr "Afectează"
 
@@ -2525,7 +2531,6 @@ msgid "All mentions"
 msgstr "Toate mențiunile"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/StatusPages.tsx
 msgid "All monitors"
 msgstr "Toate monitoarele"
 
@@ -2546,7 +2551,6 @@ msgid "all products"
 msgstr "toate produsele"
 
 #: src/components/common/WorkspaceSelector.tsx
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/SidePanels.tsx
@@ -2554,7 +2558,6 @@ msgstr "toate produsele"
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "All products"
 msgstr "Toate produsele"
 
@@ -2575,10 +2578,6 @@ msgstr "Toți pașii"
 #: src/features/status/StatusPages.tsx
 msgid "All systems operational"
 msgstr "Toate sistemele funcționează"
-
-#: src/features/status/StatusPages.tsx
-msgid "all up"
-msgstr "toate active"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "All, drafts, scheduled or sent"
@@ -2850,7 +2849,7 @@ msgstr "An idea only shows its issues and their state. Its stage stays your deci
 msgid "An inbox collects the conversations of one product or brand. Name it after the product your customers know."
 msgstr "O căsuță adună conversațiile unui produs sau ale unei mărci. Numește-o după produsul pe care îl cunosc clienții tăi."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "An incident is published at once, so customers see it on the page."
 msgstr "Un incident este publicat imediat, deci clienții îl văd pe pagină."
 
@@ -3056,7 +3055,7 @@ msgstr "Răspuns șters"
 msgid "Answer to a forward from {author}"
 msgstr "Răspuns la o redirecționare de la {author}"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "answered"
 msgstr "cu răspuns"
 
@@ -3134,7 +3133,7 @@ msgstr "Tot ce folosește această cheie se oprește imediat."
 
 #: src/components/common/Source.tsx
 #: src/components/common/text.ts
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "API"
 msgstr "API"
 
@@ -3333,7 +3332,7 @@ msgstr "Ca mai sus ({current})"
 msgid "As fast as allowed"
 msgstr "Cât de repede se permite"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "As often as allowed"
 msgstr "Cât de des este permis"
 
@@ -3746,12 +3745,6 @@ msgstr "Trimite semnal doar când sarcina a reușit."
 msgid "Before"
 msgstr "Înainte"
 
-#. placeholder {0}: date(before)
-#. placeholder {1}: took(before)
-#: src/features/status/StatusPages.tsx
-msgid "before that: {0}, {1}"
-msgstr "înainte de aceasta: {0}, {1}"
-
 #: src/features/migrations/ConnectStep.tsx
 msgid "Before you connect"
 msgstr "Înainte să te conectezi"
@@ -3985,8 +3978,7 @@ msgstr "Mesajele în masă de pe acest canal pleacă prin contul său SMTP pentr
 msgid "Browser"
 msgstr "Browser"
 
-#: src/features/feedback/FeedbackList.tsx
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Bugs, ideas and praise sent from your apps and pages"
 msgstr "Erori, idei și laude trimise din aplicațiile și paginile tale"
 
@@ -3999,10 +3991,6 @@ msgstr "Bundle ID"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
 msgstr "Program de lucru"
-
-#: src/features/status/StatusPages.tsx
-msgid "by e-mail"
-msgstr "prin e-mail"
 
 #: src/features/conversation/Feedback.tsx
 msgid "By e-mail"
@@ -4071,11 +4059,9 @@ msgstr "Nume campanie"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/NewsletterStep.tsx
 #: src/features/status/AddSubscriberDialog.tsx
-#: src/features/status/ComponentDialogs.tsx
-#: src/features/status/CreatePageDialog.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/IncidentForm.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Cancel"
@@ -4169,7 +4155,6 @@ msgid "Catch-all without a From address"
 msgstr "Colector general fără adresă De la"
 
 #: src/features/conversation/Feedback.tsx
-#: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Category"
 msgstr "Categorie"
@@ -4416,7 +4401,7 @@ msgstr "Verifică DNS"
 msgid "Check DNS and start signing"
 msgstr "Verifică DNS și începe semnarea"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Check every"
 msgstr "Verifică la fiecare"
@@ -4503,10 +4488,6 @@ msgstr "Se verifică…"
 msgid "Checks"
 msgstr "Verificări"
 
-#: src/features/status/MonitorsPage.tsx
-msgid "Checks that watch your products and set component states"
-msgstr "Verificări care îți supraveghează produsele și setează starea componentelor"
-
 #: src/features/migrations/Wizard.tsx
 msgid "Choose"
 msgstr "Alege"
@@ -4542,10 +4523,6 @@ msgstr "Alegeți o valoare"
 #: src/app/Gate.tsx
 msgid "Choose a workspace"
 msgstr "Alege un spațiu de lucru"
-
-#: src/features/feedback/FeedbackList.tsx
-msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
-msgstr "Alege din listă sau mută-te cu ↑ ↓ și deschide cu Enter."
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose the account that sends your answers. You can change it later in the channel settings."
@@ -4589,6 +4566,7 @@ msgstr "Șterge"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Clear filters"
 msgstr "Șterge filtrele"
 
@@ -4604,7 +4582,6 @@ msgstr "Șterge răspunsul"
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the search"
@@ -4868,7 +4845,7 @@ msgstr "Finalizat"
 msgid "Completed at {endedAt}"
 msgstr "Finalizată la {endedAt}"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Component"
 msgstr "Componentă"
@@ -4880,12 +4857,11 @@ msgstr "Componentă ștearsă"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Components"
 msgstr "Componente"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Components it touches"
 msgstr "Componente afectate"
 
@@ -5586,17 +5562,13 @@ msgstr "Creează politica"
 msgid "Create rule"
 msgstr "Creează regula"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "Create status page"
 msgstr "Creează pagină de stare"
 
 #: src/features/status/StatusPages.tsx
 msgid "Create status page ({newKey})"
 msgstr "Creează pagină de stare ({newKey})"
-
-#: src/features/status/StatusPages.tsx
-msgid "Create status page for {product}"
-msgstr "Creează pagină de stare pentru {product}"
 
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Create team"
@@ -5787,7 +5759,7 @@ msgstr "Întunecă culorile ca să se potrivească temei"
 msgid "Data up to {builtText}"
 msgstr "Date până la {builtText}"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Database upgrade"
 msgstr "Actualizarea bazei de date"
 
@@ -6271,7 +6243,7 @@ msgstr "Refuză"
 
 #: src/features/issues/IssueDialog.tsx
 #: src/features/settings/teams/TeamEditor.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
 msgstr "Descriere"
@@ -6331,6 +6303,9 @@ msgstr "Notificările pe desktop sunt blocate pentru acest site în setările br
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
+#: src/features/status/IncidentsPage.tsx
+#: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusPages.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Details"
 msgstr "Detalii"
@@ -6434,7 +6409,6 @@ msgstr "Discuție începută"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
@@ -6826,10 +6800,6 @@ msgstr "Abonații prin e-mail sunt dezactivați"
 msgid "E-mail subscribers are off. Nobody can subscribe and no notices go out, but the list is kept."
 msgstr "Abonații prin e-mail sunt dezactivați. Nimeni nu se poate abona și nu se trimit notificări, dar lista este păstrată."
 
-#: src/features/status/StatusPages.tsx
-msgid "E-mail subscriptions are off"
-msgstr "Abonările prin e-mail sunt dezactivate"
-
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "E-mail view"
 msgstr "Vizualizare e-mail"
@@ -6850,11 +6820,11 @@ msgstr "E-mailuri către persoanele care s-au înscris"
 msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
 msgstr "Fiecare acțiune o dată, cel mult 10. Acțiunile rulează ca o singură modificare; dacă una eșuează, nu se aplică niciuna."
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Each component gets this state while the incident is open."
 msgstr "Fiecare componentă are această stare cât timp incidentul este deschis."
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Each component gets this state while the maintenance is open."
 msgstr "Fiecare componentă are această stare cât timp mentenanța este în desfășurare."
 
@@ -6953,7 +6923,7 @@ msgstr "Editează cheia API"
 msgid "Edit canned reply"
 msgstr "Editează răspunsul gata făcut"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Edit component"
 msgstr "Editează componenta"
 
@@ -6962,7 +6932,7 @@ msgid "Edit design"
 msgstr "Editează designul"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Edit details"
 msgstr "Editează detaliile"
 
@@ -6990,7 +6960,7 @@ msgstr "Editează eticheta"
 msgid "Edit macro"
 msgstr "Editează macroul"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Edit monitor"
 msgstr "Editează monitorul"
 
@@ -7062,7 +7032,7 @@ msgstr "Se editează o ciornă care nu a putut fi trimisă"
 msgid "Editing the message scheduled for {editingWhen}"
 msgstr "Se editează mesajul programat pentru {editingWhen}"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Elevated API errors"
 msgstr "Erori API crescute"
 
@@ -7137,7 +7107,7 @@ msgstr "Endpoint"
 msgid "Endpoints"
 msgstr "Endpointuri"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Ends"
 msgstr "Sfârșit"
 
@@ -7297,7 +7267,7 @@ msgstr "fiecare e-mail"
 msgid "Every open conversation has someone."
 msgstr "Fiecare conversație deschisă are pe cineva."
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "Every open discussion has an answer."
 msgstr "Fiecare discuție deschisă are un răspuns."
 
@@ -7305,12 +7275,11 @@ msgstr "Fiecare discuție deschisă are un răspuns."
 msgid "Every other browser and device is signed out. This one stays signed in."
 msgstr "Toate celelalte browsere și dispozitive sunt deconectate. Acesta rămâne conectat."
 
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
 msgstr "toate produsele"
 
-#: src/features/broadcasts/BroadcastsFrame.tsx
+#: src/components/common/ProductFilter.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
 msgstr "Fiecare produs"
@@ -7339,7 +7308,7 @@ msgstr "Fiecare pas a trecut."
 msgid "Every subscriber keeps a consent record you can export."
 msgstr "Fiecare abonat are un acord înregistrat pe care îl poți exporta."
 
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every type"
 msgstr "Fiecare tip"
@@ -7421,7 +7390,7 @@ msgstr "Exemplu S.R.L."
 msgid "Expand or collapse every message"
 msgstr "Extinde sau restrânge toate mesajele"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Expected every"
 msgstr "Așteptat la fiecare"
@@ -7530,7 +7499,7 @@ msgstr "Eșuează"
 msgid "Fails the monitor at once, without waiting for the grace."
 msgstr "Oprește monitorul imediat, fără să aștepte toleranța."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Failures to go down"
 msgstr "Eșecuri până la cădere"
@@ -7550,7 +7519,7 @@ msgstr "feedback"
 #: src/features/contact/ContactCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/PagesTab.tsx
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/webhooks/events.tsx
@@ -7578,10 +7547,15 @@ msgstr "Categorii de feedback"
 msgid "Feedback category"
 msgstr "Categorie de feedback"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Feedback form"
 msgstr "Formular de feedback"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Feedback form ({formKey})"
+msgstr "Formular de feedback ({formKey})"
 
 #: src/features/conversation/actions.ts
 msgid "Feedback resolved"
@@ -7669,7 +7643,7 @@ msgstr "Filtrează după etichetă"
 msgid "Filter by plan"
 msgstr "Filtrează după plan"
 
-#: src/features/broadcasts/BroadcastsFrame.tsx
+#: src/components/common/ProductFilter.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "Filtrează după produs"
@@ -7681,12 +7655,17 @@ msgstr "Filtrează după stare"
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Filter by status"
 msgstr "Filtrează după stare"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Filter by team"
 msgstr "Filtrează după echipă"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Filter by type"
+msgstr "Filtrează după tip"
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
@@ -7812,7 +7791,7 @@ msgstr "Primul răspuns, mediană"
 msgid "First rows of the file"
 msgstr "Primele rânduri ale fișierului"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "First update"
 msgstr "Prima actualizare"
 
@@ -8300,7 +8279,7 @@ msgstr "Google a trimis un cod de confirmare"
 msgid "Google Takeout"
 msgstr "Google Takeout"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Grace"
 msgstr "Toleranță"
@@ -8318,7 +8297,7 @@ msgstr "Salut"
 msgid "Greets new conversations by e-mail, once per contact within the interval. Never sent to automatic mail or spam."
 msgstr "Salută conversațiile noi prin e-mail, o dată pe contact în interval. Nu este trimis niciodată e-mailului automat sau spamului."
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Group"
 msgstr "Grup"
 
@@ -8500,7 +8479,7 @@ msgstr "Salut! Cu ce te putem ajuta?"
 
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Hidden"
 msgstr "Ascuns"
@@ -8521,7 +8500,7 @@ msgstr "Ascunde"
 msgid "Hide from the page"
 msgstr "Ascunde de pe pagină"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Hide HTTP details"
 msgstr "Ascunde detaliile HTTP"
 
@@ -8583,7 +8562,7 @@ msgstr "Istoric eliminat"
 msgid "Home"
 msgstr "Acasă"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Host"
 msgstr "Gazdă"
@@ -8642,7 +8621,7 @@ msgstr "Cât de repede și cât de bine răspunde echipa ta"
 msgid "How HTML e-mails open. You can still switch each message."
 msgstr "Cum se deschid e-mailurile HTML. Poți comuta în continuare fiecare mesaj."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "How late a beat may be."
 msgstr "Cât poate întârzia un semnal."
 
@@ -8791,7 +8770,7 @@ msgstr "Dacă furnizorul tău DNS limitează un șir TXT la 255 de caractere, î
 msgid "If your mail provider mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "Dacă furnizorul tău de e-mail trimite o confirmare la acea adresă, aceasta ajunge în această căsuță ca o conversație; deschide-o acolo."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Ignores results and lets the component go back."
 msgstr "Ignoră rezultatele și lasă componenta să revină."
 
@@ -8808,7 +8787,7 @@ msgid "IMAP server"
 msgstr "Server IMAP"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Impact"
 msgstr "Impact"
 
@@ -8901,7 +8880,7 @@ msgstr "la {contact} · {subject}"
 msgid "In 1 hour"
 msgstr "Peste 1 oră"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "In a row, 1 to 10."
 msgstr "La rând, de la 1 la 10."
 
@@ -9098,7 +9077,6 @@ msgstr "Incident: {title} · {state}"
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "Incidents"
 msgstr "Incidente"
 
@@ -9550,7 +9528,7 @@ msgid "Keyword"
 msgstr "Cuvânt-cheie"
 
 #: src/features/settings/automation/text.ts
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "Tip"
@@ -9827,7 +9805,7 @@ msgstr "Leave your signature off this reply ({signatureKey})"
 msgid "Leave your signature off this reply, or put it back"
 msgstr "Leave your signature off this reply, or put it back"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Left off the public page and its overall state."
 msgstr "Lăsată în afara paginii publice și a stării ei generale."
 
@@ -10119,6 +10097,7 @@ msgstr "Încarcă imaginile"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/mail/MailDrafts.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
@@ -10391,7 +10370,6 @@ msgstr "Mails go out {sentence}, once to each person. Pausing stops sending but 
 msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
 msgstr "E-mailurile pleacă între {start} și {end}, ora {city} ({utcStart}–{utcEnd} UTC), și continuă a doua zi."
 
-#: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
 msgid "Maintenance"
 msgstr "Mentenanță"
@@ -10913,7 +10891,6 @@ msgstr "În monitorizare"
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/MonitorsPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Monitors"
 msgstr "Monitoare"
@@ -10974,10 +10951,6 @@ msgstr "Cele mai multe evaluări „inutil” primele"
 msgid "Most active"
 msgstr "Cele mai active"
 
-#: src/features/feedback/FeedbackPage.tsx
-msgid "Most asked for"
-msgstr "Cele mai cerute"
-
 #: src/features/docs/Toolbar.tsx
 msgid "Most disliked"
 msgstr "Cele mai puțin plăcute"
@@ -11010,8 +10983,11 @@ msgstr "Cele mai multe voturi"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/status/IncidentsPage.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "move"
 msgstr "deplasare"
@@ -11020,6 +10996,10 @@ msgstr "deplasare"
 #: src/features/inbox/ChatList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "Muți {0} în coș?"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Move {n} to the Trash?"
+msgstr "Muți {n} în coș?"
 
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -11058,6 +11038,10 @@ msgstr "Mută colecția selectată"
 msgid "Move the selected conversations to the Trash"
 msgstr "Mută conversațiile selectate în coș"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move the selected feedback to the Trash"
+msgstr "Mută feedbackul selectat în coș"
+
 #: src/features/conversation/ChatView.tsx
 msgid "Move this conversation to the Trash?"
 msgstr "Muți această conversație în coș?"
@@ -11085,6 +11069,10 @@ msgstr "Navighează prin designuri"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the entries"
 msgstr "Parcurge intrările"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move through the feedback"
+msgstr "Deplasare prin feedback"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the ideas"
@@ -11152,6 +11140,7 @@ msgstr "Mută la etapa anterioară sau următoare"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
@@ -11163,6 +11152,7 @@ msgstr "Mută în coș"
 msgid "Move to the Trash ({0})"
 msgstr "Mută în coș ({0})"
 
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Move to the Trash (#)"
@@ -11276,9 +11266,9 @@ msgstr "Vizualizările mele"
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
-#: src/features/status/ComponentDialogs.tsx
-#: src/features/status/CreatePageDialog.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/ComponentForms.tsx
+#: src/features/status/CreatePageForm.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Name"
 msgstr "Nume"
@@ -11504,6 +11494,7 @@ msgstr "Câmp nou"
 msgid "New filter"
 msgstr "Filtru nou"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "Idee nouă"
@@ -11527,6 +11518,10 @@ msgstr "noi în ultimele {days} zile"
 #: src/features/migrations/MapStep.tsx
 msgid "New inbox…"
 msgstr "Căsuță nouă…"
+
+#: src/features/status/IncidentsPage.tsx
+msgid "new incident"
+msgstr "incident nou"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -11587,6 +11582,10 @@ msgid "New migration"
 msgstr "Migrare nouă"
 
 #: src/features/status/MonitorsPage.tsx
+msgid "new monitor"
+msgstr "monitor nou"
+
+#: src/features/status/MonitorsPage.tsx
 msgid "New monitor"
 msgstr "Monitor nou"
 
@@ -11597,10 +11596,6 @@ msgstr "Proprietar nou"
 #: src/features/team/RemoveMemberDialog.tsx
 msgid "New owner of {boxName}"
 msgstr "Proprietar nou pentru {boxName}"
-
-#: src/features/status/StatusPages.tsx
-msgid "New page"
-msgstr "Pagină nouă"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "New password"
@@ -11625,6 +11620,7 @@ msgid "New signing secret"
 msgstr "Secret de semnare nou"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/status/StatusPages.tsx
 msgid "New status page"
 msgstr "Pagină de stare nouă"
 
@@ -11748,7 +11744,7 @@ msgstr "Apoi alege ce să aduci. Scanarea citește fișierul o singură dată."
 msgid "Next, choose where they go."
 msgstr "Apoi alege unde merg."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Nightly backup"
 msgstr "Backup de noapte"
 
@@ -11871,7 +11867,7 @@ msgstr "Nicio componentă nu este menționată."
 msgid "No components in this group."
 msgstr "Nu există componente în acest grup."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "No components yet. Add one to a status page first."
 msgstr "Nicio componentă încă. Adaugă mai întâi una pe o pagină de stare."
 
@@ -11968,7 +11964,7 @@ msgstr "Încă nu există discuții pe această pagină."
 msgid "No discussions under the pages of these sites."
 msgstr "Nicio discuție sub paginile acestor site-uri."
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "No discussions yet. Readers start them under your documentation pages."
 msgstr "Încă nu există discuții. Cititorii le încep sub paginile tale de documentație."
 
@@ -12048,12 +12044,12 @@ msgstr "Niciun fișier nu este acceptat."
 msgid "No filters yet."
 msgstr "Încă nu există filtre."
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
 msgstr "Fără grup"
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "No hidden discussions."
 msgstr "Nicio discuție ascunsă."
 
@@ -12111,7 +12107,7 @@ msgstr "Fără limită"
 msgid "No list matches “{q}”."
 msgstr "Nicio listă nu se potrivește cu „{q}”."
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "No locked discussions."
 msgstr "Nicio discuție blocată."
 
@@ -12176,7 +12172,7 @@ msgstr "Fără notă"
 msgid "No notifications in the last 90 days."
 msgstr "Nicio notificare în ultimele 90 de zile."
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "No open feedback."
 msgstr "Niciun feedback deschis."
 
@@ -12472,7 +12468,7 @@ msgstr "Nimeni nu ar primi acest mesaj. Alege liste cu abonați sau relaxează c
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/setup/email/EmailTestStep.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "None"
 msgstr "Niciunul"
@@ -12809,7 +12805,7 @@ msgstr "Nu se pierde nimic: după ce te conectezi din nou cu Microsoft, copierea
 msgid "Nothing is lost: when it continues, copying picks up where it stopped."
 msgstr "Nu se pierde nimic: când continuă, copierea reia de unde s-a oprit."
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Nothing is resolved yet."
 msgstr "Încă nimic nu este rezolvat."
 
@@ -12823,7 +12819,7 @@ msgid "Nothing is snoozed."
 msgstr "Nimic nu este amânat."
 
 #: src/features/docs/discussions/QueuePane.tsx
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "Nothing is waiting for approval."
 msgstr "Nimic nu așteaptă aprobarea."
 
@@ -12835,7 +12831,7 @@ msgstr "Acum totul este în regulă. Deschide un incident când se strică ceva.
 msgid "Nothing matches these filters."
 msgstr "Nimic nu se potrivește cu aceste filtre."
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing matches your search here."
 msgstr "Nimic nu se potrivește aici cu căutarea ta."
@@ -12844,7 +12840,7 @@ msgstr "Nimic nu se potrivește aici cu căutarea ta."
 msgid "Nothing needs attention right now."
 msgstr "Momentan nimic nu necesită atenție."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Nothing opens by itself. Open an incident from the monitor when you want one."
 msgstr "Nu se deschide nimic de la sine. Deschide un incident din monitor când vrei."
 
@@ -13301,10 +13297,6 @@ msgstr "Doar vizitele făcute după ce au fost de acord cu un identificator pers
 msgid "Only while the panel is open in this browser. Away, you are alerted only about conversations assigned to you."
 msgstr "Doar cât timp panoul este deschis în acest browser. Cât ești plecat, ești alertat doar despre conversațiile atribuite ție."
 
-#: src/features/status/StatusPages.tsx
-msgid "only your team can preview it"
-msgstr "doar echipa ta o poate previzualiza"
-
 #: src/features/broadcasts/NewBroadcastForm.tsx
 msgid "Only your team sees it."
 msgstr "Doar echipa ta o vede."
@@ -13317,8 +13309,11 @@ msgstr "deschisă"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/status/IncidentsPage.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgctxt "keyboard hint"
 msgid "open"
@@ -13328,7 +13323,7 @@ msgstr "deschide"
 #: src/features/account/AccountPage.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -13338,7 +13333,9 @@ msgid "Open"
 msgstr "Deschis"
 
 #. placeholder {0}: a.filename
+#. placeholder {0}: p.name
 #: src/features/conversation/messages/Attachments.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Open {0}"
 msgstr "Deschide {0}"
 
@@ -13372,7 +13369,7 @@ msgid "Open Account security in your Yahoo account."
 msgstr "Deschide Securitatea contului în contul tău Yahoo."
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Open an incident"
 msgstr "Deschide un incident"
@@ -13550,6 +13547,10 @@ msgstr "Deschide endpointul"
 msgid "Open the entry"
 msgstr "Deschide intrarea"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Open the feedback"
+msgstr "Deschide feedbackul"
+
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Open the guide"
 msgstr "Open the guide"
@@ -13623,6 +13624,10 @@ msgid "Open the site, goal or funnel"
 msgstr "Deschide site-ul, obiectivul sau pâlnia"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Open the status page"
+msgstr "Deschide pagina de stare"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Open the triggered e-mail"
 msgstr "Open the triggered e-mail"
 
@@ -13688,7 +13693,7 @@ msgstr "operational refac; degraded, partial_outage și major_outage opresc."
 msgid "Operator"
 msgstr "Operator"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Optional. Shown on the public page."
 msgstr "Opțional. Afișat pe pagina publică."
 
@@ -13821,7 +13826,6 @@ msgstr "În timp"
 
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
 msgstr "Prezentare generală"
@@ -13884,9 +13888,7 @@ msgstr "Pagina: {name}"
 
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
-#: src/features/status/StatusPages.tsx
 msgid "Pages"
 msgstr "Pagini"
 
@@ -13957,7 +13959,6 @@ msgstr "Parolă setată"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "Past"
 msgstr "Trecute"
 
@@ -14023,7 +14024,7 @@ msgstr "Pune pe pauză sau reia monitorul"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/setup/email/EmailTestStep.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Paused"
@@ -14268,10 +14269,6 @@ msgstr "Alege mai întâi un design."
 msgid "Pick a design that renders without errors."
 msgstr "Alege un design care se randează fără erori."
 
-#: src/features/docs/DiscussionsTab.tsx
-msgid "Pick a discussion to read and answer it."
-msgstr "Alege o discuție pentru a o citi și a răspunde."
-
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "Pick a field"
 msgstr "Alege un câmp"
@@ -14299,17 +14296,9 @@ msgstr "Pick a list under Who gets it to save"
 msgid "Pick a member"
 msgstr "Alege un membru"
 
-#: src/features/status/MonitorsPage.tsx
-msgid "Pick a monitor to see what happened."
-msgstr "Alege un monitor pentru a vedea ce s-a întâmplat."
-
 #: src/features/docs/PagesTab.tsx
 msgid "Pick a page to see its ratings, discussions and questions."
 msgstr "Alege o pagină pentru a vedea evaluările, discuțiile și întrebările ei."
-
-#: src/features/feedback/FeedbackList.tsx
-msgid "Pick a piece of feedback"
-msgstr "Alegeți un feedback"
 
 #: src/features/broadcasts/ListPage.tsx
 msgid "Pick a sender in the settings"
@@ -14359,10 +14348,6 @@ msgstr "Alege un endpoint"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Pick an inbox"
 msgstr "Alege o căsuță"
-
-#: src/features/status/IncidentsPage.tsx
-msgid "Pick an incident to read it."
-msgstr "Alege un incident pentru a-l citi."
 
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "Pick an open incident or maintenance"
@@ -14503,7 +14488,7 @@ msgstr "Fixat"
 msgid "Pinned to the top of your list"
 msgstr "Fixat în partea de sus a listei tale"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "Text simplu cu linkuri și întreruperi de rând, cel mult 5.000 de caractere."
 
@@ -14515,8 +14500,12 @@ msgstr "Text simplu, afișat deasupra mesajului redirecționat."
 msgid "Plan"
 msgstr "Plan"
 
+#: src/features/status/IncidentsPage.tsx
+msgid "plan maintenance"
+msgstr "planifică mentenanța"
+
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Plan maintenance"
 msgstr "Planifică mentenanța"
@@ -14558,7 +14547,7 @@ msgstr "Indică spre"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Port"
 msgstr "Port"
 
@@ -14597,6 +14586,10 @@ msgstr "Adresă poștală"
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Posted by you and marked as the accepted answer."
 msgstr "Postat de tine și marcat ca răspuns acceptat."
+
+#: src/features/docs/DocsPage.tsx
+msgid "Posts from new readers wait here until a member approves them"
+msgstr "Postările cititorilor noi așteaptă aici până când un membru le aprobă"
 
 #: src/components/common/text.ts
 msgid "Preference page"
@@ -14656,8 +14649,20 @@ msgid "Previous or next discussion"
 msgstr "Discuția anterioară sau următoare"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Previous or next incident"
+msgstr "Incidentul anterior sau următor"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Previous or next language"
 msgstr "Limba anterioară sau următoare"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Previous or next monitor"
+msgstr "Monitorul anterior sau următor"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Previous or next status page"
+msgstr "Pagina de stare anterioară sau următoare"
 
 #: src/features/feedback/Lightbox.tsx
 msgid "Previous screenshot"
@@ -14709,8 +14714,8 @@ msgstr "pro, echipă"
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/sections.tsx
-#: src/features/status/CreatePageDialog.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/CreatePageForm.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Product"
 msgstr "Produs"
 
@@ -14864,7 +14869,7 @@ msgstr "Publică un incident"
 msgid "Publish and unpublish help center articles"
 msgstr "Publică și depublică articole din centrul de ajutor"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Publish now"
 msgstr "Publică acum"
 
@@ -14970,6 +14975,10 @@ msgstr "Pune aceste elemente sub fiecare pagină a documentației tale. Folosesc
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Question"
 msgstr "Întrebare"
+
+#: src/features/docs/DocsPage.tsx
+msgid "Questions readers ask under your documentation pages"
+msgstr "Întrebările puse de cititori sub paginile tale de documentație"
 
 #: src/components/common/text.ts
 msgid "Queued"
@@ -15633,7 +15642,7 @@ msgstr "Se elimină istoricul importat…"
 msgid "Rename"
 msgstr "Redenumește"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Rename group"
 msgstr "Redenumește grupul"
 
@@ -15642,9 +15651,14 @@ msgid "Rename the mailbox"
 msgstr "Redenumește căsuța"
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Reopen"
 msgstr "Redeschide"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Reopen ({closeKey})"
+msgstr "Redeschide ({closeKey})"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reorder the selected view in the sidebar"
@@ -15977,10 +15991,15 @@ msgid "Resolution {resolution}"
 msgstr "Rezolvare {resolution}"
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "Resolve"
 msgstr "Rezolvă"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Resolve ({closeKey})"
+msgstr "Rezolvă ({closeKey})"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -15995,10 +16014,13 @@ msgstr "Rezolvă incidentul"
 msgid "Resolve or complete"
 msgstr "Rezolvă sau încheie"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Resolve or reopen the selected feedback"
+msgstr "Rezolvă sau redeschide feedbackul selectat"
+
 #: src/components/common/text.ts
 #: src/features/conversation/ConversationStatus.tsx
-#: src/features/feedback/FeedbackList.tsx
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/status/text.tsx
 msgid "Resolved"
 msgstr "Rezolvat"
@@ -16011,11 +16033,6 @@ msgstr "Rezolvat la {endedAt}"
 #: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "Rezolvat în"
-
-#. placeholder {0}: took(last)
-#: src/features/status/StatusPages.tsx
-msgid "resolved in {0}"
-msgstr "rezolvat în {0}"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Resolved. It moved to the Resolved tab."
@@ -16182,7 +16199,6 @@ msgstr "Imediat după abonare, oamenii primesc un scurt e-mail care o confirmă,
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/feedback/RoadmapCard.tsx
 msgid "Roadmap"
 msgstr "Foaie de parcurs"
@@ -16363,10 +16379,10 @@ msgstr "Sâmbătă"
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/parts.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/IncidentForm.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Save"
 msgstr "Salvează"
 
@@ -16387,7 +16403,7 @@ msgstr "Salvează și reprogramează"
 msgid "Save and test"
 msgstr "Save and test"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Save as draft"
 msgstr "Salvează ca ciornă"
 
@@ -16526,7 +16542,6 @@ msgstr "Programează intrarea"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/text.ts
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/text.tsx
 msgid "Scheduled"
 msgstr "Programat"
@@ -16551,7 +16566,6 @@ msgid "Scheduled by"
 msgstr "Programat de"
 
 #: src/features/status/Notices.tsx
-#: src/features/status/StatusPages.tsx
 msgid "Scheduled for {due}"
 msgstr "Programat pentru {due}"
 
@@ -16604,7 +16618,7 @@ msgstr "Dimensiunea ecranului"
 msgid "Screenshot"
 msgstr "Captură de ecran"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Screenshots attached"
 msgstr "Capturi de ecran atașate"
 
@@ -16616,12 +16630,12 @@ msgstr "SDK"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "search"
 msgstr "caută"
 
 #: src/app/Palette.tsx
-#: src/features/feedback/FeedbackList.tsx
 msgid "Search"
 msgstr "Caută"
 
@@ -16671,9 +16685,14 @@ msgstr "Caută emoji"
 msgid "Search emoji (in English)"
 msgstr "Caută emoji (în engleză)"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Search feedback"
 msgstr "Caută în feedback"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Search feedback…"
+msgstr "Caută în feedback…"
 
 #: src/app/places.tsx
 msgid "Search gaps"
@@ -16775,7 +16794,7 @@ msgstr "Caută, sortează și redactează ciorne de răspuns din terminalul tău
 msgid "Second secret"
 msgstr "Al doilea secret"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Seconds, 1 to 30."
 msgstr "Secunde, de la 1 la 30."
 
@@ -16805,6 +16824,7 @@ msgstr "Văzut de monitor"
 
 #: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "select"
@@ -16826,6 +16846,10 @@ msgid "Select all"
 msgstr "Selectează tot"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Select the article"
+msgstr "Selectează articolul"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Select the broadcast under the cursor"
 msgstr "Selectează trimiterea de sub cursor"
 
@@ -16836,6 +16860,14 @@ msgstr "Selectează contactul de sub cursor"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "Selectează conversația de sub cursor"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the entry"
+msgstr "Selectează intrarea"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the feedback"
+msgstr "Selectează feedbackul"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the mail under the cursor"
@@ -17506,7 +17538,6 @@ msgstr "Se configurează…"
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "Setări"
@@ -17568,6 +17599,7 @@ msgstr "Comandă rapidă"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Show"
 msgstr "Arată"
@@ -17600,7 +17632,7 @@ msgstr "Arată fluxul, insigna și încorporarea"
 msgid "Show full draft"
 msgstr "Arată toată ciorna"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Show HTTP details"
 msgstr "Afișează detaliile HTTP"
 
@@ -18513,7 +18545,7 @@ msgid "Starting"
 msgstr "Pornește"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Starts"
 msgstr "Început"
 
@@ -18540,9 +18572,9 @@ msgstr "STARTTLS (portul 587)"
 
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "State"
 msgstr "Stare"
@@ -18553,7 +18585,7 @@ msgid "State of {0}"
 msgstr "Starea pentru {0}"
 
 #. placeholder {0}: c.name
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "State of {0} while it is open"
 msgstr "Starea pentru {0} cât timp este deschis"
 
@@ -18561,7 +18593,7 @@ msgstr "Starea pentru {0} cât timp este deschis"
 msgid "state of the conversation"
 msgstr "starea conversației"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "State while down"
 msgstr "Stare la cădere"
@@ -18573,7 +18605,6 @@ msgstr "Stare la cădere"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
-#: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -18584,7 +18615,6 @@ msgstr "Stare la cădere"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Status"
 msgstr "Stare"
@@ -18601,7 +18631,6 @@ msgstr "Pagină de stare ștearsă"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "Pagini de stare"
@@ -18737,7 +18766,6 @@ msgstr "Abonat la listă acum"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Subscribers"
 msgstr "Abonați"
@@ -18763,7 +18791,7 @@ msgstr "Abonare ștearsă"
 msgid "Succeeded"
 msgstr "Reușit"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Successes to recover"
 msgstr "Reușite pentru refacere"
@@ -19208,7 +19236,7 @@ msgstr "Codul este greșit sau a expirat."
 msgid "The columns are guessed from the header row. One must be the e-mail address; name the others as contact fields or attributes, or skip them. Attributes only fill keys a contact does not have yet."
 msgstr "Coloanele sunt ghicite din rândul de antet. Una trebuie să fie adresa de e-mail; numește-le pe celelalte câmpuri de contact sau atribute, sau omite-le. Atributele completează doar cheile pe care un contact nu le are încă."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "The component whose state this monitor sets."
 msgstr "Componenta a cărei stare o setează acest monitor."
 
@@ -19333,7 +19361,7 @@ msgstr "domeniul e-mailului nu este verificat pentru acest spațiu de lucru"
 msgid "The elements work on these addresses; add your dev server in the inbox settings:"
 msgstr "Elementele funcționează la aceste adrese; adaugă serverul tău de dezvoltare în setările căsuței:"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "The end must be after the start."
 msgstr "Sfârșitul trebuie să fie după început."
 
@@ -19428,10 +19456,6 @@ msgstr "Primul mesaj al unei conversații într-o căsuță care arată timpul d
 #: src/features/settings/notifications/events.ts
 msgid "The first message of a conversation in an inbox that shows who is available."
 msgstr "Primul mesaj al unei conversații într-o căsuță care arată cine este disponibil."
-
-#: src/features/status/StatusPages.tsx
-msgid "the first one"
-msgstr "primul"
 
 #: src/features/docs/PagesTab.tsx
 msgid "The first rating makes the page appear here."
@@ -20292,6 +20316,10 @@ msgstr "Sunt ascunse împreună cu toate celelalte postări ale autorilor lor ca
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "Dispar pentru echipa ta și pentru clienți. Le poți restaura din coș timp de 30 de zile, apoi sunt șterse definitiv împreună cu mesajele și fișierele lor."
 
+#: src/features/feedback/FeedbackHome.tsx
+msgid "They disappear for your team. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
+msgstr "Dispar pentru echipa ta. Le poți restaura din coș timp de 30 de zile, apoi sunt șterse definitiv împreună cu mesajele și fișierele lor."
+
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They get a mail with a link and are subscribed only after they click it."
 msgstr "Primesc un e-mail cu un link și sunt abonați doar după ce dau clic pe el."
@@ -20691,7 +20719,7 @@ msgstr "Acest monitor nu mai există sau nu îl poți vedea."
 msgid "This month"
 msgstr "Luna aceasta"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "This page is not public yet, so visitors see nothing until you publish the page."
 msgstr "Această pagină nu este încă publică, deci vizitatorii nu văd nimic până o publici."
 
@@ -20808,6 +20836,10 @@ msgstr "Acest site nu se poate conecta"
 #: src/components/common/text.ts
 msgid "This site is not allowed to use this documentation channel."
 msgstr "Acest site nu are voie să folosească acest canal de documentație."
+
+#: src/features/status/StatusPages.tsx
+msgid "This status page no longer exists or you cannot see it."
+msgstr "Această pagină de stare nu mai există sau nu o poți vedea."
 
 #: src/components/common/text.ts
 msgid "This subscription is no longer waiting for confirmation."
@@ -20926,7 +20958,7 @@ msgstr "Oră"
 msgid "Time zone"
 msgstr "Fus orar"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Timeout"
 msgstr "Timp de așteptare"
@@ -20935,7 +20967,7 @@ msgstr "Timp de așteptare"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/issues/IssueDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Title"
 msgstr "Titlu"
 
@@ -21093,6 +21125,7 @@ msgstr "Ai încredere în acest certificat pentru acest server. Fă asta doar da
 #: src/features/account/AccountLayout.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/migrations/UploadStep.tsx
@@ -21187,7 +21220,6 @@ msgstr "Dezactivat de Yuva"
 msgid "TXT record"
 msgstr "Înregistrare TXT"
 
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/fields/FieldDialog.tsx
@@ -21423,7 +21455,7 @@ msgstr "Retrage publicarea traducerii"
 msgid "Unpublished"
 msgstr "Nepublicată"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/mail/MailList.tsx
@@ -22032,7 +22064,6 @@ msgstr "așteaptă aprobarea"
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
-#: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "Waiting for approval"
@@ -22426,7 +22457,7 @@ msgstr "Când un coleg scrie @ și numele tău într-o notă, nota apare aici."
 msgid "When did they agree?"
 msgstr "Când au fost de acord?"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "When it goes down"
 msgstr "Când cade"
@@ -22464,10 +22495,6 @@ msgstr "Când ți-l atribuie altcineva."
 #: src/features/broadcasts/Trigger.tsx
 msgid "when someone first signs in to {inbox}"
 msgstr "when someone first signs in to {inbox}"
-
-#: src/features/feedback/FeedbackList.tsx
-msgid "When someone sends feedback, it will be in the list."
-msgstr "Când cineva trimite feedback, va apărea în listă."
 
 #: src/features/broadcasts/Trigger.tsx
 msgid "when someone starts to match {match}"
@@ -22952,11 +22979,11 @@ msgstr "You get a new secret once. Webhooks from GitHub are refused until you pa
 msgid "You get a notification when someone replies in these"
 msgstr "Primești o notificare când cineva răspunde în acestea"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "You get the address to call when you save. It is shown only once."
 msgstr "La salvare primești adresa de apelat. Este afișată o singură dată."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "You get the address your alerting calls when you save, for Alertmanager, Grafana or your own script. It is shown only once."
 msgstr "La salvare primești adresa pe care o apelează sistemul tău de alertare, pentru Alertmanager, Grafana sau propriul script. Este afișată o singură dată."
 
@@ -23115,7 +23142,7 @@ msgstr "Your identity provider has not verified your e-mail address, so Yuva can
 msgid "Your inbox is empty."
 msgstr "Mesajele primite sunt goale."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Your job calls Yuva on a schedule. A missing call fails the monitor."
 msgstr "Sarcina dvs. apelează Yuva la intervale regulate. Un apel lipsă oprește monitorul."
 
@@ -23169,7 +23196,7 @@ msgstr "Administratorul organizației tale trebuie să permită Yuva"
 msgid "Your own"
 msgstr "Your own"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Your own monitoring sends its state, including Alertmanager and Grafana alerts."
 msgstr "Propria monitorizare trimite starea, inclusiv alertele Alertmanager și Grafana."
 
@@ -23392,7 +23419,7 @@ msgstr "Yuva doar citește. Nu șterge, nu mută, nu arhivează și nu marcheaz�
 msgid "Yuva only reads. Its connection sends {provider} nothing but read requests, and the token only to {provider}'s API, so no ticket, customer or setting changes."
 msgstr "Yuva doar citește. Conexiunea sa trimite către {provider} doar cereri de citire, iar tokenul doar către API-ul {provider}, așa că niciun tichet, client sau setare nu se schimbă."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Yuva opens a connection to a host and port on a schedule."
 msgstr "Yuva deschide periodic o conexiune către o gazdă și un port."
 
@@ -23404,7 +23431,7 @@ msgstr "Yuva citește {provider} cu un token API pe care îl creați în propriu
 msgid "Yuva reads only the file you upload and deletes it when the migration ends. History arrives quietly: no notifications, no auto-replies."
 msgstr "Yuva citește doar fișierul pe care îl încarci și îl șterge când se termină migrarea. Istoricul ajunge în liniște: fără notificări, fără răspunsuri automate."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Yuva requests an address on a schedule and checks the answer."
 msgstr "Yuva solicită periodic o adresă și verifică răspunsul."
 

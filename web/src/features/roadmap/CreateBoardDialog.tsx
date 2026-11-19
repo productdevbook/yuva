@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input"
 import { useInboxChannels } from "@/features/broadcasts/queries"
 import { useCreateBoard } from "@/features/roadmap/queries"
 import { ChoiceSelect, Field } from "@/features/settings/ui"
-import { slugify, validSlug } from "@/features/status/CreatePageDialog"
+import { slugify, validSlug } from "@/features/status/CreatePageForm"
 import type { RoadmapBoard } from "@/lib/api"
 
 export function CreateBoardDialog({

@@ -7,6 +7,11 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: da\n"
 
+#. placeholder {0}: rows.length
+#: src/features/changelog/EntriesTab.tsx
+msgid "{0, plural, one {{shownCount} entry} other {{shownCount} entries}}"
+msgstr "{0, plural, one {{shownCount} indlæg} other {{shownCount} indlæg}}"
+
 #: src/features/changelog/ChangelogsPage.tsx
 msgid "{published} of {total} entries published"
 msgstr "{published} af {total} indlæg udgivet"
@@ -36,15 +41,6 @@ msgstr "Adressens slutning"
 msgid "Agents may publish"
 msgstr "Agenter må udgive"
 
-#: src/features/changelog/ChangelogFrame.tsx
-#: src/features/changelog/pages.tsx
-msgid "All"
-msgstr "Alle"
-
-#: src/features/changelog/ChangelogFrame.tsx
-msgid "All changelogs"
-msgstr "Alle ændringslogs"
-
 #: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "All labels"
@@ -53,10 +49,6 @@ msgstr "Alle etiketter"
 #: src/features/changelog/pages.tsx
 msgid "All languages"
 msgstr "Alle sprog"
-
-#: src/features/changelog/ChangelogFrame.tsx
-msgid "All products"
-msgstr "Alle produkter"
 
 #: src/features/changelog/SettingsTab.tsx
 msgid "Analytics property"
@@ -75,7 +67,6 @@ msgid "At least 3 characters."
 msgstr "Mindst 3 tegn."
 
 #: src/features/changelog/CreateChangelogDialog.tsx
-#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/MailDialog.tsx
 #: src/features/changelog/ScheduleDialog.tsx
 msgid "Cancel"
@@ -89,21 +80,25 @@ msgstr "Skift"
 msgid "Change the time"
 msgstr "Skift tidspunktet"
 
-#: src/features/changelog/pages.tsx
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/SettingsTab.tsx
 msgid "Changelog"
 msgstr "Ændringslog"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/pages.tsx
 msgid "Changelogs"
 msgstr "Ændringslogs"
 
+#: src/features/changelog/pages.tsx
+msgid "Changelogs ({manageKey})"
+msgstr "Ændringslogs ({manageKey})"
+
 #: src/features/changelog/EntryEditor.tsx
 msgid "Choose a picture"
 msgstr "Vælg et billede"
 
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "Clear filters"
 msgstr "Ryd filtre"
@@ -184,7 +179,6 @@ msgstr "Kladde"
 msgid "Draft submitted. An owner or admin can publish it."
 msgstr "Kladden er indsendt. En ejer eller administrator kan udgive den."
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/pages.tsx
 msgid "Drafts"
 msgstr "Kladder"
@@ -193,12 +187,14 @@ msgstr "Kladder"
 msgid "Each product has one changelog. Owners and admins create and publish them."
 msgstr "Hvert produkt har en ændringslog. Ejere og administratorer opretter og udgiver den."
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
-#: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
 msgid "Entries"
 msgstr "Indlæg"
+
+#: src/features/changelog/pages.tsx
+msgid "Entries ({entriesKey})"
+msgstr "Indlæg ({entriesKey})"
 
 #: src/features/changelog/SettingsTab.tsx
 msgid "Entries and translations are deleted with it."
@@ -209,12 +205,8 @@ msgid "Entries can be written and published in these languages. Visitors see the
 msgstr "Indlæg kan skrives og udgives på disse sprog. Besøgende ser deres eget, når det findes."
 
 #: src/features/changelog/pages.tsx
-msgid "Entries show on the public page once they are published."
-msgstr "Indlæg vises på den offentlige side, når de er udgivet."
-
-#: src/features/changelog/pages.tsx
-msgid "Entries you have not published yet show up here."
-msgstr "Indlæg, du endnu ikke har udgivet, vises her."
+msgid "Every state"
+msgstr "Alle tilstande"
 
 #: src/features/changelog/Bulk.tsx
 #: src/features/changelog/EntryEditor.tsx
@@ -301,6 +293,10 @@ msgstr "Marker som opdateret"
 msgid "More"
 msgstr "Mere"
 
+#: src/features/changelog/EntriesTab.tsx
+msgid "move"
+msgstr "flyt"
+
 #: src/features/changelog/CreateChangelogDialog.tsx
 #: src/features/changelog/SettingsTab.tsx
 msgid "Name"
@@ -311,9 +307,10 @@ msgid "New"
 msgstr "Ny"
 
 #: src/features/changelog/EntriesTab.tsx
-msgid "New entry"
-msgstr "Nyt indlæg"
+msgid "new post"
+msgstr "nyt opslag"
 
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "New post"
 msgstr "Nyt opslag"
@@ -351,10 +348,6 @@ msgstr "ikke udgivet"
 msgid "not written"
 msgstr "ikke skrevet"
 
-#: src/features/changelog/pages.tsx
-msgid "Nothing here."
-msgstr "Her er intet."
-
 #: src/features/changelog/SettingsTab.tsx
 msgid "Off: agents write drafts and submit them, and owners and admins publish. On: agents with access to the inbox publish, schedule and unpublish too."
 msgstr "Fra: agenter skriver kladder og indsender dem, ejere og administratorer udgiver. Til: agenter med adgang til indbakken udgiver, planlægger og trækker også tilbage."
@@ -362,6 +355,11 @@ msgstr "Fra: agenter skriver kladder og indsender dem, ejere og administratorer 
 #: src/features/changelog/text.tsx
 msgid "Only owners and admins can do this."
 msgstr "Kun ejere og administratorer kan gøre dette."
+
+#: src/features/changelog/EntriesTab.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "åbn"
 
 #: src/features/changelog/EntryEditor.tsx
 msgid "Original"
@@ -386,10 +384,6 @@ msgstr "Del af denne oversættelses webadresse. Laves af titlen, når den er tom
 #: src/features/changelog/ScheduleDialog.tsx
 msgid "Pick a time in the next year, in your time zone, {zone}."
 msgstr "Vælg et tidspunkt i det kommende år, i din tidszone, {zone}."
-
-#: src/features/changelog/pages.tsx
-msgid "Pick a time when you write an entry and it goes public by itself."
-msgstr "Vælg et tidspunkt, når du skriver et indlæg, så går det live af sig selv."
 
 #: src/features/changelog/MailDialog.tsx
 msgid "Pick up to 10 lists of this inbox."
@@ -446,7 +440,6 @@ msgstr "Udgiv nu"
 msgid "Publish on"
 msgstr "Udgiv den"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
@@ -498,7 +491,6 @@ msgstr "Planlæg igen"
 msgid "Schedule this entry"
 msgstr "Planlæg dette indlæg"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
 #: src/features/changelog/text.tsx
@@ -513,15 +505,26 @@ msgstr "Planlagt: {scheduled}"
 msgid "Search entries"
 msgstr "Søg i indlæg"
 
+#: src/features/changelog/pages.tsx
+msgid "Search entries…"
+msgstr "Søg i indlæg…"
+
+#: src/features/changelog/EntriesTab.tsx
+msgid "select"
+msgstr "vælg"
+
 #: src/features/changelog/MailDialog.tsx
 msgid "Send through"
 msgstr "Send via"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/pages.tsx
 msgid "Settings"
 msgstr "Indstillinger"
+
+#: src/features/changelog/pages.tsx
+msgid "Settings ({settingsKey})"
+msgstr "Indstillinger ({settingsKey})"
 
 #: src/features/changelog/EntryEditor.tsx
 msgid "Show"
@@ -556,6 +559,7 @@ msgid "Start with a title. You write the text next, and it stays a draft until i
 msgstr "Start med en titel. Teksten skriver du bagefter, og den forbliver en kladde, indtil den udgives."
 
 #: src/features/changelog/EntriesTab.tsx
+#: src/features/changelog/pages.tsx
 msgid "State"
 msgstr "Tilstand"
 
@@ -666,13 +670,9 @@ msgstr "Titel"
 msgid "Translation deleted"
 msgstr "Oversættelsen er slettet"
 
-#: src/features/changelog/pages.tsx
+#: src/features/changelog/EntriesTab.tsx
 msgid "Try again"
 msgstr "Prøv igen"
-
-#: src/features/changelog/pages.tsx
-msgid "Try another word, label or language."
-msgstr "Prøv et andet ord, en anden etiket eller et andet sprog."
 
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntryEditor.tsx
@@ -709,6 +709,13 @@ msgstr "Ikke gemte ændringer"
 msgid "Unschedule"
 msgstr "Fjern planlægning"
 
+#: src/features/changelog/ChangelogFrame.tsx
+#: src/features/changelog/ChangelogsPage.tsx
+#: src/features/changelog/EntryEditor.tsx
+#: src/features/changelog/pages.tsx
+msgid "Updates"
+msgstr "Opdateringer"
+
 #: src/features/changelog/SettingsTab.tsx
 msgid "Use 3 to 48 letters, numbers and inner hyphens."
 msgstr "Brug 3 til 48 bogstaver, tal og indre bindestreger."
@@ -726,11 +733,9 @@ msgstr "Visning"
 msgid "View changelog"
 msgstr "Se ændringsloggen"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/EntryEditor.tsx
-#: src/features/changelog/pages.tsx
 msgid "What’s new"
 msgstr "Nyheder"
 

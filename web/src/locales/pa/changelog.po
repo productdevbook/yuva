@@ -7,6 +7,11 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: pa\n"
 
+#. placeholder {0}: rows.length
+#: src/features/changelog/EntriesTab.tsx
+msgid "{0, plural, one {{shownCount} entry} other {{shownCount} entries}}"
+msgstr "{0, plural, one {{shownCount} ਐਂਟਰੀ} other {{shownCount} ਐਂਟਰੀਆਂ}}"
+
 #: src/features/changelog/ChangelogsPage.tsx
 msgid "{published} of {total} entries published"
 msgstr "{total} ਵਿੱਚੋਂ {published} ਐਂਟਰੀਆਂ ਪ੍ਰਕਾਸ਼ਿਤ"
@@ -36,15 +41,6 @@ msgstr "ਪਤੇ ਦਾ ਅੰਤ"
 msgid "Agents may publish"
 msgstr "ਏਜੰਟ ਪ੍ਰਕਾਸ਼ਿਤ ਕਰ ਸਕਦੇ ਹਨ"
 
-#: src/features/changelog/ChangelogFrame.tsx
-#: src/features/changelog/pages.tsx
-msgid "All"
-msgstr "ਸਾਰੇ"
-
-#: src/features/changelog/ChangelogFrame.tsx
-msgid "All changelogs"
-msgstr "ਸਾਰੇ ਚੇਂਜਲੌਗ"
-
 #: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "All labels"
@@ -53,10 +49,6 @@ msgstr "ਸਾਰੇ ਲੇਬਲ"
 #: src/features/changelog/pages.tsx
 msgid "All languages"
 msgstr "ਸਾਰੀਆਂ ਭਾਸ਼ਾਵਾਂ"
-
-#: src/features/changelog/ChangelogFrame.tsx
-msgid "All products"
-msgstr "ਸਾਰੇ ਉਤਪਾਦ"
 
 #: src/features/changelog/SettingsTab.tsx
 msgid "Analytics property"
@@ -75,7 +67,6 @@ msgid "At least 3 characters."
 msgstr "ਘੱਟੋ-ਘੱਟ 3 ਅੱਖਰ।"
 
 #: src/features/changelog/CreateChangelogDialog.tsx
-#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/MailDialog.tsx
 #: src/features/changelog/ScheduleDialog.tsx
 msgid "Cancel"
@@ -89,21 +80,25 @@ msgstr "ਬਦਲੋ"
 msgid "Change the time"
 msgstr "ਸਮਾਂ ਬਦਲੋ"
 
-#: src/features/changelog/pages.tsx
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/SettingsTab.tsx
 msgid "Changelog"
 msgstr "ਚੇਂਜਲੌਗ"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/pages.tsx
 msgid "Changelogs"
 msgstr "ਚੇਂਜਲੌਗ"
 
+#: src/features/changelog/pages.tsx
+msgid "Changelogs ({manageKey})"
+msgstr "ਚੇਂਜਲੌਗ ({manageKey})"
+
 #: src/features/changelog/EntryEditor.tsx
 msgid "Choose a picture"
 msgstr "ਤਸਵੀਰ ਚੁਣੋ"
 
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "Clear filters"
 msgstr "ਫਿਲਟਰ ਸਾਫ਼ ਕਰੋ"
@@ -184,7 +179,6 @@ msgstr "ਡਰਾਫਟ"
 msgid "Draft submitted. An owner or admin can publish it."
 msgstr "ਖਰੜਾ ਜਮ੍ਹਾਂ ਕੀਤਾ ਗਿਆ। ਮਾਲਕ ਜਾਂ ਐਡਮਿਨ ਇਸ ਨੂੰ ਪ੍ਰਕਾਸ਼ਿਤ ਕਰ ਸਕਦਾ ਹੈ।"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/pages.tsx
 msgid "Drafts"
 msgstr "ਡਰਾਫਟ"
@@ -193,12 +187,14 @@ msgstr "ਡਰਾਫਟ"
 msgid "Each product has one changelog. Owners and admins create and publish them."
 msgstr "ਹਰ ਉਤਪਾਦ ਦਾ ਇੱਕ ਚੇਂਜਲੌਗ ਹੁੰਦਾ ਹੈ। ਮਾਲਕ ਅਤੇ ਐਡਮਿਨ ਇਸਨੂੰ ਬਣਾਉਂਦੇ ਅਤੇ ਪ੍ਰਕਾਸ਼ਿਤ ਕਰਦੇ ਹਨ।"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
-#: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
 msgid "Entries"
 msgstr "ਐਂਟਰੀਆਂ"
+
+#: src/features/changelog/pages.tsx
+msgid "Entries ({entriesKey})"
+msgstr "ਐਂਟਰੀਆਂ ({entriesKey})"
 
 #: src/features/changelog/SettingsTab.tsx
 msgid "Entries and translations are deleted with it."
@@ -209,12 +205,8 @@ msgid "Entries can be written and published in these languages. Visitors see the
 msgstr "ਐਂਟਰੀਆਂ ਇਨ੍ਹਾਂ ਭਾਸ਼ਾਵਾਂ ਵਿੱਚ ਲਿਖੀਆਂ ਅਤੇ ਪ੍ਰਕਾਸ਼ਿਤ ਕੀਤੀਆਂ ਜਾ ਸਕਦੀਆਂ ਹਨ। ਵਿਜ਼ਟਰਾਂ ਨੂੰ ਉਨ੍ਹਾਂ ਦੀ ਆਪਣੀ ਭਾਸ਼ਾ ਦਿਸਦੀ ਹੈ, ਜੇ ਹੋਵੇ।"
 
 #: src/features/changelog/pages.tsx
-msgid "Entries show on the public page once they are published."
-msgstr "ਐਂਟਰੀਆਂ ਪ੍ਰਕਾਸ਼ਿਤ ਹੋਣ ਮਗਰੋਂ ਜਨਤਕ ਪੰਨੇ 'ਤੇ ਦਿਸਦੀਆਂ ਹਨ।"
-
-#: src/features/changelog/pages.tsx
-msgid "Entries you have not published yet show up here."
-msgstr "ਜਿਹੜੀਆਂ ਐਂਟਰੀਆਂ ਤੁਸੀਂ ਹਾਲੇ ਪ੍ਰਕਾਸ਼ਿਤ ਨਹੀਂ ਕੀਤੀਆਂ ਉਹ ਇੱਥੇ ਦਿਸਦੀਆਂ ਹਨ।"
+msgid "Every state"
+msgstr "ਹਰ ਸਥਿਤੀ"
 
 #: src/features/changelog/Bulk.tsx
 #: src/features/changelog/EntryEditor.tsx
@@ -301,6 +293,10 @@ msgstr "ਅੱਪ-ਟੂ-ਡੇਟ ਵਜੋਂ ਨਿਸ਼ਾਨ ਲਾਓ"
 msgid "More"
 msgstr "ਹੋਰ"
 
+#: src/features/changelog/EntriesTab.tsx
+msgid "move"
+msgstr "ਹਿਲਾਓ"
+
 #: src/features/changelog/CreateChangelogDialog.tsx
 #: src/features/changelog/SettingsTab.tsx
 msgid "Name"
@@ -311,9 +307,10 @@ msgid "New"
 msgstr "ਨਵਾਂ"
 
 #: src/features/changelog/EntriesTab.tsx
-msgid "New entry"
-msgstr "ਨਵੀਂ ਐਂਟਰੀ"
+msgid "new post"
+msgstr "ਨਵੀਂ ਪੋਸਟ"
 
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "New post"
 msgstr "ਨਵੀਂ ਪੋਸਟ"
@@ -351,10 +348,6 @@ msgstr "ਪ੍ਰਕਾਸ਼ਿਤ ਨਹੀਂ"
 msgid "not written"
 msgstr "ਲਿਖਿਆ ਨਹੀਂ ਗਿਆ"
 
-#: src/features/changelog/pages.tsx
-msgid "Nothing here."
-msgstr "ਇੱਥੇ ਕੁਝ ਨਹੀਂ।"
-
 #: src/features/changelog/SettingsTab.tsx
 msgid "Off: agents write drafts and submit them, and owners and admins publish. On: agents with access to the inbox publish, schedule and unpublish too."
 msgstr "ਬੰਦ: ਏਜੰਟ ਡਰਾਫਟ ਲਿਖ ਕੇ ਜਮ੍ਹਾਂ ਕਰਦੇ ਹਨ, ਅਤੇ ਮਾਲਕ ਤੇ ਐਡਮਿਨ ਪ੍ਰਕਾਸ਼ਿਤ ਕਰਦੇ ਹਨ। ਚਾਲੂ: ਇਨਬਾਕਸ ਤੱਕ ਪਹੁੰਚ ਵਾਲੇ ਏਜੰਟ ਵੀ ਪ੍ਰਕਾਸ਼ਿਤ ਕਰਦੇ ਹਨ, ਸ਼ਡਿਊਲ ਕਰਦੇ ਹਨ ਅਤੇ ਪ੍ਰਕਾਸ਼ਨ ਵਾਪਸ ਲੈਂਦੇ ਹਨ।"
@@ -362,6 +355,11 @@ msgstr "ਬੰਦ: ਏਜੰਟ ਡਰਾਫਟ ਲਿਖ ਕੇ ਜਮ੍ਹਾ
 #: src/features/changelog/text.tsx
 msgid "Only owners and admins can do this."
 msgstr "ਇਹ ਸਿਰਫ਼ ਮਾਲਕ ਅਤੇ ਐਡਮਿਨ ਕਰ ਸਕਦੇ ਹਨ।"
+
+#: src/features/changelog/EntriesTab.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "ਖੋਲ੍ਹੋ"
 
 #: src/features/changelog/EntryEditor.tsx
 msgid "Original"
@@ -386,10 +384,6 @@ msgstr "ਇਸ ਅਨੁਵਾਦ ਦੇ ਵੈੱਬ ਪਤੇ ਦਾ ਹਿੱ
 #: src/features/changelog/ScheduleDialog.tsx
 msgid "Pick a time in the next year, in your time zone, {zone}."
 msgstr "ਅਗਲੇ ਇੱਕ ਸਾਲ ਵਿੱਚ ਕੋਈ ਸਮਾਂ ਚੁਣੋ, ਆਪਣੇ ਟਾਈਮ ਜ਼ੋਨ, {zone}, ਵਿੱਚ।"
-
-#: src/features/changelog/pages.tsx
-msgid "Pick a time when you write an entry and it goes public by itself."
-msgstr "ਐਂਟਰੀ ਲਿਖਦੇ ਸਮੇਂ ਸਮਾਂ ਚੁਣੋ, ਉਹ ਆਪਣੇ ਆਪ ਜਨਤਕ ਹੋ ਜਾਵੇਗੀ।"
 
 #: src/features/changelog/MailDialog.tsx
 msgid "Pick up to 10 lists of this inbox."
@@ -446,7 +440,6 @@ msgstr "ਹੁਣੇ ਪ੍ਰਕਾਸ਼ਿਤ ਕਰੋ"
 msgid "Publish on"
 msgstr "ਪ੍ਰਕਾਸ਼ਨ ਦੀ ਤਾਰੀਖ਼"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
@@ -498,7 +491,6 @@ msgstr "ਦੁਬਾਰਾ ਨਿਯਤ ਕਰੋ"
 msgid "Schedule this entry"
 msgstr "ਇਹ ਐਂਟਰੀ ਸ਼ਡਿਊਲ ਕਰੋ"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
 #: src/features/changelog/text.tsx
@@ -513,15 +505,26 @@ msgstr "ਸ਼ਡਿਊਲ ਕੀਤੀਆਂ: {scheduled}"
 msgid "Search entries"
 msgstr "ਐਂਟਰੀਆਂ ਖੋਜੋ"
 
+#: src/features/changelog/pages.tsx
+msgid "Search entries…"
+msgstr "ਐਂਟਰੀਆਂ ਖੋਜੋ…"
+
+#: src/features/changelog/EntriesTab.tsx
+msgid "select"
+msgstr "ਚੁਣੋ"
+
 #: src/features/changelog/MailDialog.tsx
 msgid "Send through"
 msgstr "ਇਸ ਰਾਹੀਂ ਭੇਜੋ"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/pages.tsx
 msgid "Settings"
 msgstr "ਸੈਟਿੰਗਾਂ"
+
+#: src/features/changelog/pages.tsx
+msgid "Settings ({settingsKey})"
+msgstr "ਸੈਟਿੰਗਾਂ ({settingsKey})"
 
 #: src/features/changelog/EntryEditor.tsx
 msgid "Show"
@@ -556,6 +559,7 @@ msgid "Start with a title. You write the text next, and it stays a draft until i
 msgstr "ਸਿਰਲੇਖ ਨਾਲ ਸ਼ੁਰੂ ਕਰੋ। ਪਾਠ ਤੁਸੀਂ ਅੱਗੇ ਲਿਖੋਗੇ, ਅਤੇ ਪ੍ਰਕਾਸ਼ਿਤ ਹੋਣ ਤੱਕ ਉਹ ਖਰੜਾ ਰਹਿੰਦਾ ਹੈ।"
 
 #: src/features/changelog/EntriesTab.tsx
+#: src/features/changelog/pages.tsx
 msgid "State"
 msgstr "ਸਥਿਤੀ"
 
@@ -666,13 +670,9 @@ msgstr "ਸਿਰਲੇਖ"
 msgid "Translation deleted"
 msgstr "ਅਨੁਵਾਦ ਮਿਟਾ ਦਿੱਤਾ ਗਿਆ"
 
-#: src/features/changelog/pages.tsx
+#: src/features/changelog/EntriesTab.tsx
 msgid "Try again"
 msgstr "ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ"
-
-#: src/features/changelog/pages.tsx
-msgid "Try another word, label or language."
-msgstr "ਕੋਈ ਹੋਰ ਸ਼ਬਦ, ਲੇਬਲ ਜਾਂ ਭਾਸ਼ਾ ਅਜ਼ਮਾਓ।"
 
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntryEditor.tsx
@@ -709,6 +709,13 @@ msgstr "ਨਾ ਸੰਭਾਲੀਆਂ ਤਬਦੀਲੀਆਂ"
 msgid "Unschedule"
 msgstr "ਸ਼ਡਿਊਲ ਰੱਦ ਕਰੋ"
 
+#: src/features/changelog/ChangelogFrame.tsx
+#: src/features/changelog/ChangelogsPage.tsx
+#: src/features/changelog/EntryEditor.tsx
+#: src/features/changelog/pages.tsx
+msgid "Updates"
+msgstr "ਅੱਪਡੇਟ"
+
 #: src/features/changelog/SettingsTab.tsx
 msgid "Use 3 to 48 letters, numbers and inner hyphens."
 msgstr "3 ਤੋਂ 48 ਅੱਖਰ, ਅੰਕ ਅਤੇ ਅੰਦਰਲੇ ਹਾਈਫ਼ਨ ਵਰਤੋ।"
@@ -726,11 +733,9 @@ msgstr "ਵੇਖੋ"
 msgid "View changelog"
 msgstr "ਚੇਂਜਲੌਗ ਦੇਖੋ"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/EntryEditor.tsx
-#: src/features/changelog/pages.tsx
 msgid "What’s new"
 msgstr "ਨਵਾਂ ਕੀ ਹੈ"
 

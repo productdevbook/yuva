@@ -9,7 +9,7 @@ import { formatDateTime, formatDuration, formatMs, formatShort } from "@/compone
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { look } from "@/features/inbox/PageFrame"
-import { IncidentDialog } from "@/features/status/IncidentDialog"
+import { IncidentForm } from "@/features/status/IncidentForm"
 import { LinkedConversations } from "@/features/status/LinkedSection"
 import { NotifyCheck } from "@/features/status/NotifyCheck"
 import { NoticesSection } from "@/features/status/Notices"
@@ -348,7 +348,7 @@ function IncidentInfo({
   const startedAt = i.started_at ?? i.published_at ?? i.created_at
   const tone = { success: "ok", info: undefined, warning: "warn" } as const
   const stateTone = (s: StatusComponentStateValue) =>
-    s === "operational" ? "ok" : s === "major_outage" ? "bad" : s === "maintenance" ? undefined : "warn"
+    s === "operational" ? "text-ok" : s === "major_outage" ? "text-bad" : s === "maintenance" ? undefined : "text-warn"
   return (
     <>
       <InfoSection title={text.kind[i.kind]}>
@@ -372,13 +372,14 @@ function IncidentInfo({
         <InfoSection title={<Trans>Components</Trans>}>
           {i.components.map((c) => {
             const state = open ? c.state : "operational"
+            const name = names.get(c.component_id) ?? t`Deleted component`
             return (
-              <KV
-                key={c.component_id}
-                label={names.get(c.component_id) ?? t`Deleted component`}
-                value={text.component[state]}
-                tone={stateTone(state)}
-              />
+              <div key={c.component_id} className="flex min-w-0 flex-col py-1 text-small leading-5">
+                <span className="truncate text-muted-foreground" title={name}>
+                  {name}
+                </span>
+                <span className={stateTone(state)}>{text.component[state]}</span>
+              </div>
             )
           })}
         </InfoSection>
@@ -581,6 +582,17 @@ export function IncidentDetail({
   )
   const main = (
     <>
+      {editing && (
+        <IncidentForm
+          pages={[page]}
+          pageId={pageId}
+          kind={i.kind}
+          edit={i}
+          className="mt-0"
+          onClose={() => setEditing(false)}
+          onDone={() => setEditing(false)}
+        />
+      )}
       {justResolved && !open && (
         <div
           role="status"
@@ -761,21 +773,7 @@ export function IncidentDetail({
       {monitor && <MonitorSeen pageId={pageId} m={monitor} />}
     </>
   )
-  const dialogs = (
-    <>
-      {editing && (
-        <IncidentDialog
-          pages={[page]}
-          pageId={pageId}
-          kind={i.kind}
-          edit={i}
-          onClose={() => setEditing(false)}
-          onDone={() => setEditing(false)}
-        />
-      )}
-      {confirmDialog}
-    </>
-  )
+  const dialogs = confirmDialog
   if (layout)
     return (
       <>

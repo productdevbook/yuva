@@ -156,7 +156,7 @@ export function QueueList({ hrefOf, keyboard }: { hrefOf: (d: Discussion) => str
     keyboard
   )
   return (
-    <div className="mx-auto flex w-full max-w-[860px] flex-col gap-3 p-6 pb-16 phone:px-4 phone:pt-4">
+    <div className="mt-4 flex max-w-[860px] flex-col gap-3">
       <p className="text-body text-muted-foreground">
         <Trans>
           Readers' posts wait here until a member approves one of theirs; after that, they publish at once. Oldest

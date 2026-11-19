@@ -2,34 +2,43 @@ import { Trans, useLingui } from "@lingui/react/macro"
 
 import { toast, useConfirm } from "@/components/common"
 import { useBulkReport } from "@/components/common/BulkReport"
-import { BulkButton, SelectionBar } from "@/components/common/Selection"
+import { BulkBar, bulkButton } from "@/components/common/ListBox"
 import { useErrorText } from "@/components/common/text"
+import { Button } from "@/components/ui/button"
 import { useBulkEntries } from "@/features/changelog/queries"
 import { entryTitle } from "@/features/changelog/text"
 import type { Selection } from "@/hooks/use-selection"
 import type { Changelog, ChangelogEntrySummary } from "@/lib/api"
 
 export function EntryBulkBar({
-  changelog,
+  changelogs,
   items,
   selection,
 }: {
-  changelog: Changelog
+  changelogs: Map<string, Changelog>
   items: ChangelogEntrySummary[]
   selection: Selection
 }) {
   const { i18n } = useLingui()
   const errorText = useErrorText()
-  const bulk = useBulkEntries(changelog.id)
+  const bulk = useBulkEntries()
   const [confirm, confirmDialog] = useConfirm()
   const [report, reportDialog] = useBulkReport()
+  const byId = new Map(items.map((e) => [e.id, e]))
   const nameOf = (id: string) => {
-    const e = items.find((x) => x.id === id)
-    return (e && entryTitle(e.translations, i18n.locale, changelog.default_locale)) || id
+    const e = byId.get(id)
+    const c = e && changelogs.get(e.changelog_id)
+    return (e && c && entryTitle(e.translations, i18n.locale, c.default_locale)) || id
   }
-  const send = (action: "publish" | "delete") =>
+  const canPublish = [...changelogs.values()].some((c) => c.can_publish)
+  const send = (action: "publish" | "delete") => {
+    const groups = new Map<string, string[]>()
+    for (const id of selection.chosen) {
+      const c = byId.get(id)?.changelog_id
+      if (c) groups.set(c, [...(groups.get(c) ?? []), id])
+    }
     bulk.mutate(
-      { ids: selection.chosen, action },
+      { groups, action },
       {
         onSuccess: (r) => {
           report(r, nameOf)
@@ -38,6 +47,7 @@ export function EntryBulkBar({
         onError: (e) => toast(errorText(e)),
       }
     )
+  }
   const remove = () => {
     const n = selection.count
     confirm({
@@ -49,27 +59,34 @@ export function EntryBulkBar({
   }
   return (
     <>
-      <SelectionBar selection={selection} busy={bulk.isPending} className="border-b px-6 py-2 phone:px-4">
-        {changelog.can_publish && (
-          <BulkButton
-            selection={selection}
-            disabled={bulk.isPending}
+      <BulkBar
+        picked={selection.count}
+        total={items.length}
+        onToggleAll={selection.toggleAll}
+        onCancel={selection.stop}
+        busy={bulk.isPending}
+      >
+        {canPublish && (
+          <Button
+            variant="outline"
+            className={bulkButton()}
+            disabled={selection.count === 0 || bulk.isPending}
             onClick={() => send("publish")}
             data-testid="publish-selected"
           >
             <Trans>Publish</Trans>
-          </BulkButton>
+          </Button>
         )}
-        <BulkButton
-          selection={selection}
-          destructive
-          disabled={bulk.isPending}
+        <Button
+          variant="outline"
+          className={bulkButton(true)}
+          disabled={selection.count === 0 || bulk.isPending}
           onClick={remove}
           data-testid="delete-selected"
         >
           <Trans>Delete</Trans>
-        </BulkButton>
-      </SelectionBar>
+        </Button>
+      </BulkBar>
       {confirmDialog}
       {reportDialog}
     </>

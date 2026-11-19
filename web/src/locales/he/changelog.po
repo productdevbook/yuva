@@ -7,6 +7,11 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: he\n"
 
+#. placeholder {0}: rows.length
+#: src/features/changelog/EntriesTab.tsx
+msgid "{0, plural, one {{shownCount} entry} other {{shownCount} entries}}"
+msgstr "{0, plural, one {רשומה אחת} two {{shownCount} רשומות} other {{shownCount} רשומות}}"
+
 #: src/features/changelog/ChangelogsPage.tsx
 msgid "{published} of {total} entries published"
 msgstr "{published} מתוך {total} רשומות פורסמו"
@@ -36,15 +41,6 @@ msgstr "סוף הכתובת"
 msgid "Agents may publish"
 msgstr "נציגים יכולים לפרסם"
 
-#: src/features/changelog/ChangelogFrame.tsx
-#: src/features/changelog/pages.tsx
-msgid "All"
-msgstr "הכול"
-
-#: src/features/changelog/ChangelogFrame.tsx
-msgid "All changelogs"
-msgstr "כל יומני השינויים"
-
 #: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "All labels"
@@ -53,10 +49,6 @@ msgstr "כל התוויות"
 #: src/features/changelog/pages.tsx
 msgid "All languages"
 msgstr "כל השפות"
-
-#: src/features/changelog/ChangelogFrame.tsx
-msgid "All products"
-msgstr "כל המוצרים"
 
 #: src/features/changelog/SettingsTab.tsx
 msgid "Analytics property"
@@ -75,7 +67,6 @@ msgid "At least 3 characters."
 msgstr "לפחות 3 תווים."
 
 #: src/features/changelog/CreateChangelogDialog.tsx
-#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/MailDialog.tsx
 #: src/features/changelog/ScheduleDialog.tsx
 msgid "Cancel"
@@ -89,21 +80,25 @@ msgstr "שינוי"
 msgid "Change the time"
 msgstr "שינוי השעה"
 
-#: src/features/changelog/pages.tsx
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/SettingsTab.tsx
 msgid "Changelog"
 msgstr "יומן שינויים"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/pages.tsx
 msgid "Changelogs"
 msgstr "יומני שינויים"
 
+#: src/features/changelog/pages.tsx
+msgid "Changelogs ({manageKey})"
+msgstr "יומני שינויים ({manageKey})"
+
 #: src/features/changelog/EntryEditor.tsx
 msgid "Choose a picture"
 msgstr "בחירת תמונה"
 
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "Clear filters"
 msgstr "נקה מסננים"
@@ -184,7 +179,6 @@ msgstr "טיוטה"
 msgid "Draft submitted. An owner or admin can publish it."
 msgstr "הטיוטה נשלחה. בעלים או מנהל יכולים לפרסם אותה."
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/pages.tsx
 msgid "Drafts"
 msgstr "טיוטות"
@@ -193,12 +187,14 @@ msgstr "טיוטות"
 msgid "Each product has one changelog. Owners and admins create and publish them."
 msgstr "לכל מוצר יש יומן שינויים. בעלים ומנהלים יוצרים ומפרסמים אותו."
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
-#: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
 msgid "Entries"
 msgstr "רשומות"
+
+#: src/features/changelog/pages.tsx
+msgid "Entries ({entriesKey})"
+msgstr "רשומות ({entriesKey})"
 
 #: src/features/changelog/SettingsTab.tsx
 msgid "Entries and translations are deleted with it."
@@ -209,12 +205,8 @@ msgid "Entries can be written and published in these languages. Visitors see the
 msgstr "אפשר לכתוב ולפרסם רשומות בשפות האלה. מבקרים רואים את השפה שלהם, אם היא קיימת."
 
 #: src/features/changelog/pages.tsx
-msgid "Entries show on the public page once they are published."
-msgstr "רשומות מופיעות בעמוד הציבורי לאחר הפרסום."
-
-#: src/features/changelog/pages.tsx
-msgid "Entries you have not published yet show up here."
-msgstr "רשומות שעדיין לא פרסמת מופיעות כאן."
+msgid "Every state"
+msgstr "כל מצב"
 
 #: src/features/changelog/Bulk.tsx
 #: src/features/changelog/EntryEditor.tsx
@@ -301,6 +293,10 @@ msgstr "סמן כמעודכן"
 msgid "More"
 msgstr "עוד"
 
+#: src/features/changelog/EntriesTab.tsx
+msgid "move"
+msgstr "מעבר"
+
 #: src/features/changelog/CreateChangelogDialog.tsx
 #: src/features/changelog/SettingsTab.tsx
 msgid "Name"
@@ -311,9 +307,10 @@ msgid "New"
 msgstr "חדש"
 
 #: src/features/changelog/EntriesTab.tsx
-msgid "New entry"
-msgstr "רשומה חדשה"
+msgid "new post"
+msgstr "פוסט חדש"
 
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "New post"
 msgstr "פוסט חדש"
@@ -351,10 +348,6 @@ msgstr "לא פורסם"
 msgid "not written"
 msgstr "לא נכתב"
 
-#: src/features/changelog/pages.tsx
-msgid "Nothing here."
-msgstr "אין כאן כלום."
-
 #: src/features/changelog/SettingsTab.tsx
 msgid "Off: agents write drafts and submit them, and owners and admins publish. On: agents with access to the inbox publish, schedule and unpublish too."
 msgstr "כבוי: סוכנים כותבים טיוטות ומגישים אותן, ובעלים ומנהלים מפרסמים. דלוק: גם סוכנים עם גישה לתיבה מפרסמים, מתזמנים ומבטלים פרסום."
@@ -362,6 +355,11 @@ msgstr "כבוי: סוכנים כותבים טיוטות ומגישים אותן
 #: src/features/changelog/text.tsx
 msgid "Only owners and admins can do this."
 msgstr "רק בעלים ומנהלים יכולים לעשות זאת."
+
+#: src/features/changelog/EntriesTab.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "פתיחה"
 
 #: src/features/changelog/EntryEditor.tsx
 msgid "Original"
@@ -386,10 +384,6 @@ msgstr "חלק מכתובת האינטרנט של התרגום הזה. נוצר 
 #: src/features/changelog/ScheduleDialog.tsx
 msgid "Pick a time in the next year, in your time zone, {zone}."
 msgstr "בחרו זמן בשנה הקרובה, באזור הזמן שלכם, {zone}."
-
-#: src/features/changelog/pages.tsx
-msgid "Pick a time when you write an entry and it goes public by itself."
-msgstr "בחר שעה בזמן כתיבת רשומה והיא תתפרסם מעצמה."
 
 #: src/features/changelog/MailDialog.tsx
 msgid "Pick up to 10 lists of this inbox."
@@ -446,7 +440,6 @@ msgstr "פרסם עכשיו"
 msgid "Publish on"
 msgstr "פרסום בתאריך"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
@@ -498,7 +491,6 @@ msgstr "תזמן מחדש"
 msgid "Schedule this entry"
 msgstr "תזמון הרשומה הזו"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
 #: src/features/changelog/text.tsx
@@ -513,15 +505,26 @@ msgstr "מתוזמנות: {scheduled}"
 msgid "Search entries"
 msgstr "חיפוש רשומות"
 
+#: src/features/changelog/pages.tsx
+msgid "Search entries…"
+msgstr "חיפוש ברשומות…"
+
+#: src/features/changelog/EntriesTab.tsx
+msgid "select"
+msgstr "בחירה"
+
 #: src/features/changelog/MailDialog.tsx
 msgid "Send through"
 msgstr "שליחה דרך"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/pages.tsx
 msgid "Settings"
 msgstr "הגדרות"
+
+#: src/features/changelog/pages.tsx
+msgid "Settings ({settingsKey})"
+msgstr "הגדרות ({settingsKey})"
 
 #: src/features/changelog/EntryEditor.tsx
 msgid "Show"
@@ -556,6 +559,7 @@ msgid "Start with a title. You write the text next, and it stays a draft until i
 msgstr "התחילו בכותרת. את הטקסט תכתבו אחר כך, והוא נשאר טיוטה עד שיפורסם."
 
 #: src/features/changelog/EntriesTab.tsx
+#: src/features/changelog/pages.tsx
 msgid "State"
 msgstr "מצב"
 
@@ -666,13 +670,9 @@ msgstr "כותרת"
 msgid "Translation deleted"
 msgstr "התרגום נמחק"
 
-#: src/features/changelog/pages.tsx
+#: src/features/changelog/EntriesTab.tsx
 msgid "Try again"
 msgstr "נסה שוב"
-
-#: src/features/changelog/pages.tsx
-msgid "Try another word, label or language."
-msgstr "נסה מילה, תווית או שפה אחרת."
 
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntryEditor.tsx
@@ -709,6 +709,13 @@ msgstr "שינויים שלא נשמרו"
 msgid "Unschedule"
 msgstr "ביטול תזמון"
 
+#: src/features/changelog/ChangelogFrame.tsx
+#: src/features/changelog/ChangelogsPage.tsx
+#: src/features/changelog/EntryEditor.tsx
+#: src/features/changelog/pages.tsx
+msgid "Updates"
+msgstr "עדכונים"
+
 #: src/features/changelog/SettingsTab.tsx
 msgid "Use 3 to 48 letters, numbers and inner hyphens."
 msgstr "השתמשו ב-3 עד 48 אותיות, ספרות ומקפים פנימיים."
@@ -726,11 +733,9 @@ msgstr "תצוגה"
 msgid "View changelog"
 msgstr "הצגת יומן השינויים"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/EntryEditor.tsx
-#: src/features/changelog/pages.tsx
 msgid "What’s new"
 msgstr "מה חדש"
 

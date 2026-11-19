@@ -14,7 +14,7 @@ import { ErrorLine } from "@/features/changelog/text"
 import { Languages } from "@/features/help/SettingsTab"
 import { useLocaleName } from "@/features/help/text"
 import { Card, ChoiceSelect, Field, FormActions, FormCard, Section, ToggleRow } from "@/features/settings/ui"
-import { validSlug } from "@/features/status/CreatePageDialog"
+import { validSlug } from "@/features/status/CreatePageForm"
 import type { Changelog, ChangelogUpdate } from "@/lib/api"
 
 function General({ changelog }: { changelog: Changelog }) {

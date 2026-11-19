@@ -14,26 +14,16 @@ import {
   FolderPlusIcon,
   FoldersIcon,
   GripVerticalIcon,
-  LoaderIcon,
   MoreHorizontalIcon,
   PencilIcon,
-  PlusIcon,
   Trash2Icon,
 } from "lucide-react"
 import { useState } from "react"
-import { useSearchParams } from "react-router"
 
-import { useConfirm } from "@/components/common"
-import { HELP_KEYS, keyLabel } from "@/components/common/ShortcutSheet"
+import { Segmented, useConfirm } from "@/components/common"
+import { FormCard, FormGrid } from "@/components/common/FormCard"
+import { ListBox, ListBoxEmpty, ListBoxSkeleton } from "@/components/common/ListBox"
 import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,14 +32,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
-import { Skeleton } from "@/components/ui/skeleton"
 import { Textarea } from "@/components/ui/textarea"
-import { Segmented } from "@/components/common"
 import { ICON_COMPONENTS } from "@/features/help/icons"
 import { useCollectionMutations, useHelpCollections } from "@/features/help/queries"
 import { collectionName, ErrorLine, HELP_ICONS, useIconText, useLocaleName } from "@/features/help/text"
 import { ChoiceSelect, Field } from "@/features/settings/ui"
-import { useHotkeys } from "@/hooks/use-hotkeys"
 import type { HelpCenter, HelpCollection, HelpCollectionTranslationInput, HelpIcon } from "@/lib/api"
 import { cn } from "@/lib/utils"
 
@@ -67,7 +54,7 @@ function renumber(list: HelpCollection[], parent?: string | null): Moves {
   )
 }
 
-function CollectionDialog({
+function CollectionForm({
   center,
   all,
   edit,
@@ -136,108 +123,96 @@ function CollectionDialog({
   }
 
   return (
-    <Dialog open onOpenChange={(o) => !o && onClose()}>
-      <DialogContent data-testid="collection-dialog">
-        <form
-          className="flex flex-col gap-5"
-          onSubmit={(e) => {
-            e.preventDefault()
-            submit()
-          }}
-        >
-          <DialogHeader>
-            <DialogTitle>{edit ? <Trans>Edit collection</Trans> : <Trans>New collection</Trans>}</DialogTitle>
-            <DialogDescription>
-              <Trans>A group of articles. Name it in each language you publish; one name is enough to start.</Trans>
-            </DialogDescription>
-          </DialogHeader>
-          {center.locales.length > 1 && (
-            <div className="-my-1 overflow-x-auto py-1">
-              <Segmented
-                value={locale}
-                onChange={setLocale}
-                label={t`Language`}
-                items={center.locales.map((l) => ({
-                  value: l,
-                  label: `${localeName(l)}${text[l].name.trim() ? "" : " ·"}`,
-                  testId: `collection-locale-${l}`,
-                }))}
-              />
-            </div>
-          )}
-          <Field label={<Trans>Name</Trans>} htmlFor="collection-name">
-            <Input
-              id="collection-name"
-              value={cur.name}
-              maxLength={100}
-              autoFocus
-              placeholder={t`Getting started`}
-              onChange={(e) => patchText({ name: e.target.value })}
-              data-testid="collection-name"
+    <FormCard
+      title={edit ? <Trans>Edit collection</Trans> : <Trans>New collection</Trans>}
+      description={
+        <Trans>A group of articles. Name it in each language you publish; one name is enough to start.</Trans>
+      }
+      submit={edit ? <Trans>Save</Trans> : <Trans>Create collection</Trans>}
+      ready={ok}
+      busy={pending}
+      error={m.create.error ?? m.update.error}
+      onSubmit={submit}
+      onCancel={onClose}
+      testId="collection-form"
+    >
+      {center.locales.length > 1 && (
+        <div className="-my-1 overflow-x-auto py-1">
+          <Segmented
+            value={locale}
+            onChange={setLocale}
+            label={t`Language`}
+            items={center.locales.map((l) => ({
+              value: l,
+              label: `${localeName(l)}${text[l].name.trim() ? "" : " ·"}`,
+              testId: `collection-locale-${l}`,
+            }))}
+          />
+        </div>
+      )}
+      <FormGrid>
+        <Field label={<Trans>Name</Trans>} htmlFor="collection-name">
+          <Input
+            id="collection-name"
+            value={cur.name}
+            maxLength={100}
+            autoFocus
+            placeholder={t`Getting started`}
+            onChange={(e) => patchText({ name: e.target.value })}
+            data-testid="collection-name"
+          />
+        </Field>
+        {!hasChildren && parents.length > 0 && (
+          <Field label={<Trans>Inside</Trans>} htmlFor="collection-parent">
+            <ChoiceSelect
+              id="collection-parent"
+              value={parent}
+              onChange={setParent}
+              options={[
+                ["", t`Top level`] as const,
+                ...parents.map((c) => [c.id, collectionName(c, center.default_locale)] as const),
+              ]}
+              label={t`Inside`}
             />
           </Field>
-          <Field label={<Trans>Description</Trans>} htmlFor="collection-description">
-            <Textarea
-              id="collection-description"
-              value={cur.description}
-              maxLength={500}
-              rows={2}
-              onChange={(e) => patchText({ description: e.target.value })}
-              data-testid="collection-description"
-            />
-          </Field>
-          <Field label={<Trans>Icon</Trans>}>
-            <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label={t`Icon`}>
-              {HELP_ICONS.map((name) => {
-                const Icon = ICON_COMPONENTS[name]
-                const on = icon === name
-                return (
-                  <button
-                    key={name}
-                    type="button"
-                    role="radio"
-                    aria-checked={on}
-                    aria-label={iconText[name]}
-                    title={iconText[name]}
-                    onClick={() => setIcon(on ? "" : name)}
-                    className={cn(
-                      "grid size-9 place-items-center rounded-lg border text-muted-foreground outline-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring",
-                      on && "border-brand bg-brand-wash text-brand"
-                    )}
-                  >
-                    <Icon className="size-4" />
-                  </button>
-                )
-              })}
-            </div>
-          </Field>
-          {!hasChildren && parents.length > 0 && (
-            <Field label={<Trans>Inside</Trans>} htmlFor="collection-parent">
-              <ChoiceSelect
-                id="collection-parent"
-                value={parent}
-                onChange={setParent}
-                options={[
-                  ["", t`Top level`] as const,
-                  ...parents.map((c) => [c.id, collectionName(c, center.default_locale)] as const),
-                ]}
-                label={t`Inside`}
-              />
-            </Field>
-          )}
-          <ErrorLine error={m.create.error ?? m.update.error} />
-          <DialogFooter>
-            <Button type="button" variant="ghost" onClick={onClose}>
-              <Trans>Cancel</Trans>
-            </Button>
-            <Button type="submit" disabled={!ok || pending} data-testid="save-collection">
-              {pending && <LoaderIcon className="animate-spin" />}
-              {edit ? <Trans>Save</Trans> : <Trans>Create collection</Trans>}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+        )}
+      </FormGrid>
+      <Field label={<Trans>Description</Trans>} htmlFor="collection-description">
+        <Textarea
+          id="collection-description"
+          value={cur.description}
+          maxLength={500}
+          rows={2}
+          onChange={(e) => patchText({ description: e.target.value })}
+          data-testid="collection-description"
+        />
+      </Field>
+      <Field label={<Trans>Icon</Trans>}>
+        <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label={t`Icon`}>
+          {HELP_ICONS.map((name) => {
+            const Icon = ICON_COMPONENTS[name]
+            const on = icon === name
+            return (
+              <button
+                key={name}
+                type="button"
+                role="radio"
+                aria-checked={on}
+                aria-label={iconText[name]}
+                title={iconText[name]}
+                onClick={() => setIcon(on ? "" : name)}
+                className={cn(
+                  "grid size-9 place-items-center rounded-lg border text-muted-foreground outline-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring",
+                  on && "border-brand bg-brand-wash text-brand"
+                )}
+              >
+                <Icon className="size-4" />
+              </button>
+            )
+          })}
+        </div>
+      </Field>
+    </FormCard>
   )
 }
 
@@ -269,14 +244,15 @@ function Row({
   const name = collectionName(c, i18n.locale, center.default_locale)
   const missing = center.locales.filter((l) => !c.translations[l])
   return (
-    <li
+    <div
       ref={setDropRef}
+      data-row
       className={cn(
-        "flex min-h-14 items-center gap-2 py-2 pe-2 transition-colors hover:bg-surface/60",
+        "flex min-h-14 items-center gap-2 border-line-soft py-2 pe-2 transition-colors hover:bg-subtle",
         isOver && "bg-brand-wash",
         isDragging && "opacity-50"
       )}
-      style={{ paddingInlineStart: `${0.5 + depth * 1.75}rem` }}
+      style={{ paddingInlineStart: `${0.375 + depth * 1.75}rem` }}
       data-testid="help-collection-row"
       onKeyDown={(e) => {
         if (!e.altKey || (e.key !== "ArrowUp" && e.key !== "ArrowDown")) return
@@ -339,25 +315,29 @@ function Row({
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-    </li>
+    </div>
   )
 }
 
-export function CollectionsTab({ center }: { center: HelpCenter }) {
-  const { t, i18n } = useLingui()
+export type CollectionFormState = { edit?: HelpCollection; parentId?: string } | null
+
+export function CollectionsTab({
+  center,
+  form,
+  onForm,
+}: {
+  center: HelpCenter
+  form: CollectionFormState
+  onForm: (f: CollectionFormState) => void
+}) {
+  const { i18n } = useLingui()
   const query = useHelpCollections(center.id)
   const m = useCollectionMutations(center.id)
   const [confirm, dialog] = useConfirm()
-  const [params] = useSearchParams()
-  const [dialogState, setDialog] = useState<{ edit?: HelpCollection; parentId?: string } | null>(
-    params.get("new") ? {} : null
-  )
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }))
   const all = query.data ?? []
   const tops = siblings(all, undefined)
-  const newKey = keyLabel(HELP_KEYS.newCollection).join("")
-
-  useHotkeys({ [HELP_KEYS.newCollection]: () => setDialog({}) })
+  const setDialog = onForm
 
   const reorder = (moves: Moves) => moves.length > 0 && m.reorder.mutate(moves)
 
@@ -411,39 +391,32 @@ export function CollectionsTab({ center }: { center: HelpCenter }) {
     })
   }
 
-  if (query.isPending) return <Skeleton className="h-40 w-full rounded-[14px]" />
   return (
-    <div className="flex flex-col gap-4" data-testid="help-collections">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="min-w-60 flex-1 text-body text-muted-foreground">
-          <Trans>
-            Group articles so visitors can browse. A collection can hold one level of sub-collections. Drag to change
-            the order.
-          </Trans>
-        </p>
-        <Button
-          size="sm"
-          onClick={() => setDialog({})}
-          title={t`New collection (${newKey})`}
-          data-testid="new-collection"
-        >
-          <PlusIcon />
-          <Trans>New collection</Trans>
-        </Button>
-      </div>
-      <ErrorLine error={query.error ?? m.reorder.error ?? m.remove.error} />
-      {all.length === 0 ? (
-        <div className="flex flex-col items-center gap-2 rounded-[14px] border bg-card px-6 py-12 text-center">
-          <span className="mb-1 grid size-12 place-items-center rounded-2xl bg-muted text-faint">
-            <FoldersIcon className="size-5" />
-          </span>
-          <p className="text-body text-muted-foreground" data-testid="help-collections-empty">
+    <div data-testid="help-collections">
+      {form && (
+        <CollectionForm
+          key={form.edit?.id ?? form.parentId ?? "new"}
+          center={center}
+          all={all}
+          edit={form.edit}
+          parentId={form.parentId}
+          onClose={() => setDialog(null)}
+        />
+      )}
+      <ErrorLine error={query.error ?? m.reorder.error ?? m.remove.error} className="mt-3" />
+      {query.isPending ? (
+        <ListBox>
+          <ListBoxSkeleton rows={4} />
+        </ListBox>
+      ) : all.length === 0 ? (
+        <ListBox>
+          <ListBoxEmpty testId="help-collections-empty">
             <Trans>No collections yet. Articles can stay without one.</Trans>
-          </p>
-        </div>
+          </ListBoxEmpty>
+        </ListBox>
       ) : (
         <DndContext sensors={sensors} onDragEnd={onDragEnd}>
-          <ul className="flex flex-col divide-y overflow-hidden rounded-[14px] border bg-card">
+          <ListBox>
             {tops.flatMap((top, i) => [
               <Row
                 key={top.id}
@@ -472,18 +445,15 @@ export function CollectionsTab({ center }: { center: HelpCenter }) {
                 />
               )),
             ])}
-          </ul>
+          </ListBox>
         </DndContext>
       )}
-      {dialogState && (
-        <CollectionDialog
-          center={center}
-          all={all}
-          edit={dialogState.edit}
-          parentId={dialogState.parentId}
-          onClose={() => setDialog(null)}
-        />
-      )}
+      <p className="m-0 mt-3 text-small text-muted-foreground">
+        <Trans>
+          Group articles so visitors can browse. A collection can hold one level of sub-collections. Drag to change the
+          order.
+        </Trans>
+      </p>
       {dialog}
     </div>
   )

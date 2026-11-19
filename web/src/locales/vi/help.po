@@ -7,6 +7,11 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: vi\n"
 
+#. placeholder {0}: items.length
+#: src/features/help/ArticlesTab.tsx
+msgid "{0, plural, one {{shown} article} other {{shown} articles}}"
+msgstr "{0, plural, other {{shown} bài viết}}"
+
 #. placeholder {0}: c.articles
 #: src/features/help/ImportCard.tsx
 msgid "{0, plural, one {# article read} other {# articles read}}"
@@ -62,21 +67,13 @@ msgstr "{0, plural, one {Add the language in the settings, then import again.} o
 msgid "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 msgstr "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "{drafts, plural, one {# draft} other {# drafts}}"
-msgstr "{drafts, plural, other {# bản nháp}}"
-
-#: src/features/help/HelpColumn.tsx
-msgid "{published} of {total} articles published"
-msgstr "Đã xuất bản {published} trên {total} bài viết"
-
 #: src/features/help/ImportCard.tsx
 msgid "{saved, plural, one {# draft saved} other {# drafts saved}}"
 msgstr "{saved, plural, one {# draft saved} other {# drafts saved}}"
 
 #: src/features/help/ArticlesTab.tsx
-msgid "{searches} searches"
-msgstr "{searches} lượt tìm kiếm"
+msgid "{views, plural, one {# view} other {# views}}"
+msgstr "{views, plural, other {# lượt xem}}"
 
 #: src/features/help/CreateCenterDialog.tsx
 msgid "3 to 48 letters, numbers and hyphens. It is unique on this server."
@@ -124,10 +121,6 @@ msgstr "Phần cuối địa chỉ"
 msgid "Agents may publish"
 msgstr "Nhân viên được phép xuất bản"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "All"
-msgstr "Tất cả"
-
 #: src/features/help/Revisions.tsx
 msgid "An API key"
 msgstr "Một khóa API"
@@ -152,11 +145,6 @@ msgstr "Một trung tâm trợ giúp khác đang hoặc đã dùng địa chỉ 
 msgid "Answer common questions once, in writing. Each product gets its own help center with articles, collections and a report of what people search for. Pages are hosted by Yuva, so there is nothing to install on your site."
 msgstr "Trả lời các câu hỏi thường gặp một lần, bằng văn bản. Mỗi sản phẩm có trung tâm trợ giúp riêng với bài viết, bộ sưu tập và báo cáo về những gì mọi người tìm kiếm. Trang do Yuva lưu trữ nên không cần cài gì trên trang web của bạn."
 
-#: src/features/help/pages.tsx
-msgid "Answer common questions once, in writing. Pick an inbox’s help center to write articles, group them in collections and see what customers search for."
-msgstr "Trả lời các câu hỏi thường gặp một lần, bằng văn bản. Chọn trung tâm trợ giúp của một hộp thư để viết bài, gom vào bộ sưu tập và xem khách hàng tìm gì."
-
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Article"
 msgstr "Bài viết"
@@ -179,7 +167,6 @@ msgstr "Lượt xem bài viết"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Articles"
 msgstr "Bài viết"
@@ -192,7 +179,6 @@ msgstr "Có thể viết và xuất bản bài viết bằng các ngôn ngữ n�
 msgid "Articles in this collection"
 msgstr "Bài viết trong bộ sưu tập này"
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Articles people read before they write to you"
 msgstr "Bài viết mọi người đọc trước khi liên hệ với bạn"
@@ -237,8 +223,6 @@ msgstr "Brings the collections and articles of another help center in as drafts.
 msgid "Bulleted list"
 msgstr "Danh sách dấu đầu dòng"
 
-#: src/features/help/ArticlesTab.tsx
-#: src/features/help/CollectionsTab.tsx
 #: src/features/help/CreateCenterDialog.tsx
 #: src/features/help/ImportCard.tsx
 msgid "Cancel"
@@ -277,6 +261,11 @@ msgstr "Cuộc trò chuyện đã bắt đầu"
 msgid "Checking the sign-in"
 msgstr "Checking the sign-in"
 
+#: src/features/help/ArticlesTab.tsx
+#: src/features/help/pages.tsx
+msgid "Clear filters"
+msgstr "Xóa bộ lọc"
+
 #: src/features/help/ImportCard.tsx
 msgid "Close"
 msgstr "Close"
@@ -295,8 +284,6 @@ msgstr "Khối mã"
 msgid "Collection"
 msgstr "Bộ sưu tập"
 
-#: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Collections"
 msgstr "Bộ sưu tập"
@@ -318,14 +305,9 @@ msgid "Create collection"
 msgstr "Tạo bộ sưu tập"
 
 #: src/features/help/CreateCenterDialog.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Create help center"
 msgstr "Tạo trung tâm trợ giúp"
-
-#: src/features/help/HelpColumn.tsx
-msgid "Create help center ({newKey})"
-msgstr "Tạo trung tâm trợ giúp ({newKey})"
 
 #: src/features/help/Bulk.tsx
 #: src/features/help/CollectionsTab.tsx
@@ -408,7 +390,6 @@ msgid "Draft submitted. An owner or admin can publish it."
 msgstr "Đã gửi bản nháp. Chủ sở hữu hoặc quản trị viên có thể xuất bản."
 
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Drafts"
 msgstr "Bản nháp"
@@ -429,9 +410,17 @@ msgstr "Chỉnh sửa bộ sưu tập"
 msgid "Empty"
 msgstr "Trống"
 
+#: src/features/help/pages.tsx
+msgid "Every collection"
+msgstr "Mọi bộ sưu tập"
+
 #: src/features/help/ReportTab.tsx
 msgid "Every search found something."
 msgstr "Mỗi lượt tìm kiếm đều có kết quả."
+
+#: src/features/help/pages.tsx
+msgid "Every status"
+msgstr "Mọi trạng thái"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
@@ -445,6 +434,14 @@ msgstr "Everything imported is a draft."
 #: src/features/help/ImportCard.tsx
 msgid "Failed"
 msgstr "Failed"
+
+#: src/features/help/pages.tsx
+msgid "Filter by collection"
+msgstr "Lọc theo bộ sưu tập"
+
+#: src/features/help/pages.tsx
+msgid "Filter by status"
+msgstr "Lọc theo trạng thái"
 
 #: src/features/help/EditorToolbar.tsx
 msgid "Formatting"
@@ -470,15 +467,12 @@ msgstr "Nhóm các bài viết để khách truy cập có thể duyệt. Một 
 msgid "Heading"
 msgstr "Tiêu đề"
 
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Help center"
 msgstr "Trung tâm trợ giúp"
 
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help center created. Write the first article, then publish it."
 msgstr "Đã tạo trung tâm trợ giúp. Hãy viết bài đầu tiên rồi xuất bản."
@@ -486,12 +480,6 @@ msgstr "Đã tạo trung tâm trợ giúp. Hãy viết bài đầu tiên rồi x
 #: src/features/help/SettingsTab.tsx
 msgid "Help center deleted"
 msgstr "Đã xóa trung tâm trợ giúp"
-
-#: src/features/help/HelpColumn.tsx
-#: src/features/help/HelpFrame.tsx
-#: src/features/help/pages.tsx
-msgid "Help centers"
-msgstr "Trung tâm trợ giúp"
 
 #: src/features/help/text.tsx
 msgid "Help centers are turned off on this server."
@@ -565,7 +553,6 @@ msgstr "Ngôn ngữ"
 msgid "Language of the articles"
 msgstr "Language of the articles"
 
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Languages"
 msgstr "Ngôn ngữ"
@@ -573,10 +560,6 @@ msgstr "Ngôn ngữ"
 #: src/features/help/ReportTab.tsx
 msgid "Last {d} days"
 msgstr "{d} ngày qua"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "last 7 days"
-msgstr "7 ngày qua"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "Last 7 days"
@@ -626,6 +609,10 @@ msgstr "Thêm"
 msgid "More for {name}"
 msgstr "Thêm cho {name}"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "move"
+msgstr "di chuyển"
+
 #: src/features/help/CollectionsTab.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "Di chuyển {name}. Kéo, hoặc nhấn Alt cùng các phím mũi tên."
@@ -653,6 +640,10 @@ msgid "New address"
 msgstr "New address"
 
 #: src/features/help/ArticlesTab.tsx
+msgid "new article"
+msgstr "bài viết mới"
+
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/pages.tsx
 msgid "New article"
 msgstr "Bài viết mới"
@@ -661,16 +652,16 @@ msgstr "Bài viết mới"
 msgid "New article ({newKey})"
 msgstr "Bài viết mới ({newKey})"
 
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CollectionsTab.tsx
+#: src/features/help/pages.tsx
 msgid "New collection"
 msgstr "Bộ sưu tập mới"
 
-#: src/features/help/CollectionsTab.tsx
-msgid "New collection ({newKey})"
-msgstr "Bộ sưu tập mới ({newKey})"
+#: src/features/help/pages.tsx
+msgid "New collection ({colKey})"
+msgstr "Bộ sưu tập mới ({colKey})"
 
-#: src/features/help/HelpFrame.tsx
+#: src/features/help/pages.tsx
 msgid "New help center for {product}"
 msgstr "Trung tâm trợ giúp mới cho {product}"
 
@@ -713,12 +704,10 @@ msgstr "Chưa có phiên bản trước."
 msgid "No help center for {0} yet"
 msgstr "Chưa có trung tâm trợ giúp cho {0}"
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "No help center yet. Owners and admins create it."
 msgstr "Chưa có trung tâm trợ giúp. Chủ sở hữu và quản trị viên tạo nó."
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "No inbox to show a help center for."
 msgstr "Không có hộp thư nào để hiển thị trung tâm trợ giúp."
@@ -743,10 +732,6 @@ msgstr "Chưa viết"
 #: src/features/help/EditorToolbar.tsx
 msgid "Numbered list"
 msgstr "Danh sách đánh số"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "of {answers} answers"
-msgstr "trên {answers} câu trả lời"
 
 #: src/features/help/ImportCard.tsx
 msgid "Off: a draft you edited in Yuva since the last import is kept."
@@ -775,6 +760,11 @@ msgstr "Chỉ chủ sở hữu và quản trị viên mới làm được điề
 #: src/features/help/ImportCard.tsx
 msgid "Only owners and admins can use a Zendesk migration."
 msgstr "Only owners and admins can use a Zendesk migration."
+
+#: src/features/help/ArticlesTab.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "mở"
 
 #: src/features/help/ImportCard.tsx
 msgid "Open the drafts"
@@ -857,21 +847,17 @@ msgstr "Địa chỉ công khai"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Publish"
 msgstr "Xuất bản"
 
 #: src/features/help/ArticleEditor.tsx
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Publish ({publishKey})"
 msgstr "Xuất bản ({publishKey})"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/ImportCard.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/Revisions.tsx
@@ -900,11 +886,6 @@ msgstr "Redirects"
 #: src/features/help/SettingsTab.tsx
 msgid "Remove {0}"
 msgstr "Gỡ {0}"
-
-#: src/features/help/HelpFrame.tsx
-#: src/features/help/pages.tsx
-msgid "Report"
-msgstr "Báo cáo"
 
 #: src/features/help/ReportTab.tsx
 msgid "Report period"
@@ -962,12 +943,20 @@ msgid "Saving…"
 msgstr "Đang lưu…"
 
 #: src/features/help/ArticlesTab.tsx
+msgid "search"
+msgstr "tìm kiếm"
+
+#: src/features/help/pages.tsx
+msgid "Search articles…"
+msgstr "Tìm trong bài viết…"
+
+#: src/features/help/pages.tsx
+msgid "Search gaps"
+msgstr "Khoảng trống tìm kiếm"
+
+#: src/features/help/pages.tsx
 msgid "Search titles"
 msgstr "Tìm trong tiêu đề"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Search titles ({findKey})"
-msgstr "Tìm trong tiêu đề ({findKey})"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Search words"
@@ -982,13 +971,13 @@ msgstr "Đã tìm, không thấy gì"
 msgid "Searches"
 msgstr "Lượt tìm kiếm"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "searches this week"
-msgstr "lượt tìm kiếm tuần này"
-
 #: src/features/help/ReportTab.tsx
 msgid "Searches with no result"
 msgstr "Tìm kiếm không có kết quả"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "select"
+msgstr "chọn"
 
 #: src/features/help/ReportTab.tsx
 msgid "Sent"
@@ -998,7 +987,6 @@ msgstr "Đã gửi"
 msgid "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 msgstr "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/text.tsx
 msgid "Settings"
@@ -1067,10 +1055,6 @@ msgstr "Bắt đầu bằng tiêu đề. Bạn viết nội dung sau, và nó v�
 #: src/features/help/ImportCard.tsx
 msgid "State"
 msgstr "State"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Status"
-msgstr "Trạng thái"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Submit draft"
@@ -1177,6 +1161,10 @@ msgstr "Cấp cao nhất"
 msgid "Translation deleted"
 msgstr "Đã xóa bản dịch"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "Try again"
+msgstr "Thử lại"
+
 #: src/features/help/text.tsx
 msgid "Type a word to search for."
 msgstr "Nhập một từ để tìm."
@@ -1188,7 +1176,6 @@ msgstr "Nhập một từ để tìm."
 msgid "Unpublish"
 msgstr "Hủy xuất bản"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Unpublish ({publishKey})"
 msgstr "Hủy xuất bản ({publishKey})"
@@ -1207,8 +1194,6 @@ msgstr "Hủy xuất bản bản dịch này?"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Unpublished"
 msgstr "Chưa xuất bản"
@@ -1220,10 +1205,6 @@ msgstr "Thay đổi chưa xuất bản"
 #: src/features/help/ArticleEditor.tsx
 msgid "Unsaved changes"
 msgstr "Thay đổi chưa lưu"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Updated"
-msgstr "Cập nhật"
 
 #: src/features/help/SettingsTab.tsx
 msgid "Use 3 to 48 letters, numbers and inner hyphens."
@@ -1245,12 +1226,10 @@ msgstr "Đã khôi phục phiên bản vào bản nháp"
 msgid "View"
 msgstr "Xem"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "View site"
 msgstr "Xem trang web"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "View site ({openKey})"
 msgstr "Xem trang web ({openKey})"
@@ -1259,10 +1238,6 @@ msgstr "Xem trang web ({openKey})"
 #: src/features/help/ReportTab.tsx
 msgid "Views"
 msgstr "Lượt xem"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Views · 7 days"
-msgstr "Lượt xem · 7 ngày"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "Visibility"

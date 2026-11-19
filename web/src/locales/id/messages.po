@@ -69,6 +69,11 @@ msgid "{0, plural, one {{shown} person} other {{shown} people}}"
 msgstr "{0, plural, other {{shown} orang}}"
 
 #. placeholder {0}: rows.length
+#: src/features/feedback/FeedbackHome.tsx
+msgid "{0, plural, one {{shown} report} other {{shown} reports}}"
+msgstr "{0, plural, other {{shown} masukan}}"
+
+#. placeholder {0}: rows.length
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "{0, plural, one {{shown} triggered e-mail} other {{shown} triggered e-mails}}"
 msgstr "{0, plural, other {{shown} email otomatis}}"
@@ -208,6 +213,7 @@ msgid "{0} marked as spam · no reply needed"
 msgstr "{0} ditandai sebagai spam · tidak perlu dibalas"
 
 #. placeholder {0}: done.length
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "{0} moved to the Trash"
@@ -223,6 +229,16 @@ msgstr "{0} dari {1}"
 #: src/features/team/TeamPage.tsx
 msgid "{0} open, unassigned"
 msgstr "{0} terbuka, belum ditugaskan"
+
+#. placeholder {0}: done.length
+#: src/features/feedback/FeedbackHome.tsx
+msgid "{0} reopened"
+msgstr "{0} dibuka kembali"
+
+#. placeholder {0}: done.length
+#: src/features/feedback/FeedbackHome.tsx
+msgid "{0} resolved"
+msgstr "{0} diselesaikan"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
@@ -416,9 +432,9 @@ msgstr "{count, plural, one {# person} other {# people}} who confirmed before wo
 msgid "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 msgstr "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 
-#: src/features/feedback/FeedbackPage.tsx
-msgid "{count, plural, one {# report} other {# reports}}"
-msgstr "{count, plural, other {# laporan}}"
+#: src/features/docs/DocsPage.tsx
+msgid "{count, plural, one {# post waiting for approval} other {# posts waiting for approval}}"
+msgstr "{count, plural, other {# postingan menunggu persetujuan}}"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "{count, plural, one {# scope} other {# scopes}}"
@@ -511,10 +527,6 @@ msgstr "{doneText} dari {total}"
 msgid "{doneText} of {total} done"
 msgstr "{doneText} dari {total} selesai"
 
-#: src/features/status/StatusPages.tsx
-msgid "{down, plural, one {# down} other {# down}}"
-msgstr "{down, plural, other {# mati}}"
-
 #: src/features/docs/PagesTab.tsx
 msgid "{down} not helpful"
 msgstr "{down} tidak membantu"
@@ -546,6 +558,10 @@ msgstr "{first} menilai percakapan 👍"
 #: src/features/conversation/messages/Thread.tsx
 msgid "{first} rated the conversation 👎"
 msgstr "{first} menilai percakapan 👎"
+
+#: src/features/status/StatusPages.tsx
+msgid "{fmtCount, plural, one {# page} other {# pages}}"
+msgstr "{fmtCount, plural, other {# halaman}}"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "{from} has an SPF record. Whether it passes is known once the test mail is read."
@@ -774,10 +790,6 @@ msgstr "{n} ditandai belum dibaca"
 #: src/features/mail/MailList.tsx
 msgid "{n} moved to the Inbox"
 msgstr "{n} dikembalikan ke Kotak Masuk"
-
-#: src/features/feedback/FeedbackPage.tsx
-msgid "{n} reports"
-msgstr "{n} laporan"
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -1152,10 +1164,6 @@ msgstr "{unreadText} belum dibaca"
 msgid "{unseenText} unread of {totalText}"
 msgstr "{unseenText} belum dibaca dari {totalText}"
 
-#: src/features/status/StatusPages.tsx
-msgid "{up, plural, one {# up} other {# up}}"
-msgstr "{up, plural, other {# aktif}}"
-
 #: src/features/docs/PagesTab.tsx
 msgid "{up} helpful"
 msgstr "{up} membantu"
@@ -1332,7 +1340,7 @@ msgstr "24 bulan"
 msgid "3 months"
 msgstr "3 bulan"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "3 to 48 letters, numbers and hyphens. It is unique on this server."
 msgstr "3 sampai 48 huruf, angka, dan tanda hubung. Unik di server ini."
 
@@ -1536,11 +1544,11 @@ msgstr "Diskusi mendapat jawaban yang diterima"
 msgid "A discussion started"
 msgstr "Diskusi dimulai"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "A draft incident opens for your team to review. Customers see nothing until a member publishes it."
 msgstr "Draf insiden dibuat agar ditinjau tim Anda. Pelanggan tidak melihat apa pun sampai seorang anggota menerbitkannya."
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "A draft is seen only by your team and changes no component until you publish it."
 msgstr "Draf hanya terlihat oleh tim Anda dan tidak mengubah komponen apa pun sampai Anda menerbitkannya."
 
@@ -1751,7 +1759,7 @@ msgstr "Satu properti dapat memiliki paling banyak 100 segmen. Hapus satu dulu."
 msgid "A property can have at most 20 funnels. Delete one first."
 msgstr "Satu properti dapat memiliki paling banyak 20 corong. Hapus satu dulu."
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "A public page that tells your customers whether {inboxName} works. It stays unpublished until you publish it."
 msgstr "Halaman publik yang memberi tahu pelanggan Anda apakah {inboxName} berfungsi. Halaman ini tetap belum diterbitkan sampai Anda menerbitkannya."
 
@@ -1759,7 +1767,7 @@ msgstr "Halaman publik yang memberi tahu pelanggan Anda apakah {inboxName} berfu
 msgid "A published What's new entry was deleted"
 msgstr "Entri Yang baru yang dipublikasikan dihapus"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "A pushed state that names its own state keeps it."
 msgstr "Status terkirim yang menyebut statusnya sendiri akan mempertahankannya."
 
@@ -1982,7 +1990,7 @@ msgstr "Nomor akun"
 msgid "Acme docs"
 msgstr "Dokumentasi Acme"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "Acme status"
 msgstr "Status Acme"
 
@@ -2011,7 +2019,6 @@ msgstr "Hanya tindakan"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "Active"
 msgstr "Aktif"
 
@@ -2182,7 +2189,7 @@ msgstr "Tambahkan setidaknya satu origin."
 msgid "Add channel"
 msgstr "Tambah saluran"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Add component"
 msgstr "Tambah komponen"
@@ -2204,7 +2211,7 @@ msgstr "Tambah domain"
 msgid "Add endpoint"
 msgstr "Tambah endpoint"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Add group"
 msgstr "Tambah grup"
@@ -2230,7 +2237,7 @@ msgstr "Tambah label {labelName}"
 msgid "Add labels"
 msgstr "Tambah label"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Add monitor"
 msgstr "Tambah monitor"
 
@@ -2344,7 +2351,7 @@ msgstr "Menambahkan domain {domain} untuk single sign-on"
 #: src/features/mail/MailSide.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 #: src/features/status/MonitorHttpFields.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/MonitorToken.tsx
@@ -2404,7 +2411,6 @@ msgid "Admins see every inbox and manage products, channels and members."
 msgstr "Admin melihat setiap kotak masuk dan mengelola produk, kanal, dan anggota."
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/StatusPages.tsx
 msgid "Affects"
 msgstr "Berdampak pada"
 
@@ -2525,7 +2531,6 @@ msgid "All mentions"
 msgstr "Semua sebutan"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/StatusPages.tsx
 msgid "All monitors"
 msgstr "Semua monitor"
 
@@ -2546,7 +2551,6 @@ msgid "all products"
 msgstr "semua produk"
 
 #: src/components/common/WorkspaceSelector.tsx
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/SidePanels.tsx
@@ -2554,7 +2558,6 @@ msgstr "semua produk"
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "All products"
 msgstr "Semua produk"
 
@@ -2575,10 +2578,6 @@ msgstr "Semua langkah"
 #: src/features/status/StatusPages.tsx
 msgid "All systems operational"
 msgstr "Semua sistem beroperasi"
-
-#: src/features/status/StatusPages.tsx
-msgid "all up"
-msgstr "semua aktif"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "All, drafts, scheduled or sent"
@@ -2850,7 +2849,7 @@ msgstr "An idea only shows its issues and their state. Its stage stays your deci
 msgid "An inbox collects the conversations of one product or brand. Name it after the product your customers know."
 msgstr "Kotak masuk menampung percakapan satu produk atau merek. Beri nama sesuai produk yang dikenal pelanggan Anda."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "An incident is published at once, so customers see it on the page."
 msgstr "Insiden langsung diterbitkan, sehingga pelanggan melihatnya di halaman."
 
@@ -3056,7 +3055,7 @@ msgstr "Jawaban dihapus"
 msgid "Answer to a forward from {author}"
 msgstr "Balasan atas penerusan dari {author}"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "answered"
 msgstr "terjawab"
 
@@ -3134,7 +3133,7 @@ msgstr "Apa pun yang memakai kunci ini langsung berhenti bekerja."
 
 #: src/components/common/Source.tsx
 #: src/components/common/text.ts
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "API"
 msgstr "API"
 
@@ -3333,7 +3332,7 @@ msgstr "Seperti di atas ({current})"
 msgid "As fast as allowed"
 msgstr "Secepat yang diizinkan"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "As often as allowed"
 msgstr "Sesering yang diizinkan"
 
@@ -3746,12 +3745,6 @@ msgstr "Hanya mengirim sinyal saat tugas berhasil."
 msgid "Before"
 msgstr "Sebelumnya"
 
-#. placeholder {0}: date(before)
-#. placeholder {1}: took(before)
-#: src/features/status/StatusPages.tsx
-msgid "before that: {0}, {1}"
-msgstr "sebelum itu: {0}, {1}"
-
 #: src/features/migrations/ConnectStep.tsx
 msgid "Before you connect"
 msgstr "Sebelum Anda menghubungkan"
@@ -3985,8 +3978,7 @@ msgstr "Siaran massal dari saluran ini keluar lewat akun SMTP-nya untuk balasan,
 msgid "Browser"
 msgstr "Browser"
 
-#: src/features/feedback/FeedbackList.tsx
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Bugs, ideas and praise sent from your apps and pages"
 msgstr "Bug, ide, dan pujian yang dikirim dari aplikasi dan halaman Anda"
 
@@ -3999,10 +3991,6 @@ msgstr "Bundle ID"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
 msgstr "Jam kerja"
-
-#: src/features/status/StatusPages.tsx
-msgid "by e-mail"
-msgstr "lewat email"
 
 #: src/features/conversation/Feedback.tsx
 msgid "By e-mail"
@@ -4071,11 +4059,9 @@ msgstr "Nama kampanye"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/NewsletterStep.tsx
 #: src/features/status/AddSubscriberDialog.tsx
-#: src/features/status/ComponentDialogs.tsx
-#: src/features/status/CreatePageDialog.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/IncidentForm.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Cancel"
@@ -4169,7 +4155,6 @@ msgid "Catch-all without a From address"
 msgstr "Catch-all tanpa alamat Dari"
 
 #: src/features/conversation/Feedback.tsx
-#: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Category"
 msgstr "Kategori"
@@ -4416,7 +4401,7 @@ msgstr "Periksa DNS"
 msgid "Check DNS and start signing"
 msgstr "Periksa DNS dan mulai menandatangani"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Check every"
 msgstr "Periksa setiap"
@@ -4503,10 +4488,6 @@ msgstr "Memeriksa…"
 msgid "Checks"
 msgstr "Pemeriksaan"
 
-#: src/features/status/MonitorsPage.tsx
-msgid "Checks that watch your products and set component states"
-msgstr "Pemeriksaan yang memantau produk Anda dan menetapkan status komponen"
-
 #: src/features/migrations/Wizard.tsx
 msgid "Choose"
 msgstr "Pilih"
@@ -4542,10 +4523,6 @@ msgstr "Pilih nilai"
 #: src/app/Gate.tsx
 msgid "Choose a workspace"
 msgstr "Pilih ruang kerja"
-
-#: src/features/feedback/FeedbackList.tsx
-msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
-msgstr "Pilih dari daftar, atau bergerak dengan ↑ ↓ dan buka dengan Enter."
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose the account that sends your answers. You can change it later in the channel settings."
@@ -4589,6 +4566,7 @@ msgstr "Hapus"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Clear filters"
 msgstr "Hapus filter"
 
@@ -4604,7 +4582,6 @@ msgstr "Hapus jawaban"
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the search"
@@ -4868,7 +4845,7 @@ msgstr "Selesai"
 msgid "Completed at {endedAt}"
 msgstr "Selesai pada {endedAt}"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Component"
 msgstr "Komponen"
@@ -4880,12 +4857,11 @@ msgstr "Komponen dihapus"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Components"
 msgstr "Komponen"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Components it touches"
 msgstr "Komponen yang terdampak"
 
@@ -5586,17 +5562,13 @@ msgstr "Buat kebijakan"
 msgid "Create rule"
 msgstr "Buat aturan"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "Create status page"
 msgstr "Buat halaman status"
 
 #: src/features/status/StatusPages.tsx
 msgid "Create status page ({newKey})"
 msgstr "Buat halaman status ({newKey})"
-
-#: src/features/status/StatusPages.tsx
-msgid "Create status page for {product}"
-msgstr "Buat halaman status untuk {product}"
 
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Create team"
@@ -5787,7 +5759,7 @@ msgstr "Gelapkan warna agar sesuai tema"
 msgid "Data up to {builtText}"
 msgstr "Data hingga {builtText}"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Database upgrade"
 msgstr "Peningkatan versi basis data"
 
@@ -6271,7 +6243,7 @@ msgstr "Tolak"
 
 #: src/features/issues/IssueDialog.tsx
 #: src/features/settings/teams/TeamEditor.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
 msgstr "Deskripsi"
@@ -6331,6 +6303,9 @@ msgstr "Notifikasi desktop diblokir untuk situs ini di pengaturan browser, sehin
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
+#: src/features/status/IncidentsPage.tsx
+#: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusPages.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Details"
 msgstr "Detail"
@@ -6434,7 +6409,6 @@ msgstr "Diskusi dimulai"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
@@ -6826,10 +6800,6 @@ msgstr "Pelanggan email nonaktif"
 msgid "E-mail subscribers are off. Nobody can subscribe and no notices go out, but the list is kept."
 msgstr "Pelanggan email nonaktif. Tidak ada yang bisa berlangganan dan tidak ada pemberitahuan yang dikirim, tetapi daftarnya tetap disimpan."
 
-#: src/features/status/StatusPages.tsx
-msgid "E-mail subscriptions are off"
-msgstr "Langganan email nonaktif"
-
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "E-mail view"
 msgstr "Tampilan email"
@@ -6850,11 +6820,11 @@ msgstr "Email untuk orang yang mendaftar"
 msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
 msgstr "Setiap tindakan sekali, paling banyak 10. Tindakan berjalan sebagai satu perubahan; jika satu gagal, tidak ada yang diterapkan."
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Each component gets this state while the incident is open."
 msgstr "Setiap komponen berstatus ini selama insiden terbuka."
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Each component gets this state while the maintenance is open."
 msgstr "Setiap komponen berstatus ini selama pemeliharaan berlangsung."
 
@@ -6953,7 +6923,7 @@ msgstr "Edit kunci API"
 msgid "Edit canned reply"
 msgstr "Edit balasan siap pakai"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Edit component"
 msgstr "Edit komponen"
 
@@ -6962,7 +6932,7 @@ msgid "Edit design"
 msgstr "Edit desain"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Edit details"
 msgstr "Edit detail"
 
@@ -6990,7 +6960,7 @@ msgstr "Edit label"
 msgid "Edit macro"
 msgstr "Ubah makro"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Edit monitor"
 msgstr "Edit monitor"
 
@@ -7062,7 +7032,7 @@ msgstr "Mengedit draf yang tidak dapat dikirim"
 msgid "Editing the message scheduled for {editingWhen}"
 msgstr "Mengedit pesan yang dijadwalkan pada {editingWhen}"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Elevated API errors"
 msgstr "Kesalahan API meningkat"
 
@@ -7137,7 +7107,7 @@ msgstr "Endpoint"
 msgid "Endpoints"
 msgstr "Endpoint"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Ends"
 msgstr "Selesai"
 
@@ -7297,7 +7267,7 @@ msgstr "setiap email"
 msgid "Every open conversation has someone."
 msgstr "Setiap percakapan terbuka ada yang menangani."
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "Every open discussion has an answer."
 msgstr "Setiap diskusi terbuka punya jawaban."
 
@@ -7305,12 +7275,11 @@ msgstr "Setiap diskusi terbuka punya jawaban."
 msgid "Every other browser and device is signed out. This one stays signed in."
 msgstr "Semua browser dan perangkat lain akan dikeluarkan. Perangkat ini tetap masuk."
 
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
 msgstr "semua produk"
 
-#: src/features/broadcasts/BroadcastsFrame.tsx
+#: src/components/common/ProductFilter.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
 msgstr "Setiap produk"
@@ -7339,7 +7308,7 @@ msgstr "Setiap langkah lulus."
 msgid "Every subscriber keeps a consent record you can export."
 msgstr "Setiap pelanggan punya catatan persetujuan yang bisa Anda ekspor."
 
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every type"
 msgstr "Setiap jenis"
@@ -7421,7 +7390,7 @@ msgstr "PT Contoh"
 msgid "Expand or collapse every message"
 msgstr "Bentangkan atau ciutkan semua pesan"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Expected every"
 msgstr "Diharapkan setiap"
@@ -7530,7 +7499,7 @@ msgstr "Gagal terus"
 msgid "Fails the monitor at once, without waiting for the grace."
 msgstr "Langsung menjatuhkan monitor tanpa menunggu toleransi."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Failures to go down"
 msgstr "Kegagalan berturut-turut hingga mati"
@@ -7550,7 +7519,7 @@ msgstr "masukan"
 #: src/features/contact/ContactCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/PagesTab.tsx
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/webhooks/events.tsx
@@ -7578,10 +7547,15 @@ msgstr "Kategori masukan"
 msgid "Feedback category"
 msgstr "Kategori masukan"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Feedback form"
 msgstr "Formulir masukan"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Feedback form ({formKey})"
+msgstr "Formulir masukan ({formKey})"
 
 #: src/features/conversation/actions.ts
 msgid "Feedback resolved"
@@ -7669,7 +7643,7 @@ msgstr "Filter menurut label"
 msgid "Filter by plan"
 msgstr "Saring menurut paket"
 
-#: src/features/broadcasts/BroadcastsFrame.tsx
+#: src/components/common/ProductFilter.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "Filter menurut produk"
@@ -7681,12 +7655,17 @@ msgstr "Saring menurut keadaan"
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Filter by status"
 msgstr "Filter menurut status"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Filter by team"
 msgstr "Filter menurut tim"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Filter by type"
+msgstr "Filter menurut jenis"
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
@@ -7812,7 +7791,7 @@ msgstr "Balasan pertama, median"
 msgid "First rows of the file"
 msgstr "Baris pertama file"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "First update"
 msgstr "Pembaruan pertama"
 
@@ -8300,7 +8279,7 @@ msgstr "Google mengirim kode konfirmasi"
 msgid "Google Takeout"
 msgstr "Google Takeout"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Grace"
 msgstr "Toleransi"
@@ -8318,7 +8297,7 @@ msgstr "Salam"
 msgid "Greets new conversations by e-mail, once per contact within the interval. Never sent to automatic mail or spam."
 msgstr "Menyapa percakapan baru lewat email, sekali per kontak dalam interval. Tidak pernah dikirim ke email otomatis atau spam."
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Group"
 msgstr "Grup"
 
@@ -8500,7 +8479,7 @@ msgstr "Hai! Ada yang bisa kami bantu?"
 
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Hidden"
 msgstr "Disembunyikan"
@@ -8521,7 +8500,7 @@ msgstr "Sembunyikan"
 msgid "Hide from the page"
 msgstr "Sembunyikan dari halaman"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Hide HTTP details"
 msgstr "Sembunyikan detail HTTP"
 
@@ -8583,7 +8562,7 @@ msgstr "Riwayat dihapus"
 msgid "Home"
 msgstr "Beranda"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Host"
 msgstr "Host"
@@ -8642,7 +8621,7 @@ msgstr "Seberapa cepat dan seberapa baik tim Anda menjawab"
 msgid "How HTML e-mails open. You can still switch each message."
 msgstr "Cara email HTML dibuka. Anda tetap bisa mengganti setiap pesan."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "How late a beat may be."
 msgstr "Seberapa terlambat sinyal boleh datang."
 
@@ -8791,7 +8770,7 @@ msgstr "Jika penyedia DNS Anda membatasi string TXT hingga 255 karakter, bagi ni
 msgid "If your mail provider mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "Jika penyedia email Anda mengirim konfirmasi ke alamat itu, konfirmasi tiba di kotak masuk ini sebagai percakapan; buka di sana."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Ignores results and lets the component go back."
 msgstr "Mengabaikan hasil dan membiarkan komponen kembali."
 
@@ -8808,7 +8787,7 @@ msgid "IMAP server"
 msgstr "Server IMAP"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Impact"
 msgstr "Dampak"
 
@@ -8901,7 +8880,7 @@ msgstr "di {contact} · {subject}"
 msgid "In 1 hour"
 msgstr "Dalam 1 jam"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "In a row, 1 to 10."
 msgstr "Berturut-turut, 1 sampai 10."
 
@@ -9098,7 +9077,6 @@ msgstr "Insiden: {title} · {state}"
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "Incidents"
 msgstr "Insiden"
 
@@ -9550,7 +9528,7 @@ msgid "Keyword"
 msgstr "Kata kunci"
 
 #: src/features/settings/automation/text.ts
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "Jenis"
@@ -9827,7 +9805,7 @@ msgstr "Leave your signature off this reply ({signatureKey})"
 msgid "Leave your signature off this reply, or put it back"
 msgstr "Leave your signature off this reply, or put it back"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Left off the public page and its overall state."
 msgstr "Tidak ditampilkan di halaman publik dan status keseluruhannya."
 
@@ -10119,6 +10097,7 @@ msgstr "Muat gambar"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/mail/MailDrafts.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
@@ -10391,7 +10370,6 @@ msgstr "Mails go out {sentence}, once to each person. Pausing stops sending but 
 msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
 msgstr "Email dikirim antara {start} dan {end} waktu {city} ({utcStart}–{utcEnd} UTC) dan berlanjut keesokan harinya."
 
-#: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
 msgid "Maintenance"
 msgstr "Pemeliharaan"
@@ -10913,7 +10891,6 @@ msgstr "Dipantau"
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/MonitorsPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Monitors"
 msgstr "Monitor"
@@ -10974,10 +10951,6 @@ msgstr "Penilaian “tidak membantu” terbanyak dulu"
 msgid "Most active"
 msgstr "Paling aktif"
 
-#: src/features/feedback/FeedbackPage.tsx
-msgid "Most asked for"
-msgstr "Paling banyak diminta"
-
 #: src/features/docs/Toolbar.tsx
 msgid "Most disliked"
 msgstr "Paling tidak disukai"
@@ -11010,8 +10983,11 @@ msgstr "Suara terbanyak"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/status/IncidentsPage.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "move"
 msgstr "pindah"
@@ -11020,6 +10996,10 @@ msgstr "pindah"
 #: src/features/inbox/ChatList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "Pindahkan {0} ke Sampah?"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Move {n} to the Trash?"
+msgstr "Pindahkan {n} ke Sampah?"
 
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -11058,6 +11038,10 @@ msgstr "Pindahkan koleksi yang dipilih"
 msgid "Move the selected conversations to the Trash"
 msgstr "Pindahkan percakapan yang dipilih ke Sampah"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move the selected feedback to the Trash"
+msgstr "Pindahkan masukan yang dipilih ke Sampah"
+
 #: src/features/conversation/ChatView.tsx
 msgid "Move this conversation to the Trash?"
 msgstr "Pindahkan percakapan ini ke Sampah?"
@@ -11085,6 +11069,10 @@ msgstr "Pindah antar desain"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the entries"
 msgstr "Pindah antar entri"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move through the feedback"
+msgstr "Bergerak di antara masukan"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the ideas"
@@ -11152,6 +11140,7 @@ msgstr "Pindahkan ke tahap sebelumnya atau berikutnya"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
@@ -11163,6 +11152,7 @@ msgstr "Pindahkan ke Sampah"
 msgid "Move to the Trash ({0})"
 msgstr "Pindahkan ke Sampah ({0})"
 
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Move to the Trash (#)"
@@ -11276,9 +11266,9 @@ msgstr "Tampilan saya"
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
-#: src/features/status/ComponentDialogs.tsx
-#: src/features/status/CreatePageDialog.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/ComponentForms.tsx
+#: src/features/status/CreatePageForm.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Name"
 msgstr "Nama"
@@ -11504,6 +11494,7 @@ msgstr "Kolom baru"
 msgid "New filter"
 msgstr "Filter baru"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "Ide baru"
@@ -11527,6 +11518,10 @@ msgstr "baru dalam {days} hari terakhir"
 #: src/features/migrations/MapStep.tsx
 msgid "New inbox…"
 msgstr "Kotak masuk baru…"
+
+#: src/features/status/IncidentsPage.tsx
+msgid "new incident"
+msgstr "insiden baru"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -11587,6 +11582,10 @@ msgid "New migration"
 msgstr "Migrasi baru"
 
 #: src/features/status/MonitorsPage.tsx
+msgid "new monitor"
+msgstr "monitor baru"
+
+#: src/features/status/MonitorsPage.tsx
 msgid "New monitor"
 msgstr "Monitor baru"
 
@@ -11597,10 +11596,6 @@ msgstr "Pemilik baru"
 #: src/features/team/RemoveMemberDialog.tsx
 msgid "New owner of {boxName}"
 msgstr "Pemilik baru {boxName}"
-
-#: src/features/status/StatusPages.tsx
-msgid "New page"
-msgstr "Halaman baru"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "New password"
@@ -11625,6 +11620,7 @@ msgid "New signing secret"
 msgstr "Rahasia penandatanganan baru"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/status/StatusPages.tsx
 msgid "New status page"
 msgstr "Halaman status baru"
 
@@ -11748,7 +11744,7 @@ msgstr "Selanjutnya, pilih apa yang dibawa. Pemindaian membaca file satu kali."
 msgid "Next, choose where they go."
 msgstr "Selanjutnya, pilih ke mana mereka masuk."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Nightly backup"
 msgstr "Pencadangan malam"
 
@@ -11871,7 +11867,7 @@ msgstr "Tidak ada komponen yang disebutkan."
 msgid "No components in this group."
 msgstr "Tidak ada komponen di grup ini."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "No components yet. Add one to a status page first."
 msgstr "Belum ada komponen. Tambahkan satu ke halaman status terlebih dahulu."
 
@@ -11968,7 +11964,7 @@ msgstr "Belum ada diskusi di halaman ini."
 msgid "No discussions under the pages of these sites."
 msgstr "Tidak ada diskusi di bawah halaman situs-situs ini."
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "No discussions yet. Readers start them under your documentation pages."
 msgstr "Belum ada diskusi. Pembaca memulainya di bawah halaman dokumentasi Anda."
 
@@ -12048,12 +12044,12 @@ msgstr "Tidak ada file yang diterima."
 msgid "No filters yet."
 msgstr "Belum ada filter."
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
 msgstr "Tanpa grup"
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "No hidden discussions."
 msgstr "Tidak ada diskusi tersembunyi."
 
@@ -12111,7 +12107,7 @@ msgstr "Tanpa batas"
 msgid "No list matches “{q}”."
 msgstr "Tidak ada daftar yang cocok dengan “{q}”."
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "No locked discussions."
 msgstr "Tidak ada diskusi terkunci."
 
@@ -12176,7 +12172,7 @@ msgstr "Tanpa catatan"
 msgid "No notifications in the last 90 days."
 msgstr "Tidak ada notifikasi dalam 90 hari terakhir."
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "No open feedback."
 msgstr "Tidak ada masukan terbuka."
 
@@ -12472,7 +12468,7 @@ msgstr "Tidak ada yang akan menerima email ini. Pilih milis yang punya pelanggan
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/setup/email/EmailTestStep.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "None"
 msgstr "Tidak ada"
@@ -12809,7 +12805,7 @@ msgstr "Tidak ada yang hilang: setelah Anda masuk dengan Microsoft lagi, penyali
 msgid "Nothing is lost: when it continues, copying picks up where it stopped."
 msgstr "Tidak ada yang hilang: saat berlanjut, penyalinan melanjutkan dari tempat berhenti."
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Nothing is resolved yet."
 msgstr "Belum ada yang terselesaikan."
 
@@ -12823,7 +12819,7 @@ msgid "Nothing is snoozed."
 msgstr "Tidak ada yang ditunda."
 
 #: src/features/docs/discussions/QueuePane.tsx
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "Nothing is waiting for approval."
 msgstr "Tidak ada yang menunggu persetujuan."
 
@@ -12835,7 +12831,7 @@ msgstr "Saat ini tidak ada masalah. Buka insiden saat ada yang rusak."
 msgid "Nothing matches these filters."
 msgstr "Tidak ada yang cocok dengan filter ini."
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing matches your search here."
 msgstr "Tidak ada yang cocok dengan pencarian Anda di sini."
@@ -12844,7 +12840,7 @@ msgstr "Tidak ada yang cocok dengan pencarian Anda di sini."
 msgid "Nothing needs attention right now."
 msgstr "Saat ini tidak ada yang perlu perhatian."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Nothing opens by itself. Open an incident from the monitor when you want one."
 msgstr "Tidak ada yang terbuka otomatis. Buka insiden dari monitor kapan pun Anda mau."
 
@@ -13301,10 +13297,6 @@ msgstr "Hanya kunjungan setelah mereka menyetujui ID persisten dan masuk."
 msgid "Only while the panel is open in this browser. Away, you are alerted only about conversations assigned to you."
 msgstr "Hanya selama panel terbuka di browser ini. Saat pergi, Anda hanya diberi tahu tentang percakapan yang ditugaskan kepada Anda."
 
-#: src/features/status/StatusPages.tsx
-msgid "only your team can preview it"
-msgstr "hanya tim Anda yang dapat melihat pratinjaunya"
-
 #: src/features/broadcasts/NewBroadcastForm.tsx
 msgid "Only your team sees it."
 msgstr "Hanya tim Anda yang melihatnya."
@@ -13317,8 +13309,11 @@ msgstr "terbuka"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/status/IncidentsPage.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgctxt "keyboard hint"
 msgid "open"
@@ -13328,7 +13323,7 @@ msgstr "buka"
 #: src/features/account/AccountPage.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -13338,7 +13333,9 @@ msgid "Open"
 msgstr "Terbuka"
 
 #. placeholder {0}: a.filename
+#. placeholder {0}: p.name
 #: src/features/conversation/messages/Attachments.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Open {0}"
 msgstr "Buka {0}"
 
@@ -13372,7 +13369,7 @@ msgid "Open Account security in your Yahoo account."
 msgstr "Buka Keamanan akun di akun Yahoo Anda."
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Open an incident"
 msgstr "Buka insiden"
@@ -13550,6 +13547,10 @@ msgstr "Buka endpoint"
 msgid "Open the entry"
 msgstr "Buka entri"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Open the feedback"
+msgstr "Buka masukan"
+
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Open the guide"
 msgstr "Open the guide"
@@ -13623,6 +13624,10 @@ msgid "Open the site, goal or funnel"
 msgstr "Buka situs, sasaran, atau corong"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Open the status page"
+msgstr "Buka halaman status"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Open the triggered e-mail"
 msgstr "Open the triggered e-mail"
 
@@ -13688,7 +13693,7 @@ msgstr "operational memulihkan; degraded, partial_outage, dan major_outage menja
 msgid "Operator"
 msgstr "Operator"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Optional. Shown on the public page."
 msgstr "Opsional. Ditampilkan di halaman publik."
 
@@ -13821,7 +13826,6 @@ msgstr "Dari waktu ke waktu"
 
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
 msgstr "Ringkasan"
@@ -13884,9 +13888,7 @@ msgstr "Halaman: {name}"
 
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
-#: src/features/status/StatusPages.tsx
 msgid "Pages"
 msgstr "Halaman"
 
@@ -13957,7 +13959,6 @@ msgstr "Kata sandi diatur"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "Past"
 msgstr "Lampau"
 
@@ -14023,7 +14024,7 @@ msgstr "Jeda atau lanjutkan monitor"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/setup/email/EmailTestStep.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Paused"
@@ -14268,10 +14269,6 @@ msgstr "Pilih desain dulu."
 msgid "Pick a design that renders without errors."
 msgstr "Pilih desain yang dirender tanpa kesalahan."
 
-#: src/features/docs/DiscussionsTab.tsx
-msgid "Pick a discussion to read and answer it."
-msgstr "Pilih diskusi untuk dibaca dan dijawab."
-
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "Pick a field"
 msgstr "Pilih kolom"
@@ -14299,17 +14296,9 @@ msgstr "Pick a list under Who gets it to save"
 msgid "Pick a member"
 msgstr "Pilih anggota"
 
-#: src/features/status/MonitorsPage.tsx
-msgid "Pick a monitor to see what happened."
-msgstr "Pilih monitor untuk melihat apa yang terjadi."
-
 #: src/features/docs/PagesTab.tsx
 msgid "Pick a page to see its ratings, discussions and questions."
 msgstr "Pilih halaman untuk melihat penilaian, diskusi, dan pertanyaannya."
-
-#: src/features/feedback/FeedbackList.tsx
-msgid "Pick a piece of feedback"
-msgstr "Pilih satu masukan"
 
 #: src/features/broadcasts/ListPage.tsx
 msgid "Pick a sender in the settings"
@@ -14359,10 +14348,6 @@ msgstr "Pilih endpoint"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Pick an inbox"
 msgstr "Pilih kotak masuk"
-
-#: src/features/status/IncidentsPage.tsx
-msgid "Pick an incident to read it."
-msgstr "Pilih insiden untuk membacanya."
 
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "Pick an open incident or maintenance"
@@ -14503,7 +14488,7 @@ msgstr "Disematkan"
 msgid "Pinned to the top of your list"
 msgstr "Disematkan di atas daftar Anda"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "Teks biasa dengan tautan dan jeda baris, paling banyak 5.000 karakter."
 
@@ -14515,8 +14500,12 @@ msgstr "Teks biasa, ditampilkan di atas email yang diteruskan."
 msgid "Plan"
 msgstr "Paket"
 
+#: src/features/status/IncidentsPage.tsx
+msgid "plan maintenance"
+msgstr "rencanakan pemeliharaan"
+
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Plan maintenance"
 msgstr "Rencanakan pemeliharaan"
@@ -14558,7 +14547,7 @@ msgstr "Mengarah ke"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Port"
 msgstr "Port"
 
@@ -14597,6 +14586,10 @@ msgstr "Alamat pos"
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Posted by you and marked as the accepted answer."
 msgstr "Ditulis oleh Anda dan ditandai sebagai jawaban yang diterima."
+
+#: src/features/docs/DocsPage.tsx
+msgid "Posts from new readers wait here until a member approves them"
+msgstr "Postingan dari pembaca baru menunggu di sini sampai anggota menyetujuinya"
 
 #: src/components/common/text.ts
 msgid "Preference page"
@@ -14656,8 +14649,20 @@ msgid "Previous or next discussion"
 msgstr "Diskusi sebelumnya atau berikutnya"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Previous or next incident"
+msgstr "Insiden sebelumnya atau berikutnya"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Previous or next language"
 msgstr "Bahasa sebelumnya atau berikutnya"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Previous or next monitor"
+msgstr "Monitor sebelumnya atau berikutnya"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Previous or next status page"
+msgstr "Halaman status sebelumnya atau berikutnya"
 
 #: src/features/feedback/Lightbox.tsx
 msgid "Previous screenshot"
@@ -14709,8 +14714,8 @@ msgstr "pro, team"
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/sections.tsx
-#: src/features/status/CreatePageDialog.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/CreatePageForm.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Product"
 msgstr "Produk"
 
@@ -14864,7 +14869,7 @@ msgstr "Publikasikan insiden"
 msgid "Publish and unpublish help center articles"
 msgstr "Terbitkan dan batalkan penerbitan artikel pusat bantuan"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Publish now"
 msgstr "Terbitkan sekarang"
 
@@ -14970,6 +14975,10 @@ msgstr "Letakkan elemen ini di bawah setiap halaman dokumentasi Anda. Elemen ini
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Question"
 msgstr "Pertanyaan"
+
+#: src/features/docs/DocsPage.tsx
+msgid "Questions readers ask under your documentation pages"
+msgstr "Pertanyaan pembaca di bawah halaman dokumentasi Anda"
 
 #: src/components/common/text.ts
 msgid "Queued"
@@ -15633,7 +15642,7 @@ msgstr "Menghapus riwayat impor…"
 msgid "Rename"
 msgstr "Ganti nama"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Rename group"
 msgstr "Ganti nama grup"
 
@@ -15642,9 +15651,14 @@ msgid "Rename the mailbox"
 msgstr "Ganti nama kotak surat"
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Reopen"
 msgstr "Buka kembali"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Reopen ({closeKey})"
+msgstr "Buka kembali ({closeKey})"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reorder the selected view in the sidebar"
@@ -15977,10 +15991,15 @@ msgid "Resolution {resolution}"
 msgstr "Penyelesaian {resolution}"
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "Resolve"
 msgstr "Selesaikan"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Resolve ({closeKey})"
+msgstr "Selesaikan ({closeKey})"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -15995,10 +16014,13 @@ msgstr "Selesaikan insiden"
 msgid "Resolve or complete"
 msgstr "Selesaikan atau tuntaskan"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Resolve or reopen the selected feedback"
+msgstr "Selesaikan atau buka kembali masukan yang dipilih"
+
 #: src/components/common/text.ts
 #: src/features/conversation/ConversationStatus.tsx
-#: src/features/feedback/FeedbackList.tsx
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/status/text.tsx
 msgid "Resolved"
 msgstr "Terselesaikan"
@@ -16011,11 +16033,6 @@ msgstr "Terselesaikan pada {endedAt}"
 #: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "Selesai dalam"
-
-#. placeholder {0}: took(last)
-#: src/features/status/StatusPages.tsx
-msgid "resolved in {0}"
-msgstr "diselesaikan dalam {0}"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Resolved. It moved to the Resolved tab."
@@ -16182,7 +16199,6 @@ msgstr "Segera setelah berlangganan, orang menerima email singkat yang mengonfir
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/feedback/RoadmapCard.tsx
 msgid "Roadmap"
 msgstr "Peta jalan"
@@ -16363,10 +16379,10 @@ msgstr "Sabtu"
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/parts.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/IncidentForm.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Save"
 msgstr "Simpan"
 
@@ -16387,7 +16403,7 @@ msgstr "Simpan dan jadwalkan ulang"
 msgid "Save and test"
 msgstr "Save and test"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Save as draft"
 msgstr "Simpan sebagai draf"
 
@@ -16526,7 +16542,6 @@ msgstr "Jadwalkan entri"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/text.ts
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/text.tsx
 msgid "Scheduled"
 msgstr "Dijadwalkan"
@@ -16551,7 +16566,6 @@ msgid "Scheduled by"
 msgstr "Dijadwalkan oleh"
 
 #: src/features/status/Notices.tsx
-#: src/features/status/StatusPages.tsx
 msgid "Scheduled for {due}"
 msgstr "Dijadwalkan pada {due}"
 
@@ -16604,7 +16618,7 @@ msgstr "Ukuran layar"
 msgid "Screenshot"
 msgstr "Tangkapan layar"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Screenshots attached"
 msgstr "Tangkapan layar terlampir"
 
@@ -16616,12 +16630,12 @@ msgstr "SDK"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "search"
 msgstr "cari"
 
 #: src/app/Palette.tsx
-#: src/features/feedback/FeedbackList.tsx
 msgid "Search"
 msgstr "Cari"
 
@@ -16671,9 +16685,14 @@ msgstr "Cari emoji"
 msgid "Search emoji (in English)"
 msgstr "Cari emoji (dalam bahasa Inggris)"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Search feedback"
 msgstr "Cari masukan"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Search feedback…"
+msgstr "Cari masukan…"
 
 #: src/app/places.tsx
 msgid "Search gaps"
@@ -16775,7 +16794,7 @@ msgstr "Cari, pilah, dan susun draf balasan dari terminal Anda. Ia bertindak seb
 msgid "Second secret"
 msgstr "Rahasia kedua"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Seconds, 1 to 30."
 msgstr "Detik, 1 sampai 30."
 
@@ -16805,6 +16824,7 @@ msgstr "Dilihat oleh monitor"
 
 #: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "select"
@@ -16826,6 +16846,10 @@ msgid "Select all"
 msgstr "Pilih semua"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Select the article"
+msgstr "Pilih artikel"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Select the broadcast under the cursor"
 msgstr "Pilih siaran di bawah kursor"
 
@@ -16836,6 +16860,14 @@ msgstr "Pilih kontak di bawah kursor"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "Pilih percakapan di bawah kursor"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the entry"
+msgstr "Pilih entri"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the feedback"
+msgstr "Pilih masukan"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the mail under the cursor"
@@ -17506,7 +17538,6 @@ msgstr "Menyiapkan…"
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "Pengaturan"
@@ -17568,6 +17599,7 @@ msgstr "Pintasan"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Show"
 msgstr "Tampilkan"
@@ -17600,7 +17632,7 @@ msgstr "Tampilkan feed, lencana, dan sematan"
 msgid "Show full draft"
 msgstr "Tampilkan draf lengkap"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Show HTTP details"
 msgstr "Tampilkan detail HTTP"
 
@@ -18513,7 +18545,7 @@ msgid "Starting"
 msgstr "Memulai"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Starts"
 msgstr "Mulai"
 
@@ -18540,9 +18572,9 @@ msgstr "STARTTLS (port 587)"
 
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "State"
 msgstr "Status"
@@ -18553,7 +18585,7 @@ msgid "State of {0}"
 msgstr "Status {0}"
 
 #. placeholder {0}: c.name
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "State of {0} while it is open"
 msgstr "Status {0} selama terbuka"
 
@@ -18561,7 +18593,7 @@ msgstr "Status {0} selama terbuka"
 msgid "state of the conversation"
 msgstr "status percakapan"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "State while down"
 msgstr "Status saat mati"
@@ -18573,7 +18605,6 @@ msgstr "Status saat mati"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
-#: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -18584,7 +18615,6 @@ msgstr "Status saat mati"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Status"
 msgstr "Status"
@@ -18601,7 +18631,6 @@ msgstr "Halaman status dihapus"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "Halaman status"
@@ -18737,7 +18766,6 @@ msgstr "Berlangganan daftar baru saja"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Subscribers"
 msgstr "Pelanggan"
@@ -18763,7 +18791,7 @@ msgstr "Langganan dihapus"
 msgid "Succeeded"
 msgstr "Berhasil"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Successes to recover"
 msgstr "Keberhasilan berturut-turut hingga pulih"
@@ -19208,7 +19236,7 @@ msgstr "Kode salah atau sudah kedaluwarsa."
 msgid "The columns are guessed from the header row. One must be the e-mail address; name the others as contact fields or attributes, or skip them. Attributes only fill keys a contact does not have yet."
 msgstr "Kolom ditebak dari baris header. Satu harus berupa alamat email; beri nama yang lain sebagai bidang kontak atau atribut, atau lewati. Atribut hanya mengisi kunci yang belum dimiliki kontak."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "The component whose state this monitor sets."
 msgstr "Komponen yang statusnya diatur monitor ini."
 
@@ -19333,7 +19361,7 @@ msgstr "domain email belum diverifikasi untuk ruang kerja ini"
 msgid "The elements work on these addresses; add your dev server in the inbox settings:"
 msgstr "Elemen berfungsi di alamat ini; tambahkan server dev Anda di pengaturan kotak masuk:"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "The end must be after the start."
 msgstr "Akhir harus setelah awal."
 
@@ -19428,10 +19456,6 @@ msgstr "Pesan pertama percakapan di kotak masuk yang menampilkan waktu balasan."
 #: src/features/settings/notifications/events.ts
 msgid "The first message of a conversation in an inbox that shows who is available."
 msgstr "Pesan pertama percakapan di kotak masuk yang menampilkan siapa yang tersedia."
-
-#: src/features/status/StatusPages.tsx
-msgid "the first one"
-msgstr "yang pertama"
 
 #: src/features/docs/PagesTab.tsx
 msgid "The first rating makes the page appear here."
@@ -20292,6 +20316,10 @@ msgstr "Kiriman disembunyikan bersama semua kiriman lain dari penulisnya yang ma
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "Percakapan ini menghilang bagi tim Anda dan pelanggan. Anda bisa memulihkannya dari Sampah selama 30 hari, lalu dihapus permanen beserta pesan dan filenya."
 
+#: src/features/feedback/FeedbackHome.tsx
+msgid "They disappear for your team. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
+msgstr "Item ini hilang bagi tim Anda. Anda dapat memulihkannya dari Sampah selama 30 hari, lalu item dihapus permanen beserta pesan dan filenya."
+
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They get a mail with a link and are subscribed only after they click it."
 msgstr "Mereka mendapat email dengan tautan dan berlangganan hanya setelah mengekliknya."
@@ -20691,7 +20719,7 @@ msgstr "Monitor ini sudah tidak ada atau Anda tidak dapat melihatnya."
 msgid "This month"
 msgstr "Bulan ini"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "This page is not public yet, so visitors see nothing until you publish the page."
 msgstr "Halaman ini belum publik, sehingga pengunjung tidak melihat apa pun sampai Anda menerbitkan halaman."
 
@@ -20808,6 +20836,10 @@ msgstr "Situs ini tidak dapat terhubung"
 #: src/components/common/text.ts
 msgid "This site is not allowed to use this documentation channel."
 msgstr "Situs ini tidak diizinkan memakai saluran dokumentasi ini."
+
+#: src/features/status/StatusPages.tsx
+msgid "This status page no longer exists or you cannot see it."
+msgstr "Halaman status ini sudah tidak ada atau Anda tidak dapat melihatnya."
 
 #: src/components/common/text.ts
 msgid "This subscription is no longer waiting for confirmation."
@@ -20926,7 +20958,7 @@ msgstr "Waktu"
 msgid "Time zone"
 msgstr "Zona waktu"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Timeout"
 msgstr "Batas waktu"
@@ -20935,7 +20967,7 @@ msgstr "Batas waktu"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/issues/IssueDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Title"
 msgstr "Judul"
 
@@ -21093,6 +21125,7 @@ msgstr "Percayai sertifikat ini untuk server ini. Lakukan hanya jika itu server 
 #: src/features/account/AccountLayout.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/migrations/UploadStep.tsx
@@ -21187,7 +21220,6 @@ msgstr "Dinonaktifkan oleh Yuva"
 msgid "TXT record"
 msgstr "Rekaman TXT"
 
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/fields/FieldDialog.tsx
@@ -21423,7 +21455,7 @@ msgstr "Batalkan publikasi terjemahan"
 msgid "Unpublished"
 msgstr "Belum diterbitkan"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/mail/MailList.tsx
@@ -22032,7 +22064,6 @@ msgstr "menunggu persetujuan"
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
-#: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "Waiting for approval"
@@ -22426,7 +22457,7 @@ msgstr "Saat rekan tim menulis @ dan nama Anda di catatan, catatan itu muncul di
 msgid "When did they agree?"
 msgstr "Kapan mereka setuju?"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "When it goes down"
 msgstr "Saat mati"
@@ -22464,10 +22495,6 @@ msgstr "Saat orang lain menugaskannya kepada Anda."
 #: src/features/broadcasts/Trigger.tsx
 msgid "when someone first signs in to {inbox}"
 msgstr "when someone first signs in to {inbox}"
-
-#: src/features/feedback/FeedbackList.tsx
-msgid "When someone sends feedback, it will be in the list."
-msgstr "Saat seseorang mengirim masukan, masukan itu akan muncul di daftar."
 
 #: src/features/broadcasts/Trigger.tsx
 msgid "when someone starts to match {match}"
@@ -22952,11 +22979,11 @@ msgstr "You get a new secret once. Webhooks from GitHub are refused until you pa
 msgid "You get a notification when someone replies in these"
 msgstr "Anda mendapat notifikasi saat seseorang membalas di sini"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "You get the address to call when you save. It is shown only once."
 msgstr "Anda mendapatkan alamat untuk dipanggil saat menyimpan. Alamat ini hanya ditampilkan sekali."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "You get the address your alerting calls when you save, for Alertmanager, Grafana or your own script. It is shown only once."
 msgstr "Saat menyimpan, Anda mendapatkan alamat yang dipanggil sistem peringatan Anda, untuk Alertmanager, Grafana, atau skrip Anda sendiri. Alamat ini hanya ditampilkan sekali."
 
@@ -23115,7 +23142,7 @@ msgstr "Your identity provider has not verified your e-mail address, so Yuva can
 msgid "Your inbox is empty."
 msgstr "Kotak Masuk Anda kosong."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Your job calls Yuva on a schedule. A missing call fails the monitor."
 msgstr "Tugas Anda memanggil Yuva secara berkala. Panggilan yang hilang menjatuhkan monitor."
 
@@ -23169,7 +23196,7 @@ msgstr "Admin organisasi Anda harus mengizinkan Yuva"
 msgid "Your own"
 msgstr "Your own"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Your own monitoring sends its state, including Alertmanager and Grafana alerts."
 msgstr "Pemantauan Anda sendiri mengirim statusnya, termasuk peringatan Alertmanager dan Grafana."
 
@@ -23392,7 +23419,7 @@ msgstr "Yuva hanya membaca. Ia tidak pernah menghapus, memindahkan, mengarsipkan
 msgid "Yuva only reads. Its connection sends {provider} nothing but read requests, and the token only to {provider}'s API, so no ticket, customer or setting changes."
 msgstr "Yuva hanya membaca. Koneksinya tidak mengirim apa pun ke {provider} selain permintaan baca, dan token hanya ke API {provider}, jadi tidak ada tiket, pelanggan, atau pengaturan yang berubah."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Yuva opens a connection to a host and port on a schedule."
 msgstr "Yuva membuka koneksi ke host dan port secara berkala."
 
@@ -23404,7 +23431,7 @@ msgstr "Yuva membaca {provider} dengan token API yang Anda buat di akun Anda sen
 msgid "Yuva reads only the file you upload and deletes it when the migration ends. History arrives quietly: no notifications, no auto-replies."
 msgstr "Yuva hanya membaca file yang Anda unggah dan menghapusnya saat migrasi berakhir. Riwayat masuk diam-diam: tanpa notifikasi, tanpa balasan otomatis."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Yuva requests an address on a schedule and checks the answer."
 msgstr "Yuva meminta sebuah alamat secara berkala dan memeriksa jawabannya."
 

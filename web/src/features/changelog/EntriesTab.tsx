@@ -1,21 +1,24 @@
+import { plural } from "@lingui/core/macro"
 import { Trans, useLingui } from "@lingui/react/macro"
-import { LoaderIcon, PlusIcon, SparklesIcon, TriangleAlertIcon } from "lucide-react"
+import { TriangleAlertIcon } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router"
 
 import { InboxMark } from "@/components/common"
-import { RowCheck, SelectToggle } from "@/components/common/Selection"
-import { CHANGELOG_KEYS } from "@/components/common/ShortcutSheet"
+import { FormCard, FormGrid } from "@/components/common/FormCard"
+import {
+  boxRowClass,
+  FilterMenu,
+  FilterRow,
+  KeyHints,
+  ListBox,
+  ListBoxEmpty,
+  ListBoxSkeleton,
+  RowCheckbox,
+} from "@/components/common/ListBox"
+import { CHANGELOG_KEYS, SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { formatDate, formatShort } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { EntryBulkBar } from "@/features/changelog/Bulk"
@@ -31,7 +34,8 @@ import {
   useTranslationStateText,
 } from "@/features/changelog/text"
 import { useLocaleName } from "@/features/help/text"
-import { Chip, FrameButton, Pill, ProductTag } from "@/features/status/PageFrame"
+import { useListCursor } from "@/features/inbox/listCursor"
+import { Chip, Pill, ProductTag } from "@/features/status/PageFrame"
 import { ChoiceSelect, Field } from "@/features/settings/ui"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useSelection } from "@/hooks/use-selection"
@@ -39,8 +43,6 @@ import type { Changelog, ChangelogEntrySummary, ChangelogLabel, Inbox } from "@/
 import type { ChangelogEntryFilters } from "@/lib/keys"
 import { cn } from "@/lib/utils"
 import { useInboxes } from "@/lib/workspace"
-
-type StateFilter = NonNullable<ChangelogEntryFilters["state"]> | "all"
 
 function chipTone(state: string | undefined) {
   if (state === "published") return "border-success/40 bg-success/10 text-success"
@@ -81,95 +83,112 @@ function LocaleChips({ e, changelog }: { e: ChangelogEntrySummary; changelog: Ch
   )
 }
 
-export function NewEntryDialog({ changelog, onClose }: { changelog: Changelog; onClose: () => void }) {
+export function NewEntryForm({
+  changelogs,
+  initialId,
+  onClose,
+}: {
+  changelogs: Changelog[]
+  initialId?: string
+  onClose: () => void
+}) {
   const { t } = useLingui()
   const navigate = useNavigate()
   const localeName = useLocaleName()
   const labelText = useLabelText()
-  const create = useCreateEntry(changelog.id)
+  const [changelogId, setChangelogId] = useState(
+    changelogs.find((c) => c.id === initialId)?.id ?? changelogs[0]?.id ?? ""
+  )
+  const changelog = changelogs.find((c) => c.id === changelogId) ?? changelogs[0]
+  const create = useCreateEntry(changelog?.id ?? "")
   const [title, setTitle] = useState("")
-  const [locale, setLocale] = useState(changelog.default_locale)
+  const [locale, setLocale] = useState(changelog?.default_locale ?? "en")
   const [labels, setLabels] = useState<ChangelogLabel[]>(["new"])
-  const ok = title.trim().length >= 3 && labels.length > 0
+  const ok = !!changelog && title.trim().length >= 3 && labels.length > 0
   const toggle = (l: ChangelogLabel) =>
     setLabels((cur) =>
       cur.includes(l) ? cur.filter((x) => x !== l) : LABELS.filter((x) => x === l || cur.includes(x))
     )
+  const locales = changelog?.locales ?? []
   return (
-    <Dialog open onOpenChange={(o) => !o && onClose()}>
-      <DialogContent data-testid="new-entry-dialog">
-        <form
-          className="flex flex-col gap-5"
-          onSubmit={(e) => {
-            e.preventDefault()
-            if (!ok) return
-            create.mutate(
-              { locale, title: title.trim(), labels },
-              { onSuccess: (entry) => navigate(entryLink(changelog.id, entry.id, locale)) }
-            )
-          }}
-        >
-          <DialogHeader>
-            <DialogTitle>
-              <Trans>New entry</Trans>
-            </DialogTitle>
-            <DialogDescription>
-              <Trans>Start with a title. You write the text next, and it stays a draft until it is published.</Trans>
-            </DialogDescription>
-          </DialogHeader>
-          <Field label={<Trans>Title</Trans>} htmlFor="new-entry-title" hint={<Trans>At least 3 characters.</Trans>}>
-            <Input
-              id="new-entry-title"
-              value={title}
-              maxLength={200}
-              autoFocus
-              required
-              onChange={(e) => setTitle(e.target.value)}
-              data-testid="new-entry-title"
+    <FormCard
+      title={<Trans>New post</Trans>}
+      description={
+        <Trans>Start with a title. You write the text next, and it stays a draft until it is published.</Trans>
+      }
+      submit={<Trans>Create entry</Trans>}
+      ready={ok}
+      busy={create.isPending}
+      error={create.error}
+      onCancel={onClose}
+      onSubmit={() =>
+        changelog &&
+        create.mutate(
+          { locale, title: title.trim(), labels },
+          { onSuccess: (entry) => navigate(entryLink(changelog.id, entry.id, locale)) }
+        )
+      }
+      testId="new-entry-form"
+    >
+      <Field label={<Trans>Title</Trans>} htmlFor="new-entry-title" hint={<Trans>At least 3 characters.</Trans>}>
+        <Input
+          id="new-entry-title"
+          value={title}
+          maxLength={200}
+          autoFocus
+          required
+          onChange={(e) => setTitle(e.target.value)}
+          data-testid="new-entry-title"
+        />
+      </Field>
+      <Field label={<Trans>Labels</Trans>}>
+        <div className="flex flex-wrap gap-2" role="group" aria-label={t`Labels`}>
+          {LABELS.map((l) => (
+            <button
+              key={l}
+              type="button"
+              aria-pressed={labels.includes(l)}
+              onClick={() => toggle(l)}
+              className={cn(
+                "rounded-lg border px-3 py-1.5 text-body font-medium outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                labels.includes(l) ? LABEL_TONES[l] : "border-border text-muted-foreground"
+              )}
+              data-testid={`new-entry-label-${l}`}
+            >
+              {labelText[l]}
+            </button>
+          ))}
+        </div>
+      </Field>
+      <FormGrid>
+        {changelogs.length > 1 && (
+          <Field label={<Trans>Changelog</Trans>} htmlFor="new-entry-changelog">
+            <ChoiceSelect
+              id="new-entry-changelog"
+              value={changelogId}
+              onChange={(id) => {
+                setChangelogId(id)
+                const next = changelogs.find((c) => c.id === id)
+                if (next && !next.locales.includes(locale)) setLocale(next.default_locale)
+              }}
+              options={changelogs.map((c) => [c.id, c.name] as const)}
+              label={t`Changelog`}
             />
           </Field>
-          <Field label={<Trans>Labels</Trans>}>
-            <div className="flex flex-wrap gap-2" role="group" aria-label={t`Labels`}>
-              {LABELS.map((l) => (
-                <button
-                  key={l}
-                  type="button"
-                  aria-pressed={labels.includes(l)}
-                  onClick={() => toggle(l)}
-                  className={cn(
-                    "rounded-lg border px-3 py-1.5 text-body font-medium outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                    labels.includes(l) ? LABEL_TONES[l] : "border-border text-muted-foreground"
-                  )}
-                  data-testid={`new-entry-label-${l}`}
-                >
-                  {labelText[l]}
-                </button>
-              ))}
-            </div>
-          </Field>
+        )}
+        {locales.length > 1 && (
           <Field label={<Trans>Language</Trans>} htmlFor="new-entry-locale">
             <ChoiceSelect
               id="new-entry-locale"
               value={locale}
               onChange={setLocale}
-              options={changelog.locales.map((l) => [l, localeName(l)] as const)}
+              options={locales.map((l) => [l, localeName(l)] as const)}
               label={t`Language`}
-              className="w-64"
             />
           </Field>
-          <ErrorLine error={create.error} />
-          <DialogFooter>
-            <Button type="button" variant="ghost" onClick={onClose}>
-              <Trans>Cancel</Trans>
-            </Button>
-            <Button type="submit" disabled={!ok || create.isPending} data-testid="create-entry">
-              {create.isPending && <LoaderIcon className="animate-spin" />}
-              <Trans>Create entry</Trans>
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+        )}
+      </FormGrid>
+    </FormCard>
   )
 }
 
@@ -221,20 +240,18 @@ export function EntryRow({
   e,
   changelog,
   inbox,
-  current,
-  onPick,
-  locales,
-  check,
-  flat,
+  cursor,
+  checked,
+  onToggle,
+  onOpen,
 }: {
   e: ChangelogEntrySummary
   changelog: Changelog
   inbox?: Inbox
-  current: boolean
-  onPick: () => void
-  locales?: boolean
-  check?: { checked: boolean; onToggle: (range: boolean) => void }
-  flat?: boolean
+  cursor: boolean
+  checked: boolean
+  onToggle: (range: boolean) => void
+  onOpen: () => void
 }) {
   const { i18n } = useLingui()
   const stateText = useEntryStateText()
@@ -250,59 +267,63 @@ export function EntryRow({
       <Trans>not published</Trans>
     )
   return (
-    <li
-      className={cn(
-        "relative flex items-start gap-3.5 transition-colors",
-        flat
-          ? "border-t border-line-soft px-1 py-4 hover:bg-subtle"
-          : "rounded-[14px] border bg-card p-4 hover:border-faint @max-xl:gap-3 @max-xl:p-3",
-        current &&
-          (flat
-            ? "bg-subtle shadow-[inset_2px_0_0_var(--brand)]"
-            : "border-brand shadow-[0_0_0_3px_color-mix(in_srgb,var(--brand)_16%,transparent)] before:absolute before:inset-y-4 before:start-1 before:w-[3px] before:rounded-[3px] before:bg-brand")
-      )}
-      onClick={onPick}
+    <div
+      data-row
+      data-row-id={e.id}
+      className={boxRowClass({ cursor, checked })}
+      aria-selected={checked || undefined}
       data-testid="entry-row"
     >
-      {check && <RowCheck checked={check.checked} name={title} onToggle={check.onToggle} className="mt-3.5" />}
-      <DateBlock iso={e.published_at ?? e.publish_at ?? e.created_at} />
-      <div className="flex min-w-0 flex-1 flex-col gap-1">
-        <span className="flex min-w-0 flex-wrap items-center gap-1.5">
-          <Pill tone={pillOf[e.state]} data-testid="entry-state" data-state={e.state}>
-            {stateText[e.state]}
-          </Pill>
-          {e.labels.map((l) => (
-            <Chip key={l}>{labelText[l]}</Chip>
-          ))}
-          {inbox && <ProductTag name={inbox.name} color={inbox.branding.color} />}
-        </span>
-        <Link
-          to={entryLink(changelog.id, e.id, changelog.default_locale)}
-          className="line-clamp-2 text-[15px] leading-[21px] font-semibold break-words outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          {title}
-        </Link>
-        {loading ? (
-          <Skeleton className="my-1 h-3.5 w-72 max-w-full" />
-        ) : (
-          <span className="line-clamp-2 text-body leading-[19px] break-words text-muted-foreground">
-            {body || title}
+      <RowCheckbox checked={checked} name={title} onToggle={onToggle} className="mt-[30px]" />
+      <div
+        role="button"
+        tabIndex={-1}
+        onClick={onOpen}
+        className="flex min-w-0 flex-1 cursor-pointer items-start gap-3.5 py-3.5 pe-3.5 outline-none"
+      >
+        <DateBlock iso={e.published_at ?? e.publish_at ?? e.created_at} />
+        <div className="flex min-w-0 flex-1 flex-col gap-1">
+          <span className="flex min-w-0 flex-wrap items-center gap-1.5">
+            <Pill tone={pillOf[e.state]} data-testid="entry-state" data-state={e.state}>
+              {stateText[e.state]}
+            </Pill>
+            {e.labels.map((l) => (
+              <Chip key={l}>{labelText[l]}</Chip>
+            ))}
+            {inbox && <ProductTag name={inbox.name} color={inbox.branding.color} />}
           </span>
-        )}
-        {e.schedule_failed && (
-          <span className="flex items-center gap-1.5 text-small text-warning" data-testid="entry-schedule-failed">
-            <TriangleAlertIcon className="size-3.5 shrink-0" />
-            <span>
-              <Trans>Publishing on schedule failed.</Trans> {failureText[e.schedule_failed.reason]}
+          <Link
+            to={entryLink(changelog.id, e.id, changelog.default_locale)}
+            onClick={(ev) => ev.stopPropagation()}
+            className="line-clamp-2 text-[15px] leading-[21px] font-semibold break-words outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            {title}
+          </Link>
+          {loading ? (
+            <Skeleton className="my-1 h-3.5 w-72 max-w-full" />
+          ) : (
+            <span className="line-clamp-2 text-body leading-[19px] break-words text-muted-foreground">
+              {body || title}
             </span>
+          )}
+          {e.schedule_failed && (
+            <span className="flex items-center gap-1.5 text-small text-warning" data-testid="entry-schedule-failed">
+              <TriangleAlertIcon className="size-3.5 shrink-0" />
+              <span>
+                <Trans>Publishing on schedule failed.</Trans> {failureText[e.schedule_failed.reason]}
+              </span>
+            </span>
+          )}
+          <span
+            className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-caption text-faint tabular-nums"
+            onClick={(ev) => ev.stopPropagation()}
+          >
+            {changelog.locales.length > 1 && <LocaleChips e={e} changelog={changelog} />}
+            <span>{when}</span>
           </span>
-        )}
-        <span className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-caption text-faint tabular-nums">
-          {locales && changelog.locales.length > 1 && <LocaleChips e={e} changelog={changelog} />}
-          <span>{when}</span>
-        </span>
+        </div>
       </div>
-    </li>
+    </div>
   )
 }
 
@@ -375,150 +396,220 @@ export function EntryPreview({
   )
 }
 
-export function EntriesTab({ changelog, flat }: { changelog: Changelog; flat?: boolean }) {
-  const { t } = useLingui()
+export function EntryList({
+  rows,
+  changelogs,
+  pending,
+  error,
+  onRetry,
+  hasMore,
+  loadingMore,
+  onMore,
+  empty,
+  onClear,
+  scope,
+  active,
+  onCursor,
+}: {
+  rows: ChangelogEntrySummary[]
+  changelogs: Map<string, Changelog>
+  pending: boolean
+  error: unknown
+  onRetry: () => void
+  hasMore?: boolean
+  loadingMore?: boolean
+  onMore?: () => void
+  empty: React.ReactNode
+  onClear?: () => void
+  scope: string
+  active: boolean
+  onCursor?: (e: ChangelogEntrySummary | undefined) => void
+}) {
+  const { i18n } = useLingui()
   const navigate = useNavigate()
+  const inboxes = new Map((useInboxes().data ?? []).map((i) => [i.id, i]))
+  const selection = useSelection(
+    rows.map((e) => e.id),
+    scope
+  )
+  const listRef = useRef<HTMLDivElement>(null)
+  const open = (id: string) => {
+    const e = rows.find((x) => x.id === id)
+    const c = e && changelogs.get(e.changelog_id)
+    if (e && c) navigate(entryLink(c.id, e.id, c.default_locale))
+  }
+  const { cursorId, setCursorId } = useListCursor(rows, null, open, active, listRef, true, true)
+  const [seen, setSeen] = useState(scope)
+  if (seen !== scope) {
+    setSeen(scope)
+    setCursorId(null)
+  }
+  const shown = rows.find((e) => e.id === cursorId) ?? rows[0]
+  useEffect(() => onCursor?.(shown), [shown, onCursor])
+  useHotkeys(
+    {
+      [SHORTCUTS.select]: () => cursorId && selection.toggle(cursorId),
+      ...(selection.selecting ? { Escape: selection.stop } : {}),
+    },
+    active
+  )
+  const fmt = new Intl.NumberFormat(i18n.locale)
+  const shownCount = `${fmt.format(rows.length)}${hasMore ? "+" : ""}`
+  const many = changelogs.size > 1
+  return (
+    <div ref={listRef} className="@container min-w-0">
+      <ListBox
+        testId="list"
+        bar={selection.selecting && <EntryBulkBar changelogs={changelogs} items={rows} selection={selection} />}
+      >
+        {pending ? (
+          <ListBoxSkeleton rows={3} />
+        ) : error && rows.length === 0 ? (
+          <ListBoxEmpty
+            action={
+              <Button variant="outline" size="sm" onClick={onRetry}>
+                <Trans>Try again</Trans>
+              </Button>
+            }
+          >
+            <ErrorLine error={error} />
+          </ListBoxEmpty>
+        ) : rows.length === 0 ? (
+          <ListBoxEmpty
+            testId="changelog-entries-empty"
+            action={
+              onClear && (
+                <Button variant="outline" size="sm" onClick={onClear}>
+                  <Trans>Clear filters</Trans>
+                </Button>
+              )
+            }
+          >
+            {empty}
+          </ListBoxEmpty>
+        ) : (
+          rows.map((e) => {
+            const c = changelogs.get(e.changelog_id)
+            if (!c) return null
+            return (
+              <EntryRow
+                key={e.id}
+                e={e}
+                changelog={c}
+                inbox={many ? inboxes.get(c.inbox_id) : undefined}
+                cursor={e.id === cursorId}
+                checked={selection.has(e.id)}
+                onToggle={(range) => selection.toggle(e.id, range)}
+                onOpen={() => (selection.selecting ? selection.toggle(e.id) : setCursorId(e.id))}
+              />
+            )
+          })
+        )}
+      </ListBox>
+      {hasMore && (
+        <Button variant="outline" size="sm" className="mt-3" disabled={loadingMore} onClick={onMore}>
+          <Trans>Load more</Trans>
+        </Button>
+      )}
+      {rows.length > 0 && (
+        <p className="m-0 mt-3 text-small text-muted-foreground" data-testid="list-lede">
+          {plural(rows.length, { one: `${shownCount} entry`, other: `${shownCount} entries` })}
+        </p>
+      )}
+      <KeyHints
+        items={[
+          [[SHORTCUTS.next, SHORTCUTS.previous], <Trans key="move">move</Trans>],
+          [
+            ["↵"],
+            <Trans key="open" context="keyboard hint">
+              open
+            </Trans>,
+          ],
+          [[SHORTCUTS.select], <Trans key="select">select</Trans>],
+          [[CHANGELOG_KEYS.newEntry], <Trans key="new">new post</Trans>],
+        ]}
+      />
+    </div>
+  )
+}
+
+export function EntriesTab({
+  changelog,
+  active,
+  onCursor,
+}: {
+  changelog: Changelog
+  active: boolean
+  onCursor?: (e: ChangelogEntrySummary | undefined) => void
+}) {
+  const { t } = useLingui()
   const stateText = useEntryStateText()
   const translationText = useTranslationStateText()
   const labelText = useLabelText()
-  const [state, setState] = useState<StateFilter>("all")
+  const [state, setState] = useState<NonNullable<ChangelogEntryFilters["state"]> | "">("")
   const [label, setLabel] = useState<ChangelogLabel | "">("")
-  const [creating, setCreating] = useState(false)
-  const [cursor, setCursor] = useState(-1)
-  const [picked, setPicked] = useState("")
-  const list = useRef<HTMLUListElement>(null)
   const filters: ChangelogEntryFilters = {
-    state: state === "all" ? undefined : state,
+    state: state || undefined,
     label: label || undefined,
   }
   const entries = useEntries(changelog.id, filters)
   const items = entries.data?.pages.flatMap((p) => p.items) ?? []
-  const shown = items[cursor] ?? items.find((e) => e.id === picked) ?? items[0]
-  const selection = useSelection(
-    items.map((e) => e.id),
-    `${state}|${label}`
-  )
-
-  useHotkeys({
-    [CHANGELOG_KEYS.newEntry]: () => setCreating(true),
-    j: () => setCursor((i) => Math.min(items.length - 1, i + 1)),
-    k: () => setCursor((i) => Math.max(0, i - 1)),
-    ArrowDown: () => setCursor((i) => Math.min(items.length - 1, i + 1)),
-    ArrowUp: () => setCursor((i) => Math.max(0, i - 1)),
-    ...(cursor >= 0 && items[cursor]
-      ? { Enter: () => navigate(entryLink(changelog.id, items[cursor].id, changelog.default_locale)) }
-      : {}),
-  })
-  useEffect(() => {
-    if (cursor >= 0) list.current?.children[cursor]?.scrollIntoView({ block: "nearest" })
-  }, [cursor])
-
-  const states: [StateFilter, string][] = [
-    ["all", t`Any state`],
-    ["draft", stateText.draft],
-    ["scheduled", stateText.scheduled],
-    ["published", stateText.published],
-    ["changed", translationText.changed],
-  ]
-
+  const filtering = !!(state || label)
+  const clear = () => {
+    setState("")
+    setLabel("")
+  }
   return (
-    <div className="@container flex min-h-0 flex-1" data-testid="changelog-entries">
-      <div className={cn("flex min-w-0 flex-1 flex-col", !flat && "overflow-y-auto")}>
-        <div className={cn("flex flex-wrap items-center gap-2", flat ? "pb-4" : "border-b px-6 py-3 phone:px-4")}>
-          <div className="flex items-center gap-2 phone:w-full">
-            <ChoiceSelect
-              value={state}
-              onChange={(v) => {
-                setState(v)
-                setCursor(-1)
-              }}
-              options={states}
-              label={t`State`}
-              className="w-48 phone:min-w-0 phone:flex-1"
-            />
-            <ChoiceSelect
-              value={label}
-              onChange={(v) => {
-                setLabel(v)
-                setCursor(-1)
-              }}
-              options={[["", t`All labels`] as const, ...LABELS.map((l) => [l, labelText[l]] as const)]}
-              label={t`Label`}
-              className="w-40 phone:min-w-0 phone:flex-1"
-            />
-          </div>
-          <span className="flex-1 phone:hidden" />
-          <div className="flex items-center gap-2 phone:w-full">
-            {items.length > 0 && !selection.selecting && <SelectToggle selection={selection} />}
-            <FrameButton className="phone:flex-1" onClick={() => setCreating(true)} data-testid="new-entry">
-              <PlusIcon />
-              <Trans>New entry</Trans>
-            </FrameButton>
-          </div>
-        </div>
-        <EntryBulkBar changelog={changelog} items={items} selection={selection} />
-        {entries.isPending ? (
-          <div className="flex flex-col gap-2 p-6">
-            <Skeleton className="h-14 w-full rounded-xl" />
-            <Skeleton className="h-14 w-full rounded-xl" />
-          </div>
-        ) : entries.error ? (
-          <ErrorLine error={entries.error} className="m-6" />
-        ) : items.length === 0 ? (
-          <div
-            className="m-6 flex flex-col items-center gap-2 rounded-xl border border-dashed px-6 py-12 text-center"
-            data-testid="changelog-entries-empty"
-          >
-            <SparklesIcon className="size-6 text-faint" />
-            <p className="text-body text-muted-foreground">
-              {state !== "all" || label ? (
-                <Trans>No entry matches.</Trans>
-              ) : (
-                <Trans>No entries yet. Tell your customers what changed in your latest release.</Trans>
-              )}
-            </p>
-          </div>
-        ) : (
-          <ul ref={list} className={cn("flex flex-col", flat ? "m-0 list-none p-0" : "gap-2.5 p-6 @max-xl:p-4")}>
-            {items.map((e, i) => (
-              <EntryRow
-                key={e.id}
-                e={e}
-                changelog={changelog}
-                flat={flat}
-                locales
-                check={
-                  selection.selecting
-                    ? { checked: selection.has(e.id), onToggle: (range) => selection.toggle(e.id, range) }
-                    : undefined
-                }
-                current={i === cursor || (cursor < 0 && e.id === shown?.id)}
-                onPick={() => {
-                  setPicked(e.id)
-                  setCursor(-1)
-                }}
-              />
-            ))}
-          </ul>
-        )}
-        {entries.hasNextPage && (
-          <Button
-            variant="outline"
-            size="sm"
-            className="m-6 self-center"
-            disabled={entries.isFetchingNextPage}
-            onClick={() => entries.fetchNextPage()}
-          >
-            <Trans>Load more</Trans>
+    <div data-testid="changelog-entries">
+      <FilterRow testId="changelog-filters">
+        <FilterMenu
+          value={state}
+          onChange={(v) => setState(v as NonNullable<ChangelogEntryFilters["state"]> | "")}
+          options={[
+            { value: "draft", label: stateText.draft },
+            { value: "scheduled", label: stateText.scheduled },
+            { value: "published", label: stateText.published },
+            { value: "changed", label: translationText.changed },
+          ]}
+          anyLabel={t`Any state`}
+          label={t`State`}
+          testId="changelog-state"
+        />
+        <FilterMenu
+          value={label}
+          onChange={(v) => setLabel(v as ChangelogLabel | "")}
+          options={LABELS.map((l) => ({ value: l, label: labelText[l] }))}
+          anyLabel={t`All labels`}
+          label={t`Label`}
+          testId="changelog-label"
+        />
+        {filtering && (
+          <Button variant="ghost" size="sm" className="h-8" onClick={clear}>
+            <Trans>Clear filters</Trans>
           </Button>
         )}
-      </div>
-      {shown && (
-        <div className={cn("hidden min-h-0 @min-[1000px]:flex", flat ? "ps-6" : "pt-6 pe-6")}>
-          <EntryPreview changelog={changelog} entry={shown} />
-        </div>
-      )}
-      {creating && <NewEntryDialog changelog={changelog} onClose={() => setCreating(false)} />}
+      </FilterRow>
+      <EntryList
+        rows={items}
+        changelogs={new Map([[changelog.id, changelog]])}
+        pending={entries.isPending}
+        error={entries.error}
+        onRetry={() => void entries.refetch()}
+        hasMore={entries.hasNextPage}
+        loadingMore={entries.isFetchingNextPage}
+        onMore={() => void entries.fetchNextPage()}
+        empty={
+          filtering ? (
+            <Trans>No entry matches.</Trans>
+          ) : (
+            <Trans>No entries yet. Tell your customers what changed in your latest release.</Trans>
+          )
+        }
+        onClear={filtering ? clear : undefined}
+        scope={`${state}|${label}`}
+        active={active}
+        onCursor={onCursor}
+      />
     </div>
   )
 }

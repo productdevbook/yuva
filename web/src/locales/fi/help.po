@@ -7,6 +7,11 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: fi\n"
 
+#. placeholder {0}: items.length
+#: src/features/help/ArticlesTab.tsx
+msgid "{0, plural, one {{shown} article} other {{shown} articles}}"
+msgstr "{0, plural, one {{shown} artikkeli} other {{shown} artikkelia}}"
+
 #. placeholder {0}: c.articles
 #: src/features/help/ImportCard.tsx
 msgid "{0, plural, one {# article read} other {# articles read}}"
@@ -62,21 +67,13 @@ msgstr "{0, plural, one {Add the language in the settings, then import again.} o
 msgid "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 msgstr "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "{drafts, plural, one {# draft} other {# drafts}}"
-msgstr "{drafts, plural, one {# luonnos} other {# luonnosta}}"
-
-#: src/features/help/HelpColumn.tsx
-msgid "{published} of {total} articles published"
-msgstr "{published} / {total} artikkelia julkaistu"
-
 #: src/features/help/ImportCard.tsx
 msgid "{saved, plural, one {# draft saved} other {# drafts saved}}"
 msgstr "{saved, plural, one {# draft saved} other {# drafts saved}}"
 
 #: src/features/help/ArticlesTab.tsx
-msgid "{searches} searches"
-msgstr "{searches} hakua"
+msgid "{views, plural, one {# view} other {# views}}"
+msgstr "{views, plural, one {# katselu} other {# katselua}}"
 
 #: src/features/help/CreateCenterDialog.tsx
 msgid "3 to 48 letters, numbers and hyphens. It is unique on this server."
@@ -124,10 +121,6 @@ msgstr "Osoitteen loppuosa"
 msgid "Agents may publish"
 msgstr "Edustajat saavat julkaista"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "All"
-msgstr "Kaikki"
-
 #: src/features/help/Revisions.tsx
 msgid "An API key"
 msgstr "API-avain"
@@ -152,11 +145,6 @@ msgstr "Toinen ohjekeskus käyttää tätä osoitetta nyt tai aiemmin."
 msgid "Answer common questions once, in writing. Each product gets its own help center with articles, collections and a report of what people search for. Pages are hosted by Yuva, so there is nothing to install on your site."
 msgstr "Vastaa yleisiin kysymyksiin kerran, kirjallisesti. Jokaisella tuotteella on oma ohjekeskus, jossa on artikkeleita, kokoelmia ja raportti siitä, mitä ihmiset etsivät. Yuva isännöi sivut, joten sivustollesi ei tarvitse asentaa mitään."
 
-#: src/features/help/pages.tsx
-msgid "Answer common questions once, in writing. Pick an inbox’s help center to write articles, group them in collections and see what customers search for."
-msgstr "Vastaa usein kysyttyihin kysymyksiin kerran kirjallisesti. Valitse saapuneiden ohjekeskus, jotta voit kirjoittaa artikkeleita, ryhmitellä ne kokoelmiin ja nähdä, mitä asiakkaat hakevat."
-
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Article"
 msgstr "Artikkeli"
@@ -179,7 +167,6 @@ msgstr "Artikkelien katselut"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Articles"
 msgstr "Artikkelit"
@@ -192,7 +179,6 @@ msgstr "Artikkeleita voi kirjoittaa ja julkaista näillä kielillä. Kävijät n
 msgid "Articles in this collection"
 msgstr "Tämän kokoelman artikkelit"
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Articles people read before they write to you"
 msgstr "Artikkelit, joita ihmiset lukevat ennen kuin kirjoittavat sinulle"
@@ -237,8 +223,6 @@ msgstr "Brings the collections and articles of another help center in as drafts.
 msgid "Bulleted list"
 msgstr "Luettelo"
 
-#: src/features/help/ArticlesTab.tsx
-#: src/features/help/CollectionsTab.tsx
 #: src/features/help/CreateCenterDialog.tsx
 #: src/features/help/ImportCard.tsx
 msgid "Cancel"
@@ -277,6 +261,11 @@ msgstr "Aloitetut chatit"
 msgid "Checking the sign-in"
 msgstr "Checking the sign-in"
 
+#: src/features/help/ArticlesTab.tsx
+#: src/features/help/pages.tsx
+msgid "Clear filters"
+msgstr "Tyhjennä suodattimet"
+
 #: src/features/help/ImportCard.tsx
 msgid "Close"
 msgstr "Close"
@@ -295,8 +284,6 @@ msgstr "Koodilohko"
 msgid "Collection"
 msgstr "Kokoelma"
 
-#: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Collections"
 msgstr "Kokoelmat"
@@ -318,14 +305,9 @@ msgid "Create collection"
 msgstr "Luo kokoelma"
 
 #: src/features/help/CreateCenterDialog.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Create help center"
 msgstr "Luo ohjekeskus"
-
-#: src/features/help/HelpColumn.tsx
-msgid "Create help center ({newKey})"
-msgstr "Luo ohjekeskus ({newKey})"
 
 #: src/features/help/Bulk.tsx
 #: src/features/help/CollectionsTab.tsx
@@ -408,7 +390,6 @@ msgid "Draft submitted. An owner or admin can publish it."
 msgstr "Luonnos lähetetty. Omistaja tai ylläpitäjä voi julkaista sen."
 
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Drafts"
 msgstr "Luonnokset"
@@ -429,9 +410,17 @@ msgstr "Muokkaa kokoelmaa"
 msgid "Empty"
 msgstr "Tyhjä"
 
+#: src/features/help/pages.tsx
+msgid "Every collection"
+msgstr "Kaikki kokoelmat"
+
 #: src/features/help/ReportTab.tsx
 msgid "Every search found something."
 msgstr "Jokainen haku löysi jotakin."
+
+#: src/features/help/pages.tsx
+msgid "Every status"
+msgstr "Kaikki tilat"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
@@ -445,6 +434,14 @@ msgstr "Everything imported is a draft."
 #: src/features/help/ImportCard.tsx
 msgid "Failed"
 msgstr "Failed"
+
+#: src/features/help/pages.tsx
+msgid "Filter by collection"
+msgstr "Suodata kokoelman mukaan"
+
+#: src/features/help/pages.tsx
+msgid "Filter by status"
+msgstr "Suodata tilan mukaan"
 
 #: src/features/help/EditorToolbar.tsx
 msgid "Formatting"
@@ -470,15 +467,12 @@ msgstr "Ryhmittele artikkelit, jotta kävijät voivat selata. Kokoelmassa voi ol
 msgid "Heading"
 msgstr "Otsikko"
 
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Help center"
 msgstr "Ohjekeskus"
 
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help center created. Write the first article, then publish it."
 msgstr "Ohjekeskus luotu. Kirjoita ensimmäinen artikkeli ja julkaise se."
@@ -486,12 +480,6 @@ msgstr "Ohjekeskus luotu. Kirjoita ensimmäinen artikkeli ja julkaise se."
 #: src/features/help/SettingsTab.tsx
 msgid "Help center deleted"
 msgstr "Ohjekeskus poistettu"
-
-#: src/features/help/HelpColumn.tsx
-#: src/features/help/HelpFrame.tsx
-#: src/features/help/pages.tsx
-msgid "Help centers"
-msgstr "Ohjekeskukset"
 
 #: src/features/help/text.tsx
 msgid "Help centers are turned off on this server."
@@ -565,7 +553,6 @@ msgstr "Kieli"
 msgid "Language of the articles"
 msgstr "Language of the articles"
 
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Languages"
 msgstr "Kielet"
@@ -573,10 +560,6 @@ msgstr "Kielet"
 #: src/features/help/ReportTab.tsx
 msgid "Last {d} days"
 msgstr "Viimeiset {d} päivää"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "last 7 days"
-msgstr "viimeiset 7 päivää"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "Last 7 days"
@@ -626,6 +609,10 @@ msgstr "Lisää"
 msgid "More for {name}"
 msgstr "Lisää kohteelle {name}"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "move"
+msgstr "liiku"
+
 #: src/features/help/CollectionsTab.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "Siirrä {name}. Vedä tai paina Alt-näppäintä nuolinäppäimillä."
@@ -653,6 +640,10 @@ msgid "New address"
 msgstr "New address"
 
 #: src/features/help/ArticlesTab.tsx
+msgid "new article"
+msgstr "uusi artikkeli"
+
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/pages.tsx
 msgid "New article"
 msgstr "Uusi artikkeli"
@@ -661,16 +652,16 @@ msgstr "Uusi artikkeli"
 msgid "New article ({newKey})"
 msgstr "Uusi artikkeli ({newKey})"
 
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CollectionsTab.tsx
+#: src/features/help/pages.tsx
 msgid "New collection"
 msgstr "Uusi kokoelma"
 
-#: src/features/help/CollectionsTab.tsx
-msgid "New collection ({newKey})"
-msgstr "Uusi kokoelma ({newKey})"
+#: src/features/help/pages.tsx
+msgid "New collection ({colKey})"
+msgstr "Uusi kokoelma ({colKey})"
 
-#: src/features/help/HelpFrame.tsx
+#: src/features/help/pages.tsx
 msgid "New help center for {product}"
 msgstr "Uusi ohjekeskus tuotteelle {product}"
 
@@ -713,12 +704,10 @@ msgstr "Ei vielä aiempia versioita."
 msgid "No help center for {0} yet"
 msgstr "Tuotteelle {0} ei ole vielä ohjekeskusta"
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "No help center yet. Owners and admins create it."
 msgstr "Ei vielä ohjekeskusta. Omistajat ja ylläpitäjät luovat sen."
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "No inbox to show a help center for."
 msgstr "Ei saapuneita, joille ohjekeskus näytettäisiin."
@@ -743,10 +732,6 @@ msgstr "Kirjoittamatta"
 #: src/features/help/EditorToolbar.tsx
 msgid "Numbered list"
 msgstr "Numeroitu luettelo"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "of {answers} answers"
-msgstr "{answers} vastauksesta"
 
 #: src/features/help/ImportCard.tsx
 msgid "Off: a draft you edited in Yuva since the last import is kept."
@@ -775,6 +760,11 @@ msgstr "Vain omistajat ja ylläpitäjät voivat tehdä tämän."
 #: src/features/help/ImportCard.tsx
 msgid "Only owners and admins can use a Zendesk migration."
 msgstr "Only owners and admins can use a Zendesk migration."
+
+#: src/features/help/ArticlesTab.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "avaa"
 
 #: src/features/help/ImportCard.tsx
 msgid "Open the drafts"
@@ -857,21 +847,17 @@ msgstr "Julkinen osoite"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Publish"
 msgstr "Julkaise"
 
 #: src/features/help/ArticleEditor.tsx
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Publish ({publishKey})"
 msgstr "Julkaise ({publishKey})"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/ImportCard.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/Revisions.tsx
@@ -900,11 +886,6 @@ msgstr "Redirects"
 #: src/features/help/SettingsTab.tsx
 msgid "Remove {0}"
 msgstr "Poista {0}"
-
-#: src/features/help/HelpFrame.tsx
-#: src/features/help/pages.tsx
-msgid "Report"
-msgstr "Raportti"
 
 #: src/features/help/ReportTab.tsx
 msgid "Report period"
@@ -962,12 +943,20 @@ msgid "Saving…"
 msgstr "Tallennetaan…"
 
 #: src/features/help/ArticlesTab.tsx
+msgid "search"
+msgstr "hae"
+
+#: src/features/help/pages.tsx
+msgid "Search articles…"
+msgstr "Hae artikkeleista…"
+
+#: src/features/help/pages.tsx
+msgid "Search gaps"
+msgstr "Haun aukot"
+
+#: src/features/help/pages.tsx
 msgid "Search titles"
 msgstr "Hae otsikoista"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Search titles ({findKey})"
-msgstr "Hae otsikoista ({findKey})"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Search words"
@@ -982,13 +971,13 @@ msgstr "Haettu, ei tuloksia"
 msgid "Searches"
 msgstr "Haut"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "searches this week"
-msgstr "hakua tällä viikolla"
-
 #: src/features/help/ReportTab.tsx
 msgid "Searches with no result"
 msgstr "Haut ilman tulosta"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "select"
+msgstr "valitse"
 
 #: src/features/help/ReportTab.tsx
 msgid "Sent"
@@ -998,7 +987,6 @@ msgstr "Lähetetty"
 msgid "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 msgstr "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/text.tsx
 msgid "Settings"
@@ -1067,10 +1055,6 @@ msgstr "Aloita otsikolla. Kirjoitat tekstin seuraavaksi, ja se pysyy luonnoksena
 #: src/features/help/ImportCard.tsx
 msgid "State"
 msgstr "State"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Status"
-msgstr "Tila"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Submit draft"
@@ -1177,6 +1161,10 @@ msgstr "Ylin taso"
 msgid "Translation deleted"
 msgstr "Käännös poistettu"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "Try again"
+msgstr "Yritä uudelleen"
+
 #: src/features/help/text.tsx
 msgid "Type a word to search for."
 msgstr "Kirjoita hakusana."
@@ -1188,7 +1176,6 @@ msgstr "Kirjoita hakusana."
 msgid "Unpublish"
 msgstr "Poista julkaisu"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Unpublish ({publishKey})"
 msgstr "Poista julkaisu ({publishKey})"
@@ -1207,8 +1194,6 @@ msgstr "Poistetaanko tämän käännöksen julkaisu?"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Unpublished"
 msgstr "Julkaisematon"
@@ -1220,10 +1205,6 @@ msgstr "Julkaisemattomat muutokset"
 #: src/features/help/ArticleEditor.tsx
 msgid "Unsaved changes"
 msgstr "Tallentamattomat muutokset"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Updated"
-msgstr "Päivitetty"
 
 #: src/features/help/SettingsTab.tsx
 msgid "Use 3 to 48 letters, numbers and inner hyphens."
@@ -1245,12 +1226,10 @@ msgstr "Versio palautettu luonnokseen"
 msgid "View"
 msgstr "Näytä"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "View site"
 msgstr "Näytä sivusto"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "View site ({openKey})"
 msgstr "Näytä sivusto ({openKey})"
@@ -1259,10 +1238,6 @@ msgstr "Näytä sivusto ({openKey})"
 #: src/features/help/ReportTab.tsx
 msgid "Views"
 msgstr "Katselut"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Views · 7 days"
-msgstr "Katselut · 7 päivää"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "Visibility"

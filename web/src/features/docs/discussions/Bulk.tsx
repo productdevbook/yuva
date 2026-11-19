@@ -2,7 +2,8 @@ import { Trans, useLingui } from "@lingui/react/macro"
 
 import { toast, useConfirm } from "@/components/common"
 import { useBulkReport } from "@/components/common/BulkReport"
-import { BulkButton, SelectionBar } from "@/components/common/Selection"
+import { BulkBar, bulkButton } from "@/components/common/ListBox"
+import { Button } from "@/components/ui/button"
 import { useErrorText } from "@/components/common/text"
 import { useBulkDiscussions } from "@/features/docs/discussions/queries"
 import type { Selection } from "@/hooks/use-selection"
@@ -45,16 +46,28 @@ export function DiscussionBulkBar({ items, selection }: { items: Discussion[]; s
 
   return (
     <>
-      <SelectionBar selection={selection} busy={bulk.isPending}>
+      <BulkBar
+        picked={selection.count}
+        total={items.length}
+        onToggleAll={selection.toggleAll}
+        onCancel={selection.stop}
+        busy={bulk.isPending}
+      >
         {canManage && (
           <>
-            <BulkButton selection={selection} disabled={bulk.isPending} onClick={hide} data-testid="hide-selected">
+            <Button
+              variant="outline"
+              className={bulkButton()}
+              disabled={n === 0 || bulk.isPending}
+              onClick={hide}
+              data-testid="hide-selected"
+            >
               <Trans>Hide</Trans>
-            </BulkButton>
-            <BulkButton
-              selection={selection}
-              destructive
-              disabled={bulk.isPending}
+            </Button>
+            <Button
+              variant="outline"
+              className={bulkButton(true)}
+              disabled={n === 0 || bulk.isPending}
               onClick={() =>
                 confirm({
                   title: <Trans>Mark the selected discussions as spam ({n})?</Trans>,
@@ -71,13 +84,13 @@ export function DiscussionBulkBar({ items, selection }: { items: Discussion[]; s
               data-testid="spam-selected"
             >
               <Trans>Spam</Trans>
-            </BulkButton>
+            </Button>
           </>
         )}
-        <BulkButton
-          selection={selection}
-          destructive
-          disabled={bulk.isPending || !mine}
+        <Button
+          variant="outline"
+          className={bulkButton(true)}
+          disabled={n === 0 || bulk.isPending || !mine}
           title={mine ? undefined : t`You can delete only discussions you started`}
           onClick={() =>
             confirm({
@@ -90,8 +103,8 @@ export function DiscussionBulkBar({ items, selection }: { items: Discussion[]; s
           data-testid="delete-selected"
         >
           <Trans>Delete</Trans>
-        </BulkButton>
-      </SelectionBar>
+        </Button>
+      </BulkBar>
       {confirmDialog}
       {reportDialog}
     </>

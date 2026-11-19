@@ -7,6 +7,11 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: nl\n"
 
+#. placeholder {0}: items.length
+#: src/features/help/ArticlesTab.tsx
+msgid "{0, plural, one {{shown} article} other {{shown} articles}}"
+msgstr "{0, plural, one {{shown} artikel} other {{shown} artikelen}}"
+
 #. placeholder {0}: c.articles
 #: src/features/help/ImportCard.tsx
 msgid "{0, plural, one {# article read} other {# articles read}}"
@@ -62,21 +67,13 @@ msgstr "{0, plural, one {Add the language in the settings, then import again.} o
 msgid "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 msgstr "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "{drafts, plural, one {# draft} other {# drafts}}"
-msgstr "{drafts, plural, one {# concept} other {# concepten}}"
-
-#: src/features/help/HelpColumn.tsx
-msgid "{published} of {total} articles published"
-msgstr "{published} van {total} artikelen gepubliceerd"
-
 #: src/features/help/ImportCard.tsx
 msgid "{saved, plural, one {# draft saved} other {# drafts saved}}"
 msgstr "{saved, plural, one {# draft saved} other {# drafts saved}}"
 
 #: src/features/help/ArticlesTab.tsx
-msgid "{searches} searches"
-msgstr "{searches} zoekopdrachten"
+msgid "{views, plural, one {# view} other {# views}}"
+msgstr "{views, plural, one {# weergave} other {# weergaven}}"
 
 #: src/features/help/CreateCenterDialog.tsx
 msgid "3 to 48 letters, numbers and hyphens. It is unique on this server."
@@ -124,10 +121,6 @@ msgstr "Einde van het adres"
 msgid "Agents may publish"
 msgstr "Agenten mogen publiceren"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "All"
-msgstr "Alle"
-
 #: src/features/help/Revisions.tsx
 msgid "An API key"
 msgstr "Een API-sleutel"
@@ -152,11 +145,6 @@ msgstr "Een ander helpcentrum gebruikt dit adres, nu of eerder."
 msgid "Answer common questions once, in writing. Each product gets its own help center with articles, collections and a report of what people search for. Pages are hosted by Yuva, so there is nothing to install on your site."
 msgstr "Beantwoord veelgestelde vragen één keer, schriftelijk. Elk product krijgt een eigen helpcentrum met artikelen, collecties en een rapport van wat mensen zoeken. De pagina’s worden door Yuva gehost, op je site hoeft niets te worden geïnstalleerd."
 
-#: src/features/help/pages.tsx
-msgid "Answer common questions once, in writing. Pick an inbox’s help center to write articles, group them in collections and see what customers search for."
-msgstr "Beantwoord veelgestelde vragen één keer, schriftelijk. Kies het helpcentrum van een inbox om artikelen te schrijven, in collecties te groeperen en te zien waar klanten naar zoeken."
-
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Article"
 msgstr "Artikel"
@@ -179,7 +167,6 @@ msgstr "Artikelweergaven"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Articles"
 msgstr "Artikelen"
@@ -192,7 +179,6 @@ msgstr "Artikelen kunnen in deze talen worden geschreven en gepubliceerd. Bezoek
 msgid "Articles in this collection"
 msgstr "Artikelen in deze collectie"
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Articles people read before they write to you"
 msgstr "Artikelen die mensen lezen voordat ze je schrijven"
@@ -237,8 +223,6 @@ msgstr "Brings the collections and articles of another help center in as drafts.
 msgid "Bulleted list"
 msgstr "Lijst met opsommingstekens"
 
-#: src/features/help/ArticlesTab.tsx
-#: src/features/help/CollectionsTab.tsx
 #: src/features/help/CreateCenterDialog.tsx
 #: src/features/help/ImportCard.tsx
 msgid "Cancel"
@@ -277,6 +261,11 @@ msgstr "Gestarte chats"
 msgid "Checking the sign-in"
 msgstr "Checking the sign-in"
 
+#: src/features/help/ArticlesTab.tsx
+#: src/features/help/pages.tsx
+msgid "Clear filters"
+msgstr "Filters wissen"
+
 #: src/features/help/ImportCard.tsx
 msgid "Close"
 msgstr "Close"
@@ -295,8 +284,6 @@ msgstr "Codeblok"
 msgid "Collection"
 msgstr "Collectie"
 
-#: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Collections"
 msgstr "Collecties"
@@ -318,14 +305,9 @@ msgid "Create collection"
 msgstr "Collectie maken"
 
 #: src/features/help/CreateCenterDialog.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Create help center"
 msgstr "Helpcentrum maken"
-
-#: src/features/help/HelpColumn.tsx
-msgid "Create help center ({newKey})"
-msgstr "Helpcentrum maken ({newKey})"
 
 #: src/features/help/Bulk.tsx
 #: src/features/help/CollectionsTab.tsx
@@ -408,7 +390,6 @@ msgid "Draft submitted. An owner or admin can publish it."
 msgstr "Concept ingediend. Een eigenaar of beheerder kan het publiceren."
 
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Drafts"
 msgstr "Concepten"
@@ -429,9 +410,17 @@ msgstr "Collectie bewerken"
 msgid "Empty"
 msgstr "Leeg"
 
+#: src/features/help/pages.tsx
+msgid "Every collection"
+msgstr "Elke collectie"
+
 #: src/features/help/ReportTab.tsx
 msgid "Every search found something."
 msgstr "Elke zoekopdracht vond iets."
+
+#: src/features/help/pages.tsx
+msgid "Every status"
+msgstr "Elke status"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
@@ -445,6 +434,14 @@ msgstr "Everything imported is a draft."
 #: src/features/help/ImportCard.tsx
 msgid "Failed"
 msgstr "Failed"
+
+#: src/features/help/pages.tsx
+msgid "Filter by collection"
+msgstr "Filteren op collectie"
+
+#: src/features/help/pages.tsx
+msgid "Filter by status"
+msgstr "Filteren op status"
 
 #: src/features/help/EditorToolbar.tsx
 msgid "Formatting"
@@ -470,15 +467,12 @@ msgstr "Groepeer artikelen zodat bezoekers kunnen bladeren. Een collectie kan é
 msgid "Heading"
 msgstr "Kop"
 
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Help center"
 msgstr "Helpcentrum"
 
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help center created. Write the first article, then publish it."
 msgstr "Helpcentrum aangemaakt. Schrijf het eerste artikel en publiceer het daarna."
@@ -486,12 +480,6 @@ msgstr "Helpcentrum aangemaakt. Schrijf het eerste artikel en publiceer het daar
 #: src/features/help/SettingsTab.tsx
 msgid "Help center deleted"
 msgstr "Helpcentrum verwijderd"
-
-#: src/features/help/HelpColumn.tsx
-#: src/features/help/HelpFrame.tsx
-#: src/features/help/pages.tsx
-msgid "Help centers"
-msgstr "Helpcentra"
 
 #: src/features/help/text.tsx
 msgid "Help centers are turned off on this server."
@@ -565,7 +553,6 @@ msgstr "Taal"
 msgid "Language of the articles"
 msgstr "Language of the articles"
 
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Languages"
 msgstr "Talen"
@@ -573,10 +560,6 @@ msgstr "Talen"
 #: src/features/help/ReportTab.tsx
 msgid "Last {d} days"
 msgstr "Laatste {d} dagen"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "last 7 days"
-msgstr "afgelopen 7 dagen"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "Last 7 days"
@@ -626,6 +609,10 @@ msgstr "Meer"
 msgid "More for {name}"
 msgstr "Meer voor {name}"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "move"
+msgstr "bewegen"
+
 #: src/features/help/CollectionsTab.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "{name} verplaatsen. Sleep, of druk op Alt met de pijltjestoetsen."
@@ -653,6 +640,10 @@ msgid "New address"
 msgstr "New address"
 
 #: src/features/help/ArticlesTab.tsx
+msgid "new article"
+msgstr "nieuw artikel"
+
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/pages.tsx
 msgid "New article"
 msgstr "Nieuw artikel"
@@ -661,16 +652,16 @@ msgstr "Nieuw artikel"
 msgid "New article ({newKey})"
 msgstr "Nieuw artikel ({newKey})"
 
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CollectionsTab.tsx
+#: src/features/help/pages.tsx
 msgid "New collection"
 msgstr "Nieuwe collectie"
 
-#: src/features/help/CollectionsTab.tsx
-msgid "New collection ({newKey})"
-msgstr "Nieuwe collectie ({newKey})"
+#: src/features/help/pages.tsx
+msgid "New collection ({colKey})"
+msgstr "Nieuwe collectie ({colKey})"
 
-#: src/features/help/HelpFrame.tsx
+#: src/features/help/pages.tsx
 msgid "New help center for {product}"
 msgstr "Nieuw helpcentrum voor {product}"
 
@@ -713,12 +704,10 @@ msgstr "Nog geen eerdere versies."
 msgid "No help center for {0} yet"
 msgstr "Nog geen helpcentrum voor {0}"
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "No help center yet. Owners and admins create it."
 msgstr "Nog geen helpcentrum. Eigenaren en beheerders maken het."
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "No inbox to show a help center for."
 msgstr "Geen inbox waarvoor een helpcentrum getoond kan worden."
@@ -743,10 +732,6 @@ msgstr "Niet geschreven"
 #: src/features/help/EditorToolbar.tsx
 msgid "Numbered list"
 msgstr "Genummerde lijst"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "of {answers} answers"
-msgstr "van {answers} antwoorden"
 
 #: src/features/help/ImportCard.tsx
 msgid "Off: a draft you edited in Yuva since the last import is kept."
@@ -775,6 +760,11 @@ msgstr "Alleen eigenaren en beheerders kunnen dit doen."
 #: src/features/help/ImportCard.tsx
 msgid "Only owners and admins can use a Zendesk migration."
 msgstr "Only owners and admins can use a Zendesk migration."
+
+#: src/features/help/ArticlesTab.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "openen"
 
 #: src/features/help/ImportCard.tsx
 msgid "Open the drafts"
@@ -857,21 +847,17 @@ msgstr "Openbaar adres"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Publish"
 msgstr "Publiceren"
 
 #: src/features/help/ArticleEditor.tsx
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Publish ({publishKey})"
 msgstr "Publiceren ({publishKey})"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/ImportCard.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/Revisions.tsx
@@ -900,11 +886,6 @@ msgstr "Redirects"
 #: src/features/help/SettingsTab.tsx
 msgid "Remove {0}"
 msgstr "{0} verwijderen"
-
-#: src/features/help/HelpFrame.tsx
-#: src/features/help/pages.tsx
-msgid "Report"
-msgstr "Rapport"
 
 #: src/features/help/ReportTab.tsx
 msgid "Report period"
@@ -962,12 +943,20 @@ msgid "Saving…"
 msgstr "Opslaan…"
 
 #: src/features/help/ArticlesTab.tsx
+msgid "search"
+msgstr "zoeken"
+
+#: src/features/help/pages.tsx
+msgid "Search articles…"
+msgstr "Artikelen doorzoeken…"
+
+#: src/features/help/pages.tsx
+msgid "Search gaps"
+msgstr "Zoekhiaten"
+
+#: src/features/help/pages.tsx
 msgid "Search titles"
 msgstr "Titels doorzoeken"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Search titles ({findKey})"
-msgstr "Titels doorzoeken ({findKey})"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Search words"
@@ -982,13 +971,13 @@ msgstr "Gezocht, niets gevonden"
 msgid "Searches"
 msgstr "Zoekopdrachten"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "searches this week"
-msgstr "zoekopdrachten deze week"
-
 #: src/features/help/ReportTab.tsx
 msgid "Searches with no result"
 msgstr "Zoekopdrachten zonder resultaat"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "select"
+msgstr "selecteren"
 
 #: src/features/help/ReportTab.tsx
 msgid "Sent"
@@ -998,7 +987,6 @@ msgstr "Verzonden"
 msgid "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 msgstr "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/text.tsx
 msgid "Settings"
@@ -1067,10 +1055,6 @@ msgstr "Begin met een titel. De tekst schrijf je daarna, en hij blijft een conce
 #: src/features/help/ImportCard.tsx
 msgid "State"
 msgstr "State"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Status"
-msgstr "Status"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Submit draft"
@@ -1177,6 +1161,10 @@ msgstr "Hoogste niveau"
 msgid "Translation deleted"
 msgstr "Vertaling verwijderd"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "Try again"
+msgstr "Opnieuw proberen"
+
 #: src/features/help/text.tsx
 msgid "Type a word to search for."
 msgstr "Typ een woord om te zoeken."
@@ -1188,7 +1176,6 @@ msgstr "Typ een woord om te zoeken."
 msgid "Unpublish"
 msgstr "Depubliceren"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Unpublish ({publishKey})"
 msgstr "Depubliceren ({publishKey})"
@@ -1207,8 +1194,6 @@ msgstr "Deze vertaling depubliceren?"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Unpublished"
 msgstr "Niet gepubliceerd"
@@ -1220,10 +1205,6 @@ msgstr "Niet-gepubliceerde wijzigingen"
 #: src/features/help/ArticleEditor.tsx
 msgid "Unsaved changes"
 msgstr "Niet-opgeslagen wijzigingen"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Updated"
-msgstr "Bijgewerkt"
 
 #: src/features/help/SettingsTab.tsx
 msgid "Use 3 to 48 letters, numbers and inner hyphens."
@@ -1245,12 +1226,10 @@ msgstr "Versie hersteld in het concept"
 msgid "View"
 msgstr "Bekijken"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "View site"
 msgstr "Site bekijken"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "View site ({openKey})"
 msgstr "Site bekijken ({openKey})"
@@ -1259,10 +1238,6 @@ msgstr "Site bekijken ({openKey})"
 #: src/features/help/ReportTab.tsx
 msgid "Views"
 msgstr "Weergaven"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Views · 7 days"
-msgstr "Weergaven · 7 dagen"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "Visibility"

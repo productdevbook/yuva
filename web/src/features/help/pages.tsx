@@ -1,36 +1,41 @@
 import "@/features/help/i18n"
 import { Trans, useLingui } from "@lingui/react/macro"
-import { ArrowUpRightIcon, LifeBuoyIcon, LoaderIcon, PlusIcon } from "lucide-react"
+import { ArrowUpRightIcon, LoaderIcon, PlusIcon } from "lucide-react"
 import { useRef, useState } from "react"
 import { Navigate, useNavigate, useParams, useSearchParams } from "react-router"
 
-import { FlatEmpty, PageHeading, PageTop as FlatTop, topButton, topInk } from "@/components/common"
-import { PaneEmpty } from "@/components/common/Column"
+import { InfoColumn, PageLayout } from "@/components/common"
+import {
+  FilterMenu,
+  FilterRow,
+  FilterSearch,
+  ListBox,
+  ListBoxEmpty,
+  ListBoxSkeleton,
+  PageTitle,
+} from "@/components/common/ListBox"
 import { toast } from "@/components/common/Toast"
 import { HELP_KEYS, keyLabel } from "@/components/common/ShortcutSheet"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Skeleton } from "@/components/ui/skeleton"
-import { ArticlesTab, HelpAside, NewArticleDialog } from "@/features/help/ArticlesTab"
-import { CenterBar, DocsNote, ProductChips, usePublishToggle } from "@/features/help/CenterBar"
-import { CollectionsTab } from "@/features/help/CollectionsTab"
+import { ArticlesTab, HelpAside, NewArticleForm, type ArticleState } from "@/features/help/ArticlesTab"
+import { DocsNote, usePublishToggle } from "@/features/help/CenterBar"
+import { CollectionsTab, type CollectionFormState } from "@/features/help/CollectionsTab"
 import { CreateCenterDialog } from "@/features/help/CreateCenterDialog"
-import { HelpLayout, HelpTrail, useHelpNames } from "@/features/help/HelpFrame"
 import { centerLink, useHelpCenter, useHelpCenters, useHelpCollections, useHelpPreview } from "@/features/help/queries"
 import { ReportTab } from "@/features/help/ReportTab"
 import { SettingsTab } from "@/features/help/SettingsTab"
 import { collectionName, ErrorLine } from "@/features/help/text"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
-import { FrameTabs, look, PageTop } from "@/features/inbox/PageFrame"
 import { useHotkeys } from "@/hooks/use-hotkeys"
-import { useIsPhone } from "@/hooks/use-media-query"
 import type { HelpCenter, Inbox } from "@/lib/api"
 import { useSession } from "@/lib/session"
-import { useInboxes } from "@/lib/workspace"
+import { isSupport, useInboxes } from "@/lib/workspace"
 
 export { ArticleEditorPage } from "@/features/help/ArticleEditor"
 
-const TABS = ["articles", "drafts", "collections", "report", "settings"] as const
+const TABS = ["articles", "collections", "report", "settings"] as const
 type Tab = (typeof TABS)[number]
 
 function useCenterChoice() {
@@ -64,137 +69,84 @@ function useCreateCenter() {
   return [setCreating, dialog] as const
 }
 
+function CreateCenterButtons({ inboxes, onCreate }: { inboxes: Inbox[]; onCreate: (i: Inbox) => void }) {
+  return inboxes.map((i) => {
+    const product = i.name
+    return (
+      <Button
+        key={i.id}
+        variant="ghost"
+        size="sm"
+        className="h-8"
+        onClick={() => onCreate(i)}
+        data-testid="help-nav-create"
+      >
+        <PlusIcon />
+        <Trans>New help center for {product}</Trans>
+      </Button>
+    )
+  })
+}
+
 export function HelpHome() {
   const { t } = useLingui()
-  const phone = useIsPhone()
   const { canManage } = useSession()
   const { all, groups, pending, error } = useCenterChoice()
   const [create, dialog] = useCreateCenter()
-  const [picked, setPicked] = useState("")
   const [params] = useSearchParams()
-  if (phone) {
-    return (
-      <PaneEmpty icon={LifeBuoyIcon} title={<Trans>Help centers</Trans>} testId="help-home">
-        <Trans>
-          Answer common questions once, in writing. Pick an inbox’s help center to write articles, group them in
-          collections and see what customers search for.
-        </Trans>
-      </PaneEmpty>
-    )
-  }
   const first = groups.find((g) => g.center)?.center
   if (first) return <Navigate to={centerLink(first.id, params.get("tab") ?? undefined)} replace />
-  const target =
-    all.find((g) => g.inbox.id === picked && !g.center) ?? groups.find((g) => !g.center) ?? all.find((g) => !g.center)
-  if (!phone)
-    return (
-      <HelpLayout testId="help-home">
-        <FlatTop>
-          <span className="font-medium text-foreground">{t`Help center`}</span>
-        </FlatTop>
-        <section className="flex max-w-[760px] flex-col" data-testid="help-panel">
-          <PageHeading
-            title={target ? <Trans>No help center for {target.inbox.name} yet</Trans> : <Trans>Help center</Trans>}
-            lede={<Trans>Articles people read before they write to you</Trans>}
-          />
-          {pending ? (
-            <Skeleton className="mt-7 h-5 w-full" />
-          ) : error ? (
-            <ErrorLine error={error} className="mt-4" />
-          ) : target ? (
-            <FlatEmpty>
-              <p className="m-0">
-                <Trans>
-                  Answer common questions once, in writing. Each product gets its own help center with articles,
-                  collections and a report of what people search for. Pages are hosted by Yuva, so there is nothing to
-                  install on your site.
-                </Trans>
-              </p>
-              {canManage ? (
-                <Button className={topInk} onClick={() => create(target.inbox)} data-testid="create-help-center-open">
-                  <Trans>Create help center</Trans>
-                </Button>
-              ) : (
-                <span className="text-caption" data-testid="help-none">
-                  <Trans>No help center yet. Owners and admins create it.</Trans>
-                </span>
-              )}
-            </FlatEmpty>
-          ) : (
-            <FlatEmpty testId="help-empty">
-              <Trans>No inbox to show a help center for.</Trans>
-            </FlatEmpty>
-          )}
-          <div className="mt-8">
-            <DocsNote />
-          </div>
-        </section>
-        {dialog}
-      </HelpLayout>
-    )
+  const target = groups.find((g) => !g.center) ?? all.find((g) => !g.center)
   return (
-    <main className="flex min-h-0 flex-1 flex-col bg-surface" data-testid="help-home">
-      <PageTop
-        className="bg-surface"
-        title={<Trans>Help center</Trans>}
-        sub={<Trans>Articles people read before they write to you</Trans>}
-      />
-      <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5 phone:px-4">
-        <div className="flex max-w-[720px] flex-col gap-4">
+    <PageLayout testId="help-home" label={t`Help center`}>
+      <section className="flex min-w-0 flex-col" data-testid="help-panel">
+        <PageTitle
+          title={<Trans>Help center</Trans>}
+          sub={<Trans>Articles people read before they write to you</Trans>}
+          testId="help-head"
+        />
+        <ListBox>
           {pending ? (
-            <Skeleton className="h-40 w-full rounded-[14px]" />
+            <ListBoxSkeleton rows={3} />
           ) : error ? (
-            <ErrorLine error={error} />
-          ) : (
-            <>
-              <ProductChips
-                groups={all}
-                currentInboxId={target?.inbox.id}
-                canManage={canManage}
-                onCreate={(i) => setPicked(i.id)}
-              />
-              <div className={`${look.card} flex flex-col gap-3 rounded-[14px] p-6`} data-testid="help-panel">
-                {target ? (
-                  <>
-                    <h2 className="text-reading font-semibold">
-                      <Trans>No help center for {target.inbox.name} yet</Trans>
-                    </h2>
-                    <p className="text-muted-foreground">
-                      <Trans>
-                        Answer common questions once, in writing. Each product gets its own help center with articles,
-                        collections and a report of what people search for. Pages are hosted by Yuva, so there is
-                        nothing to install on your site.
-                      </Trans>
-                    </p>
-                    <div className="flex items-center gap-3">
-                      {canManage ? (
-                        <Button
-                          className={look.btnInk}
-                          onClick={() => create(target.inbox)}
-                          data-testid="create-help-center-open"
-                        >
-                          <Trans>Create help center</Trans>
-                        </Button>
-                      ) : (
-                        <span className="text-caption text-faint" data-testid="help-none">
-                          <Trans>No help center yet. Owners and admins create it.</Trans>
-                        </span>
-                      )}
-                    </div>
-                  </>
+            <ListBoxEmpty>
+              <ErrorLine error={error} />
+            </ListBoxEmpty>
+          ) : target ? (
+            <ListBoxEmpty
+              action={
+                canManage ? (
+                  <Button onClick={() => create(target.inbox)} data-testid="create-help-center-open">
+                    <Trans>Create help center</Trans>
+                  </Button>
                 ) : (
-                  <p className="text-center text-faint" data-testid="help-empty">
-                    <Trans>No inbox to show a help center for.</Trans>
-                  </p>
-                )}
-              </div>
-              <DocsNote />
-            </>
+                  <span className="text-caption" data-testid="help-none">
+                    <Trans>No help center yet. Owners and admins create it.</Trans>
+                  </span>
+                )
+              }
+            >
+              <span className="block font-medium text-foreground">
+                <Trans>No help center for {target.inbox.name} yet</Trans>
+              </span>
+              <Trans>
+                Answer common questions once, in writing. Each product gets its own help center with articles,
+                collections and a report of what people search for. Pages are hosted by Yuva, so there is nothing to
+                install on your site.
+              </Trans>
+            </ListBoxEmpty>
+          ) : (
+            <ListBoxEmpty testId="help-empty">
+              <Trans>No inbox to show a help center for.</Trans>
+            </ListBoxEmpty>
           )}
+        </ListBox>
+        <div className="mt-6">
+          <DocsNote />
         </div>
-      </div>
+      </section>
       {dialog}
-    </main>
+    </PageLayout>
   )
 }
 
@@ -244,29 +196,48 @@ function PreviewDialog({ center, onClose }: { center: HelpCenter; onClose: () =>
 
 export function CenterPane() {
   const { t, i18n } = useLingui()
-  const phone = useIsPhone()
-  const helpNames = useHelpNames()
   const { centerId = "" } = useParams()
-  const [params] = useSearchParams()
+  const [params, setParams] = useSearchParams()
   const navigate = useNavigate()
   const center = useHelpCenter(centerId)
   const { canManage } = useSession()
-  const { all } = useCenterChoice()
   const [inboxFilter] = useInboxFilter()
   const [create, createDialog] = useCreateCenter()
   const centers = useHelpCenters().data
+  const inboxes = (useInboxes().data ?? []).filter(isSupport)
   const collections = useHelpCollections(centerId).data ?? []
   const [preview, setPreview] = useState(false)
-  const [q, setQ] = useState("")
   const [creating, setCreating] = useState<{ title: string; collectionId: string } | null>(null)
+  const [colForm, setColForm] = useState<CollectionFormState>(params.get("new") ? {} : null)
   const search = useRef<HTMLInputElement>(null)
   const raw = params.get("tab")
-  const tab: Tab = TABS.includes(raw as Tab) && (raw !== "settings" || canManage) ? (raw as Tab) : "articles"
+  const tab: Tab =
+    raw === "drafts"
+      ? "articles"
+      : TABS.includes(raw as Tab) && (raw !== "settings" || canManage)
+        ? (raw as Tab)
+        : "articles"
+  const q = params.get("q") ?? ""
+  const rawState = raw === "drafts" ? "draft" : params.get("state")
+  const state: ArticleState = rawState === "published" || rawState === "draft" ? rawState : ""
+  const picked = params.get("collection") ?? ""
+  const set = (key: string, value: string) =>
+    setParams(
+      (p) => {
+        const next = new URLSearchParams(p)
+        if (value) next.set(key, value)
+        else next.delete(key)
+        if (next.get("tab") === "drafts") next.delete("tab")
+        return next
+      },
+      { replace: true }
+    )
   const setTab = (v: Tab) => navigate(centerLink(centerId, v === "articles" ? undefined : v), { replace: true })
   const c = center.data
-  const listing = tab === "articles" || tab === "drafts"
+  const listing = tab === "articles"
   const pub = usePublishToggle(centerId, c?.published)
   const togglePublish = pub.toggle
+  const busy = !!creating || !!colForm || preview
 
   useHotkeys(
     {
@@ -277,60 +248,81 @@ export function CenterPane() {
       [HELP_KEYS.preview]: () => setPreview(true),
       ...(listing
         ? {
-            [HELP_KEYS.newArticle]: () => setCreating({ title: "", collectionId: "" }),
+            [HELP_KEYS.newArticle]: () => setCreating({ title: "", collectionId: picked }),
             [HELP_KEYS.search]: () => search.current?.focus(),
+            "/": () => search.current?.focus(),
           }
         : {}),
+      ...(tab === "collections" ? { [HELP_KEYS.newCollection]: () => setColForm({}) } : {}),
       ...(c?.published ? { [HELP_KEYS.openPage]: () => window.open(c.url, "_blank", "noopener,noreferrer") } : {}),
       ...(canManage && c ? { [HELP_KEYS.publishCenter]: togglePublish } : {}),
     },
-    !!c
+    !!c && !busy
   )
 
   const previewKey = keyLabel(HELP_KEYS.preview).join("")
   const newKey = keyLabel(HELP_KEYS.newArticle).join("")
+  const colKey = keyLabel(HELP_KEYS.newCollection).join("")
   const openKey = keyLabel(HELP_KEYS.openPage).join("")
   const publishKey = keyLabel(HELP_KEYS.publishCenter).join("")
   const switched = inboxFilter && c && c.inbox_id !== inboxFilter && centers?.find((x) => x.inbox_id === inboxFilter)
   if (switched) return <Navigate to={centerLink(switched.id)} replace />
 
-  if (!phone) {
-    const picked = listing ? (params.get("collection") ?? "") : ""
-    const col = collections.find((x) => x.id === picked)
-    const heading = col
-      ? collectionName(col, i18n.locale, c?.default_locale ?? "en")
-      : tab === "articles"
-        ? (c?.name ?? helpNames.articles)
-        : helpNames[tab]
-    if (!c)
-      return (
-        <HelpLayout place={tab} testId={center.isPending ? undefined : "help-center-error"}>
-          <FlatTop />
-          {center.isPending ? (
-            <div className="mt-3 flex max-w-[760px] flex-col gap-4" aria-busy="true">
-              <Skeleton className="h-8 w-60" />
-              <Skeleton className="h-24 w-full" />
-            </div>
-          ) : (
-            <FlatEmpty>
-              <ErrorLine error={center.error} />
-            </FlatEmpty>
-          )}
-        </HelpLayout>
-      )
+  const names: Record<Tab, string> = {
+    articles: t`Articles`,
+    collections: t`Collections`,
+    report: t`Search gaps`,
+    settings: t`Settings`,
+  }
+  if (!c)
     return (
-      <HelpLayout
-        place={tab}
-        center={c}
-        testId="help-center"
-        aside={<HelpAside center={c} onWrite={(title) => setCreating({ title, collectionId: picked })} />}
-      >
-        <FlatTop
+      <PageLayout testId={center.isPending ? undefined : "help-center-error"} label={t`Help center`}>
+        <PageTitle title={names[tab]} />
+        {center.isPending ? (
+          <div className="mt-4 flex flex-col gap-4" aria-busy="true">
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-40 w-full" />
+          </div>
+        ) : (
+          <ListBox>
+            <ListBoxEmpty>
+              <ErrorLine error={center.error} />
+            </ListBoxEmpty>
+          </ListBox>
+        )}
+      </PageLayout>
+    )
+
+  const others = (centers ?? []).filter((x) => x.id !== c.id && (!inboxFilter || x.inbox_id === inboxFilter))
+  const missing = canManage && centers ? inboxes.filter((i) => !centers.some((x) => x.inbox_id === i.id)) : []
+  const anyFilter = !!(q || state || picked)
+  const clearFilters = () => setParams(new URLSearchParams(), { replace: true })
+  const prefer = [i18n.locale, c.default_locale]
+  const centerName = c.name
+  return (
+    <PageLayout
+      testId="help-center"
+      label={t`Help center`}
+      aside={
+        <InfoColumn label={t`Help center`}>
+          <HelpAside center={c} onWrite={(title) => setCreating({ title, collectionId: picked })} />
+        </InfoColumn>
+      }
+    >
+      <section key={c.id} className="flex min-w-0 flex-col">
+        <PageTitle
+          title={names[tab]}
+          sub={
+            <span data-testid="help-published">
+              <span data-testid="help-center-name">{centerName}</span>
+              {" · "}
+              {c.published ? <Trans>Published</Trans> : <Trans>Unpublished</Trans>}
+            </span>
+          }
           actions={
             <>
               <Button
                 variant="outline"
-                className={topButton}
                 onClick={() => setPreview(true)}
                 title={t`Preview (${previewKey})`}
                 data-testid="help-preview"
@@ -340,19 +332,17 @@ export function CenterPane() {
               {c.published && (
                 <Button
                   variant="outline"
-                  className={topButton}
                   render={<a href={c.url} target="_blank" rel="noreferrer noopener" />}
                   title={t`View site (${openKey})`}
                   data-testid="help-open-public"
                 >
                   <Trans>View site</Trans>
-                  <ArrowUpRightIcon className="text-faint rtl:-scale-x-100" />
+                  <ArrowUpRightIcon className="rtl:-scale-x-100" />
                 </Button>
               )}
               {canManage && (
                 <Button
                   variant="outline"
-                  className={topButton}
                   disabled={pub.pending}
                   onClick={togglePublish}
                   title={c.published ? t`Unpublish (${publishKey})` : t`Publish (${publishKey})`}
@@ -361,195 +351,125 @@ export function CenterPane() {
                   {c.published ? <Trans>Unpublish</Trans> : <Trans>Publish</Trans>}
                 </Button>
               )}
-              <Button
-                className={topInk}
-                onClick={() => setCreating({ title: "", collectionId: picked })}
-                title={t`New article (${newKey})`}
-                data-testid="new-article"
-              >
-                <PlusIcon className="size-3.5" aria-hidden />
-                <Trans>New article</Trans>
-              </Button>
+              {listing && (
+                <Button
+                  onClick={() => setCreating({ title: "", collectionId: picked })}
+                  disabled={!!creating}
+                  title={t`New article (${newKey})`}
+                  data-testid="new-article"
+                >
+                  <PlusIcon />
+                  <Trans>New article</Trans>
+                </Button>
+              )}
+              {tab === "collections" && (
+                <Button
+                  onClick={() => setColForm({})}
+                  disabled={!!colForm}
+                  title={t`New collection (${colKey})`}
+                  data-testid="new-collection"
+                >
+                  <PlusIcon />
+                  <Trans>New collection</Trans>
+                </Button>
+              )}
             </>
           }
-        >
-          <HelpTrail place={col ? helpNames.collections : helpNames[tab]} center={c} />
-        </FlatTop>
-        <section key={c.id} className="@container flex max-w-[1040px] flex-col">
-          <PageHeading
-            title={<span data-testid="help-center-name">{heading}</span>}
-            lede={
-              <span data-testid="help-published">
-                <span dir="ltr">{c.url.replace(/^https?:\/\//, "")}</span>
-                {" · "}
-                {c.published ? <Trans>Published</Trans> : <Trans>Unpublished</Trans>}
-                {". "}
-                <Trans>Articles people read before they write to you</Trans>
-              </span>
-            }
-          />
-          <ErrorLine error={pub.error} className="mt-3" />
-          <div className={listing ? undefined : "mt-6"}>
-            {listing && (
-              <ArticlesTab
-                key={`${tab}:${picked}`}
+          testId="help-head"
+        />
+        <ErrorLine error={pub.error} className="mt-3" />
+        {listing && (
+          <>
+            {creating && (
+              <NewArticleForm
+                key={creating.title}
                 center={c}
-                drafts={tab === "drafts"}
-                q={q}
-                onQ={setQ}
-                search={search}
-                onWrite={(title, collectionId) => setCreating({ title, collectionId })}
-                flat
-                collection={picked}
+                collections={collections}
+                collectionId={creating.collectionId}
+                initialTitle={creating.title}
+                onClose={() => setCreating(null)}
               />
             )}
-            {tab === "collections" && <CollectionsTab center={c} />}
-            {tab === "report" && <ReportTab center={c} />}
-            {tab === "settings" && canManage && <SettingsTab center={c} />}
-          </div>
-          <div className="mt-8">
-            <DocsNote />
-          </div>
-        </section>
-        {pub.dialog}
-        {preview && <PreviewDialog center={c} onClose={() => setPreview(false)} />}
-        {creating && (
-          <NewArticleDialog
-            center={c}
-            collections={collections}
-            collectionId={creating.collectionId}
-            initialTitle={creating.title}
-            onClose={() => setCreating(null)}
-          />
-        )}
-      </HelpLayout>
-    )
-  }
-
-  if (center.isPending) {
-    return (
-      <main className="flex flex-1 flex-col gap-4 bg-surface px-6 py-5 phone:px-4" aria-busy="true">
-        <Skeleton className="h-8 w-60" />
-        <div className="grid grid-cols-[220px_minmax(0,1fr)_290px] gap-4 phone:grid-cols-1">
-          <Skeleton className="h-64 rounded-xl" />
-          <Skeleton className="h-[480px] rounded-[14px]" />
-          <Skeleton className="h-72 rounded-[14px] phone:hidden" />
-        </div>
-      </main>
-    )
-  }
-  if (!c) {
-    return (
-      <main
-        className="flex flex-1 flex-col items-center gap-2.5 bg-surface px-6 py-12 text-center"
-        data-testid="help-center-error"
-      >
-        <span
-          className="grid size-8 place-items-center rounded-full bg-destructive/10 text-body font-bold text-destructive"
-          aria-hidden
-        >
-          !
-        </span>
-        <ErrorLine error={center.error} />
-      </main>
-    )
-  }
-  const names: Record<Tab, string> = {
-    articles: t`Articles`,
-    drafts: t`Drafts`,
-    collections: t`Collections`,
-    report: t`Report`,
-    settings: t`Settings`,
-  }
-  const keys: Partial<Record<Tab, string>> = {
-    articles: HELP_KEYS.articles,
-    collections: HELP_KEYS.collections,
-    report: HELP_KEYS.report,
-    settings: HELP_KEYS.settings,
-  }
-  return (
-    <main className="flex min-h-0 flex-1 flex-col bg-surface" data-testid="help-center" key={c.id}>
-      <PageTop
-        className="bg-surface"
-        title={<Trans>Help center</Trans>}
-        sub={<Trans>Articles people read before they write to you</Trans>}
-        actions={
-          <>
-            <Button
-              variant="outline"
-              className={look.btn}
-              onClick={() => setPreview(true)}
-              title={t`Preview (${previewKey})`}
-              data-testid="help-preview"
-            >
-              <Trans>Preview</Trans>
-            </Button>
-            <Button
-              className={look.btnInk}
-              onClick={() => setCreating({ title: "", collectionId: "" })}
-              title={t`New article (${newKey})`}
-              data-testid="new-article"
-            >
-              <Trans>New article</Trans>
-            </Button>
-          </>
-        }
-        tabs={
-          <FrameTabs<Tab>
-            label={t`Help center`}
-            value={tab}
-            onChange={setTab}
-            items={TABS.filter((v) => v !== "settings" || canManage).map((v) => ({
-              key: v,
-              label: names[v],
-              title: keys[v] ? `${names[v]} (${keyLabel(keys[v]).join("")})` : undefined,
-              testId: `help-tab-${v}`,
-            }))}
-          />
-        }
-      />
-      <CenterBar
-        center={c}
-        groups={all}
-        canManage={canManage}
-        busy={pub.pending}
-        onCreate={create}
-        onTogglePublish={togglePublish}
-      />
-      <ErrorLine error={pub.error} className="px-6 pt-2" />
-      <div className="@container min-h-0 flex-1 overflow-y-auto px-6 pt-4 pb-12 phone:px-4">
-        <div className="max-w-[1240px]">
-          {listing && (
+            <FilterRow testId="help-filters">
+              <FilterSearch
+                inputRef={search}
+                value={q}
+                onChange={(v) => set("q", v)}
+                placeholder={t`Search articles…`}
+                label={t`Search titles`}
+                testId="help-article-search"
+              />
+              {others.length > 0 && (
+                <FilterMenu
+                  value=""
+                  onChange={(id) => id && navigate(centerLink(id))}
+                  options={others.map((x) => ({ value: x.id, label: x.name }))}
+                  anyLabel={c.name}
+                  label={t`Help center`}
+                  testId="help-center-picker"
+                />
+              )}
+              <FilterMenu
+                value={state}
+                onChange={(v) => set("state", v)}
+                options={[
+                  { value: "published", label: t`Published` },
+                  { value: "draft", label: t`Drafts` },
+                ]}
+                anyLabel={t`Every status`}
+                label={t`Filter by status`}
+                testId="help-state"
+              />
+              {collections.length > 0 && (
+                <FilterMenu
+                  value={picked}
+                  onChange={(v) => set("collection", v)}
+                  options={collections.map((x) => ({ value: x.id, label: collectionName(x, ...prefer) }))}
+                  anyLabel={t`Every collection`}
+                  label={t`Filter by collection`}
+                  testId="help-collection"
+                />
+              )}
+              {anyFilter && (
+                <Button variant="ghost" size="sm" className="h-8" onClick={clearFilters} data-testid="help-clear">
+                  <Trans>Clear filters</Trans>
+                </Button>
+              )}
+            </FilterRow>
             <ArticlesTab
-              key={tab}
+              key={c.id}
               center={c}
-              drafts={tab === "drafts"}
+              state={state}
+              collection={picked}
               q={q}
-              onQ={setQ}
-              search={search}
-              onWrite={(title, collectionId) => setCreating({ title, collectionId })}
+              active={!busy}
+              onClear={anyFilter ? clearFilters : undefined}
             />
-          )}
-          {tab === "collections" && <CollectionsTab center={c} />}
-          {tab === "report" && <ReportTab center={c} />}
-          {tab === "settings" && canManage && <SettingsTab center={c} />}
-        </div>
-        <div className="mt-6">
+          </>
+        )}
+        {tab === "collections" && <CollectionsTab center={c} form={colForm} onForm={setColForm} />}
+        {tab === "report" && (
+          <div className="mt-4">
+            <ReportTab center={c} />
+          </div>
+        )}
+        {tab === "settings" && canManage && missing.length > 0 && (
+          <FilterRow testId="help-create-centers">
+            <CreateCenterButtons inboxes={missing} onCreate={create} />
+          </FilterRow>
+        )}
+        {tab === "settings" && canManage && (
+          <div className="mt-4 max-w-[1040px]">
+            <SettingsTab center={c} />
+          </div>
+        )}
+        <div className="mt-8">
           <DocsNote />
         </div>
-      </div>
+      </section>
       {createDialog}
       {pub.dialog}
       {preview && <PreviewDialog center={c} onClose={() => setPreview(false)} />}
-      {creating && (
-        <NewArticleDialog
-          center={c}
-          collections={collections}
-          collectionId={creating.collectionId}
-          initialTitle={creating.title}
-          onClose={() => setCreating(null)}
-        />
-      )}
-    </main>
+    </PageLayout>
   )
 }

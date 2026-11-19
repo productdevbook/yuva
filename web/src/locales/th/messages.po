@@ -69,6 +69,11 @@ msgid "{0, plural, one {{shown} person} other {{shown} people}}"
 msgstr "{0, plural, other {{shown} คน}}"
 
 #. placeholder {0}: rows.length
+#: src/features/feedback/FeedbackHome.tsx
+msgid "{0, plural, one {{shown} report} other {{shown} reports}}"
+msgstr "{0, plural, other {ความคิดเห็น {shown} รายการ}}"
+
+#. placeholder {0}: rows.length
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "{0, plural, one {{shown} triggered e-mail} other {{shown} triggered e-mails}}"
 msgstr "{0, plural, other {อีเมลอัตโนมัติ {shown} ฉบับ}}"
@@ -208,6 +213,7 @@ msgid "{0} marked as spam · no reply needed"
 msgstr "{0} ทำเครื่องหมายเป็นสแปม · ไม่ต้องตอบกลับ"
 
 #. placeholder {0}: done.length
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "{0} moved to the Trash"
@@ -223,6 +229,16 @@ msgstr "{0} จาก {1}"
 #: src/features/team/TeamPage.tsx
 msgid "{0} open, unassigned"
 msgstr "เปิดอยู่ ยังไม่มอบหมาย {0}"
+
+#. placeholder {0}: done.length
+#: src/features/feedback/FeedbackHome.tsx
+msgid "{0} reopened"
+msgstr "เปิดอีกครั้ง {0} รายการ"
+
+#. placeholder {0}: done.length
+#: src/features/feedback/FeedbackHome.tsx
+msgid "{0} resolved"
+msgstr "แก้ไขแล้ว {0} รายการ"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
@@ -416,9 +432,9 @@ msgstr "{count, plural, one {# person} other {# people}} who confirmed before wo
 msgid "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 msgstr "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 
-#: src/features/feedback/FeedbackPage.tsx
-msgid "{count, plural, one {# report} other {# reports}}"
-msgstr "{count, plural, other {# รายการ}}"
+#: src/features/docs/DocsPage.tsx
+msgid "{count, plural, one {# post waiting for approval} other {# posts waiting for approval}}"
+msgstr "{count, plural, other {โพสต์ที่รออนุมัติ # รายการ}}"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "{count, plural, one {# scope} other {# scopes}}"
@@ -511,10 +527,6 @@ msgstr "{doneText} จาก {total}"
 msgid "{doneText} of {total} done"
 msgstr "เสร็จแล้ว {doneText} จาก {total}"
 
-#: src/features/status/StatusPages.tsx
-msgid "{down, plural, one {# down} other {# down}}"
-msgstr "{down, plural, other {ล่ม # รายการ}}"
-
 #: src/features/docs/PagesTab.tsx
 msgid "{down} not helpful"
 msgstr "{down} ไม่เป็นประโยชน์"
@@ -546,6 +558,10 @@ msgstr "{first} ให้คะแนนการสนทนา 👍"
 #: src/features/conversation/messages/Thread.tsx
 msgid "{first} rated the conversation 👎"
 msgstr "{first} ให้คะแนนการสนทนา 👎"
+
+#: src/features/status/StatusPages.tsx
+msgid "{fmtCount, plural, one {# page} other {# pages}}"
+msgstr "{fmtCount, plural, other {# หน้า}}"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "{from} has an SPF record. Whether it passes is known once the test mail is read."
@@ -774,10 +790,6 @@ msgstr "ทำเครื่องหมายว่ายังไม่อ่
 #: src/features/mail/MailList.tsx
 msgid "{n} moved to the Inbox"
 msgstr "ย้าย {n} รายการกลับไปที่กล่องจดหมายเข้าแล้ว"
-
-#: src/features/feedback/FeedbackPage.tsx
-msgid "{n} reports"
-msgstr "{n} รายการ"
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -1152,10 +1164,6 @@ msgstr "ยังไม่อ่าน {unreadText}"
 msgid "{unseenText} unread of {totalText}"
 msgstr "ยังไม่อ่าน {unseenText} จาก {totalText}"
 
-#: src/features/status/StatusPages.tsx
-msgid "{up, plural, one {# up} other {# up}}"
-msgstr "{up, plural, other {ออนไลน์ # รายการ}}"
-
 #: src/features/docs/PagesTab.tsx
 msgid "{up} helpful"
 msgstr "{up} เป็นประโยชน์"
@@ -1332,7 +1340,7 @@ msgstr "24 เดือน"
 msgid "3 months"
 msgstr "3 เดือน"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "3 to 48 letters, numbers and hyphens. It is unique on this server."
 msgstr "ตัวอักษร ตัวเลข และขีดกลาง 3 ถึง 48 ตัว ไม่ซ้ำกันในเซิร์ฟเวอร์นี้"
 
@@ -1536,11 +1544,11 @@ msgstr "กระทู้ได้รับคำตอบที่ยอมร
 msgid "A discussion started"
 msgstr "กระทู้เริ่มต้นขึ้น"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "A draft incident opens for your team to review. Customers see nothing until a member publishes it."
 msgstr "ระบบจะเปิดเหตุการณ์ฉบับร่างให้ทีมของคุณตรวจสอบ ลูกค้าจะไม่เห็นอะไรจนกว่าสมาชิกจะเผยแพร่"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "A draft is seen only by your team and changes no component until you publish it."
 msgstr "ร่างจะเห็นเฉพาะทีมของคุณ และจะไม่เปลี่ยนส่วนประกอบใดจนกว่าคุณจะเผยแพร่"
 
@@ -1751,7 +1759,7 @@ msgstr "พร็อพเพอร์ตีหนึ่งมีเซกเม
 msgid "A property can have at most 20 funnels. Delete one first."
 msgstr "พร็อพเพอร์ตีหนึ่งมีฟันเนลได้สูงสุด 20 รายการ ลบหนึ่งรายการก่อน"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "A public page that tells your customers whether {inboxName} works. It stays unpublished until you publish it."
 msgstr "หน้าสาธารณะที่บอกลูกค้าว่า {inboxName} ใช้งานได้หรือไม่ จะยังไม่เผยแพร่จนกว่าคุณจะเผยแพร่"
 
@@ -1759,7 +1767,7 @@ msgstr "หน้าสาธารณะที่บอกลูกค้าว
 msgid "A published What's new entry was deleted"
 msgstr "ลบรายการที่เผยแพร่ใน \"มีอะไรใหม่\" แล้ว"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "A pushed state that names its own state keeps it."
 msgstr "สถานะที่ส่งมาซึ่งระบุสถานะของตัวเองจะคงสถานะนั้นไว้"
 
@@ -1982,7 +1990,7 @@ msgstr "หมายเลขบัญชี"
 msgid "Acme docs"
 msgstr "เอกสาร Acme"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "Acme status"
 msgstr "สถานะของ Acme"
 
@@ -2011,7 +2019,6 @@ msgstr "เฉพาะการดำเนินการ"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "Active"
 msgstr "ใช้งานอยู่"
 
@@ -2182,7 +2189,7 @@ msgstr "เพิ่มอย่างน้อยหนึ่ง origin"
 msgid "Add channel"
 msgstr "เพิ่มช่องทาง"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Add component"
 msgstr "เพิ่มส่วนประกอบ"
@@ -2204,7 +2211,7 @@ msgstr "เพิ่มโดเมน"
 msgid "Add endpoint"
 msgstr "เพิ่มเอนด์พอยต์"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Add group"
 msgstr "เพิ่มกลุ่ม"
@@ -2230,7 +2237,7 @@ msgstr "เพิ่มป้ายกำกับ {labelName}"
 msgid "Add labels"
 msgstr "เพิ่มป้ายกำกับ"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Add monitor"
 msgstr "เพิ่มมอนิเตอร์"
 
@@ -2344,7 +2351,7 @@ msgstr "เพิ่มโดเมน {domain} สำหรับการล�
 #: src/features/mail/MailSide.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 #: src/features/status/MonitorHttpFields.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/MonitorToken.tsx
@@ -2404,7 +2411,6 @@ msgid "Admins see every inbox and manage products, channels and members."
 msgstr "ผู้ดูแลระบบเห็นกล่องข้อความทุกกล่องและจัดการผลิตภัณฑ์ ช่องทาง และสมาชิก"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/StatusPages.tsx
 msgid "Affects"
 msgstr "ส่งผลต่อ"
 
@@ -2525,7 +2531,6 @@ msgid "All mentions"
 msgstr "การกล่าวถึงทั้งหมด"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/StatusPages.tsx
 msgid "All monitors"
 msgstr "มอนิเตอร์ทั้งหมด"
 
@@ -2546,7 +2551,6 @@ msgid "all products"
 msgstr "ผลิตภัณฑ์ทั้งหมด"
 
 #: src/components/common/WorkspaceSelector.tsx
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/SidePanels.tsx
@@ -2554,7 +2558,6 @@ msgstr "ผลิตภัณฑ์ทั้งหมด"
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "All products"
 msgstr "ผลิตภัณฑ์ทั้งหมด"
 
@@ -2575,10 +2578,6 @@ msgstr "ทุกขั้นตอน"
 #: src/features/status/StatusPages.tsx
 msgid "All systems operational"
 msgstr "ทุกระบบทำงานปกติ"
-
-#: src/features/status/StatusPages.tsx
-msgid "all up"
-msgstr "ออนไลน์ทั้งหมด"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "All, drafts, scheduled or sent"
@@ -2850,7 +2849,7 @@ msgstr "An idea only shows its issues and their state. Its stage stays your deci
 msgid "An inbox collects the conversations of one product or brand. Name it after the product your customers know."
 msgstr "กล่องข้อความรวบรวมการสนทนาของผลิตภัณฑ์หรือแบรนด์หนึ่ง ตั้งชื่อตามผลิตภัณฑ์ที่ลูกค้าของคุณรู้จัก"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "An incident is published at once, so customers see it on the page."
 msgstr "เหตุการณ์จะถูกเผยแพร่ทันที ลูกค้าจึงเห็นบนหน้าสถานะ"
 
@@ -3056,7 +3055,7 @@ msgstr "ล้างคำตอบแล้ว"
 msgid "Answer to a forward from {author}"
 msgstr "ตอบกลับการส่งต่อจาก {author}"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "answered"
 msgstr "ตอบแล้ว"
 
@@ -3134,7 +3133,7 @@ msgstr "ทุกอย่างที่ใช้คีย์นี้จะห
 
 #: src/components/common/Source.tsx
 #: src/components/common/text.ts
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "API"
 msgstr "API"
 
@@ -3333,7 +3332,7 @@ msgstr "เหมือนข้างต้น ({current})"
 msgid "As fast as allowed"
 msgstr "เร็วที่สุดเท่าที่อนุญาต"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "As often as allowed"
 msgstr "ถี่เท่าที่อนุญาต"
 
@@ -3746,12 +3745,6 @@ msgstr "ส่งสัญญาณเฉพาะเมื่องานสำ
 msgid "Before"
 msgstr "ก่อนหน้า"
 
-#. placeholder {0}: date(before)
-#. placeholder {1}: took(before)
-#: src/features/status/StatusPages.tsx
-msgid "before that: {0}, {1}"
-msgstr "ก่อนหน้านั้น: {0}, {1}"
-
 #: src/features/migrations/ConnectStep.tsx
 msgid "Before you connect"
 msgstr "ก่อนที่คุณจะเชื่อมต่อ"
@@ -3985,8 +3978,7 @@ msgstr "บรอดคาสต์จากช่องทางนี้ส่
 msgid "Browser"
 msgstr "เบราว์เซอร์"
 
-#: src/features/feedback/FeedbackList.tsx
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Bugs, ideas and praise sent from your apps and pages"
 msgstr "บั๊ก ไอเดีย และคำชมที่ส่งมาจากแอปและหน้าเว็บของคุณ"
 
@@ -3999,10 +3991,6 @@ msgstr "Bundle ID"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
 msgstr "เวลาทำการ"
-
-#: src/features/status/StatusPages.tsx
-msgid "by e-mail"
-msgstr "ทางอีเมล"
 
 #: src/features/conversation/Feedback.tsx
 msgid "By e-mail"
@@ -4071,11 +4059,9 @@ msgstr "ชื่อแคมเปญ"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/NewsletterStep.tsx
 #: src/features/status/AddSubscriberDialog.tsx
-#: src/features/status/ComponentDialogs.tsx
-#: src/features/status/CreatePageDialog.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/IncidentForm.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Cancel"
@@ -4169,7 +4155,6 @@ msgid "Catch-all without a From address"
 msgstr "Catch-all ที่ไม่มีที่อยู่ From"
 
 #: src/features/conversation/Feedback.tsx
-#: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Category"
 msgstr "หมวดหมู่"
@@ -4416,7 +4401,7 @@ msgstr "ตรวจสอบ DNS"
 msgid "Check DNS and start signing"
 msgstr "ตรวจสอบ DNS และเริ่มลงนาม"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Check every"
 msgstr "ตรวจสอบทุก"
@@ -4503,10 +4488,6 @@ msgstr "กำลังตรวจสอบ…"
 msgid "Checks"
 msgstr "การตรวจสอบ"
 
-#: src/features/status/MonitorsPage.tsx
-msgid "Checks that watch your products and set component states"
-msgstr "การตรวจสอบที่เฝ้าดูผลิตภัณฑ์ของคุณและตั้งสถานะของส่วนประกอบ"
-
 #: src/features/migrations/Wizard.tsx
 msgid "Choose"
 msgstr "เลือก"
@@ -4542,10 +4523,6 @@ msgstr "เลือกค่า"
 #: src/app/Gate.tsx
 msgid "Choose a workspace"
 msgstr "เลือกพื้นที่ทำงาน"
-
-#: src/features/feedback/FeedbackList.tsx
-msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
-msgstr "เลือกจากรายการ หรือเลื่อนด้วย ↑ ↓ แล้วเปิดด้วย Enter"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose the account that sends your answers. You can change it later in the channel settings."
@@ -4589,6 +4566,7 @@ msgstr "ล้าง"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Clear filters"
 msgstr "ล้างตัวกรอง"
 
@@ -4604,7 +4582,6 @@ msgstr "ล้างคำตอบ"
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the search"
@@ -4868,7 +4845,7 @@ msgstr "เสร็จแล้ว"
 msgid "Completed at {endedAt}"
 msgstr "เสร็จสิ้นเมื่อ {endedAt}"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Component"
 msgstr "คอมโพเนนต์"
@@ -4880,12 +4857,11 @@ msgstr "ลบส่วนประกอบแล้ว"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Components"
 msgstr "ส่วนประกอบ"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Components it touches"
 msgstr "ส่วนประกอบที่ได้รับผลกระทบ"
 
@@ -5586,17 +5562,13 @@ msgstr "สร้างนโยบาย"
 msgid "Create rule"
 msgstr "สร้างกฎ"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "Create status page"
 msgstr "สร้างหน้าสถานะ"
 
 #: src/features/status/StatusPages.tsx
 msgid "Create status page ({newKey})"
 msgstr "สร้างหน้าสถานะ ({newKey})"
-
-#: src/features/status/StatusPages.tsx
-msgid "Create status page for {product}"
-msgstr "สร้างหน้าสถานะสำหรับ {product}"
 
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Create team"
@@ -5787,7 +5759,7 @@ msgstr "ทำให้สีเข้มขึ้นให้เข้ากั
 msgid "Data up to {builtText}"
 msgstr "ข้อมูลถึง {builtText}"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Database upgrade"
 msgstr "การอัปเกรดฐานข้อมูล"
 
@@ -6271,7 +6243,7 @@ msgstr "ปฏิเสธ"
 
 #: src/features/issues/IssueDialog.tsx
 #: src/features/settings/teams/TeamEditor.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
 msgstr "คำอธิบาย"
@@ -6331,6 +6303,9 @@ msgstr "การแจ้งเตือนบนเดสก์ท็อปถ
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
+#: src/features/status/IncidentsPage.tsx
+#: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusPages.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Details"
 msgstr "รายละเอียด"
@@ -6434,7 +6409,6 @@ msgstr "เริ่มกระทู้แล้ว"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
@@ -6826,10 +6800,6 @@ msgstr "ผู้สมัครรับอีเมลปิดอยู่"
 msgid "E-mail subscribers are off. Nobody can subscribe and no notices go out, but the list is kept."
 msgstr "ผู้สมัครรับอีเมลปิดอยู่ ไม่มีใครสมัครรับได้และจะไม่มีการส่งการแจ้งเตือน แต่รายชื่อยังคงอยู่"
 
-#: src/features/status/StatusPages.tsx
-msgid "E-mail subscriptions are off"
-msgstr "ปิดการสมัครรับอีเมลอยู่"
-
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "E-mail view"
 msgstr "มุมมองอีเมล"
@@ -6850,11 +6820,11 @@ msgstr "อีเมลถึงผู้ที่สมัครไว้"
 msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
 msgstr "แต่ละการดำเนินการหนึ่งครั้ง สูงสุด 10 รายการ การดำเนินการทำงานเป็นการเปลี่ยนแปลงเดียว หากรายการใดล้มเหลว จะไม่มีรายการใดถูกนำไปใช้"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Each component gets this state while the incident is open."
 msgstr "ส่วนประกอบแต่ละรายการจะอยู่ในสถานะนี้ตราบใดที่เหตุการณ์ยังเปิดอยู่"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Each component gets this state while the maintenance is open."
 msgstr "ส่วนประกอบแต่ละรายการจะอยู่ในสถานะนี้ตราบใดที่การบำรุงรักษายังดำเนินอยู่"
 
@@ -6953,7 +6923,7 @@ msgstr "แก้ไขคีย์ API"
 msgid "Edit canned reply"
 msgstr "แก้ไขคำตอบสำเร็จรูป"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Edit component"
 msgstr "แก้ไขส่วนประกอบ"
 
@@ -6962,7 +6932,7 @@ msgid "Edit design"
 msgstr "แก้ไขดีไซน์"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Edit details"
 msgstr "แก้ไขรายละเอียด"
 
@@ -6990,7 +6960,7 @@ msgstr "แก้ไขป้ายกำกับ"
 msgid "Edit macro"
 msgstr "แก้ไขมาโคร"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Edit monitor"
 msgstr "แก้ไขมอนิเตอร์"
 
@@ -7062,7 +7032,7 @@ msgstr "กำลังแก้ไขฉบับร่างที่ส่ง
 msgid "Editing the message scheduled for {editingWhen}"
 msgstr "กำลังแก้ไขข้อความที่ตั้งเวลาไว้เมื่อ {editingWhen}"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Elevated API errors"
 msgstr "ข้อผิดพลาดของ API เพิ่มสูงขึ้น"
 
@@ -7137,7 +7107,7 @@ msgstr "เอนด์พอยต์"
 msgid "Endpoints"
 msgstr "เอนด์พอยต์"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Ends"
 msgstr "สิ้นสุด"
 
@@ -7297,7 +7267,7 @@ msgstr "ทุกอีเมล"
 msgid "Every open conversation has someone."
 msgstr "ทุกการสนทนาที่เปิดอยู่มีผู้รับผิดชอบ"
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "Every open discussion has an answer."
 msgstr "ทุกกระทู้ที่เปิดอยู่มีคำตอบ"
 
@@ -7305,12 +7275,11 @@ msgstr "ทุกกระทู้ที่เปิดอยู่มีคำ
 msgid "Every other browser and device is signed out. This one stays signed in."
 msgstr "เบราว์เซอร์และอุปกรณ์อื่นทั้งหมดจะถูกออกจากระบบ อุปกรณ์นี้ยังคงเข้าสู่ระบบอยู่"
 
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
 msgstr "ทุกผลิตภัณฑ์"
 
-#: src/features/broadcasts/BroadcastsFrame.tsx
+#: src/components/common/ProductFilter.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
 msgstr "ทุกผลิตภัณฑ์"
@@ -7339,7 +7308,7 @@ msgstr "ผ่านทุกขั้นตอน"
 msgid "Every subscriber keeps a consent record you can export."
 msgstr "ผู้สมัครทุกคนมีบันทึกความยินยอมที่คุณส่งออกได้"
 
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every type"
 msgstr "ทุกประเภท"
@@ -7421,7 +7390,7 @@ msgstr "Example Ltd."
 msgid "Expand or collapse every message"
 msgstr "ขยายหรือยุบทุกข้อความ"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Expected every"
 msgstr "คาดว่าจะมาทุก"
@@ -7530,7 +7499,7 @@ msgstr "ล้มเหลวอยู่"
 msgid "Fails the monitor at once, without waiting for the grace."
 msgstr "ทำให้มอนิเตอร์ล้มเหลวทันที โดยไม่รอช่วงผ่อนผัน"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Failures to go down"
 msgstr "จำนวนความล้มเหลวติดต่อกันก่อนล่ม"
@@ -7550,7 +7519,7 @@ msgstr "ความคิดเห็น"
 #: src/features/contact/ContactCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/PagesTab.tsx
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/webhooks/events.tsx
@@ -7578,10 +7547,15 @@ msgstr "หมวดหมู่ความคิดเห็น"
 msgid "Feedback category"
 msgstr "หมวดหมู่ความคิดเห็น"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Feedback form"
 msgstr "แบบฟอร์มความคิดเห็น"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Feedback form ({formKey})"
+msgstr "แบบฟอร์มความคิดเห็น ({formKey})"
 
 #: src/features/conversation/actions.ts
 msgid "Feedback resolved"
@@ -7669,7 +7643,7 @@ msgstr "กรองตามป้ายกำกับ"
 msgid "Filter by plan"
 msgstr "กรองตามแพ็กเกจ"
 
-#: src/features/broadcasts/BroadcastsFrame.tsx
+#: src/components/common/ProductFilter.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "กรองตามผลิตภัณฑ์"
@@ -7681,12 +7655,17 @@ msgstr "กรองตามสถานะ"
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Filter by status"
 msgstr "กรองตามสถานะ"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Filter by team"
 msgstr "กรองตามทีม"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Filter by type"
+msgstr "กรองตามประเภท"
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
@@ -7812,7 +7791,7 @@ msgstr "การตอบกลับครั้งแรก, ค่ามั�
 msgid "First rows of the file"
 msgstr "แถวแรกของไฟล์"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "First update"
 msgstr "การอัปเดตแรก"
 
@@ -8300,7 +8279,7 @@ msgstr "Google ส่งรหัสยืนยันแล้ว"
 msgid "Google Takeout"
 msgstr "Google Takeout"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Grace"
 msgstr "ช่วงผ่อนผัน"
@@ -8318,7 +8297,7 @@ msgstr "คำทักทาย"
 msgid "Greets new conversations by e-mail, once per contact within the interval. Never sent to automatic mail or spam."
 msgstr "ทักทายการสนทนาใหม่ทางอีเมล หนึ่งครั้งต่อผู้ติดต่อภายในช่วงเวลา ไม่ส่งถึงอีเมลอัตโนมัติหรือสแปม"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Group"
 msgstr "กลุ่ม"
 
@@ -8500,7 +8479,7 @@ msgstr "สวัสดี! ให้เราช่วยอะไรได้�
 
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Hidden"
 msgstr "ซ่อนอยู่"
@@ -8521,7 +8500,7 @@ msgstr "ซ่อน"
 msgid "Hide from the page"
 msgstr "ซ่อนจากหน้า"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Hide HTTP details"
 msgstr "ซ่อนรายละเอียด HTTP"
 
@@ -8583,7 +8562,7 @@ msgstr "ลบประวัติแล้ว"
 msgid "Home"
 msgstr "หน้าแรก"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Host"
 msgstr "โฮสต์"
@@ -8642,7 +8621,7 @@ msgstr "ทีมของคุณตอบเร็วและดีแค่
 msgid "How HTML e-mails open. You can still switch each message."
 msgstr "วิธีที่อีเมล HTML เปิด คุณยังสลับแต่ละข้อความได้"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "How late a beat may be."
 msgstr "สัญญาณมาช้าได้นานเท่าใด"
 
@@ -8791,7 +8770,7 @@ msgstr "หากผู้ให้บริการ DNS ของคุณจ�
 msgid "If your mail provider mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "หากผู้ให้บริการอีเมลของคุณส่งอีเมลยืนยันไปที่ที่อยู่นั้น อีเมลจะมาถึงกล่องข้อความนี้เป็นการสนทนา เปิดดูที่นั่น"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Ignores results and lets the component go back."
 msgstr "ละเว้นผลลัพธ์และปล่อยให้คอมโพเนนต์กลับสู่สถานะเดิม"
 
@@ -8808,7 +8787,7 @@ msgid "IMAP server"
 msgstr "เซิร์ฟเวอร์ IMAP"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Impact"
 msgstr "ผลกระทบ"
 
@@ -8901,7 +8880,7 @@ msgstr "ใน {contact} · {subject}"
 msgid "In 1 hour"
 msgstr "ใน 1 ชั่วโมง"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "In a row, 1 to 10."
 msgstr "ติดต่อกัน 1 ถึง 10 ครั้ง"
 
@@ -9098,7 +9077,6 @@ msgstr "เหตุการณ์: {title} · {state}"
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "Incidents"
 msgstr "เหตุการณ์"
 
@@ -9550,7 +9528,7 @@ msgid "Keyword"
 msgstr "คีย์เวิร์ด"
 
 #: src/features/settings/automation/text.ts
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "ประเภท"
@@ -9827,7 +9805,7 @@ msgstr "Leave your signature off this reply ({signatureKey})"
 msgid "Leave your signature off this reply, or put it back"
 msgstr "Leave your signature off this reply, or put it back"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Left off the public page and its overall state."
 msgstr "ไม่แสดงในหน้าสาธารณะและสถานะโดยรวมของหน้า"
 
@@ -10119,6 +10097,7 @@ msgstr "โหลดรูปภาพ"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/mail/MailDrafts.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
@@ -10391,7 +10370,6 @@ msgstr "Mails go out {sentence}, once to each person. Pausing stops sending but 
 msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
 msgstr "อีเมลจะส่งระหว่าง {start} ถึง {end} ตามเวลา{city} ({utcStart}–{utcEnd} UTC) และส่งต่อในวันถัดไป"
 
-#: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
 msgid "Maintenance"
 msgstr "การบำรุงรักษา"
@@ -10913,7 +10891,6 @@ msgstr "กำลังติดตาม"
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/MonitorsPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Monitors"
 msgstr "มอนิเตอร์"
@@ -10974,10 +10951,6 @@ msgstr "คะแนน “ไม่เป็นประโยชน์” ม�
 msgid "Most active"
 msgstr "ใช้งานมากที่สุด"
 
-#: src/features/feedback/FeedbackPage.tsx
-msgid "Most asked for"
-msgstr "มีคนขอมากที่สุด"
-
 #: src/features/docs/Toolbar.tsx
 msgid "Most disliked"
 msgstr "ไม่ถูกใจมากที่สุด"
@@ -11010,8 +10983,11 @@ msgstr "โหวตมากที่สุด"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/status/IncidentsPage.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "move"
 msgstr "เลื่อน"
@@ -11020,6 +10996,10 @@ msgstr "เลื่อน"
 #: src/features/inbox/ChatList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "ย้าย {0} รายการไปที่ถังขยะไหม"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Move {n} to the Trash?"
+msgstr "ย้าย {n} รายการไปที่ถังขยะไหม"
 
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -11058,6 +11038,10 @@ msgstr "ย้ายคอลเลกชันที่เลือก"
 msgid "Move the selected conversations to the Trash"
 msgstr "ย้ายการสนทนาที่เลือกไปที่ถังขยะ"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move the selected feedback to the Trash"
+msgstr "ย้ายความคิดเห็นที่เลือกไปที่ถังขยะ"
+
 #: src/features/conversation/ChatView.tsx
 msgid "Move this conversation to the Trash?"
 msgstr "ย้ายการสนทนานี้ไปที่ถังขยะไหม"
@@ -11085,6 +11069,10 @@ msgstr "เลื่อนดูดีไซน์"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the entries"
 msgstr "เลื่อนดูรายการ"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move through the feedback"
+msgstr "เลื่อนดูความคิดเห็น"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the ideas"
@@ -11152,6 +11140,7 @@ msgstr "ย้ายไปยังขั้นก่อนหน้าหรื
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
@@ -11163,6 +11152,7 @@ msgstr "ย้ายไปที่ถังขยะ"
 msgid "Move to the Trash ({0})"
 msgstr "ย้ายไปที่ถังขยะ ({0})"
 
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Move to the Trash (#)"
@@ -11276,9 +11266,9 @@ msgstr "มุมมองของฉัน"
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
-#: src/features/status/ComponentDialogs.tsx
-#: src/features/status/CreatePageDialog.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/ComponentForms.tsx
+#: src/features/status/CreatePageForm.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Name"
 msgstr "ชื่อ"
@@ -11504,6 +11494,7 @@ msgstr "ฟิลด์ใหม่"
 msgid "New filter"
 msgstr "ตัวกรองใหม่"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "ไอเดียใหม่"
@@ -11527,6 +11518,10 @@ msgstr "ใหม่ใน {days} วันที่ผ่านมา"
 #: src/features/migrations/MapStep.tsx
 msgid "New inbox…"
 msgstr "กล่องข้อความใหม่…"
+
+#: src/features/status/IncidentsPage.tsx
+msgid "new incident"
+msgstr "เหตุการณ์ใหม่"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -11587,6 +11582,10 @@ msgid "New migration"
 msgstr "การย้ายใหม่"
 
 #: src/features/status/MonitorsPage.tsx
+msgid "new monitor"
+msgstr "มอนิเตอร์ใหม่"
+
+#: src/features/status/MonitorsPage.tsx
 msgid "New monitor"
 msgstr "มอนิเตอร์ใหม่"
 
@@ -11597,10 +11596,6 @@ msgstr "เจ้าของใหม่"
 #: src/features/team/RemoveMemberDialog.tsx
 msgid "New owner of {boxName}"
 msgstr "เจ้าของใหม่ของ {boxName}"
-
-#: src/features/status/StatusPages.tsx
-msgid "New page"
-msgstr "หน้าใหม่"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "New password"
@@ -11625,6 +11620,7 @@ msgid "New signing secret"
 msgstr "Signing secret ใหม่"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/status/StatusPages.tsx
 msgid "New status page"
 msgstr "หน้าสถานะใหม่"
 
@@ -11748,7 +11744,7 @@ msgstr "ถัดไป เลือกสิ่งที่จะนำเข�
 msgid "Next, choose where they go."
 msgstr "ถัดไป เลือกว่าพวกเขาจะไปที่ใด"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Nightly backup"
 msgstr "การสำรองข้อมูลกลางคืน"
 
@@ -11871,7 +11867,7 @@ msgstr "ไม่ได้ระบุส่วนประกอบ"
 msgid "No components in this group."
 msgstr "ไม่มีส่วนประกอบในกลุ่มนี้"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "No components yet. Add one to a status page first."
 msgstr "ยังไม่มีส่วนประกอบ เพิ่มลงในหน้าสถานะก่อน"
 
@@ -11968,7 +11964,7 @@ msgstr "ยังไม่มีกระทู้ในหน้านี้"
 msgid "No discussions under the pages of these sites."
 msgstr "ไม่มีกระทู้ใต้หน้าของไซต์เหล่านี้"
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "No discussions yet. Readers start them under your documentation pages."
 msgstr "ยังไม่มีกระทู้ ผู้อ่านเริ่มกระทู้ใต้หน้าเอกสารของคุณ"
 
@@ -12048,12 +12044,12 @@ msgstr "ไม่รับไฟล์ใดเลย"
 msgid "No filters yet."
 msgstr "ยังไม่มีตัวกรอง"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
 msgstr "ไม่มีกลุ่ม"
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "No hidden discussions."
 msgstr "ไม่มีกระทู้ที่ซ่อนอยู่"
 
@@ -12111,7 +12107,7 @@ msgstr "ไม่จำกัด"
 msgid "No list matches “{q}”."
 msgstr "ไม่มีรายชื่อที่ตรงกับ “{q}”"
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "No locked discussions."
 msgstr "ไม่มีกระทู้ที่ล็อก"
 
@@ -12176,7 +12172,7 @@ msgstr "ไม่มีบันทึก"
 msgid "No notifications in the last 90 days."
 msgstr "ไม่มีการแจ้งเตือนใน 90 วันที่ผ่านมา"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "No open feedback."
 msgstr "No open feedback."
 
@@ -12472,7 +12468,7 @@ msgstr "จะไม่มีใครได้รับอีเมลนี้
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/setup/email/EmailTestStep.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "None"
 msgstr "ไม่มี"
@@ -12809,7 +12805,7 @@ msgstr "ไม่มีอะไรสูญหาย เมื่อคุณ�
 msgid "Nothing is lost: when it continues, copying picks up where it stopped."
 msgstr "ไม่มีอะไรสูญหาย เมื่อดำเนินต่อ การคัดลอกจะต่อจากจุดที่หยุด"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Nothing is resolved yet."
 msgstr "Nothing is resolved yet."
 
@@ -12823,7 +12819,7 @@ msgid "Nothing is snoozed."
 msgstr "ไม่มีอะไรที่เลื่อนไว้"
 
 #: src/features/docs/discussions/QueuePane.tsx
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "Nothing is waiting for approval."
 msgstr "ไม่มีอะไรรออนุมัติ"
 
@@ -12835,7 +12831,7 @@ msgstr "ตอนนี้ไม่มีอะไรผิดปกติ เ�
 msgid "Nothing matches these filters."
 msgstr "ไม่มีอะไรตรงกับตัวกรองเหล่านี้"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing matches your search here."
 msgstr "ไม่มีอะไรตรงกับการค้นหาของคุณที่นี่"
@@ -12844,7 +12840,7 @@ msgstr "ไม่มีอะไรตรงกับการค้นหาข
 msgid "Nothing needs attention right now."
 msgstr "ตอนนี้ไม่มีอะไรที่ต้องได้รับความสนใจ"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Nothing opens by itself. Open an incident from the monitor when you want one."
 msgstr "ไม่มีอะไรเปิดเองโดยอัตโนมัติ เปิดเหตุการณ์จากมอนิเตอร์เมื่อต้องการ"
 
@@ -13301,10 +13297,6 @@ msgstr "เฉพาะการเข้าชมที่เกิดหลั
 msgid "Only while the panel is open in this browser. Away, you are alerted only about conversations assigned to you."
 msgstr "เฉพาะเมื่อแผงควบคุมเปิดอยู่ในเบราว์เซอร์นี้ เมื่อไม่อยู่ คุณจะได้รับแจ้งเฉพาะการสนทนาที่มอบหมายให้คุณ"
 
-#: src/features/status/StatusPages.tsx
-msgid "only your team can preview it"
-msgstr "เฉพาะทีมของคุณเท่านั้นที่ดูตัวอย่างได้"
-
 #: src/features/broadcasts/NewBroadcastForm.tsx
 msgid "Only your team sees it."
 msgstr "เฉพาะทีมของคุณที่เห็น"
@@ -13317,8 +13309,11 @@ msgstr "เปิดอยู่"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/status/IncidentsPage.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgctxt "keyboard hint"
 msgid "open"
@@ -13328,7 +13323,7 @@ msgstr "เปิด"
 #: src/features/account/AccountPage.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -13338,7 +13333,9 @@ msgid "Open"
 msgstr "เปิด"
 
 #. placeholder {0}: a.filename
+#. placeholder {0}: p.name
 #: src/features/conversation/messages/Attachments.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Open {0}"
 msgstr "เปิด {0}"
 
@@ -13372,7 +13369,7 @@ msgid "Open Account security in your Yahoo account."
 msgstr "เปิด Account security ในบัญชี Yahoo ของคุณ"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Open an incident"
 msgstr "เปิดเหตุการณ์"
@@ -13550,6 +13547,10 @@ msgstr "เปิดเอนด์พอยต์"
 msgid "Open the entry"
 msgstr "เปิดรายการ"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Open the feedback"
+msgstr "เปิดความคิดเห็น"
+
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Open the guide"
 msgstr "Open the guide"
@@ -13623,6 +13624,10 @@ msgid "Open the site, goal or funnel"
 msgstr "เปิดเว็บไซต์ เป้าหมาย หรือช่องทาง"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Open the status page"
+msgstr "เปิดหน้าสถานะ"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Open the triggered e-mail"
 msgstr "Open the triggered e-mail"
 
@@ -13688,7 +13693,7 @@ msgstr "operational ทำให้กลับมาปกติ ส่วน d
 msgid "Operator"
 msgstr "ผู้ดูแลระบบ"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Optional. Shown on the public page."
 msgstr "ไม่บังคับ แสดงบนหน้าสาธารณะ"
 
@@ -13821,7 +13826,6 @@ msgstr "ตามช่วงเวลา"
 
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
 msgstr "ภาพรวม"
@@ -13884,9 +13888,7 @@ msgstr "หน้า: {name}"
 
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
-#: src/features/status/StatusPages.tsx
 msgid "Pages"
 msgstr "หน้า"
 
@@ -13957,7 +13959,6 @@ msgstr "ตั้งรหัสผ่านแล้ว"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "Past"
 msgstr "ที่ผ่านมา"
 
@@ -14023,7 +14024,7 @@ msgstr "หยุดชั่วคราวหรือดำเนินกา
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/setup/email/EmailTestStep.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Paused"
@@ -14268,10 +14269,6 @@ msgstr "เลือกดีไซน์ก่อน"
 msgid "Pick a design that renders without errors."
 msgstr "เลือกดีไซน์ที่เรนเดอร์ได้โดยไม่มีข้อผิดพลาด"
 
-#: src/features/docs/DiscussionsTab.tsx
-msgid "Pick a discussion to read and answer it."
-msgstr "เลือกกระทู้เพื่ออ่านและตอบ"
-
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "Pick a field"
 msgstr "เลือกช่อง"
@@ -14299,17 +14296,9 @@ msgstr "Pick a list under Who gets it to save"
 msgid "Pick a member"
 msgstr "เลือกสมาชิก"
 
-#: src/features/status/MonitorsPage.tsx
-msgid "Pick a monitor to see what happened."
-msgstr "เลือกมอนิเตอร์เพื่อดูว่าเกิดอะไรขึ้น"
-
 #: src/features/docs/PagesTab.tsx
 msgid "Pick a page to see its ratings, discussions and questions."
 msgstr "เลือกหน้าเพื่อดูคะแนน กระทู้ และคำถามของหน้านั้น"
-
-#: src/features/feedback/FeedbackList.tsx
-msgid "Pick a piece of feedback"
-msgstr "Pick a piece of feedback"
 
 #: src/features/broadcasts/ListPage.tsx
 msgid "Pick a sender in the settings"
@@ -14359,10 +14348,6 @@ msgstr "เลือกปลายทาง"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Pick an inbox"
 msgstr "เลือกกล่องข้อความ"
-
-#: src/features/status/IncidentsPage.tsx
-msgid "Pick an incident to read it."
-msgstr "เลือกเหตุการณ์เพื่ออ่าน"
 
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "Pick an open incident or maintenance"
@@ -14503,7 +14488,7 @@ msgstr "ปักหมุดแล้ว"
 msgid "Pinned to the top of your list"
 msgstr "ปักหมุดไว้ด้านบนของรายการของคุณ"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "ข้อความธรรมดาที่มีลิงก์และการขึ้นบรรทัดใหม่ ไม่เกิน 5,000 ตัวอักษร"
 
@@ -14515,8 +14500,12 @@ msgstr "ข้อความธรรมดา แสดงเหนืออ�
 msgid "Plan"
 msgstr "แพ็กเกจ"
 
+#: src/features/status/IncidentsPage.tsx
+msgid "plan maintenance"
+msgstr "วางแผนการบำรุงรักษา"
+
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Plan maintenance"
 msgstr "วางแผนการบำรุงรักษา"
@@ -14558,7 +14547,7 @@ msgstr "ชี้ไปที่"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Port"
 msgstr "พอร์ต"
 
@@ -14597,6 +14586,10 @@ msgstr "ที่อยู่ไปรษณีย์"
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Posted by you and marked as the accepted answer."
 msgstr "โพสต์โดยคุณและทำเครื่องหมายเป็นคำตอบที่ยอมรับ"
+
+#: src/features/docs/DocsPage.tsx
+msgid "Posts from new readers wait here until a member approves them"
+msgstr "โพสต์จากผู้อ่านใหม่จะรออยู่ที่นี่จนกว่าสมาชิกจะอนุมัติ"
 
 #: src/components/common/text.ts
 msgid "Preference page"
@@ -14656,8 +14649,20 @@ msgid "Previous or next discussion"
 msgstr "กระทู้ก่อนหน้าหรือถัดไป"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Previous or next incident"
+msgstr "เหตุการณ์ก่อนหน้าหรือถัดไป"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Previous or next language"
 msgstr "ภาษาก่อนหน้าหรือถัดไป"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Previous or next monitor"
+msgstr "มอนิเตอร์ก่อนหน้าหรือถัดไป"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Previous or next status page"
+msgstr "หน้าสถานะก่อนหน้าหรือถัดไป"
 
 #: src/features/feedback/Lightbox.tsx
 msgid "Previous screenshot"
@@ -14709,8 +14714,8 @@ msgstr "pro, team"
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/sections.tsx
-#: src/features/status/CreatePageDialog.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/CreatePageForm.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Product"
 msgstr "ผลิตภัณฑ์"
 
@@ -14864,7 +14869,7 @@ msgstr "เผยแพร่เหตุการณ์"
 msgid "Publish and unpublish help center articles"
 msgstr "เผยแพร่และยกเลิกการเผยแพร่บทความของศูนย์ช่วยเหลือ"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Publish now"
 msgstr "เผยแพร่ทันที"
 
@@ -14970,6 +14975,10 @@ msgstr "วางองค์ประกอบเหล่านี้ไว้
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Question"
 msgstr "คำถาม"
+
+#: src/features/docs/DocsPage.tsx
+msgid "Questions readers ask under your documentation pages"
+msgstr "คำถามที่ผู้อ่านถามใต้หน้าเอกสารของคุณ"
 
 #: src/components/common/text.ts
 msgid "Queued"
@@ -15633,7 +15642,7 @@ msgstr "กำลังลบประวัติที่นำเข้า…
 msgid "Rename"
 msgstr "เปลี่ยนชื่อ"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Rename group"
 msgstr "เปลี่ยนชื่อกลุ่ม"
 
@@ -15642,9 +15651,14 @@ msgid "Rename the mailbox"
 msgstr "เปลี่ยนชื่อกล่องจดหมาย"
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Reopen"
 msgstr "เปิดอีกครั้ง"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Reopen ({closeKey})"
+msgstr "เปิดอีกครั้ง ({closeKey})"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reorder the selected view in the sidebar"
@@ -15977,10 +15991,15 @@ msgid "Resolution {resolution}"
 msgstr "การแก้ไข {resolution}"
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "Resolve"
 msgstr "Resolve"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Resolve ({closeKey})"
+msgstr "แก้ไขแล้ว ({closeKey})"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -15995,10 +16014,13 @@ msgstr "แก้ไขเหตุการณ์"
 msgid "Resolve or complete"
 msgstr "แก้ไขแล้วหรือเสร็จสิ้น"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Resolve or reopen the selected feedback"
+msgstr "แก้ไขหรือเปิดความคิดเห็นที่เลือกอีกครั้ง"
+
 #: src/components/common/text.ts
 #: src/features/conversation/ConversationStatus.tsx
-#: src/features/feedback/FeedbackList.tsx
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/status/text.tsx
 msgid "Resolved"
 msgstr "Resolved"
@@ -16011,11 +16033,6 @@ msgstr "แก้ไขแล้วเมื่อ {endedAt}"
 #: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "แก้ไขเสร็จใน"
-
-#. placeholder {0}: took(last)
-#: src/features/status/StatusPages.tsx
-msgid "resolved in {0}"
-msgstr "แก้ไขแล้วใน {0}"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Resolved. It moved to the Resolved tab."
@@ -16182,7 +16199,6 @@ msgstr "ทันทีหลังสมัครรับ ผู้คนไ�
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/feedback/RoadmapCard.tsx
 msgid "Roadmap"
 msgstr "แผนงาน"
@@ -16363,10 +16379,10 @@ msgstr "วันเสาร์"
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/parts.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/IncidentForm.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Save"
 msgstr "บันทึก"
 
@@ -16387,7 +16403,7 @@ msgstr "บันทึกและตั้งเวลาใหม่"
 msgid "Save and test"
 msgstr "Save and test"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Save as draft"
 msgstr "บันทึกเป็นฉบับร่าง"
 
@@ -16526,7 +16542,6 @@ msgstr "ตั้งเวลารายการ"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/text.ts
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/text.tsx
 msgid "Scheduled"
 msgstr "ตั้งเวลาแล้ว"
@@ -16551,7 +16566,6 @@ msgid "Scheduled by"
 msgstr "ตั้งเวลาโดย"
 
 #: src/features/status/Notices.tsx
-#: src/features/status/StatusPages.tsx
 msgid "Scheduled for {due}"
 msgstr "กำหนดส่ง {due}"
 
@@ -16604,7 +16618,7 @@ msgstr "ขนาดหน้าจอ"
 msgid "Screenshot"
 msgstr "ภาพหน้าจอ"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Screenshots attached"
 msgstr "Screenshots attached"
 
@@ -16616,12 +16630,12 @@ msgstr "SDK"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "search"
 msgstr "ค้นหา"
 
 #: src/app/Palette.tsx
-#: src/features/feedback/FeedbackList.tsx
 msgid "Search"
 msgstr "ค้นหา"
 
@@ -16671,9 +16685,14 @@ msgstr "ค้นหาอีโมจิ"
 msgid "Search emoji (in English)"
 msgstr "ค้นหาอีโมจิ (เป็นภาษาอังกฤษ)"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Search feedback"
 msgstr "Search feedback"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Search feedback…"
+msgstr "ค้นหาความคิดเห็น…"
 
 #: src/app/places.tsx
 msgid "Search gaps"
@@ -16775,7 +16794,7 @@ msgstr "ค้นหา คัดแยก และร่างการตอ�
 msgid "Second secret"
 msgstr "ข้อมูลลับที่สอง"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Seconds, 1 to 30."
 msgstr "วินาที 1 ถึง 30"
 
@@ -16805,6 +16824,7 @@ msgstr "มอนิเตอร์พบ"
 
 #: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "select"
@@ -16826,6 +16846,10 @@ msgid "Select all"
 msgstr "เลือกทั้งหมด"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Select the article"
+msgstr "เลือกบทความ"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Select the broadcast under the cursor"
 msgstr "เลือกการส่งแบบกลุ่มใต้เคอร์เซอร์"
 
@@ -16836,6 +16860,14 @@ msgstr "เลือกผู้ติดต่อใต้เคอร์เซ
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "เลือกการสนทนาใต้เคอร์เซอร์"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the entry"
+msgstr "เลือกรายการ"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the feedback"
+msgstr "เลือกความคิดเห็น"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the mail under the cursor"
@@ -17506,7 +17538,6 @@ msgstr "กำลังตั้งค่า…"
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "การตั้งค่า"
@@ -17568,6 +17599,7 @@ msgstr "แป้นพิมพ์ลัด"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Show"
 msgstr "แสดง"
@@ -17600,7 +17632,7 @@ msgstr "แสดงฟีด ป้าย และการฝัง"
 msgid "Show full draft"
 msgstr "แสดงฉบับร่างทั้งหมด"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Show HTTP details"
 msgstr "แสดงรายละเอียด HTTP"
 
@@ -18513,7 +18545,7 @@ msgid "Starting"
 msgstr "กำลังเริ่ม"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Starts"
 msgstr "เริ่ม"
 
@@ -18540,9 +18572,9 @@ msgstr "STARTTLS (พอร์ต 587)"
 
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "State"
 msgstr "สถานะ"
@@ -18553,7 +18585,7 @@ msgid "State of {0}"
 msgstr "สถานะของ {0}"
 
 #. placeholder {0}: c.name
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "State of {0} while it is open"
 msgstr "สถานะของ {0} ขณะที่เปิดอยู่"
 
@@ -18561,7 +18593,7 @@ msgstr "สถานะของ {0} ขณะที่เปิดอยู่"
 msgid "state of the conversation"
 msgstr "สถานะของการสนทนา"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "State while down"
 msgstr "สถานะเมื่อล่ม"
@@ -18573,7 +18605,6 @@ msgstr "สถานะเมื่อล่ม"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
-#: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -18584,7 +18615,6 @@ msgstr "สถานะเมื่อล่ม"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Status"
 msgstr "สถานะ"
@@ -18601,7 +18631,6 @@ msgstr "ลบหน้าสถานะแล้ว"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "หน้าสถานะ"
@@ -18737,7 +18766,6 @@ msgstr "เพิ่งสมัครรับรายชื่อ"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Subscribers"
 msgstr "ผู้สมัครรับ"
@@ -18763,7 +18791,7 @@ msgstr "ลบการสมัครรับแล้ว"
 msgid "Succeeded"
 msgstr "สำเร็จ"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Successes to recover"
 msgstr "จำนวนความสำเร็จติดต่อกันก่อนกลับมาปกติ"
@@ -19208,7 +19236,7 @@ msgstr "รหัสไม่ถูกต้องหรือหมดอาย
 msgid "The columns are guessed from the header row. One must be the e-mail address; name the others as contact fields or attributes, or skip them. Attributes only fill keys a contact does not have yet."
 msgstr "คอลัมน์ถูกเดาจากแถวหัวตาราง คอลัมน์หนึ่งต้องเป็นที่อยู่อีเมล ตั้งชื่อคอลัมน์อื่นเป็นฟิลด์ผู้ติดต่อหรือแอตทริบิวต์ หรือข้ามไป แอตทริบิวต์เติมเฉพาะคีย์ที่ผู้ติดต่อยังไม่มี"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "The component whose state this monitor sets."
 msgstr "คอมโพเนนต์ที่มอนิเตอร์นี้ตั้งสถานะให้"
 
@@ -19333,7 +19361,7 @@ msgstr "โดเมนอีเมลยังไม่ได้รับกา
 msgid "The elements work on these addresses; add your dev server in the inbox settings:"
 msgstr "องค์ประกอบทำงานบนที่อยู่เหล่านี้ เพิ่มเซิร์ฟเวอร์พัฒนาของคุณในการตั้งค่ากล่องข้อความ:"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "The end must be after the start."
 msgstr "เวลาสิ้นสุดต้องอยู่หลังเวลาเริ่ม"
 
@@ -19428,10 +19456,6 @@ msgstr "ข้อความแรกของการสนทนาในก
 #: src/features/settings/notifications/events.ts
 msgid "The first message of a conversation in an inbox that shows who is available."
 msgstr "ข้อความแรกของการสนทนาในกล่องข้อความที่แสดงว่าใครพร้อม"
-
-#: src/features/status/StatusPages.tsx
-msgid "the first one"
-msgstr "รายการแรก"
 
 #: src/features/docs/PagesTab.tsx
 msgid "The first rating makes the page appear here."
@@ -20292,6 +20316,10 @@ msgstr "โพสต์จะถูกซ่อนพร้อมโพสต์
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "จะหายไปจากทีมและลูกค้า คุณกู้คืนจากถังขยะได้ภายใน 30 วัน หลังจากนั้นจะถูกลบถาวรพร้อมข้อความและไฟล์"
 
+#: src/features/feedback/FeedbackHome.tsx
+msgid "They disappear for your team. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
+msgstr "ทีมของคุณจะไม่เห็นรายการเหล่านี้อีก คุณกู้คืนจากถังขยะได้ภายใน 30 วัน หลังจากนั้นจะถูกลบถาวรพร้อมข้อความและไฟล์"
+
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They get a mail with a link and are subscribed only after they click it."
 msgstr "พวกเขาได้รับอีเมลที่มีลิงก์และสมัครรับหลังคลิกเท่านั้น"
@@ -20691,7 +20719,7 @@ msgstr "ไม่มีตัวตรวจสอบนี้แล้ว ห�
 msgid "This month"
 msgstr "เดือนนี้"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "This page is not public yet, so visitors see nothing until you publish the page."
 msgstr "หน้านี้ยังไม่เป็นสาธารณะ ผู้เข้าชมจึงไม่เห็นอะไรจนกว่าคุณจะเผยแพร่หน้า"
 
@@ -20808,6 +20836,10 @@ msgstr "ไซต์นี้เชื่อมต่อไม่ได้"
 #: src/components/common/text.ts
 msgid "This site is not allowed to use this documentation channel."
 msgstr "ไซต์นี้ไม่ได้รับอนุญาตให้ใช้ช่องทางเอกสารนี้"
+
+#: src/features/status/StatusPages.tsx
+msgid "This status page no longer exists or you cannot see it."
+msgstr "ไม่มีหน้าสถานะนี้แล้ว หรือคุณไม่มีสิทธิ์ดู"
 
 #: src/components/common/text.ts
 msgid "This subscription is no longer waiting for confirmation."
@@ -20926,7 +20958,7 @@ msgstr "เวลา"
 msgid "Time zone"
 msgstr "เขตเวลา"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Timeout"
 msgstr "หมดเวลา"
@@ -20935,7 +20967,7 @@ msgstr "หมดเวลา"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/issues/IssueDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Title"
 msgstr "ชื่อเรื่อง"
 
@@ -21093,6 +21125,7 @@ msgstr "เชื่อถือใบรับรองนี้สำหรั
 #: src/features/account/AccountLayout.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/migrations/UploadStep.tsx
@@ -21187,7 +21220,6 @@ msgstr "ปิดโดย Yuva"
 msgid "TXT record"
 msgstr "เรคคอร์ด TXT"
 
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/fields/FieldDialog.tsx
@@ -21423,7 +21455,7 @@ msgstr "ยกเลิกการเผยแพร่คำแปล"
 msgid "Unpublished"
 msgstr "ยังไม่เผยแพร่"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/mail/MailList.tsx
@@ -22032,7 +22064,6 @@ msgstr "รออนุมัติ"
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
-#: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "Waiting for approval"
@@ -22426,7 +22457,7 @@ msgstr "เมื่อเพื่อนร่วมทีมพิมพ์ @ 
 msgid "When did they agree?"
 msgstr "พวกเขายินยอมเมื่อใด"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "When it goes down"
 msgstr "เมื่อล่ม"
@@ -22464,10 +22495,6 @@ msgstr "เมื่อคนอื่นมอบหมายให้คุณ
 #: src/features/broadcasts/Trigger.tsx
 msgid "when someone first signs in to {inbox}"
 msgstr "when someone first signs in to {inbox}"
-
-#: src/features/feedback/FeedbackList.tsx
-msgid "When someone sends feedback, it will be in the list."
-msgstr "When someone sends feedback, it will be in the list."
 
 #: src/features/broadcasts/Trigger.tsx
 msgid "when someone starts to match {match}"
@@ -22952,11 +22979,11 @@ msgstr "You get a new secret once. Webhooks from GitHub are refused until you pa
 msgid "You get a notification when someone replies in these"
 msgstr "คุณได้รับการแจ้งเตือนเมื่อมีคนตอบกลับในสิ่งเหล่านี้"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "You get the address to call when you save. It is shown only once."
 msgstr "เมื่อบันทึกคุณจะได้รับที่อยู่สำหรับเรียกใช้ ซึ่งจะแสดงเพียงครั้งเดียว"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "You get the address your alerting calls when you save, for Alertmanager, Grafana or your own script. It is shown only once."
 msgstr "เมื่อบันทึกคุณจะได้รับที่อยู่ที่ระบบแจ้งเตือนของคุณเรียกใช้ สำหรับ Alertmanager, Grafana หรือสคริปต์ของคุณเอง ซึ่งจะแสดงเพียงครั้งเดียว"
 
@@ -23115,7 +23142,7 @@ msgstr "Your identity provider has not verified your e-mail address, so Yuva can
 msgid "Your inbox is empty."
 msgstr "กล่องจดหมายเข้าของคุณว่างเปล่า"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Your job calls Yuva on a schedule. A missing call fails the monitor."
 msgstr "งานของคุณเรียก Yuva เป็นระยะ การเรียกที่หายไปจะทำให้มอนิเตอร์ล้มเหลว"
 
@@ -23169,7 +23196,7 @@ msgstr "ผู้ดูแลองค์กรของคุณต้องอ
 msgid "Your own"
 msgstr "Your own"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Your own monitoring sends its state, including Alertmanager and Grafana alerts."
 msgstr "ระบบเฝ้าระวังของคุณเองส่งสถานะ รวมถึงการแจ้งเตือนจาก Alertmanager และ Grafana"
 
@@ -23392,7 +23419,7 @@ msgstr "Yuva อ่านอย่างเดียว ไม่เคยลบ
 msgid "Yuva only reads. Its connection sends {provider} nothing but read requests, and the token only to {provider}'s API, so no ticket, customer or setting changes."
 msgstr "Yuva อ่านอย่างเดียว การเชื่อมต่อส่งเฉพาะคำขออ่านไปยัง {provider} และส่งโทเค็นไปยัง API ของ {provider} เท่านั้น จึงไม่มีทิกเก็ต ลูกค้า หรือการตั้งค่าใดเปลี่ยน"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Yuva opens a connection to a host and port on a schedule."
 msgstr "Yuva เปิดการเชื่อมต่อไปยังโฮสต์และพอร์ตเป็นระยะ"
 
@@ -23404,7 +23431,7 @@ msgstr "Yuva อ่าน {provider} ด้วยโทเค็น API ที�
 msgid "Yuva reads only the file you upload and deletes it when the migration ends. History arrives quietly: no notifications, no auto-replies."
 msgstr "Yuva อ่านเฉพาะไฟล์ที่คุณอัปโหลดและลบเมื่อการย้ายสิ้นสุด ประวัติเข้ามาอย่างเงียบ ๆ ไม่มีการแจ้งเตือน ไม่มีการตอบกลับอัตโนมัติ"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Yuva requests an address on a schedule and checks the answer."
 msgstr "Yuva ขอที่อยู่หนึ่งเป็นระยะและตรวจสอบคำตอบ"
 

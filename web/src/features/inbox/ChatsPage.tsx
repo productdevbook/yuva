@@ -7,7 +7,7 @@ import { inboxRoot } from "@/app/shell"
 import { InfoColumn, PageLayout, PageTop, TopSlotProvider } from "@/components/common"
 import { PageTitle } from "@/components/common/ListBox"
 import { ChatView } from "@/features/conversation/ChatView"
-import { EmptyFeedback } from "@/features/feedback/FeedbackList"
+import { FeedbackHome } from "@/features/feedback/FeedbackHome"
 import { FeedbackPage } from "@/features/feedback/FeedbackPage"
 import {
   ChatList,
@@ -204,14 +204,13 @@ export function ChatsPage({ section = "conversations" }: { section?: "conversati
   const id = conversationId ?? null
   useViewing(id ?? undefined)
 
+  if (section === "feedback") return id ? <FeedbackPage id={id} /> : <FeedbackHome />
   if (!phone) {
-    if (section === "feedback") return <FeedbackPage id={id} />
     if (pathname === "/mentions") return <MentionsPage />
     if (pathname === "/assistants") return <AssistantsPage />
     return <InboxPage id={id} />
   }
   if (!id) {
-    if (section === "feedback") return <EmptyFeedback />
     if (pathname === "/mentions") return <MentionsPage />
     if (pathname === "/assistants") return <AssistantsPage />
     return <InboxPage id={null} />

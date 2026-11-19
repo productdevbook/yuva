@@ -7,6 +7,11 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: zh-Hans\n"
 
+#. placeholder {0}: items.length
+#: src/features/help/ArticlesTab.tsx
+msgid "{0, plural, one {{shown} article} other {{shown} articles}}"
+msgstr "{0, plural, other {{shown} 篇文章}}"
+
 #. placeholder {0}: c.articles
 #: src/features/help/ImportCard.tsx
 msgid "{0, plural, one {# article read} other {# articles read}}"
@@ -62,21 +67,13 @@ msgstr "{0, plural, one {Add the language in the settings, then import again.} o
 msgid "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 msgstr "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "{drafts, plural, one {# draft} other {# drafts}}"
-msgstr "{drafts, plural, other {# 份草稿}}"
-
-#: src/features/help/HelpColumn.tsx
-msgid "{published} of {total} articles published"
-msgstr "{total} 篇文章中已发布 {published} 篇"
-
 #: src/features/help/ImportCard.tsx
 msgid "{saved, plural, one {# draft saved} other {# drafts saved}}"
 msgstr "{saved, plural, one {# draft saved} other {# drafts saved}}"
 
 #: src/features/help/ArticlesTab.tsx
-msgid "{searches} searches"
-msgstr "{searches} 次搜索"
+msgid "{views, plural, one {# view} other {# views}}"
+msgstr "{views, plural, other {# 次浏览}}"
 
 #: src/features/help/CreateCenterDialog.tsx
 msgid "3 to 48 letters, numbers and hyphens. It is unique on this server."
@@ -124,10 +121,6 @@ msgstr "地址结尾"
 msgid "Agents may publish"
 msgstr "客服可以发布"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "All"
-msgstr "全部"
-
 #: src/features/help/Revisions.tsx
 msgid "An API key"
 msgstr "API 密钥"
@@ -152,11 +145,6 @@ msgstr "另一个帮助中心现在或曾经使用此地址。"
 msgid "Answer common questions once, in writing. Each product gets its own help center with articles, collections and a report of what people search for. Pages are hosted by Yuva, so there is nothing to install on your site."
 msgstr "常见问题只需用文字回答一次。每个产品都有自己的帮助中心，包含文章、合集和用户搜索内容的报告。页面由 Yuva 托管，无需在你的网站上安装任何东西。"
 
-#: src/features/help/pages.tsx
-msgid "Answer common questions once, in writing. Pick an inbox’s help center to write articles, group them in collections and see what customers search for."
-msgstr "把常见问题只回答一次，写成文字。选择某个收件箱的帮助中心，撰写文章、按集合分组，并查看客户在搜索什么。"
-
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Article"
 msgstr "文章"
@@ -179,7 +167,6 @@ msgstr "文章浏览量"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Articles"
 msgstr "文章"
@@ -192,7 +179,6 @@ msgstr "文章可以用这些语言撰写和发布。访客有自己的语言时
 msgid "Articles in this collection"
 msgstr "此集合中的文章"
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Articles people read before they write to you"
 msgstr "用户联系你之前会阅读的文章"
@@ -237,8 +223,6 @@ msgstr "Brings the collections and articles of another help center in as drafts.
 msgid "Bulleted list"
 msgstr "项目符号列表"
 
-#: src/features/help/ArticlesTab.tsx
-#: src/features/help/CollectionsTab.tsx
 #: src/features/help/CreateCenterDialog.tsx
 #: src/features/help/ImportCard.tsx
 msgid "Cancel"
@@ -277,6 +261,11 @@ msgstr "已开始的聊天"
 msgid "Checking the sign-in"
 msgstr "Checking the sign-in"
 
+#: src/features/help/ArticlesTab.tsx
+#: src/features/help/pages.tsx
+msgid "Clear filters"
+msgstr "清除筛选"
+
 #: src/features/help/ImportCard.tsx
 msgid "Close"
 msgstr "Close"
@@ -295,8 +284,6 @@ msgstr "代码块"
 msgid "Collection"
 msgstr "集合"
 
-#: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Collections"
 msgstr "集合"
@@ -318,14 +305,9 @@ msgid "Create collection"
 msgstr "创建集合"
 
 #: src/features/help/CreateCenterDialog.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Create help center"
 msgstr "创建帮助中心"
-
-#: src/features/help/HelpColumn.tsx
-msgid "Create help center ({newKey})"
-msgstr "创建帮助中心（{newKey}）"
 
 #: src/features/help/Bulk.tsx
 #: src/features/help/CollectionsTab.tsx
@@ -408,7 +390,6 @@ msgid "Draft submitted. An owner or admin can publish it."
 msgstr "草稿已提交。所有者或管理员可以发布它。"
 
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Drafts"
 msgstr "草稿"
@@ -429,9 +410,17 @@ msgstr "编辑集合"
 msgid "Empty"
 msgstr "空"
 
+#: src/features/help/pages.tsx
+msgid "Every collection"
+msgstr "所有合集"
+
 #: src/features/help/ReportTab.tsx
 msgid "Every search found something."
 msgstr "每次搜索都有结果。"
+
+#: src/features/help/pages.tsx
+msgid "Every status"
+msgstr "所有状态"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
@@ -445,6 +434,14 @@ msgstr "Everything imported is a draft."
 #: src/features/help/ImportCard.tsx
 msgid "Failed"
 msgstr "Failed"
+
+#: src/features/help/pages.tsx
+msgid "Filter by collection"
+msgstr "按合集筛选"
+
+#: src/features/help/pages.tsx
+msgid "Filter by status"
+msgstr "按状态筛选"
 
 #: src/features/help/EditorToolbar.tsx
 msgid "Formatting"
@@ -470,15 +467,12 @@ msgstr "将文章分组，方便访客浏览。一个集合可以包含一层子
 msgid "Heading"
 msgstr "标题"
 
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Help center"
 msgstr "帮助中心"
 
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help center created. Write the first article, then publish it."
 msgstr "帮助中心已创建。写好第一篇文章，然后发布。"
@@ -486,12 +480,6 @@ msgstr "帮助中心已创建。写好第一篇文章，然后发布。"
 #: src/features/help/SettingsTab.tsx
 msgid "Help center deleted"
 msgstr "帮助中心已删除"
-
-#: src/features/help/HelpColumn.tsx
-#: src/features/help/HelpFrame.tsx
-#: src/features/help/pages.tsx
-msgid "Help centers"
-msgstr "帮助中心"
 
 #: src/features/help/text.tsx
 msgid "Help centers are turned off on this server."
@@ -565,7 +553,6 @@ msgstr "语言"
 msgid "Language of the articles"
 msgstr "Language of the articles"
 
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Languages"
 msgstr "语言"
@@ -573,10 +560,6 @@ msgstr "语言"
 #: src/features/help/ReportTab.tsx
 msgid "Last {d} days"
 msgstr "最近 {d} 天"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "last 7 days"
-msgstr "最近 7 天"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "Last 7 days"
@@ -626,6 +609,10 @@ msgstr "更多"
 msgid "More for {name}"
 msgstr "{name} 的更多操作"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "move"
+msgstr "移动"
+
 #: src/features/help/CollectionsTab.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "移动 {name}。拖动，或按 Alt 加方向键。"
@@ -653,6 +640,10 @@ msgid "New address"
 msgstr "New address"
 
 #: src/features/help/ArticlesTab.tsx
+msgid "new article"
+msgstr "新文章"
+
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/pages.tsx
 msgid "New article"
 msgstr "新文章"
@@ -661,16 +652,16 @@ msgstr "新文章"
 msgid "New article ({newKey})"
 msgstr "新文章（{newKey}）"
 
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CollectionsTab.tsx
+#: src/features/help/pages.tsx
 msgid "New collection"
 msgstr "新集合"
 
-#: src/features/help/CollectionsTab.tsx
-msgid "New collection ({newKey})"
-msgstr "新集合（{newKey}）"
+#: src/features/help/pages.tsx
+msgid "New collection ({colKey})"
+msgstr "新集合 ({colKey})"
 
-#: src/features/help/HelpFrame.tsx
+#: src/features/help/pages.tsx
 msgid "New help center for {product}"
 msgstr "为 {product} 新建帮助中心"
 
@@ -713,12 +704,10 @@ msgstr "还没有早期版本。"
 msgid "No help center for {0} yet"
 msgstr "{0} 还没有帮助中心"
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "No help center yet. Owners and admins create it."
 msgstr "还没有帮助中心。由所有者和管理员创建。"
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "No inbox to show a help center for."
 msgstr "没有可显示帮助中心的收件箱。"
@@ -743,10 +732,6 @@ msgstr "未撰写"
 #: src/features/help/EditorToolbar.tsx
 msgid "Numbered list"
 msgstr "编号列表"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "of {answers} answers"
-msgstr "共 {answers} 个回答"
 
 #: src/features/help/ImportCard.tsx
 msgid "Off: a draft you edited in Yuva since the last import is kept."
@@ -775,6 +760,11 @@ msgstr "只有所有者和管理员可以这样做。"
 #: src/features/help/ImportCard.tsx
 msgid "Only owners and admins can use a Zendesk migration."
 msgstr "Only owners and admins can use a Zendesk migration."
+
+#: src/features/help/ArticlesTab.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "打开"
 
 #: src/features/help/ImportCard.tsx
 msgid "Open the drafts"
@@ -857,21 +847,17 @@ msgstr "公开地址"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Publish"
 msgstr "发布"
 
 #: src/features/help/ArticleEditor.tsx
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Publish ({publishKey})"
 msgstr "发布（{publishKey}）"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/ImportCard.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/Revisions.tsx
@@ -900,11 +886,6 @@ msgstr "Redirects"
 #: src/features/help/SettingsTab.tsx
 msgid "Remove {0}"
 msgstr "移除 {0}"
-
-#: src/features/help/HelpFrame.tsx
-#: src/features/help/pages.tsx
-msgid "Report"
-msgstr "报告"
 
 #: src/features/help/ReportTab.tsx
 msgid "Report period"
@@ -962,12 +943,20 @@ msgid "Saving…"
 msgstr "正在保存…"
 
 #: src/features/help/ArticlesTab.tsx
+msgid "search"
+msgstr "搜索"
+
+#: src/features/help/pages.tsx
+msgid "Search articles…"
+msgstr "搜索文章…"
+
+#: src/features/help/pages.tsx
+msgid "Search gaps"
+msgstr "搜索空白"
+
+#: src/features/help/pages.tsx
 msgid "Search titles"
 msgstr "搜索标题"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Search titles ({findKey})"
-msgstr "搜索标题（{findKey}）"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Search words"
@@ -982,13 +971,13 @@ msgstr "搜索过但无结果"
 msgid "Searches"
 msgstr "搜索"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "searches this week"
-msgstr "本周搜索"
-
 #: src/features/help/ReportTab.tsx
 msgid "Searches with no result"
 msgstr "无结果的搜索"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "select"
+msgstr "选择"
 
 #: src/features/help/ReportTab.tsx
 msgid "Sent"
@@ -998,7 +987,6 @@ msgstr "已发送"
 msgid "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 msgstr "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/text.tsx
 msgid "Settings"
@@ -1067,10 +1055,6 @@ msgstr "从标题开始。接下来再写正文，在发布之前它一直是草
 #: src/features/help/ImportCard.tsx
 msgid "State"
 msgstr "State"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Status"
-msgstr "状态"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Submit draft"
@@ -1177,6 +1161,10 @@ msgstr "顶级"
 msgid "Translation deleted"
 msgstr "翻译已删除"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "Try again"
+msgstr "重试"
+
 #: src/features/help/text.tsx
 msgid "Type a word to search for."
 msgstr "输入要搜索的词。"
@@ -1188,7 +1176,6 @@ msgstr "输入要搜索的词。"
 msgid "Unpublish"
 msgstr "取消发布"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Unpublish ({publishKey})"
 msgstr "取消发布 ({publishKey})"
@@ -1207,8 +1194,6 @@ msgstr "取消发布此翻译？"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Unpublished"
 msgstr "未发布"
@@ -1220,10 +1205,6 @@ msgstr "未发布的更改"
 #: src/features/help/ArticleEditor.tsx
 msgid "Unsaved changes"
 msgstr "未保存的更改"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Updated"
-msgstr "更新时间"
 
 #: src/features/help/SettingsTab.tsx
 msgid "Use 3 to 48 letters, numbers and inner hyphens."
@@ -1245,12 +1226,10 @@ msgstr "版本已恢复到草稿"
 msgid "View"
 msgstr "查看"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "View site"
 msgstr "查看站点"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "View site ({openKey})"
 msgstr "查看站点 ({openKey})"
@@ -1259,10 +1238,6 @@ msgstr "查看站点 ({openKey})"
 #: src/features/help/ReportTab.tsx
 msgid "Views"
 msgstr "浏览量"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Views · 7 days"
-msgstr "浏览 · 7 天"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "Visibility"

@@ -12,22 +12,29 @@ import { useRef, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router"
 
 import {
+  Dot,
   ErrorLine,
-  FlatEmpty,
-  FlatRow,
-  FlatTag,
-  FlatWho,
+  InfoColumn,
   InfoSection,
   KV,
-  PageHeading,
+  PageLayout,
   PageTop,
   toast,
   topButton,
-  topInk,
   useConfirm,
 } from "@/components/common"
-import { PaneBack } from "@/components/common/Column"
-import { keyLabel, MONITOR_KEYS } from "@/components/common/ShortcutSheet"
+import {
+  boxRowClass,
+  FilterMenu,
+  FilterRow,
+  KeyHints,
+  ListBox,
+  ListBoxEmpty,
+  ListBoxSkeleton,
+  PageTitle,
+} from "@/components/common/ListBox"
+import { ProductFilter, useProductScope } from "@/components/common/ProductFilter"
+import { keyLabel, MONITOR_KEYS, SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { formatDate, formatDuration, formatRelative, formatShort } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import {
@@ -39,12 +46,12 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useListCursor } from "@/features/inbox/listCursor"
-import { look, PageTop as StackTop } from "@/features/inbox/PageFrame"
-import { IncidentDialog, type IncidentPrefill } from "@/features/status/IncidentDialog"
+import { look } from "@/features/inbox/PageFrame"
+import { IncidentForm, type IncidentPrefill } from "@/features/status/IncidentForm"
 import { MonitorChecks } from "@/features/status/MonitorChecks"
-import { MonitorDialog } from "@/features/status/MonitorDialog"
+import { MonitorForm } from "@/features/status/MonitorForm"
 import { MonitorTokenDialog } from "@/features/status/MonitorToken"
-import { Chip, Pill, ProductTag } from "@/features/status/PageFrame"
+import { Pill, ProductTag } from "@/features/status/PageFrame"
 import {
   incidentLink,
   monitorLink,
@@ -57,11 +64,9 @@ import {
 } from "@/features/status/queries"
 import { ResponseChart } from "@/features/status/ResponseChart"
 import { useStatusScope } from "@/features/status/scope"
-import { StatusLayout, StatusTrail } from "@/features/status/StatusFrame"
 import { isClosed, useStatusText } from "@/features/status/text"
 import { usePercent } from "@/features/status/UptimeBars"
 import { useHotkeys } from "@/hooks/use-hotkeys"
-import { useIsPhone, useMediaQuery } from "@/hooks/use-media-query"
 import { useNow } from "@/hooks/use-now"
 import type {
   Inbox,
@@ -164,99 +169,6 @@ function IncidentLine({ page, i }: { page: string; i: StatusIncident }) {
         Incident: {title} · {state}
       </Trans>
     </Link>
-  )
-}
-
-function Row({
-  m,
-  page,
-  inbox,
-  component,
-  incident,
-  current,
-  canManage,
-  onIncident,
-}: {
-  m: StatusMonitor
-  page?: StatusPage
-  inbox?: Inbox
-  component?: StatusComponent
-  incident?: StatusIncident
-  current: boolean
-  canManage: boolean
-  onIncident: () => void
-}) {
-  const { i18n } = useLingui()
-  const percent = usePercent()
-  const stateOf = useStateLabel()
-  const { summary, groups } = useSpark(m)
-  const s = stateOf(m)
-  const days = certDays(m)
-  const warnDays = Math.max(m.http?.cert_warn_days ?? 0, 14)
-  const expires = m.cert_expires_at ? formatDate(m.cert_expires_at, i18n.locale) : null
-  const every = m.interval ? formatDuration(m.interval, i18n.locale) : ""
-  const text = useStatusText()
-  const down = m.state === "down" && !m.paused
-  return (
-    <li className={cn("border-b", current && "bg-muted")} data-testid="status-monitor">
-      <Link
-        to={monitorLink(m.id)}
-        replace
-        aria-current={current ? "true" : undefined}
-        className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 px-4 py-3 outline-none transition-colors hover:bg-muted/60 focus-visible:bg-muted @2xl:grid-cols-[minmax(0,1fr)_auto_96px_56px]"
-      >
-        <span className="flex min-w-0 flex-col gap-0.5 leading-[1.3]">
-          <span className="flex min-w-0 items-center gap-2">
-            <span className="min-w-0 truncate font-medium" title={m.name}>
-              {m.name}
-            </span>
-            <Chip>{text.monitorKind[m.kind]}</Chip>
-          </span>
-          <span className="flex min-w-0 items-center gap-1.5 text-caption text-muted-foreground">
-            {page && <ProductTag name={inbox?.name ?? page.name} color={inbox?.branding.color} />}
-            <span className="min-w-0 truncate">
-              {component?.name ?? "–"}
-              {every && m.kind !== "push" ? ` · ${every}` : ""}
-            </span>
-          </span>
-          {down && m.last_message && <span className="truncate text-caption text-destructive">{m.last_message}</span>}
-          {expires && days !== null && days <= warnDays && (
-            <span
-              className={cn("text-caption", days < 0 ? "text-destructive" : "text-warning")}
-              data-testid="status-monitor-cert"
-            >
-              {days < 0 ? <Trans>Certificate expired {expires}</Trans> : <Trans>Certificate expires {expires}</Trans>}
-            </span>
-          )}
-        </span>
-        <Pill tone={s.tone} data-testid="status-monitor-state">
-          {s.label}
-        </Pill>
-        <span className="hidden @2xl:block">
-          <Spark m={m} groups={groups} />
-        </span>
-        <span className="hidden text-muted-foreground tabular-nums @2xl:block">
-          {summary?.uptime === undefined ? "–" : percent(summary.uptime)}
-        </span>
-      </Link>
-      {(incident || (down && !incident && canManage)) && (
-        <div className="flex flex-wrap items-center gap-3 px-4 pb-3">
-          {incident ? (
-            <IncidentLine page={m.page_id} i={incident} />
-          ) : (
-            <Button
-              variant="outline"
-              className={look.btnSm}
-              onClick={onIncident}
-              data-testid="status-monitor-open-incident"
-            >
-              <TriangleAlertIcon />
-              <Trans>Open an incident</Trans>
-            </Button>
-          )}
-        </div>
-      )}
-    </li>
   )
 }
 
@@ -667,7 +579,7 @@ function MonitorInfo({
   )
 }
 
-function FlatMonitorRow({
+function MonitorRow({
   m,
   page,
   inbox,
@@ -699,25 +611,32 @@ function FlatMonitorRow({
   const expires = m.cert_expires_at ? formatDate(m.cert_expires_at, i18n.locale) : null
   const every = m.interval ? formatDuration(m.interval, i18n.locale) : ""
   const down = m.state === "down" && !m.paused
-  const tone = { success: "text-ok", danger: "text-bad font-medium", muted: "text-muted-foreground" }
   return (
-    <div data-testid="status-monitor" role="listitem">
-      <FlatRow
-        color={inbox?.branding.color}
-        cursor={cursor}
-        data-row-id={m.id}
-        cols="grid-cols-[7px_minmax(0,1fr)_minmax(0,140px)_auto]"
-        button={{ onClick: onOpen }}
-        who={
-          <span className="flex min-w-0 flex-col gap-0.5">
+    <div data-row data-row-id={m.id} className={boxRowClass({ cursor })} data-testid="status-monitor">
+      <div className="flex min-w-0 flex-1 flex-col py-3 pe-3.5">
+        <button
+          type="button"
+          onClick={onOpen}
+          className="flex min-w-0 items-center gap-3 text-start outline-none"
+          data-testid="status-monitor-open"
+        >
+          <span className="flex min-w-0 flex-1 flex-col gap-0.5">
             <span className="flex min-w-0 items-center gap-2">
-              <FlatWho strong>{m.name}</FlatWho>
-              <FlatTag>{text.monitorKind[m.kind]}</FlatTag>
+              <span className="truncate text-body font-semibold">{m.name}</span>
+              <span className="shrink-0 text-small text-muted-foreground">{text.monitorKind[m.kind]}</span>
             </span>
-            <span className="truncate text-small text-muted-foreground">
-              {page ? `${inbox?.name ?? page.name} · ` : ""}
-              {component?.name ?? "–"}
-              {every && m.kind !== "push" ? ` · ${every}` : ""}
+            <span className="flex min-w-0 items-center gap-1.5 truncate text-small text-muted-foreground">
+              {page && (
+                <>
+                  <Dot color={inbox?.branding.color} className="size-[7px] shrink-0 rounded-[2px]" />
+                  <span className="shrink-0">{inbox?.name ?? page.name}</span>
+                  <span aria-hidden>·</span>
+                </>
+              )}
+              <span className="truncate">
+                {component?.name ?? "–"}
+                {every && m.kind !== "push" ? ` · ${every}` : ""}
+              </span>
             </span>
             {down && m.last_message && <span className="truncate text-small text-bad">{m.last_message}</span>}
             {expires && days !== null && days <= warnDays && (
@@ -726,37 +645,29 @@ function FlatMonitorRow({
               </span>
             )}
           </span>
-        }
-        end={
-          <>
-            <span className={cn("text-small whitespace-nowrap", tone[s.tone])} data-testid="status-monitor-state">
-              {s.label}
-            </span>
-            <span className="w-16 text-end font-mono text-xs text-muted-foreground tabular-nums">
-              {summary?.uptime === undefined ? "–" : percent(summary.uptime)}
-            </span>
-          </>
-        }
-      >
-        <Spark m={m} groups={groups} />
-      </FlatRow>
-      {(incident || (down && canManage)) && (
-        <div className="flex flex-wrap items-center gap-3 ps-[26px] pb-3">
-          {incident ? (
-            <IncidentLine page={m.page_id} i={incident} />
-          ) : (
-            <Button
-              variant="outline"
-              className={look.btnSm}
-              onClick={onIncident}
-              data-testid="status-monitor-open-incident"
-            >
-              <TriangleAlertIcon />
-              <Trans>Open an incident</Trans>
-            </Button>
-          )}
-        </div>
-      )}
+          <span className="w-28 shrink-0 max-sm:hidden">
+            <Spark m={m} groups={groups} />
+          </span>
+          <span className="w-14 shrink-0 text-end font-mono text-xs text-muted-foreground tabular-nums max-sm:hidden">
+            {summary?.uptime === undefined ? "–" : percent(summary.uptime)}
+          </span>
+          <Pill tone={s.tone} data-testid="status-monitor-state">
+            {s.label}
+          </Pill>
+        </button>
+        {(incident || (down && canManage)) && (
+          <div className="mt-2 flex flex-wrap items-center gap-3">
+            {incident ? (
+              <IncidentLine page={m.page_id} i={incident} />
+            ) : (
+              <Button variant="outline" size="sm" onClick={onIncident} data-testid="status-monitor-open-incident">
+                <TriangleAlertIcon />
+                <Trans>Open an incident</Trans>
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
@@ -766,9 +677,8 @@ export function MonitorsPage() {
   const navigate = useNavigate()
   const { monitorId = "" } = useParams()
   const { canManage } = useSession()
-  const wide = useMediaQuery("(min-width: 1180px)")
-  const phone = useIsPhone()
   const { items: pages, pages: pagesQuery, inboxOf } = useStatusScope()
+  const { chosen, set } = useProductScope()
   const ids = pages.map((p) => p.id)
   const monitors = usePagesMonitors(ids)
   const components = usePagesComponents(ids)
@@ -777,65 +687,60 @@ export function MonitorsPage() {
   const byPage = new Map(pages.map((p) => [p.id, p]))
   const now = useNow(60_000)
   const [filter, setFilter] = useState<Filter>("all")
-  const [dialog, setDialog] = useState<{ edit?: StatusMonitor } | null>(null)
+  const [form, setForm] = useState<{ edit?: StatusMonitor } | null>(null)
   const [token, setToken] = useState<{ monitor: StatusMonitorWithToken; rotated: boolean } | null>(null)
   const [incidentFor, setIncidentFor] = useState<{ monitor: StatusMonitor; prefill: IncidentPrefill } | null>(null)
-  const items = [...monitors.data].sort(
-    (a, b) =>
-      Number(b.state === "down" && !b.paused) - Number(a.state === "down" && !a.paused) ||
-      ids.indexOf(a.page_id) - ids.indexOf(b.page_id) ||
-      a.created_at.localeCompare(b.created_at)
-  )
+  const items = [...monitors.data]
+    .filter((m) => !chosen || byPage.get(m.page_id)?.inbox_id === chosen)
+    .sort(
+      (a, b) =>
+        Number(b.state === "down" && !b.paused) - Number(a.state === "down" && !a.paused) ||
+        ids.indexOf(a.page_id) - ids.indexOf(b.page_id) ||
+        a.created_at.localeCompare(b.created_at)
+    )
   const counts = Object.fromEntries(
     FILTERS.map((f) => [f, items.filter((m) => filterOf(m).includes(f)).length])
   ) as Record<Filter, number>
   const rows = items.filter((m) => filterOf(m).includes(filter))
-  const selected = items.find((m) => m.id === monitorId)
-  const flat = !phone
-  const shown = selected ?? (wide && !flat ? rows[0] : undefined)
+  const selected = monitors.data.find((m) => m.id === monitorId)
   const listRef = useRef<HTMLDivElement>(null)
   const openIncidents = open.data.filter((i) => !isClosed(i))
   const incidentOf = (m: StatusMonitor) =>
     openIncidents.find((i) => i.id === m.incident_id) ??
     openIncidents.find((i) => i.kind === "incident" && i.components.some((c) => c.component_id === m.component_id))
   const loading = pagesQuery.isPending || (pages.length > 0 && (monitors.isPending || open.isPending))
-  const showPane = wide || !!monitorId
-  const showList = wide || !monitorId
   const addKey = keyLabel(MONITOR_KEYS.add).join("")
-
-  const step = (by: number) => {
-    const at = shown ? rows.findIndex((m) => m.id === shown.id) : -1
-    const next = rows[Math.min(rows.length - 1, Math.max(0, at + by))]
-    if (next) navigate(monitorLink(next.id), { replace: true })
-  }
-  const flatList = flat && !monitorId
+  const busy = !!form || !!incidentFor
+  const listing = !monitorId
   const { cursorId } = useListCursor(
     rows,
     null,
     (id) => navigate(monitorLink(id)),
-    flatList && !dialog && !incidentFor,
+    listing && !busy,
     listRef,
     true,
     true
   )
+  const step = (by: number) => {
+    const at = selected ? rows.findIndex((m) => m.id === selected.id) : -1
+    const next = rows[Math.min(rows.length - 1, Math.max(0, at + by))]
+    if (next) navigate(monitorLink(next.id), { replace: true })
+  }
   useHotkeys(
-    {
-      ...(flatList
-        ? {}
-        : {
-            j: () => step(1),
-            k: () => step(-1),
-            ArrowDown: () => step(1),
-            ArrowUp: () => step(-1),
-          }),
-      ...(flat && monitorId ? { Escape: () => navigate("/monitors") } : {}),
-      [MONITOR_KEYS.all]: () => setFilter("all"),
-      [MONITOR_KEYS.down]: () => setFilter("down"),
-      [MONITOR_KEYS.up]: () => setFilter("up"),
-      [MONITOR_KEYS.paused]: () => setFilter("paused"),
-      ...(canManage && pages.length > 0 ? { [MONITOR_KEYS.add]: () => setDialog({}) } : {}),
-    },
-    !dialog && !incidentFor
+    monitorId
+      ? {
+          [MONITOR_KEYS.previous]: () => step(-1),
+          [MONITOR_KEYS.next]: () => step(1),
+          Escape: () => navigate("/monitors"),
+        }
+      : {
+          [MONITOR_KEYS.all]: () => setFilter("all"),
+          [MONITOR_KEYS.down]: () => setFilter("down"),
+          [MONITOR_KEYS.up]: () => setFilter("up"),
+          [MONITOR_KEYS.paused]: () => setFilter("paused"),
+          ...(canManage && pages.length > 0 ? { [MONITOR_KEYS.add]: () => setForm({}) } : {}),
+        },
+    !busy
   )
 
   const prefill = (m: StatusMonitor): IncidentPrefill => {
@@ -852,35 +757,37 @@ export function MonitorsPage() {
       message: t`Our monitor ${monitor} has seen a problem since ${at}. We are looking into it.`,
     }
   }
+  const startIncident = (m: StatusMonitor) => {
+    setForm(null)
+    setIncidentFor({ monitor: m, prefill: prefill(m) })
+  }
 
-  const startIncident = (m: StatusMonitor) => setIncidentFor({ monitor: m, prefill: prefill(m) })
+  const names: Record<Filter, string> = { all: t`All`, down: t`Down`, up: t`Up`, paused: t`Paused` }
+  const fmt = new Intl.NumberFormat(i18n.locale)
 
-  const filters = FILTERS.map((f) => ({
-    key: f,
-    label: { all: t`All`, down: t`Down`, up: t`Up`, paused: t`Paused` }[f],
-    count: counts[f],
-  }))
-
-  const dialogs = (
+  const forms = (
     <>
-      {dialog && (
-        <MonitorDialog
-          pages={pages}
-          pageId={shown?.page_id}
-          edit={dialog.edit}
-          onClose={() => setDialog(null)}
+      {form && (
+        <MonitorForm
+          key={form.edit?.id ?? "new"}
+          pages={chosen ? pages.filter((p) => p.inbox_id === chosen) : pages}
+          pageId={selected?.page_id}
+          edit={form.edit}
+          className={monitorId ? "mt-0" : undefined}
+          onClose={() => setForm(null)}
           onCreated={(monitor) => {
-            setDialog(null)
+            setForm(null)
             if (monitor.url) setToken({ monitor, rotated: false })
           }}
         />
       )}
       {incidentFor && (
-        <IncidentDialog
+        <IncidentForm
           pages={pages}
           pageId={incidentFor.monitor.page_id}
           kind="incident"
           prefill={incidentFor.prefill}
+          className={monitorId ? "mt-0" : undefined}
           onClose={() => setIncidentFor(null)}
           onDone={() => {
             setIncidentFor(null)
@@ -888,128 +795,138 @@ export function MonitorsPage() {
           }}
         />
       )}
-      {token && <MonitorTokenDialog monitor={token.monitor} rotated={token.rotated} onClose={() => setToken(null)} />}
     </>
   )
+  const tokenDialog = token && (
+    <MonitorTokenDialog monitor={token.monitor} rotated={token.rotated} onClose={() => setToken(null)} />
+  )
 
-  if (flat) {
+  if (monitorId) {
     const back = { label: t`Monitors`, to: "/monitors" }
-    if (monitorId)
+    if (!selected)
       return (
-        <>
-          {selected ? (
-            <Pane
-              key={selected.id}
-              m={selected}
-              page={byPage.get(selected.page_id)}
-              inbox={inboxOf(byPage.get(selected.page_id))}
-              component={byComponent.get(selected.component_id)}
-              incident={incidentOf(selected)}
-              onEdit={() => setDialog({ edit: selected })}
-              onIncident={() => startIncident(selected)}
-              onToken={(monitor, rotated) => setToken({ monitor, rotated })}
-              layout={({ actions, body, aside }) => (
-                <StatusLayout place="monitors" testId="status-monitors" aside={aside}>
-                  <PageTop back={back} actions={actions && <div className="flex items-center gap-1.5">{actions}</div>}>
-                    <StatusTrail place="monitors" name={byPage.get(selected.page_id)?.name} />
-                  </PageTop>
-                  <div className="@container max-w-[760px]">{body}</div>
-                </StatusLayout>
-              )}
-            />
+        <PageLayout testId="status-monitors" label={t`Monitors`}>
+          <PageTop back={back} />
+          {loading ? (
+            <div className="mt-3 flex max-w-[760px] flex-col gap-4">
+              <Skeleton className="h-8 w-60" />
+              <Skeleton className="h-24 w-full" />
+            </div>
           ) : (
-            <StatusLayout place="monitors" testId="status-monitors">
-              <PageTop back={back} />
-              {loading ? (
-                <div className="mt-3 flex max-w-[760px] flex-col gap-4">
-                  <Skeleton className="h-8 w-60" />
-                  <Skeleton className="h-24 w-full" />
-                </div>
-              ) : (
-                <FlatEmpty>
-                  <ErrorLine error={pagesQuery.error ?? monitors.error} />
-                  <Trans>This monitor no longer exists or you cannot see it.</Trans>
-                </FlatEmpty>
-              )}
-            </StatusLayout>
+            <ListBox>
+              <ListBoxEmpty>
+                <ErrorLine error={pagesQuery.error ?? monitors.error} />
+                <Trans>This monitor no longer exists or you cannot see it.</Trans>
+              </ListBoxEmpty>
+            </ListBox>
           )}
-          {dialogs}
-        </>
+        </PageLayout>
       )
     return (
-      <StatusLayout
-        place="monitors"
-        testId="status-monitors"
-        aside={
-          items.length > 0 && (
-            <InfoSection title={<Trans>Monitors</Trans>}>
-              {filters.map((f) => (
-                <KV
-                  key={f.key}
-                  label={f.label}
-                  value={f.count}
-                  tone={f.key === "down" && f.count > 0 ? "bad" : f.key === "up" && f.count > 0 ? "ok" : undefined}
-                />
-              ))}
-            </InfoSection>
-          )
-        }
-      >
-        <PageTop
+      <>
+        <Pane
+          key={selected.id}
+          m={selected}
+          page={byPage.get(selected.page_id)}
+          inbox={inboxOf(byPage.get(selected.page_id))}
+          component={byComponent.get(selected.component_id)}
+          incident={incidentOf(selected)}
+          onEdit={() => {
+            setIncidentFor(null)
+            setForm({ edit: selected })
+          }}
+          onIncident={() => startIncident(selected)}
+          onToken={(monitor, rotated) => setToken({ monitor, rotated })}
+          layout={({ actions, body, aside }) => (
+            <PageLayout
+              testId="status-monitors"
+              label={selected.name}
+              aside={<InfoColumn label={t`Details`}>{aside}</InfoColumn>}
+            >
+              <PageTop back={back} actions={actions && <div className="flex items-center gap-1.5">{actions}</div>} />
+              <div className="@container flex max-w-[760px] flex-col gap-4">
+                {forms}
+                {body}
+              </div>
+            </PageLayout>
+          )}
+        />
+        {tokenDialog}
+      </>
+    )
+  }
+
+  return (
+    <PageLayout testId="status-monitors" label={t`Monitors`}>
+      <section className="@container flex min-w-0 flex-col">
+        <PageTitle
+          title={<Trans>Monitors</Trans>}
+          sub={<Trans>Each monitor sets the state of one component while it is down.</Trans>}
           actions={
             canManage &&
             pages.length > 0 && (
               <Button
-                className={topInk}
-                onClick={() => setDialog({})}
+                onClick={() => {
+                  setIncidentFor(null)
+                  setForm({})
+                }}
+                disabled={!!form}
                 title={t`Add monitor (${addKey})`}
                 data-testid="status-add-monitor"
               >
-                <PlusIcon className="size-3.5" aria-hidden />
+                <PlusIcon />
                 <Trans>New monitor</Trans>
               </Button>
             )
           }
-        >
-          <StatusTrail place="monitors" />
-        </PageTop>
-        <section className="@container flex max-w-[980px] flex-col">
-          <PageHeading
-            title={t`Monitors`}
-            lede={
-              <>
-                <Trans>Checks that watch your products and set component states</Trans>
-                {". "}
-                <Trans>Each monitor sets the state of one component while it is down.</Trans>
-              </>
-            }
-          />
-          <ErrorLine error={pagesQuery.error ?? monitors.error} className="mt-3" />
-          {items.length > 0 && (
-            <div className="mt-5">
-              <FrameTabsAsChips label={t`Show`} value={filter} onChange={setFilter} items={filters} />
-            </div>
-          )}
-          {loading ? (
-            <div className="mt-7 flex flex-col gap-3">
-              {[0, 1, 2].map((n) => (
-                <Skeleton key={n} className="h-5 w-full" />
-              ))}
-            </div>
-          ) : pages.length === 0 ? (
-            <FlatEmpty>
-              <p className="m-0">
+          testId="monitors-head"
+        />
+        {forms}
+        {pages.length > 0 && (
+          <FilterRow testId="monitors-filters">
+            <FilterMenu
+              value={filter === "all" ? "" : filter}
+              onChange={(v) => setFilter((v || "all") as Filter)}
+              options={(["down", "up", "paused"] as const).map((f) => ({
+                value: f,
+                label: `${names[f]} · ${fmt.format(counts[f])}`,
+              }))}
+              anyLabel={`${names.all} · ${fmt.format(counts.all)}`}
+              label={t`Show`}
+              testId="monitors-state"
+            />
+            <ProductFilter value={chosen} onChange={(id) => set("inbox", id)} testId="monitors-product" />
+          </FilterRow>
+        )}
+        <ErrorLine error={pagesQuery.error ?? monitors.error} className="mt-3" />
+        <div ref={listRef}>
+          <ListBox testId="status-monitor-list">
+            {loading ? (
+              <ListBoxSkeleton rows={3} />
+            ) : pages.length === 0 ? (
+              <ListBoxEmpty
+                action={
+                  canManage && (
+                    <Button variant="outline" size="sm" render={<Link to="/status" />}>
+                      <Trans>Status pages</Trans>
+                    </Button>
+                  )
+                }
+              >
                 <Trans>Monitors set the state of a status page component. Create a status page first.</Trans>
-              </p>
-              {canManage && (
-                <Button variant="outline" className={topButton} render={<Link to="/status" />}>
-                  <Trans>Status pages</Trans>
-                </Button>
-              )}
-            </FlatEmpty>
-          ) : rows.length === 0 ? (
-            <FlatEmpty>
-              <p className="m-0">
+              </ListBoxEmpty>
+            ) : rows.length === 0 ? (
+              <ListBoxEmpty
+                action={
+                  canManage &&
+                  items.length === 0 &&
+                  !form && (
+                    <Button variant="outline" size="sm" onClick={() => setForm({})}>
+                      <Trans>New monitor</Trans>
+                    </Button>
+                  )
+                }
+              >
                 {items.length === 0 ? (
                   <Trans>
                     No monitors yet. Add one to let a check, a job or your monitoring set a component’s state.
@@ -1017,19 +934,12 @@ export function MonitorsPage() {
                 ) : (
                   <Trans>No monitor matches this filter.</Trans>
                 )}
-              </p>
-              {canManage && items.length === 0 && (
-                <Button variant="outline" className={topButton} onClick={() => setDialog({})}>
-                  <Trans>New monitor</Trans>
-                </Button>
-              )}
-            </FlatEmpty>
-          ) : (
-            <div ref={listRef} role="list" aria-label={t`Monitors`} className="mt-5">
-              {rows.map((m) => {
+              </ListBoxEmpty>
+            ) : (
+              rows.map((m) => {
                 const page = byPage.get(m.page_id)
                 return (
-                  <FlatMonitorRow
+                  <MonitorRow
                     key={m.id}
                     m={m}
                     page={page}
@@ -1042,162 +952,24 @@ export function MonitorsPage() {
                     onIncident={() => startIncident(m)}
                   />
                 )
-              })}
-            </div>
-          )}
-        </section>
-        {dialogs}
-      </StatusLayout>
-    )
-  }
-
-  return (
-    <main className="flex min-h-0 min-w-0 flex-1 flex-col bg-background" data-testid="status-monitors">
-      {!wide && monitorId ? (
-        <div className="px-4 pt-3 sm:px-6">
-          <PaneBack to="/monitors" label={t`Monitors`} always />
+              })
+            )}
+          </ListBox>
         </div>
-      ) : (
-        <StackTop
-          title={<Trans>Monitors</Trans>}
-          sub={<Trans>Checks that watch your products and set component states</Trans>}
-          actions={
-            canManage &&
-            pages.length > 0 && (
-              <Button
-                className={look.btnInk}
-                onClick={() => setDialog({})}
-                title={t`Add monitor (${addKey})`}
-                data-testid="status-add-monitor"
-              >
-                <Trans>New monitor</Trans>
-              </Button>
-            )
-          }
+        <KeyHints
+          items={[
+            [[SHORTCUTS.next, SHORTCUTS.previous], <Trans key="move">move</Trans>],
+            [
+              ["↵"],
+              <Trans key="open" context="keyboard hint">
+                open
+              </Trans>,
+            ],
+            [[MONITOR_KEYS.add], <Trans key="new">new monitor</Trans>],
+          ]}
         />
-      )}
-      <ErrorLine error={pagesQuery.error ?? monitors.error} className="m-6" />
-      <div className="@container flex min-h-0 flex-1 overflow-hidden">
-        {showList && (
-          <div className="@container flex min-w-0 flex-1 flex-col overflow-y-auto">
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b px-4 py-3 sm:px-6">
-              <FrameTabsAsChips label={t`Show`} value={filter} onChange={setFilter} items={filters} />
-              <span className="min-w-0 flex-1 basis-56 text-end text-caption text-faint phone:text-start">
-                <Trans>Each monitor sets the state of one component while it is down.</Trans>
-              </span>
-            </div>
-            {loading ? (
-              <div className="flex flex-col gap-2 p-4">
-                <Skeleton className="h-16 w-full rounded-xl" />
-                <Skeleton className="h-16 w-full rounded-xl" />
-              </div>
-            ) : pages.length === 0 ? (
-              <div className="m-6 flex flex-col items-center gap-2 rounded-xl border border-dashed px-6 py-10 text-center">
-                <p className="text-body text-muted-foreground">
-                  <Trans>Monitors set the state of a status page component. Create a status page first.</Trans>
-                </p>
-                {canManage && (
-                  <Button variant="outline" className={look.btnSm} render={<Link to="/status" />}>
-                    <Trans>Status pages</Trans>
-                  </Button>
-                )}
-              </div>
-            ) : rows.length === 0 ? (
-              <div className="m-6 flex flex-col items-center gap-3 rounded-xl border border-dashed px-6 py-10 text-center">
-                <p className="text-body text-muted-foreground">
-                  {items.length === 0 ? (
-                    <Trans>
-                      No monitors yet. Add one to let a check, a job or your monitoring set a component’s state.
-                    </Trans>
-                  ) : (
-                    <Trans>No monitor matches this filter.</Trans>
-                  )}
-                </p>
-                {canManage && items.length === 0 && (
-                  <Button className={look.btnInkSm} onClick={() => setDialog({})}>
-                    <Trans>New monitor</Trans>
-                  </Button>
-                )}
-              </div>
-            ) : (
-              <ul aria-label={t`Monitors`} className="border-t-0">
-                {rows.map((m) => {
-                  const page = byPage.get(m.page_id)
-                  return (
-                    <Row
-                      key={m.id}
-                      m={m}
-                      page={page}
-                      inbox={inboxOf(page)}
-                      component={byComponent.get(m.component_id)}
-                      incident={incidentOf(m)}
-                      current={m.id === shown?.id}
-                      canManage={canManage}
-                      onIncident={() => startIncident(m)}
-                    />
-                  )
-                })}
-              </ul>
-            )}
-          </div>
-        )}
-        {showPane && (
-          <div className={cn("min-w-0 overflow-y-auto bg-background", wide ? "w-[480px] shrink-0 border-s" : "flex-1")}>
-            {shown ? (
-              <Pane
-                key={shown.id}
-                m={shown}
-                page={byPage.get(shown.page_id)}
-                inbox={inboxOf(byPage.get(shown.page_id))}
-                component={byComponent.get(shown.component_id)}
-                incident={incidentOf(shown)}
-                onEdit={() => setDialog({ edit: shown })}
-                onIncident={() => startIncident(shown)}
-                onToken={(monitor, rotated) => setToken({ monitor, rotated })}
-              />
-            ) : loading ? (
-              <div className="p-5">
-                <Skeleton className="h-24 w-full rounded-xl" />
-              </div>
-            ) : (
-              <p className="p-10 text-center text-faint">
-                <Trans>Pick a monitor to see what happened.</Trans>
-              </p>
-            )}
-          </div>
-        )}
-      </div>
-      {dialogs}
-    </main>
-  )
-}
-
-function FrameTabsAsChips<T extends string>({
-  label,
-  value,
-  onChange,
-  items,
-}: {
-  label: string
-  value: T
-  onChange: (v: T) => void
-  items: { key: T; label: string; count: number }[]
-}) {
-  return (
-    <div role="group" aria-label={label} className="flex flex-wrap gap-1.5">
-      {items.map((it) => (
-        <button
-          key={it.key}
-          type="button"
-          aria-pressed={it.key === value}
-          onClick={() => onChange(it.key)}
-          className={it.key === value ? look.chipOn : look.chip}
-          data-testid={`status-monitors-${it.key}`}
-        >
-          {it.label}
-          <span className="text-caption tabular-nums opacity-70">{it.count}</span>
-        </button>
-      ))}
-    </div>
+      </section>
+      {tokenDialog}
+    </PageLayout>
   )
 }

@@ -7,6 +7,11 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: ro\n"
 
+#. placeholder {0}: rows.length
+#: src/features/changelog/EntriesTab.tsx
+msgid "{0, plural, one {{shownCount} entry} other {{shownCount} entries}}"
+msgstr "{0, plural, one {{shownCount} intrare} few {{shownCount} intrări} other {{shownCount} de intrări}}"
+
 #: src/features/changelog/ChangelogsPage.tsx
 msgid "{published} of {total} entries published"
 msgstr "{published} din {total} intrări publicate"
@@ -36,15 +41,6 @@ msgstr "Sfârșitul adresei"
 msgid "Agents may publish"
 msgstr "Agenții pot publica"
 
-#: src/features/changelog/ChangelogFrame.tsx
-#: src/features/changelog/pages.tsx
-msgid "All"
-msgstr "Toate"
-
-#: src/features/changelog/ChangelogFrame.tsx
-msgid "All changelogs"
-msgstr "Toate jurnalele de modificări"
-
 #: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "All labels"
@@ -53,10 +49,6 @@ msgstr "Toate etichetele"
 #: src/features/changelog/pages.tsx
 msgid "All languages"
 msgstr "Toate limbile"
-
-#: src/features/changelog/ChangelogFrame.tsx
-msgid "All products"
-msgstr "Toate produsele"
 
 #: src/features/changelog/SettingsTab.tsx
 msgid "Analytics property"
@@ -75,7 +67,6 @@ msgid "At least 3 characters."
 msgstr "Cel puțin 3 caractere."
 
 #: src/features/changelog/CreateChangelogDialog.tsx
-#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/MailDialog.tsx
 #: src/features/changelog/ScheduleDialog.tsx
 msgid "Cancel"
@@ -89,21 +80,25 @@ msgstr "Schimbă"
 msgid "Change the time"
 msgstr "Schimbă ora"
 
-#: src/features/changelog/pages.tsx
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/SettingsTab.tsx
 msgid "Changelog"
 msgstr "Jurnal de modificări"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/pages.tsx
 msgid "Changelogs"
 msgstr "Jurnale de modificări"
 
+#: src/features/changelog/pages.tsx
+msgid "Changelogs ({manageKey})"
+msgstr "Jurnale de modificări ({manageKey})"
+
 #: src/features/changelog/EntryEditor.tsx
 msgid "Choose a picture"
 msgstr "Alege o imagine"
 
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "Clear filters"
 msgstr "Șterge filtrele"
@@ -184,7 +179,6 @@ msgstr "Ciornă"
 msgid "Draft submitted. An owner or admin can publish it."
 msgstr "Ciornă trimisă. Un proprietar sau un administrator o poate publica."
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/pages.tsx
 msgid "Drafts"
 msgstr "Ciorne"
@@ -193,12 +187,14 @@ msgstr "Ciorne"
 msgid "Each product has one changelog. Owners and admins create and publish them."
 msgstr "Fiecare produs are un jurnal de modificări. Proprietarii și administratorii îl creează și îl publică."
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
-#: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
 msgid "Entries"
 msgstr "Intrări"
+
+#: src/features/changelog/pages.tsx
+msgid "Entries ({entriesKey})"
+msgstr "Intrări ({entriesKey})"
 
 #: src/features/changelog/SettingsTab.tsx
 msgid "Entries and translations are deleted with it."
@@ -209,12 +205,8 @@ msgid "Entries can be written and published in these languages. Visitors see the
 msgstr "Intrările pot fi scrise și publicate în aceste limbi. Vizitatorii o văd pe a lor, când există."
 
 #: src/features/changelog/pages.tsx
-msgid "Entries show on the public page once they are published."
-msgstr "Intrările apar pe pagina publică după ce sunt publicate."
-
-#: src/features/changelog/pages.tsx
-msgid "Entries you have not published yet show up here."
-msgstr "Intrările pe care nu le-ai publicat încă apar aici."
+msgid "Every state"
+msgstr "Orice stare"
 
 #: src/features/changelog/Bulk.tsx
 #: src/features/changelog/EntryEditor.tsx
@@ -301,6 +293,10 @@ msgstr "Marchează ca actualizată"
 msgid "More"
 msgstr "Mai mult"
 
+#: src/features/changelog/EntriesTab.tsx
+msgid "move"
+msgstr "deplasare"
+
 #: src/features/changelog/CreateChangelogDialog.tsx
 #: src/features/changelog/SettingsTab.tsx
 msgid "Name"
@@ -311,9 +307,10 @@ msgid "New"
 msgstr "Nou"
 
 #: src/features/changelog/EntriesTab.tsx
-msgid "New entry"
-msgstr "Intrare nouă"
+msgid "new post"
+msgstr "postare nouă"
 
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "New post"
 msgstr "Postare nouă"
@@ -351,10 +348,6 @@ msgstr "nepublicat"
 msgid "not written"
 msgstr "nescris"
 
-#: src/features/changelog/pages.tsx
-msgid "Nothing here."
-msgstr "Nu e nimic aici."
-
 #: src/features/changelog/SettingsTab.tsx
 msgid "Off: agents write drafts and submit them, and owners and admins publish. On: agents with access to the inbox publish, schedule and unpublish too."
 msgstr "Oprit: agenții scriu ciorne și le trimit spre aprobare, iar proprietarii și administratorii publică. Pornit: și agenții cu acces la căsuță publică, programează și retrag."
@@ -362,6 +355,11 @@ msgstr "Oprit: agenții scriu ciorne și le trimit spre aprobare, iar proprietar
 #: src/features/changelog/text.tsx
 msgid "Only owners and admins can do this."
 msgstr "Doar proprietarii și administratorii pot face asta."
+
+#: src/features/changelog/EntriesTab.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "deschide"
 
 #: src/features/changelog/EntryEditor.tsx
 msgid "Original"
@@ -386,10 +384,6 @@ msgstr "Parte din adresa web a acestei traduceri. Se face din titlu când e goal
 #: src/features/changelog/ScheduleDialog.tsx
 msgid "Pick a time in the next year, in your time zone, {zone}."
 msgstr "Alege un moment din anul următor, în fusul tău orar, {zone}."
-
-#: src/features/changelog/pages.tsx
-msgid "Pick a time when you write an entry and it goes public by itself."
-msgstr "Alege o oră când scrii o intrare și devine publică singură."
 
 #: src/features/changelog/MailDialog.tsx
 msgid "Pick up to 10 lists of this inbox."
@@ -446,7 +440,6 @@ msgstr "Publică acum"
 msgid "Publish on"
 msgstr "Publică pe"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
@@ -498,7 +491,6 @@ msgstr "Programează din nou"
 msgid "Schedule this entry"
 msgstr "Programează această intrare"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
 #: src/features/changelog/text.tsx
@@ -513,15 +505,26 @@ msgstr "Programate: {scheduled}"
 msgid "Search entries"
 msgstr "Caută intrări"
 
+#: src/features/changelog/pages.tsx
+msgid "Search entries…"
+msgstr "Caută în intrări…"
+
+#: src/features/changelog/EntriesTab.tsx
+msgid "select"
+msgstr "selectează"
+
 #: src/features/changelog/MailDialog.tsx
 msgid "Send through"
 msgstr "Trimite prin"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/pages.tsx
 msgid "Settings"
 msgstr "Setări"
+
+#: src/features/changelog/pages.tsx
+msgid "Settings ({settingsKey})"
+msgstr "Setări ({settingsKey})"
 
 #: src/features/changelog/EntryEditor.tsx
 msgid "Show"
@@ -556,6 +559,7 @@ msgid "Start with a title. You write the text next, and it stays a draft until i
 msgstr "Începe cu un titlu. Textul îl scrii apoi și rămâne ciornă până se publică."
 
 #: src/features/changelog/EntriesTab.tsx
+#: src/features/changelog/pages.tsx
 msgid "State"
 msgstr "Stare"
 
@@ -666,13 +670,9 @@ msgstr "Titlu"
 msgid "Translation deleted"
 msgstr "Traducere ștearsă"
 
-#: src/features/changelog/pages.tsx
+#: src/features/changelog/EntriesTab.tsx
 msgid "Try again"
 msgstr "Încearcă din nou"
-
-#: src/features/changelog/pages.tsx
-msgid "Try another word, label or language."
-msgstr "Încearcă alt cuvânt, altă etichetă sau altă limbă."
 
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntryEditor.tsx
@@ -709,6 +709,13 @@ msgstr "Modificări nesalvate"
 msgid "Unschedule"
 msgstr "Anulează programarea"
 
+#: src/features/changelog/ChangelogFrame.tsx
+#: src/features/changelog/ChangelogsPage.tsx
+#: src/features/changelog/EntryEditor.tsx
+#: src/features/changelog/pages.tsx
+msgid "Updates"
+msgstr "Actualizări"
+
 #: src/features/changelog/SettingsTab.tsx
 msgid "Use 3 to 48 letters, numbers and inner hyphens."
 msgstr "Folosește de la 3 la 48 de litere, cifre și cratime interioare."
@@ -726,11 +733,9 @@ msgstr "Vezi"
 msgid "View changelog"
 msgstr "Vezi jurnalul de modificări"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/EntryEditor.tsx
-#: src/features/changelog/pages.tsx
 msgid "What’s new"
 msgstr "Noutăți"
 

@@ -1,6 +1,6 @@
-import { Plural, Trans, useLingui } from "@lingui/react/macro"
+import { Trans, useLingui } from "@lingui/react/macro"
 import { CheckIcon, CopyIcon } from "lucide-react"
-import { lazy, Suspense, useCallback, useLayoutEffect, useRef, useState } from "react"
+import { lazy, Suspense, useLayoutEffect, useRef, useState } from "react"
 import { Link, useNavigate, useSearchParams } from "react-router"
 
 import {
@@ -11,15 +11,11 @@ import {
   InfoSection,
   isVisitor,
   KV,
-  NavGroup,
-  NavList,
-  PageHeading,
   PageLayout,
   PageTop,
   SectionHeading,
   toast,
   TopPortal,
-  TopSep,
   TopSlotProvider,
   useCopy,
   VisitorAvatar,
@@ -36,27 +32,14 @@ import { ChatView } from "@/features/conversation/ChatView"
 import { useFeedbackRows } from "@/features/conversation/Feedback"
 import { isPreviewable } from "@/features/conversation/messages/Attachments"
 import { useConversation, useMessages, useUpdateConversation } from "@/features/conversation/queries"
-import {
-  CategoryPill,
-  feedbackPlace,
-  FeedbackFlatList,
-  progressTone,
-  rememberedFeedbackCategory,
-  rememberedFeedbackTab,
-  rememberFeedback,
-  useFeedbackTypes,
-  type FeedbackCategoryFilter,
-  type FeedbackTab,
-} from "@/features/feedback/FeedbackList"
-import { useInboxFilter } from "@/features/inbox/inboxFilter"
+import { feedbackBack } from "@/features/feedback/FeedbackHome"
+import { CategoryPill, feedbackPlace, progressTone } from "@/features/feedback/FeedbackList"
 import { ConversationEyebrow } from "@/features/inbox/InboxSide"
-import { useCounts, useLoadedCount } from "@/features/inbox/queries"
 import { Lightbox } from "@/features/feedback/Lightbox"
 import { IssuesCard } from "@/features/feedback/IssuesCard"
 import { RoadmapCard } from "@/features/feedback/RoadmapCard"
 import { feedbackDraft } from "@/features/issues/draft"
 import { IssueDialogs, type IssueMode } from "@/features/issues/IssueMenu"
-import { ideaLink, useBoards, useScopeIdeas } from "@/features/roadmap/queries"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { attachmentUrl, type Conversation, type Feedback, type FeedbackProgress } from "@/lib/api"
 import { useSession } from "@/lib/session"
@@ -64,7 +47,6 @@ import { cn } from "@/lib/utils"
 import { useInboxes } from "@/lib/workspace"
 
 const LinkIdeaDialog = lazy(() => import("@/features/roadmap/LinkIdeaDialog"))
-const FeedbackFormDialog = lazy(() => import("@/features/feedback/FeedbackFormDialog"))
 
 const STEPS = ["none", "planned", "in_progress", "done", "wont_do"] as const
 
@@ -402,235 +384,40 @@ function DetailInfo({ c }: { c: Conversation }) {
   )
 }
 
-function ListInfo({ title, tab }: { title: string; tab: FeedbackTab }) {
-  const { t, i18n } = useLingui()
-  const text = useEnumText()
-  const [inboxId] = useInboxFilter()
-  const counts = useCounts().data
-  const resolved = useLoadedCount({ kind: ["feedback"], status: ["closed"], inbox_id: inboxId || undefined })
-  const { types, open } = useFeedbackTypes(inboxId, "all")
-  const boards = useBoards()
-  const ideas = (useScopeIdeas(undefined, { state: "published" }).data?.pages[0]?.items ?? [])
-    .filter((i) => i.stage !== "shipped" && i.stage !== "closed" && (!inboxId || i.inbox_id === inboxId))
-    .slice(0, 4)
-  const fmt = new Intl.NumberFormat(i18n.locale)
-  const byType = types.filter((x) => x.key !== "all" && open(x.key) > 0)
-  return (
-    <>
-      <InfoSection title={title} testId="feedback-summary">
-        {!inboxId && (
-          <KV
-            label={t`Open`}
-            value={fmt.format(counts?.feedback ?? 0)}
-            tone={tab === "open" && counts?.feedback ? "brand" : undefined}
-          />
-        )}
-        <KV label={t`Resolved`} value={resolved === undefined ? "–" : fmt.format(resolved)} />
-      </InfoSection>
-      {!inboxId && byType.length > 0 && (
-        <InfoSection title={t`Type`}>
-          {byType.map((x) => (
-            <KV key={x.key} label={x.name} value={fmt.format(open(x.key))} />
-          ))}
-        </InfoSection>
-      )}
-      {(boards.data?.length ?? 0) > 0 && ideas.length > 0 && (
-        <InfoSection
-          title={t`Most asked for`}
-          action={
-            <Link
-              to="/board"
-              className="rounded-sm font-normal text-fg2 underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <Trans>Roadmap</Trans>
-            </Link>
-          }
-          testId="feedback-asks"
-        >
-          {ideas.map((i) => (
-            <KV
-              key={i.id}
-              label={<span title={i.stage && text.stage[i.stage]}>{i.title}</span>}
-              value={<span className="font-mono text-[11px] text-muted2">{`▲ ${fmt.format(i.votes)}`}</span>}
-              to={i.board_id ? ideaLink(i.board_id, i.id) : undefined}
-            />
-          ))}
-        </InfoSection>
-      )}
-    </>
-  )
-}
-
-function FeedbackFilters({
-  tab,
-  category,
-  onTab,
-  onCategory,
-}: {
-  tab: FeedbackTab
-  category: FeedbackCategoryFilter
-  onTab: (tab: FeedbackTab) => void
-  onCategory: (category: FeedbackCategoryFilter) => void
-}) {
+export function FeedbackPage({ id }: { id: string }) {
   const { t } = useLingui()
-  const [inboxId] = useInboxFilter()
-  const counts = useCounts().data
-  const resolved = useLoadedCount({ kind: ["feedback"], status: ["closed"], inbox_id: inboxId || undefined })
-  const { types, open } = useFeedbackTypes(inboxId, category)
-  const showCount = !inboxId && tab === "open"
-  return (
-    <NavList label={t`Feedback`}>
-      <div data-testid="feedback-tabs">
-        <NavGroup
-          title={t`Status`}
-          items={[
-            {
-              key: "open",
-              label: t`Open`,
-              count: inboxId ? undefined : counts?.feedback,
-              hot: true,
-              current: tab === "open",
-              onSelect: () => onTab("open"),
-              testId: "feedback-tab-open",
-            },
-            {
-              key: "resolved",
-              label: t`Resolved`,
-              count: resolved,
-              current: tab === "resolved",
-              onSelect: () => onTab("resolved"),
-              testId: "feedback-tab-resolved",
-            },
-          ]}
-        />
-      </div>
-      <div data-testid="feedback-categories">
-        <NavGroup
-          title={t`Type`}
-          items={types.map((x) => ({
-            key: x.key,
-            label: x.key === "all" ? t`Every type` : x.name,
-            count: showCount ? open(x.key) : undefined,
-            current: category === x.key,
-            onSelect: () => onCategory(x.key),
-            testId: `feedback-category-${x.key}`,
-          }))}
-        />
-      </div>
-    </NavList>
-  )
-}
-
-export function FeedbackPage({ id }: { id: string | null }) {
-  const { t, i18n } = useLingui()
   const navigate = useNavigate()
   const [params] = useSearchParams()
-  const [inboxId] = useInboxFilter()
-  const { find } = useFeedbackCategories()
-  const product = useInboxes().data?.find((i) => i.id === inboxId)?.name
-  const [tab, setTab] = useState<FeedbackTab>(rememberedFeedbackTab)
-  const [category, setCategory] = useState<FeedbackCategoryFilter>(rememberedFeedbackCategory)
-  const [form, setForm] = useState(false)
   const [slot, setSlot] = useState<HTMLElement | null>(null)
-  const thread = !!id && params.get("thread") === "1"
-  const conversation = useConversation(id ?? undefined)
-  const c = id ? conversation.data : undefined
-  const listY = useRef(0)
-  const open = useCallback(
-    (next: string) => {
-      listY.current = window.scrollY
-      navigate(`/feedback/${next}`)
-    },
-    [navigate]
-  )
+  const thread = params.get("thread") === "1"
+  const conversation = useConversation(id)
+  const c = conversation.data
   useLayoutEffect(() => {
-    window.scrollTo({ top: id ? 0 : listY.current })
+    window.scrollTo({ top: 0 })
   }, [id, thread])
-  const viewName = tab === "open" ? t`Open` : t`Resolved`
-  const typeName = category === "all" ? t`Every type` : find(category, inboxId || undefined).name
-  const back = thread ? { label: t`Feedback`, to: `/feedback/${id}` } : { label: viewName, to: "/feedback" }
-  useHotkeys({ Escape: () => navigate(back.to) }, !!id)
-  const toList = () => {
-    if (id) navigate("/feedback")
-  }
-  const pickTab = (next: FeedbackTab) => {
-    rememberFeedback(next, category)
-    setTab(next)
-    toList()
-  }
-  const pickCategory = (next: FeedbackCategoryFilter) => {
-    rememberFeedback(tab, next)
-    setCategory(next)
-    toList()
-  }
-  const fmt = new Intl.NumberFormat(i18n.locale)
-  const where = product ?? t`every product`
-  const heading = ({ count, more }: { count: number; more: boolean }) => {
-    const n = `${fmt.format(count)}${more ? "+" : ""}`
-    return (
-      <PageHeading
-        title={category === "all" ? viewName : `${viewName} · ${typeName}`}
-        lede={
-          <span data-testid="list-lede">
-            {more ? <Trans>{n} reports</Trans> : <Plural value={count} one="# report" other="# reports" />}
-            {" · "}
-            {where}
-            {". "}
-            <Trans>Bugs, ideas and praise sent from your apps and pages</Trans>
-          </span>
-        }
-      />
-    )
-  }
+  const back = thread ? { label: t`Feedback`, to: `/feedback/${id}` } : { label: t`Feedback`, to: feedbackBack() }
+  useHotkeys({ Escape: () => navigate(back.to) })
   return (
     <PageLayout
       testId="feedback-page"
       label={t`Feedback`}
-      nav={<FeedbackFilters tab={tab} category={category} onTab={pickTab} onCategory={pickCategory} />}
       aside={
-        <InfoColumn label={t`Details`}>
-          {c ? <DetailInfo c={c} /> : !id && <ListInfo title={viewName} tab={tab} />}
-        </InfoColumn>
+        c &&
+        !thread && (
+          <InfoColumn label={t`Details`}>
+            <DetailInfo c={c} />
+          </InfoColumn>
+        )
       }
     >
-      <PageTop
-        back={id ? back : undefined}
-        slot={id ? setSlot : undefined}
-        actions={
-          !id && (
-            <Button
-              variant="outline"
-              className="h-8 rounded-[9px] border-input bg-card px-3 font-normal"
-              onClick={() => setForm(true)}
-              data-testid="feedback-form"
-            >
-              <Trans>Feedback form</Trans>
-            </Button>
-          )
-        }
-      >
-        {thread && id ? (
-          <ConversationEyebrow id={id} />
-        ) : (
-          <>
-            <span className="font-medium text-foreground">
-              <Trans>Feedback</Trans>
-            </span>
-            <TopSep />
-            <span className="truncate">{viewName}</span>
-            <TopSep />
-            <span className="truncate">{typeName}</span>
-            <TopSep />
-            <span className="truncate">{product ?? t`All products`}</span>
-          </>
-        )}
+      <PageTop back={back} slot={setSlot}>
+        {thread && <ConversationEyebrow id={id} />}
       </PageTop>
       <div className="max-w-[980px]">
-        <FeedbackFlatList tab={tab} category={category} onOpen={open} hidden={!!id} head={heading} />
         <TopSlotProvider value={slot}>
-          {thread && id ? (
+          {thread ? (
             <ChatView key={id} id={id} flat panel={false} inlinePanel={false} onPanel={() => {}} />
-          ) : id && conversation.isPending ? (
+          ) : conversation.isPending ? (
             <div className="mt-3 flex max-w-[720px] flex-col gap-3">
               <Skeleton className="h-5 w-32" />
               <Skeleton className="h-8 w-3/4" />
@@ -639,15 +426,10 @@ export function FeedbackPage({ id }: { id: string | null }) {
           ) : c ? (
             <Detail key={c.id} c={c} onReply={() => navigate(`/feedback/${c.id}?thread=1`)} />
           ) : (
-            id && <ErrorLine error={conversation.error} className="mt-3" />
+            <ErrorLine error={conversation.error} className="mt-3" />
           )}
         </TopSlotProvider>
       </div>
-      {form && (
-        <Suspense fallback={null}>
-          <FeedbackFormDialog onClose={() => setForm(false)} />
-        </Suspense>
-      )}
     </PageLayout>
   )
 }

@@ -7,6 +7,11 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: hi\n"
 
+#. placeholder {0}: rows.length
+#: src/features/changelog/EntriesTab.tsx
+msgid "{0, plural, one {{shownCount} entry} other {{shownCount} entries}}"
+msgstr "{0, plural, one {{shownCount} एंट्री} other {{shownCount} एंट्री}}"
+
 #: src/features/changelog/ChangelogsPage.tsx
 msgid "{published} of {total} entries published"
 msgstr "{total} में से {published} प्रविष्टियाँ प्रकाशित"
@@ -36,15 +41,6 @@ msgstr "पते का अंतिम भाग"
 msgid "Agents may publish"
 msgstr "एजेंट प्रकाशित कर सकते हैं"
 
-#: src/features/changelog/ChangelogFrame.tsx
-#: src/features/changelog/pages.tsx
-msgid "All"
-msgstr "सभी"
-
-#: src/features/changelog/ChangelogFrame.tsx
-msgid "All changelogs"
-msgstr "सभी चेंजलॉग"
-
 #: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "All labels"
@@ -53,10 +49,6 @@ msgstr "सभी लेबल"
 #: src/features/changelog/pages.tsx
 msgid "All languages"
 msgstr "सभी भाषाएँ"
-
-#: src/features/changelog/ChangelogFrame.tsx
-msgid "All products"
-msgstr "सभी उत्पाद"
 
 #: src/features/changelog/SettingsTab.tsx
 msgid "Analytics property"
@@ -75,7 +67,6 @@ msgid "At least 3 characters."
 msgstr "कम से कम 3 अक्षर।"
 
 #: src/features/changelog/CreateChangelogDialog.tsx
-#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/MailDialog.tsx
 #: src/features/changelog/ScheduleDialog.tsx
 msgid "Cancel"
@@ -89,21 +80,25 @@ msgstr "बदलें"
 msgid "Change the time"
 msgstr "समय बदलें"
 
-#: src/features/changelog/pages.tsx
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/SettingsTab.tsx
 msgid "Changelog"
 msgstr "चेंजलॉग"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/pages.tsx
 msgid "Changelogs"
 msgstr "चेंजलॉग"
 
+#: src/features/changelog/pages.tsx
+msgid "Changelogs ({manageKey})"
+msgstr "चेंजलॉग ({manageKey})"
+
 #: src/features/changelog/EntryEditor.tsx
 msgid "Choose a picture"
 msgstr "चित्र चुनें"
 
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "Clear filters"
 msgstr "फ़िल्टर साफ़ करें"
@@ -184,7 +179,6 @@ msgstr "ड्राफ़्ट"
 msgid "Draft submitted. An owner or admin can publish it."
 msgstr "ड्राफ़्ट जमा किया गया। कोई स्वामी या एडमिन इसे प्रकाशित कर सकता है।"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/pages.tsx
 msgid "Drafts"
 msgstr "ड्राफ़्ट"
@@ -193,12 +187,14 @@ msgstr "ड्राफ़्ट"
 msgid "Each product has one changelog. Owners and admins create and publish them."
 msgstr "हर उत्पाद का एक चेंजलॉग होता है। मालिक और एडमिन उसे बनाते और प्रकाशित करते हैं।"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
-#: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
 msgid "Entries"
 msgstr "प्रविष्टियाँ"
+
+#: src/features/changelog/pages.tsx
+msgid "Entries ({entriesKey})"
+msgstr "प्रविष्टियाँ ({entriesKey})"
 
 #: src/features/changelog/SettingsTab.tsx
 msgid "Entries and translations are deleted with it."
@@ -209,12 +205,8 @@ msgid "Entries can be written and published in these languages. Visitors see the
 msgstr "प्रविष्टियाँ इन भाषाओं में लिखी और प्रकाशित की जा सकती हैं। विज़िटर को उनकी अपनी भाषा दिखती है, अगर वह मौजूद हो।"
 
 #: src/features/changelog/pages.tsx
-msgid "Entries show on the public page once they are published."
-msgstr "प्रविष्टियाँ प्रकाशित होते ही सार्वजनिक पेज पर दिखती हैं।"
-
-#: src/features/changelog/pages.tsx
-msgid "Entries you have not published yet show up here."
-msgstr "जो प्रविष्टियाँ आपने अभी प्रकाशित नहीं की हैं, वे यहाँ दिखती हैं।"
+msgid "Every state"
+msgstr "हर स्थिति"
 
 #: src/features/changelog/Bulk.tsx
 #: src/features/changelog/EntryEditor.tsx
@@ -301,6 +293,10 @@ msgstr "अद्यतन के रूप में चिह्नित क�
 msgid "More"
 msgstr "और"
 
+#: src/features/changelog/EntriesTab.tsx
+msgid "move"
+msgstr "घूमें"
+
 #: src/features/changelog/CreateChangelogDialog.tsx
 #: src/features/changelog/SettingsTab.tsx
 msgid "Name"
@@ -311,9 +307,10 @@ msgid "New"
 msgstr "नया"
 
 #: src/features/changelog/EntriesTab.tsx
-msgid "New entry"
-msgstr "नई प्रविष्टि"
+msgid "new post"
+msgstr "नई पोस्ट"
 
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "New post"
 msgstr "नई पोस्ट"
@@ -351,10 +348,6 @@ msgstr "प्रकाशित नहीं"
 msgid "not written"
 msgstr "लिखा नहीं गया"
 
-#: src/features/changelog/pages.tsx
-msgid "Nothing here."
-msgstr "यहाँ कुछ नहीं है।"
-
 #: src/features/changelog/SettingsTab.tsx
 msgid "Off: agents write drafts and submit them, and owners and admins publish. On: agents with access to the inbox publish, schedule and unpublish too."
 msgstr "बंद: एजेंट ड्राफ़्ट लिखकर जमा करते हैं, और ओनर तथा एडमिन प्रकाशित करते हैं। चालू: इनबॉक्स की पहुँच वाले एजेंट भी प्रकाशित करते हैं, शेड्यूल करते हैं और प्रकाशन वापस लेते हैं।"
@@ -362,6 +355,11 @@ msgstr "बंद: एजेंट ड्राफ़्ट लिखकर ज�
 #: src/features/changelog/text.tsx
 msgid "Only owners and admins can do this."
 msgstr "यह केवल स्वामी और एडमिन कर सकते हैं।"
+
+#: src/features/changelog/EntriesTab.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "खोलें"
 
 #: src/features/changelog/EntryEditor.tsx
 msgid "Original"
@@ -386,10 +384,6 @@ msgstr "इस अनुवाद के वेब पते का हिस्
 #: src/features/changelog/ScheduleDialog.tsx
 msgid "Pick a time in the next year, in your time zone, {zone}."
 msgstr "अगले एक साल में कोई समय चुनें, आपके टाइम ज़ोन, {zone}, में।"
-
-#: src/features/changelog/pages.tsx
-msgid "Pick a time when you write an entry and it goes public by itself."
-msgstr "प्रविष्टि लिखते समय समय चुनें, वह अपने आप सार्वजनिक हो जाएगी।"
 
 #: src/features/changelog/MailDialog.tsx
 msgid "Pick up to 10 lists of this inbox."
@@ -446,7 +440,6 @@ msgstr "अभी प्रकाशित करें"
 msgid "Publish on"
 msgstr "प्रकाशन की तिथि"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
@@ -498,7 +491,6 @@ msgstr "फिर से शेड्यूल करें"
 msgid "Schedule this entry"
 msgstr "यह प्रविष्टि शेड्यूल करें"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
 #: src/features/changelog/text.tsx
@@ -513,15 +505,26 @@ msgstr "शेड्यूल की गई: {scheduled}"
 msgid "Search entries"
 msgstr "प्रविष्टियाँ खोजें"
 
+#: src/features/changelog/pages.tsx
+msgid "Search entries…"
+msgstr "एंट्री खोजें…"
+
+#: src/features/changelog/EntriesTab.tsx
+msgid "select"
+msgstr "चुनें"
+
 #: src/features/changelog/MailDialog.tsx
 msgid "Send through"
 msgstr "इसके ज़रिए भेजें"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/pages.tsx
 msgid "Settings"
 msgstr "सेटिंग"
+
+#: src/features/changelog/pages.tsx
+msgid "Settings ({settingsKey})"
+msgstr "सेटिंग ({settingsKey})"
 
 #: src/features/changelog/EntryEditor.tsx
 msgid "Show"
@@ -556,6 +559,7 @@ msgid "Start with a title. You write the text next, and it stays a draft until i
 msgstr "शीर्षक से शुरू करें। पाठ आप आगे लिखेंगे, और प्रकाशित होने तक वह ड्राफ़्ट रहता है।"
 
 #: src/features/changelog/EntriesTab.tsx
+#: src/features/changelog/pages.tsx
 msgid "State"
 msgstr "अवस्था"
 
@@ -666,13 +670,9 @@ msgstr "शीर्षक"
 msgid "Translation deleted"
 msgstr "अनुवाद हटाया गया"
 
-#: src/features/changelog/pages.tsx
+#: src/features/changelog/EntriesTab.tsx
 msgid "Try again"
 msgstr "फिर कोशिश करें"
-
-#: src/features/changelog/pages.tsx
-msgid "Try another word, label or language."
-msgstr "कोई दूसरा शब्द, लेबल या भाषा आज़माएँ।"
 
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntryEditor.tsx
@@ -709,6 +709,13 @@ msgstr "बिना सहेजे बदलाव"
 msgid "Unschedule"
 msgstr "शेड्यूल रद्द करें"
 
+#: src/features/changelog/ChangelogFrame.tsx
+#: src/features/changelog/ChangelogsPage.tsx
+#: src/features/changelog/EntryEditor.tsx
+#: src/features/changelog/pages.tsx
+msgid "Updates"
+msgstr "अपडेट"
+
 #: src/features/changelog/SettingsTab.tsx
 msgid "Use 3 to 48 letters, numbers and inner hyphens."
 msgstr "3 से 48 अक्षर, अंक और बीच के हाइफ़न इस्तेमाल करें।"
@@ -726,11 +733,9 @@ msgstr "देखें"
 msgid "View changelog"
 msgstr "चेंजलॉग देखें"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/EntryEditor.tsx
-#: src/features/changelog/pages.tsx
 msgid "What’s new"
 msgstr "नया क्या है"
 

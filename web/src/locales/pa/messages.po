@@ -69,6 +69,11 @@ msgid "{0, plural, one {{shown} person} other {{shown} people}}"
 msgstr "{0, plural, other {{shown} ਲੋਕ}}"
 
 #. placeholder {0}: rows.length
+#: src/features/feedback/FeedbackHome.tsx
+msgid "{0, plural, one {{shown} report} other {{shown} reports}}"
+msgstr "{0, plural, one {{shown} ਫੀਡਬੈਕ} other {{shown} ਫੀਡਬੈਕ}}"
+
+#. placeholder {0}: rows.length
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "{0, plural, one {{shown} triggered e-mail} other {{shown} triggered e-mails}}"
 msgstr "{0, plural, other {{shown} ਆਟੋਮੈਟਿਕ ਈ-ਮੇਲ}}"
@@ -208,6 +213,7 @@ msgid "{0} marked as spam · no reply needed"
 msgstr "{0} ਸਪੈਮ ਵਜੋਂ ਚਿੰਨ੍ਹਿਤ · ਜਵਾਬ ਦੀ ਲੋੜ ਨਹੀਂ"
 
 #. placeholder {0}: done.length
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "{0} moved to the Trash"
@@ -223,6 +229,16 @@ msgstr "{1} ਵਿੱਚੋਂ {0}"
 #: src/features/team/TeamPage.tsx
 msgid "{0} open, unassigned"
 msgstr "{0} ਖੁੱਲ੍ਹੀਆਂ, ਕਿਸੇ ਨੂੰ ਨਹੀਂ ਸੌਂਪੀਆਂ"
+
+#. placeholder {0}: done.length
+#: src/features/feedback/FeedbackHome.tsx
+msgid "{0} reopened"
+msgstr "{0} ਦੁਬਾਰਾ ਖੋਲ੍ਹੇ"
+
+#. placeholder {0}: done.length
+#: src/features/feedback/FeedbackHome.tsx
+msgid "{0} resolved"
+msgstr "{0} ਹੱਲ ਕੀਤੇ"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
@@ -416,9 +432,9 @@ msgstr "{count, plural, one {# person} other {# people}} who confirmed before wo
 msgid "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 msgstr "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 
-#: src/features/feedback/FeedbackPage.tsx
-msgid "{count, plural, one {# report} other {# reports}}"
-msgstr "{count, plural, one {# ਰਿਪੋਰਟ} other {# ਰਿਪੋਰਟਾਂ}}"
+#: src/features/docs/DocsPage.tsx
+msgid "{count, plural, one {# post waiting for approval} other {# posts waiting for approval}}"
+msgstr "{count, plural, one {# ਪੋਸਟ ਮਨਜ਼ੂਰੀ ਦੀ ਉਡੀਕ ਵਿੱਚ} other {# ਪੋਸਟਾਂ ਮਨਜ਼ੂਰੀ ਦੀ ਉਡੀਕ ਵਿੱਚ}}"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "{count, plural, one {# scope} other {# scopes}}"
@@ -511,10 +527,6 @@ msgstr "{total} ਵਿੱਚੋਂ {doneText}"
 msgid "{doneText} of {total} done"
 msgstr "{total} ਵਿੱਚੋਂ {doneText} ਪੂਰੇ"
 
-#: src/features/status/StatusPages.tsx
-msgid "{down, plural, one {# down} other {# down}}"
-msgstr "{down, plural, one {# ਬੰਦ} other {# ਬੰਦ}}"
-
 #: src/features/docs/PagesTab.tsx
 msgid "{down} not helpful"
 msgstr "{down} ਮਦਦਗਾਰ ਨਹੀਂ"
@@ -546,6 +558,10 @@ msgstr "{first} ਨੇ ਗੱਲਬਾਤ ਨੂੰ 👍 ਰੇਟਿੰਗ ਦ�
 #: src/features/conversation/messages/Thread.tsx
 msgid "{first} rated the conversation 👎"
 msgstr "{first} ਨੇ ਗੱਲਬਾਤ ਨੂੰ 👎 ਰੇਟਿੰਗ ਦਿੱਤੀ"
+
+#: src/features/status/StatusPages.tsx
+msgid "{fmtCount, plural, one {# page} other {# pages}}"
+msgstr "{fmtCount, plural, one {# ਪੰਨਾ} other {# ਪੰਨੇ}}"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "{from} has an SPF record. Whether it passes is known once the test mail is read."
@@ -774,10 +790,6 @@ msgstr "{n} ਨਾ-ਪੜ੍ਹੇ ਵਜੋਂ ਚਿੰਨ੍ਹਿਤ"
 #: src/features/mail/MailList.tsx
 msgid "{n} moved to the Inbox"
 msgstr "{n} ਇਨਬਾਕਸ ਵਿੱਚ ਵਾਪਸ ਭੇਜੇ"
-
-#: src/features/feedback/FeedbackPage.tsx
-msgid "{n} reports"
-msgstr "{n} ਰਿਪੋਰਟਾਂ"
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -1152,10 +1164,6 @@ msgstr "{unreadText} ਅਣਪੜ੍ਹੇ"
 msgid "{unseenText} unread of {totalText}"
 msgstr "{totalText} ਵਿੱਚੋਂ {unseenText} ਨਾ-ਪੜ੍ਹੇ"
 
-#: src/features/status/StatusPages.tsx
-msgid "{up, plural, one {# up} other {# up}}"
-msgstr "{up, plural, one {# ਉਪਲਬਧ} other {# ਉਪਲਬਧ}}"
-
 #: src/features/docs/PagesTab.tsx
 msgid "{up} helpful"
 msgstr "{up} ਮਦਦਗਾਰ"
@@ -1332,7 +1340,7 @@ msgstr "24 ਮਹੀਨੇ"
 msgid "3 months"
 msgstr "3 ਮਹੀਨੇ"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "3 to 48 letters, numbers and hyphens. It is unique on this server."
 msgstr "3 ਤੋਂ 48 ਅੱਖਰ, ਅੰਕ ਅਤੇ ਹਾਈਫ਼ਨ। ਇਸ ਸਰਵਰ ਉੱਤੇ ਵਿਲੱਖਣ।"
 
@@ -1536,11 +1544,11 @@ msgstr "ਇੱਕ ਚਰਚਾ ਨੂੰ ਮਨਜ਼ੂਰ ਕੀਤਾ ਜਵ�
 msgid "A discussion started"
 msgstr "ਇੱਕ ਚਰਚਾ ਸ਼ੁਰੂ ਹੋਈ"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "A draft incident opens for your team to review. Customers see nothing until a member publishes it."
 msgstr "ਤੁਹਾਡੀ ਟੀਮ ਦੀ ਸਮੀਖਿਆ ਲਈ ਡਰਾਫਟ ਘਟਨਾ ਖੁੱਲ੍ਹਦੀ ਹੈ। ਜਦੋਂ ਤੱਕ ਕੋਈ ਮੈਂਬਰ ਪ੍ਰਕਾਸ਼ਿਤ ਨਹੀਂ ਕਰਦਾ, ਗਾਹਕਾਂ ਨੂੰ ਕੁਝ ਨਹੀਂ ਦਿਸਦਾ।"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "A draft is seen only by your team and changes no component until you publish it."
 msgstr "ਡਰਾਫ਼ਟ ਸਿਰਫ਼ ਤੁਹਾਡੀ ਟੀਮ ਨੂੰ ਦਿਸਦਾ ਹੈ ਅਤੇ ਤੁਹਾਡੇ ਪ੍ਰਕਾਸ਼ਿਤ ਕਰਨ ਤੱਕ ਕਿਸੇ ਕੰਪੋਨੈਂਟ ਨੂੰ ਨਹੀਂ ਬਦਲਦਾ।"
 
@@ -1751,7 +1759,7 @@ msgstr "ਇੱਕ ਪ੍ਰਾਪਰਟੀ ਵਿੱਚ ਵੱਧ ਤੋਂ ਵ�
 msgid "A property can have at most 20 funnels. Delete one first."
 msgstr "ਇੱਕ ਪ੍ਰਾਪਰਟੀ ਵਿੱਚ ਵੱਧ ਤੋਂ ਵੱਧ 20 ਫਨਲ ਹੋ ਸਕਦੇ ਹਨ। ਪਹਿਲਾਂ ਇੱਕ ਮਿਟਾਓ।"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "A public page that tells your customers whether {inboxName} works. It stays unpublished until you publish it."
 msgstr "ਇੱਕ ਜਨਤਕ ਪੰਨਾ ਜੋ ਤੁਹਾਡੇ ਗਾਹਕਾਂ ਨੂੰ ਦੱਸਦਾ ਹੈ ਕਿ {inboxName} ਚੱਲ ਰਿਹਾ ਹੈ ਜਾਂ ਨਹੀਂ। ਤੁਹਾਡੇ ਪ੍ਰਕਾਸ਼ਿਤ ਕਰਨ ਤੱਕ ਇਹ ਅਣ-ਪ੍ਰਕਾਸ਼ਿਤ ਰਹਿੰਦਾ ਹੈ।"
 
@@ -1759,7 +1767,7 @@ msgstr "ਇੱਕ ਜਨਤਕ ਪੰਨਾ ਜੋ ਤੁਹਾਡੇ ਗਾਹ�
 msgid "A published What's new entry was deleted"
 msgstr "\"ਨਵਾਂ ਕੀ ਹੈ\" ਦੀ ਇੱਕ ਪ੍ਰਕਾਸ਼ਿਤ ਐਂਟਰੀ ਮਿਟਾਈ ਗਈ"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "A pushed state that names its own state keeps it."
 msgstr "ਆਪਣੀ ਹਾਲਤ ਦੱਸਣ ਵਾਲੀ ਭੇਜੀ ਗਈ ਹਾਲਤ ਉਸ ਨੂੰ ਬਰਕਰਾਰ ਰੱਖਦੀ ਹੈ।"
 
@@ -1982,7 +1990,7 @@ msgstr "ਖਾਤਾ ਨੰਬਰ"
 msgid "Acme docs"
 msgstr "Acme ਡੌਕਸ"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "Acme status"
 msgstr "Acme ਦੀ ਸਥਿਤੀ"
 
@@ -2011,7 +2019,6 @@ msgstr "ਸਿਰਫ਼ ਕਾਰਵਾਈਆਂ"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "Active"
 msgstr "ਸਰਗਰਮ"
 
@@ -2182,7 +2189,7 @@ msgstr "ਘੱਟੋ-ਘੱਟ ਇੱਕ ਓਰੀਜਿਨ ਜੋੜੋ।"
 msgid "Add channel"
 msgstr "ਚੈਨਲ ਜੋੜੋ"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Add component"
 msgstr "ਕੰਪੋਨੈਂਟ ਜੋੜੋ"
@@ -2204,7 +2211,7 @@ msgstr "ਡੋਮੇਨ ਜੋੜੋ"
 msgid "Add endpoint"
 msgstr "ਐਂਡਪੁਆਇੰਟ ਜੋੜੋ"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Add group"
 msgstr "ਸਮੂਹ ਜੋੜੋ"
@@ -2230,7 +2237,7 @@ msgstr "ਲੇਬਲ {labelName} ਜੋੜੋ"
 msgid "Add labels"
 msgstr "ਲੇਬਲ ਜੋੜੋ"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Add monitor"
 msgstr "ਮਾਨੀਟਰ ਜੋੜੋ"
 
@@ -2344,7 +2351,7 @@ msgstr "ਸਿੰਗਲ ਸਾਈਨ-ਆਨ ਲਈ ਡੋਮੇਨ {domain} ਜ�
 #: src/features/mail/MailSide.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 #: src/features/status/MonitorHttpFields.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/MonitorToken.tsx
@@ -2404,7 +2411,6 @@ msgid "Admins see every inbox and manage products, channels and members."
 msgstr "ਐਡਮਿਨ ਹਰ ਇਨਬਾਕਸ ਵੇਖਦੇ ਹਨ ਅਤੇ ਉਤਪਾਦ, ਚੈਨਲ ਅਤੇ ਮੈਂਬਰ ਸੰਭਾਲਦੇ ਹਨ।"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/StatusPages.tsx
 msgid "Affects"
 msgstr "ਪ੍ਰਭਾਵਿਤ"
 
@@ -2525,7 +2531,6 @@ msgid "All mentions"
 msgstr "ਸਾਰੇ ਜ਼ਿਕਰ"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/StatusPages.tsx
 msgid "All monitors"
 msgstr "ਸਾਰੇ ਮਾਨੀਟਰ"
 
@@ -2546,7 +2551,6 @@ msgid "all products"
 msgstr "ਸਾਰੇ ਉਤਪਾਦ"
 
 #: src/components/common/WorkspaceSelector.tsx
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/SidePanels.tsx
@@ -2554,7 +2558,6 @@ msgstr "ਸਾਰੇ ਉਤਪਾਦ"
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "All products"
 msgstr "ਸਾਰੇ ਉਤਪਾਦ"
 
@@ -2575,10 +2578,6 @@ msgstr "ਸਾਰੇ ਕਦਮ"
 #: src/features/status/StatusPages.tsx
 msgid "All systems operational"
 msgstr "ਸਾਰੇ ਸਿਸਟਮ ਚੱਲ ਰਹੇ ਹਨ"
-
-#: src/features/status/StatusPages.tsx
-msgid "all up"
-msgstr "ਸਭ ਉਪਲਬਧ"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "All, drafts, scheduled or sent"
@@ -2850,7 +2849,7 @@ msgstr "An idea only shows its issues and their state. Its stage stays your deci
 msgid "An inbox collects the conversations of one product or brand. Name it after the product your customers know."
 msgstr "ਇਨਬਾਕਸ ਇੱਕ ਉਤਪਾਦ ਜਾਂ ਬ੍ਰਾਂਡ ਦੀਆਂ ਗੱਲਬਾਤਾਂ ਇਕੱਠੀਆਂ ਕਰਦਾ ਹੈ। ਇਸਨੂੰ ਉਸ ਉਤਪਾਦ ਦਾ ਨਾਮ ਦਿਓ ਜਿਸਨੂੰ ਤੁਹਾਡੇ ਗਾਹਕ ਜਾਣਦੇ ਹਨ।"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "An incident is published at once, so customers see it on the page."
 msgstr "ਘਟਨਾ ਤੁਰੰਤ ਪ੍ਰਕਾਸ਼ਿਤ ਹੋ ਜਾਂਦੀ ਹੈ, ਇਸ ਲਈ ਗਾਹਕ ਇਸਨੂੰ ਪੰਨੇ ਉੱਤੇ ਵੇਖਦੇ ਹਨ।"
 
@@ -3056,7 +3055,7 @@ msgstr "ਜਵਾਬ ਹਟਾ ਦਿੱਤਾ ਗਿਆ"
 msgid "Answer to a forward from {author}"
 msgstr "{author} ਦੇ ਫਾਰਵਰਡ ਦਾ ਜਵਾਬ"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "answered"
 msgstr "ਜਵਾਬ ਦਿੱਤਾ ਗਿਆ"
 
@@ -3134,7 +3133,7 @@ msgstr "ਇਸ ਕੁੰਜੀ ਨੂੰ ਵਰਤਣ ਵਾਲੀ ਹਰ ਚੀ
 
 #: src/components/common/Source.tsx
 #: src/components/common/text.ts
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "API"
 msgstr "API"
 
@@ -3333,7 +3332,7 @@ msgstr "ਉੱਪਰ ਵਾਂਗ ({current})"
 msgid "As fast as allowed"
 msgstr "ਜਿੰਨੀ ਤੇਜ਼ ਇਜਾਜ਼ਤ ਹੋਵੇ"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "As often as allowed"
 msgstr "ਜਿੰਨੀ ਵਾਰ ਇਜਾਜ਼ਤ ਹੋਵੇ"
 
@@ -3746,12 +3745,6 @@ msgstr "ਸਿਰਫ਼ ਉਦੋਂ ਸੰਕੇਤ ਭੇਜਦਾ ਹੈ ਜ�
 msgid "Before"
 msgstr "ਪਹਿਲਾਂ"
 
-#. placeholder {0}: date(before)
-#. placeholder {1}: took(before)
-#: src/features/status/StatusPages.tsx
-msgid "before that: {0}, {1}"
-msgstr "ਉਸ ਤੋਂ ਪਹਿਲਾਂ: {0}, {1}"
-
 #: src/features/migrations/ConnectStep.tsx
 msgid "Before you connect"
 msgstr "ਕਨੈਕਟ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ"
@@ -3985,8 +3978,7 @@ msgstr "ਇਸ ਚੈਨਲ ਦੇ ਬ੍ਰਾਡਕਾਸਟ ਜਵਾਬਾ�
 msgid "Browser"
 msgstr "ਬ੍ਰਾਊਜ਼ਰ"
 
-#: src/features/feedback/FeedbackList.tsx
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Bugs, ideas and praise sent from your apps and pages"
 msgstr "ਤੁਹਾਡੀਆਂ ਐਪਾਂ ਅਤੇ ਪੇਜਾਂ ਤੋਂ ਭੇਜੇ ਬੱਗ, ਵਿਚਾਰ ਅਤੇ ਤਾਰੀਫ਼ਾਂ"
 
@@ -3999,10 +3991,6 @@ msgstr "Bundle ID"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
 msgstr "ਕੰਮ ਦੇ ਘੰਟੇ"
-
-#: src/features/status/StatusPages.tsx
-msgid "by e-mail"
-msgstr "ਈਮੇਲ ਰਾਹੀਂ"
 
 #: src/features/conversation/Feedback.tsx
 msgid "By e-mail"
@@ -4071,11 +4059,9 @@ msgstr "ਮੁਹਿੰਮ ਦਾ ਨਾਮ"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/NewsletterStep.tsx
 #: src/features/status/AddSubscriberDialog.tsx
-#: src/features/status/ComponentDialogs.tsx
-#: src/features/status/CreatePageDialog.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/IncidentForm.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Cancel"
@@ -4169,7 +4155,6 @@ msgid "Catch-all without a From address"
 msgstr "From ਪਤੇ ਤੋਂ ਬਿਨਾਂ ਕੈਚ-ਆਲ"
 
 #: src/features/conversation/Feedback.tsx
-#: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Category"
 msgstr "ਸ਼੍ਰੇਣੀ"
@@ -4416,7 +4401,7 @@ msgstr "DNS ਜਾਂਚੋ"
 msgid "Check DNS and start signing"
 msgstr "DNS ਜਾਂਚੋ ਅਤੇ ਸਾਈਨਿੰਗ ਸ਼ੁਰੂ ਕਰੋ"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Check every"
 msgstr "ਜਾਂਚ ਹਰ"
@@ -4503,10 +4488,6 @@ msgstr "ਜਾਂਚ ਹੋ ਰਹੀ ਹੈ…"
 msgid "Checks"
 msgstr "ਜਾਂਚਾਂ"
 
-#: src/features/status/MonitorsPage.tsx
-msgid "Checks that watch your products and set component states"
-msgstr "ਤੁਹਾਡੇ ਉਤਪਾਦਾਂ ਉੱਤੇ ਨਜ਼ਰ ਰੱਖਣ ਅਤੇ ਕੰਪੋਨੈਂਟਾਂ ਦੀ ਸਥਿਤੀ ਤੈਅ ਕਰਨ ਵਾਲੀਆਂ ਜਾਂਚਾਂ"
-
 #: src/features/migrations/Wizard.tsx
 msgid "Choose"
 msgstr "ਚੁਣੋ"
@@ -4542,10 +4523,6 @@ msgstr "ਇੱਕ ਮੁੱਲ ਚੁਣੋ"
 #: src/app/Gate.tsx
 msgid "Choose a workspace"
 msgstr "ਵਰਕਸਪੇਸ ਚੁਣੋ"
-
-#: src/features/feedback/FeedbackList.tsx
-msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
-msgstr "ਲਿਸਟ ਵਿੱਚੋਂ ਇੱਕ ਚੁਣੋ, ਜਾਂ ↑ ↓ ਨਾਲ ਚੱਲੋ ਅਤੇ Enter ਨਾਲ ਖੋਲ੍ਹੋ।"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose the account that sends your answers. You can change it later in the channel settings."
@@ -4589,6 +4566,7 @@ msgstr "ਸਾਫ਼ ਕਰੋ"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Clear filters"
 msgstr "ਫਿਲਟਰ ਸਾਫ਼ ਕਰੋ"
 
@@ -4604,7 +4582,6 @@ msgstr "ਜਵਾਬ ਹਟਾਓ"
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the search"
@@ -4868,7 +4845,7 @@ msgstr "ਪੂਰਾ ਹੋਇਆ"
 msgid "Completed at {endedAt}"
 msgstr "{endedAt} ਵਜੇ ਪੂਰਾ ਹੋਇਆ"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Component"
 msgstr "ਹਿੱਸਾ"
@@ -4880,12 +4857,11 @@ msgstr "ਕੰਪੋਨੈਂਟ ਹਟਾਇਆ ਗਿਆ"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Components"
 msgstr "ਕੰਪੋਨੈਂਟ"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Components it touches"
 msgstr "ਪ੍ਰਭਾਵਿਤ ਕੰਪੋਨੈਂਟ"
 
@@ -5586,17 +5562,13 @@ msgstr "ਨੀਤੀ ਬਣਾਓ"
 msgid "Create rule"
 msgstr "ਨਿਯਮ ਬਣਾਓ"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "Create status page"
 msgstr "ਸਥਿਤੀ ਪੰਨਾ ਬਣਾਓ"
 
 #: src/features/status/StatusPages.tsx
 msgid "Create status page ({newKey})"
 msgstr "ਸਥਿਤੀ ਪੰਨਾ ਬਣਾਓ ({newKey})"
-
-#: src/features/status/StatusPages.tsx
-msgid "Create status page for {product}"
-msgstr "{product} ਲਈ ਸਥਿਤੀ ਪੰਨਾ ਬਣਾਓ"
 
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Create team"
@@ -5787,7 +5759,7 @@ msgstr "ਥੀਮ ਨਾਲ ਮਿਲਾਉਣ ਲਈ ਰੰਗ ਗੂੜ੍ਹ�
 msgid "Data up to {builtText}"
 msgstr "{builtText} ਤੱਕ ਦਾ ਡਾਟਾ"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Database upgrade"
 msgstr "ਡਾਟਾਬੇਸ ਅੱਪਗ੍ਰੇਡ"
 
@@ -6271,7 +6243,7 @@ msgstr "ਇਨਕਾਰ ਕਰੋ"
 
 #: src/features/issues/IssueDialog.tsx
 #: src/features/settings/teams/TeamEditor.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
 msgstr "ਵੇਰਵਾ"
@@ -6331,6 +6303,9 @@ msgstr "ਬ੍ਰਾਊਜ਼ਰ ਦੀਆਂ ਸੈਟਿੰਗਾਂ ਵਿੱ
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
+#: src/features/status/IncidentsPage.tsx
+#: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusPages.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Details"
 msgstr "ਵੇਰਵੇ"
@@ -6434,7 +6409,6 @@ msgstr "ਚਰਚਾ ਸ਼ੁਰੂ ਹੋਈ"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
@@ -6826,10 +6800,6 @@ msgstr "ਈਮੇਲ ਗਾਹਕ ਬੰਦ ਹਨ"
 msgid "E-mail subscribers are off. Nobody can subscribe and no notices go out, but the list is kept."
 msgstr "ਈਮੇਲ ਗਾਹਕ ਬੰਦ ਹਨ। ਕੋਈ ਵੀ ਸਬਸਕ੍ਰਾਈਬ ਨਹੀਂ ਕਰ ਸਕਦਾ ਅਤੇ ਕੋਈ ਨੋਟਿਸ ਨਹੀਂ ਜਾਂਦਾ, ਪਰ ਸੂਚੀ ਸੰਭਾਲੀ ਰਹਿੰਦੀ ਹੈ।"
 
-#: src/features/status/StatusPages.tsx
-msgid "E-mail subscriptions are off"
-msgstr "ਈਮੇਲ ਸਬਸਕ੍ਰਿਪਸ਼ਨ ਬੰਦ ਹਨ"
-
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "E-mail view"
 msgstr "ਈ-ਮੇਲ ਵਿਊ"
@@ -6850,11 +6820,11 @@ msgstr "ਸਾਈਨ ਅੱਪ ਕਰਨ ਵਾਲੇ ਲੋਕਾਂ ਨੂੰ 
 msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
 msgstr "ਹਰ ਕਾਰਵਾਈ ਇੱਕ ਵਾਰ, ਵੱਧ ਤੋਂ ਵੱਧ 10। ਕਾਰਵਾਈਆਂ ਇੱਕ ਬਦਲਾਅ ਵਜੋਂ ਚੱਲਦੀਆਂ ਹਨ; ਇੱਕ ਫੇਲ੍ਹ ਹੋਵੇ ਤਾਂ ਕੋਈ ਲਾਗੂ ਨਹੀਂ ਹੁੰਦੀ।"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Each component gets this state while the incident is open."
 msgstr "ਜਦੋਂ ਤੱਕ ਘਟਨਾ ਖੁੱਲ੍ਹੀ ਹੈ, ਹਰ ਕੰਪੋਨੈਂਟ ਇਸੇ ਸਥਿਤੀ ਵਿੱਚ ਰਹਿੰਦਾ ਹੈ।"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Each component gets this state while the maintenance is open."
 msgstr "ਜਦੋਂ ਤੱਕ ਰੱਖ-ਰਖਾਅ ਚੱਲ ਰਿਹਾ ਹੈ, ਹਰ ਕੰਪੋਨੈਂਟ ਇਸੇ ਸਥਿਤੀ ਵਿੱਚ ਰਹਿੰਦਾ ਹੈ।"
 
@@ -6953,7 +6923,7 @@ msgstr "API ਕੁੰਜੀ ਸੰਪਾਦਿਤ ਕਰੋ"
 msgid "Edit canned reply"
 msgstr "ਕੈਂਡ ਰਿਪਲਾਈ ਸੰਪਾਦਿਤ ਕਰੋ"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Edit component"
 msgstr "ਕੰਪੋਨੈਂਟ ਸੰਪਾਦਿਤ ਕਰੋ"
 
@@ -6962,7 +6932,7 @@ msgid "Edit design"
 msgstr "ਡਿਜ਼ਾਈਨ ਸੰਪਾਦਿਤ ਕਰੋ"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Edit details"
 msgstr "ਵੇਰਵੇ ਸੰਪਾਦਿਤ ਕਰੋ"
 
@@ -6990,7 +6960,7 @@ msgstr "ਲੇਬਲ ਸੰਪਾਦਿਤ ਕਰੋ"
 msgid "Edit macro"
 msgstr "ਮੈਕਰੋ ਸੰਪਾਦਿਤ ਕਰੋ"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Edit monitor"
 msgstr "ਮਾਨੀਟਰ ਸੰਪਾਦਿਤ ਕਰੋ"
 
@@ -7062,7 +7032,7 @@ msgstr "ਉਹ ਡਰਾਫ਼ਟ ਸੋਧਿਆ ਜਾ ਰਿਹਾ ਹੈ ਜ
 msgid "Editing the message scheduled for {editingWhen}"
 msgstr "{editingWhen} ਲਈ ਸ਼ਡਿਊਲ ਕੀਤਾ ਸੁਨੇਹਾ ਸੋਧਿਆ ਜਾ ਰਿਹਾ ਹੈ"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Elevated API errors"
 msgstr "API ਗ਼ਲਤੀਆਂ ਵਧੀਆਂ ਹਨ"
 
@@ -7137,7 +7107,7 @@ msgstr "ਐਂਡਪੁਆਇੰਟ"
 msgid "Endpoints"
 msgstr "ਐਂਡਪੁਆਇੰਟ"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Ends"
 msgstr "ਅੰਤ"
 
@@ -7297,7 +7267,7 @@ msgstr "ਹਰ ਮੇਲ"
 msgid "Every open conversation has someone."
 msgstr "ਹਰ ਖੁੱਲ੍ਹੀ ਗੱਲਬਾਤ ਲਈ ਕੋਈ ਨਾ ਕੋਈ ਹੈ।"
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "Every open discussion has an answer."
 msgstr "ਹਰ ਖੁੱਲ੍ਹੀ ਚਰਚਾ ਦਾ ਇੱਕ ਉੱਤਰ ਹੈ।"
 
@@ -7305,12 +7275,11 @@ msgstr "ਹਰ ਖੁੱਲ੍ਹੀ ਚਰਚਾ ਦਾ ਇੱਕ ਉੱਤਰ 
 msgid "Every other browser and device is signed out. This one stays signed in."
 msgstr "ਬਾਕੀ ਸਾਰੇ ਬ੍ਰਾਊਜ਼ਰਾਂ ਅਤੇ ਡਿਵਾਈਸਾਂ ਤੋਂ ਸਾਈਨ ਆਊਟ ਹੋ ਜਾਵੇਗਾ। ਇਹ ਡਿਵਾਈਸ ਸਾਈਨ ਇਨ ਰਹੇਗਾ।"
 
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
 msgstr "ਸਾਰੇ ਪ੍ਰੋਡਕਟ"
 
-#: src/features/broadcasts/BroadcastsFrame.tsx
+#: src/components/common/ProductFilter.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
 msgstr "ਹਰ ਉਤਪਾਦ"
@@ -7339,7 +7308,7 @@ msgstr "ਹਰ ਕਦਮ ਪਾਸ ਹੋਇਆ।"
 msgid "Every subscriber keeps a consent record you can export."
 msgstr "ਹਰ ਸਬਸਕ੍ਰਾਈਬਰ ਦਾ ਸਹਿਮਤੀ ਰਿਕਾਰਡ ਹੈ, ਜਿਸ ਨੂੰ ਤੁਸੀਂ ਐਕਸਪੋਰਟ ਕਰ ਸਕਦੇ ਹੋ।"
 
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every type"
 msgstr "ਹਰ ਕਿਸਮ"
@@ -7421,7 +7390,7 @@ msgstr "Example Ltd."
 msgid "Expand or collapse every message"
 msgstr "ਸਾਰੇ ਸੁਨੇਹੇ ਖੋਲ੍ਹੋ ਜਾਂ ਸਮੇਟੋ"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Expected every"
 msgstr "ਉਮੀਦ ਹੈ ਹਰ"
@@ -7530,7 +7499,7 @@ msgstr "ਅਸਫਲ ਹੋ ਰਿਹਾ"
 msgid "Fails the monitor at once, without waiting for the grace."
 msgstr "ਛੋਟ ਦੇ ਸਮੇਂ ਦੀ ਉਡੀਕ ਕੀਤੇ ਬਿਨਾਂ ਮਾਨੀਟਰ ਨੂੰ ਤੁਰੰਤ ਫੇਲ੍ਹ ਕਰਦਾ ਹੈ।"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Failures to go down"
 msgstr "ਬੰਦ ਹੋਣ ਤੱਕ ਲਗਾਤਾਰ ਅਸਫਲਤਾਵਾਂ"
@@ -7550,7 +7519,7 @@ msgstr "ਫੀਡਬੈਕ"
 #: src/features/contact/ContactCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/PagesTab.tsx
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/webhooks/events.tsx
@@ -7578,10 +7547,15 @@ msgstr "ਫੀਡਬੈਕ ਸ਼੍ਰੇਣੀਆਂ"
 msgid "Feedback category"
 msgstr "ਫੀਡਬੈਕ ਸ਼੍ਰੇਣੀ"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Feedback form"
 msgstr "ਫੀਡਬੈਕ ਫਾਰਮ"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Feedback form ({formKey})"
+msgstr "ਫੀਡਬੈਕ ਫਾਰਮ ({formKey})"
 
 #: src/features/conversation/actions.ts
 msgid "Feedback resolved"
@@ -7669,7 +7643,7 @@ msgstr "ਲੇਬਲ ਅਨੁਸਾਰ ਫਿਲਟਰ ਕਰੋ"
 msgid "Filter by plan"
 msgstr "ਪਲਾਨ ਮੁਤਾਬਕ ਛਾਂਟੋ"
 
-#: src/features/broadcasts/BroadcastsFrame.tsx
+#: src/components/common/ProductFilter.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "ਉਤਪਾਦ ਅਨੁਸਾਰ ਫਿਲਟਰ ਕਰੋ"
@@ -7681,12 +7655,17 @@ msgstr "ਸਥਿਤੀ ਮੁਤਾਬਕ ਛਾਂਟੋ"
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Filter by status"
 msgstr "ਸਥਿਤੀ ਮੁਤਾਬਕ ਫਿਲਟਰ ਕਰੋ"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Filter by team"
 msgstr "ਟੀਮ ਮੁਤਾਬਕ ਫਿਲਟਰ ਕਰੋ"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Filter by type"
+msgstr "ਕਿਸਮ ਮੁਤਾਬਕ ਫਿਲਟਰ ਕਰੋ"
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
@@ -7812,7 +7791,7 @@ msgstr "ਪਹਿਲਾ ਜਵਾਬ, ਮੱਧਕਾ"
 msgid "First rows of the file"
 msgstr "ਫ਼ਾਈਲ ਦੀਆਂ ਪਹਿਲੀਆਂ ਕਤਾਰਾਂ"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "First update"
 msgstr "ਪਹਿਲਾ ਅੱਪਡੇਟ"
 
@@ -8300,7 +8279,7 @@ msgstr "Google ਨੇ ਪੁਸ਼ਟੀ ਕੋਡ ਭੇਜਿਆ"
 msgid "Google Takeout"
 msgstr "Google Takeout"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Grace"
 msgstr "ਛੋਟ"
@@ -8318,7 +8297,7 @@ msgstr "ਸਵਾਗਤ"
 msgid "Greets new conversations by e-mail, once per contact within the interval. Never sent to automatic mail or spam."
 msgstr "ਨਵੀਆਂ ਗੱਲਬਾਤਾਂ ਦਾ ਈ-ਮੇਲ ਰਾਹੀਂ ਸਵਾਗਤ ਕਰਦਾ ਹੈ, ਅੰਤਰਾਲ ਦੇ ਅੰਦਰ ਹਰ ਸੰਪਰਕ ਲਈ ਇੱਕ ਵਾਰ। ਆਟੋਮੈਟਿਕ ਮੇਲ ਜਾਂ ਸਪੈਮ ਨੂੰ ਕਦੇ ਨਹੀਂ ਭੇਜਿਆ ਜਾਂਦਾ।"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Group"
 msgstr "ਸਮੂਹ"
 
@@ -8500,7 +8479,7 @@ msgstr "ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ! ਅਸੀਂ ਕਿਵੇਂ ਮਦ
 
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Hidden"
 msgstr "ਲੁਕਿਆ"
@@ -8521,7 +8500,7 @@ msgstr "ਲੁਕਾਓ"
 msgid "Hide from the page"
 msgstr "ਪੰਨੇ ਤੋਂ ਲੁਕਾਓ"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Hide HTTP details"
 msgstr "HTTP ਵੇਰਵੇ ਲੁਕਾਓ"
 
@@ -8583,7 +8562,7 @@ msgstr "ਇਤਿਹਾਸ ਹਟਾਇਆ ਗਿਆ"
 msgid "Home"
 msgstr "ਹੋਮ"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Host"
 msgstr "ਹੋਸਟ"
@@ -8642,7 +8621,7 @@ msgstr "ਤੁਹਾਡੀ ਟੀਮ ਕਿੰਨੀ ਤੇਜ਼ੀ ਨਾਲ �
 msgid "How HTML e-mails open. You can still switch each message."
 msgstr "HTML ਈ-ਮੇਲਾਂ ਕਿਵੇਂ ਖੁੱਲ੍ਹਦੀਆਂ ਹਨ। ਤੁਸੀਂ ਫਿਰ ਵੀ ਹਰ ਸੁਨੇਹਾ ਬਦਲ ਸਕਦੇ ਹੋ।"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "How late a beat may be."
 msgstr "ਸੰਕੇਤ ਕਿੰਨਾ ਦੇਰ ਨਾਲ ਆ ਸਕਦਾ ਹੈ।"
 
@@ -8791,7 +8770,7 @@ msgstr "ਜੇ ਤੁਹਾਡਾ DNS ਪ੍ਰਦਾਤਾ TXT ਸਟ੍ਰਿ�
 msgid "If your mail provider mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "ਜੇ ਤੁਹਾਡਾ ਮੇਲ ਪ੍ਰਦਾਤਾ ਉਸ ਪਤੇ ਉੱਤੇ ਪੁਸ਼ਟੀ ਮੇਲ ਕਰਦਾ ਹੈ, ਤਾਂ ਉਹ ਇਸ ਇਨਬਾਕਸ ਵਿੱਚ ਗੱਲਬਾਤ ਵਜੋਂ ਆਉਂਦੀ ਹੈ; ਉਸਨੂੰ ਉੱਥੇ ਖੋਲ੍ਹੋ।"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Ignores results and lets the component go back."
 msgstr "ਨਤੀਜਿਆਂ ਨੂੰ ਅਣਡਿੱਠਾ ਕਰਦਾ ਹੈ ਅਤੇ ਹਿੱਸੇ ਨੂੰ ਵਾਪਸ ਆਉਣ ਦਿੰਦਾ ਹੈ।"
 
@@ -8808,7 +8787,7 @@ msgid "IMAP server"
 msgstr "IMAP ਸਰਵਰ"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Impact"
 msgstr "ਪ੍ਰਭਾਵ"
 
@@ -8901,7 +8880,7 @@ msgstr "{contact} ਨਾਲ · {subject}"
 msgid "In 1 hour"
 msgstr "1 ਘੰਟੇ ਵਿੱਚ"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "In a row, 1 to 10."
 msgstr "ਲਗਾਤਾਰ, 1 ਤੋਂ 10।"
 
@@ -9098,7 +9077,6 @@ msgstr "ਘਟਨਾ: {title} · {state}"
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "Incidents"
 msgstr "ਘਟਨਾਵਾਂ"
 
@@ -9550,7 +9528,7 @@ msgid "Keyword"
 msgstr "ਕੀਵਰਡ"
 
 #: src/features/settings/automation/text.ts
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "ਕਿਸਮ"
@@ -9827,7 +9805,7 @@ msgstr "Leave your signature off this reply ({signatureKey})"
 msgid "Leave your signature off this reply, or put it back"
 msgstr "Leave your signature off this reply, or put it back"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Left off the public page and its overall state."
 msgstr "ਜਨਤਕ ਪੰਨੇ ਅਤੇ ਉਸ ਦੀ ਕੁੱਲ ਸਥਿਤੀ ਤੋਂ ਬਾਹਰ ਰੱਖਿਆ ਜਾਂਦਾ ਹੈ।"
 
@@ -10119,6 +10097,7 @@ msgstr "ਚਿੱਤਰ ਲੋਡ ਕਰੋ"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/mail/MailDrafts.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
@@ -10391,7 +10370,6 @@ msgstr "Mails go out {sentence}, once to each person. Pausing stops sending but 
 msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
 msgstr "ਮੇਲ {city} ਸਮੇਂ ਵਿੱਚ {start} ਤੋਂ {end} ਵਿਚਕਾਰ ਜਾਂਦੀ ਹੈ ({utcStart}–{utcEnd} UTC) ਅਤੇ ਅਗਲੇ ਦਿਨ ਜਾਰੀ ਰਹਿੰਦੀ ਹੈ।"
 
-#: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
 msgid "Maintenance"
 msgstr "ਰੱਖ-ਰਖਾਅ"
@@ -10913,7 +10891,6 @@ msgstr "ਨਿਗਰਾਨੀ ਹੇਠ"
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/MonitorsPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Monitors"
 msgstr "ਮਾਨੀਟਰ"
@@ -10974,10 +10951,6 @@ msgstr "ਸਭ ਤੋਂ ਵੱਧ “ਮਦਦਗਾਰ ਨਹੀਂ” ਰੇ�
 msgid "Most active"
 msgstr "ਸਭ ਤੋਂ ਸਰਗਰਮ"
 
-#: src/features/feedback/FeedbackPage.tsx
-msgid "Most asked for"
-msgstr "ਸਭ ਤੋਂ ਵੱਧ ਮੰਗੇ ਗਏ"
-
 #: src/features/docs/Toolbar.tsx
 msgid "Most disliked"
 msgstr "ਸਭ ਤੋਂ ਵੱਧ ਨਾਪਸੰਦ"
@@ -11010,8 +10983,11 @@ msgstr "ਸਭ ਤੋਂ ਵੱਧ ਵੋਟਾਂ"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/status/IncidentsPage.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "move"
 msgstr "ਹਿਲਾਓ"
@@ -11020,6 +10996,10 @@ msgstr "ਹਿਲਾਓ"
 #: src/features/inbox/ChatList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "{0} ਨੂੰ ਟ੍ਰੈਸ਼ ਵਿੱਚ ਭੇਜਣਾ ਹੈ?"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Move {n} to the Trash?"
+msgstr "{n} ਨੂੰ ਟ੍ਰੈਸ਼ ਵਿੱਚ ਭੇਜਣਾ ਹੈ?"
 
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -11058,6 +11038,10 @@ msgstr "ਚੁਣਿਆ ਸੰਗ੍ਰਹਿ ਹਿਲਾਓ"
 msgid "Move the selected conversations to the Trash"
 msgstr "ਚੁਣੀਆਂ ਗੱਲਬਾਤਾਂ ਨੂੰ ਟ੍ਰੈਸ਼ ਵਿੱਚ ਭੇਜੋ"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move the selected feedback to the Trash"
+msgstr "ਚੁਣੀ ਫੀਡਬੈਕ ਨੂੰ ਟ੍ਰੈਸ਼ ਵਿੱਚ ਭੇਜੋ"
+
 #: src/features/conversation/ChatView.tsx
 msgid "Move this conversation to the Trash?"
 msgstr "ਇਸ ਗੱਲਬਾਤ ਨੂੰ ਟ੍ਰੈਸ਼ ਵਿੱਚ ਭੇਜਣਾ ਹੈ?"
@@ -11085,6 +11069,10 @@ msgstr "ਡਿਜ਼ਾਈਨਾਂ ਵਿੱਚ ਚੱਲੋ"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the entries"
 msgstr "ਐਂਟਰੀਆਂ ਵਿੱਚ ਅੱਗੇ-ਪਿੱਛੇ ਜਾਓ"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move through the feedback"
+msgstr "ਫੀਡਬੈਕ ਵਿੱਚ ਅੱਗੇ-ਪਿੱਛੇ ਜਾਓ"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the ideas"
@@ -11152,6 +11140,7 @@ msgstr "ਪਿਛਲੇ ਜਾਂ ਅਗਲੇ ਪੜਾਅ ਵਿੱਚ ਲੈ 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
@@ -11163,6 +11152,7 @@ msgstr "ਟ੍ਰੈਸ਼ ਵਿੱਚ ਭੇਜੋ"
 msgid "Move to the Trash ({0})"
 msgstr "ਟ੍ਰੈਸ਼ ਵਿੱਚ ਭੇਜੋ ({0})"
 
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Move to the Trash (#)"
@@ -11276,9 +11266,9 @@ msgstr "ਮੇਰੇ ਵਿਊ"
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
-#: src/features/status/ComponentDialogs.tsx
-#: src/features/status/CreatePageDialog.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/ComponentForms.tsx
+#: src/features/status/CreatePageForm.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Name"
 msgstr "ਨਾਮ"
@@ -11504,6 +11494,7 @@ msgstr "ਨਵਾਂ ਫੀਲਡ"
 msgid "New filter"
 msgstr "ਨਵਾਂ ਫ਼ਿਲਟਰ"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "ਨਵਾਂ ਵਿਚਾਰ"
@@ -11527,6 +11518,10 @@ msgstr "ਪਿਛਲੇ {days} ਦਿਨਾਂ ਵਿੱਚ ਨਵੇਂ"
 #: src/features/migrations/MapStep.tsx
 msgid "New inbox…"
 msgstr "ਨਵਾਂ ਇਨਬਾਕਸ…"
+
+#: src/features/status/IncidentsPage.tsx
+msgid "new incident"
+msgstr "ਨਵੀਂ ਘਟਨਾ"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -11587,6 +11582,10 @@ msgid "New migration"
 msgstr "ਨਵੀਂ ਮਾਈਗ੍ਰੇਸ਼ਨ"
 
 #: src/features/status/MonitorsPage.tsx
+msgid "new monitor"
+msgstr "ਨਵਾਂ ਮਾਨੀਟਰ"
+
+#: src/features/status/MonitorsPage.tsx
 msgid "New monitor"
 msgstr "ਨਵਾਂ ਮਾਨੀਟਰ"
 
@@ -11597,10 +11596,6 @@ msgstr "ਨਵਾਂ ਮਾਲਕ"
 #: src/features/team/RemoveMemberDialog.tsx
 msgid "New owner of {boxName}"
 msgstr "{boxName} ਦਾ ਨਵਾਂ ਮਾਲਕ"
-
-#: src/features/status/StatusPages.tsx
-msgid "New page"
-msgstr "ਨਵਾਂ ਪੇਜ"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "New password"
@@ -11625,6 +11620,7 @@ msgid "New signing secret"
 msgstr "ਨਵਾਂ ਸਾਈਨਿੰਗ ਸੀਕ੍ਰੇਟ"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/status/StatusPages.tsx
 msgid "New status page"
 msgstr "ਨਵਾਂ ਸਥਿਤੀ ਪੰਨਾ"
 
@@ -11748,7 +11744,7 @@ msgstr "ਅੱਗੇ, ਚੁਣੋ ਕਿ ਕੀ ਲਿਆਉਣਾ ਹੈ। �
 msgid "Next, choose where they go."
 msgstr "ਅੱਗੇ, ਚੁਣੋ ਕਿ ਉਹ ਕਿੱਥੇ ਜਾਣ।"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Nightly backup"
 msgstr "ਰਾਤ ਦਾ ਬੈਕਅੱਪ"
 
@@ -11871,7 +11867,7 @@ msgstr "ਕਿਸੇ ਕੰਪੋਨੈਂਟ ਦਾ ਨਾਮ ਨਹੀਂ ਦ�
 msgid "No components in this group."
 msgstr "ਇਸ ਸਮੂਹ ਵਿੱਚ ਕੋਈ ਕੰਪੋਨੈਂਟ ਨਹੀਂ।"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "No components yet. Add one to a status page first."
 msgstr "ਅਜੇ ਕੋਈ ਕੰਪੋਨੈਂਟ ਨਹੀਂ। ਪਹਿਲਾਂ ਸਥਿਤੀ ਪੰਨੇ ਵਿੱਚ ਇੱਕ ਜੋੜੋ।"
 
@@ -11968,7 +11964,7 @@ msgstr "ਇਸ ਪੰਨੇ ਉੱਤੇ ਅਜੇ ਕੋਈ ਚਰਚਾ ਨਹ
 msgid "No discussions under the pages of these sites."
 msgstr "ਇਹਨਾਂ ਸਾਈਟਾਂ ਦੇ ਪੰਨਿਆਂ ਹੇਠ ਕੋਈ ਚਰਚਾ ਨਹੀਂ।"
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "No discussions yet. Readers start them under your documentation pages."
 msgstr "ਅਜੇ ਕੋਈ ਚਰਚਾ ਨਹੀਂ। ਪਾਠਕ ਉਹਨਾਂ ਨੂੰ ਤੁਹਾਡੇ ਡਾਕੂਮੈਂਟੇਸ਼ਨ ਪੰਨਿਆਂ ਹੇਠ ਸ਼ੁਰੂ ਕਰਦੇ ਹਨ।"
 
@@ -12048,12 +12044,12 @@ msgstr "ਕੋਈ ਫ਼ਾਈਲ ਸਵੀਕਾਰ ਨਹੀਂ ਕੀਤੀ �
 msgid "No filters yet."
 msgstr "ਅਜੇ ਕੋਈ ਫ਼ਿਲਟਰ ਨਹੀਂ।"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
 msgstr "ਕੋਈ ਸਮੂਹ ਨਹੀਂ"
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "No hidden discussions."
 msgstr "ਕੋਈ ਲੁਕੀ ਚਰਚਾ ਨਹੀਂ।"
 
@@ -12111,7 +12107,7 @@ msgstr "ਕੋਈ ਸੀਮਾ ਨਹੀਂ"
 msgid "No list matches “{q}”."
 msgstr "“{q}” ਨਾਲ ਕੋਈ ਸੂਚੀ ਮੇਲ ਨਹੀਂ ਖਾਂਦੀ।"
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "No locked discussions."
 msgstr "ਕੋਈ ਲੌਕ ਕੀਤੀ ਚਰਚਾ ਨਹੀਂ।"
 
@@ -12176,7 +12172,7 @@ msgstr "ਕੋਈ ਨੋਟ ਨਹੀਂ"
 msgid "No notifications in the last 90 days."
 msgstr "ਪਿਛਲੇ 90 ਦਿਨਾਂ ਵਿੱਚ ਕੋਈ ਨੋਟੀਫਿਕੇਸ਼ਨ ਨਹੀਂ।"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "No open feedback."
 msgstr "No open feedback."
 
@@ -12472,7 +12468,7 @@ msgstr "ਇਹ ਮੇਲ ਕਿਸੇ ਨੂੰ ਨਹੀਂ ਮਿਲੇਗੀ�
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/setup/email/EmailTestStep.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "None"
 msgstr "ਕੋਈ ਨਹੀਂ"
@@ -12809,7 +12805,7 @@ msgstr "ਕੁਝ ਨਹੀਂ ਗੁਆਚਦਾ: Microsoft ਨਾਲ ਦੁਬ
 msgid "Nothing is lost: when it continues, copying picks up where it stopped."
 msgstr "ਕੁਝ ਨਹੀਂ ਗੁਆਚਦਾ: ਜਾਰੀ ਹੋਣ ਉੱਤੇ ਕਾਪੀ ਉੱਥੋਂ ਅੱਗੇ ਵਧੇਗੀ ਜਿੱਥੇ ਰੁਕੀ ਸੀ।"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Nothing is resolved yet."
 msgstr "Nothing is resolved yet."
 
@@ -12823,7 +12819,7 @@ msgid "Nothing is snoozed."
 msgstr "ਕੁਝ ਸਨੂਜ਼ ਨਹੀਂ ਕੀਤਾ ਗਿਆ।"
 
 #: src/features/docs/discussions/QueuePane.tsx
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "Nothing is waiting for approval."
 msgstr "ਮਨਜ਼ੂਰੀ ਦੀ ਉਡੀਕ ਵਿੱਚ ਕੁਝ ਨਹੀਂ।"
 
@@ -12835,7 +12831,7 @@ msgstr "ਹੁਣ ਕੁਝ ਗਲਤ ਨਹੀਂ ਹੈ। ਕੁਝ ਖਰਾ
 msgid "Nothing matches these filters."
 msgstr "ਇਹਨਾਂ ਫਿਲਟਰਾਂ ਨਾਲ ਕੁਝ ਮੇਲ ਨਹੀਂ ਖਾਂਦਾ।"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing matches your search here."
 msgstr "ਤੁਹਾਡੀ ਖੋਜ ਨਾਲ ਇੱਥੇ ਕੁਝ ਮੇਲ ਨਹੀਂ ਖਾਂਦਾ।"
@@ -12844,7 +12840,7 @@ msgstr "ਤੁਹਾਡੀ ਖੋਜ ਨਾਲ ਇੱਥੇ ਕੁਝ ਮੇਲ 
 msgid "Nothing needs attention right now."
 msgstr "ਇਸ ਵੇਲੇ ਕਿਸੇ ਚੀਜ਼ ਵੱਲ ਧਿਆਨ ਦੀ ਲੋੜ ਨਹੀਂ।"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Nothing opens by itself. Open an incident from the monitor when you want one."
 msgstr "ਆਪਣੇ-ਆਪ ਕੁਝ ਨਹੀਂ ਖੁੱਲ੍ਹਦਾ। ਜਦੋਂ ਚਾਹੋ, ਮਾਨੀਟਰ ਤੋਂ ਘਟਨਾ ਖੋਲ੍ਹੋ।"
 
@@ -13301,10 +13297,6 @@ msgstr "ਸਿਰਫ਼ ਉਹ ਵਿਜ਼ਿਟਾਂ ਜੋ ਉਹਨਾਂ �
 msgid "Only while the panel is open in this browser. Away, you are alerted only about conversations assigned to you."
 msgstr "ਸਿਰਫ਼ ਉਦੋਂ ਜਦੋਂ ਇਸ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਪੈਨਲ ਖੁੱਲ੍ਹਾ ਹੋਵੇ। ਦੂਰ ਹੋਣ ਉੱਤੇ ਤੁਹਾਨੂੰ ਸਿਰਫ਼ ਤੁਹਾਨੂੰ ਸੌਂਪੀਆਂ ਗੱਲਬਾਤਾਂ ਬਾਰੇ ਸੁਚੇਤ ਕੀਤਾ ਜਾਂਦਾ ਹੈ।"
 
-#: src/features/status/StatusPages.tsx
-msgid "only your team can preview it"
-msgstr "ਸਿਰਫ਼ ਤੁਹਾਡੀ ਟੀਮ ਪ੍ਰੀਵਿਊ ਕਰ ਸਕਦੀ ਹੈ"
-
 #: src/features/broadcasts/NewBroadcastForm.tsx
 msgid "Only your team sees it."
 msgstr "ਸਿਰਫ਼ ਤੁਹਾਡੀ ਟੀਮ ਨੂੰ ਦਿਖਦਾ ਹੈ।"
@@ -13317,8 +13309,11 @@ msgstr "ਖੁੱਲ੍ਹੀ"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/status/IncidentsPage.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgctxt "keyboard hint"
 msgid "open"
@@ -13328,7 +13323,7 @@ msgstr "ਖੋਲ੍ਹੋ"
 #: src/features/account/AccountPage.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -13338,7 +13333,9 @@ msgid "Open"
 msgstr "ਖੋਲ੍ਹੋ"
 
 #. placeholder {0}: a.filename
+#. placeholder {0}: p.name
 #: src/features/conversation/messages/Attachments.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Open {0}"
 msgstr "{0} ਖੋਲ੍ਹੋ"
 
@@ -13372,7 +13369,7 @@ msgid "Open Account security in your Yahoo account."
 msgstr "ਆਪਣੇ Yahoo ਖਾਤੇ ਵਿੱਚ Account security ਖੋਲ੍ਹੋ।"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Open an incident"
 msgstr "ਘਟਨਾ ਖੋਲ੍ਹੋ"
@@ -13550,6 +13547,10 @@ msgstr "ਐਂਡਪੁਆਇੰਟ ਖੋਲ੍ਹੋ"
 msgid "Open the entry"
 msgstr "ਐਂਟਰੀ ਖੋਲ੍ਹੋ"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Open the feedback"
+msgstr "ਫੀਡਬੈਕ ਖੋਲ੍ਹੋ"
+
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Open the guide"
 msgstr "Open the guide"
@@ -13623,6 +13624,10 @@ msgid "Open the site, goal or funnel"
 msgstr "ਸਾਈਟ, ਟੀਚਾ ਜਾਂ ਫ਼ਨਲ ਖੋਲ੍ਹੋ"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Open the status page"
+msgstr "ਸਥਿਤੀ ਪੰਨਾ ਖੋਲ੍ਹੋ"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Open the triggered e-mail"
 msgstr "Open the triggered e-mail"
 
@@ -13688,7 +13693,7 @@ msgstr "operational ਬਹਾਲ ਕਰਦਾ ਹੈ; degraded, partial_outage �
 msgid "Operator"
 msgstr "ਆਪਰੇਟਰ"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Optional. Shown on the public page."
 msgstr "ਵਿਕਲਪਿਕ। ਜਨਤਕ ਪੰਨੇ ਉੱਤੇ ਦਿਖਾਇਆ ਜਾਂਦਾ ਹੈ।"
 
@@ -13821,7 +13826,6 @@ msgstr "ਸਮੇਂ ਨਾਲ"
 
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
 msgstr "ਓਵਰਵਿਊ"
@@ -13884,9 +13888,7 @@ msgstr "ਪੰਨਾ: {name}"
 
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
-#: src/features/status/StatusPages.tsx
 msgid "Pages"
 msgstr "ਪੰਨੇ"
 
@@ -13957,7 +13959,6 @@ msgstr "ਪਾਸਵਰਡ ਸੈੱਟ ਕੀਤਾ ਗਿਆ"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "Past"
 msgstr "ਬੀਤੇ"
 
@@ -14023,7 +14024,7 @@ msgstr "ਮਾਨੀਟਰ ਰੋਕੋ ਜਾਂ ਦੁਬਾਰਾ ਸ਼ੁ�
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/setup/email/EmailTestStep.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Paused"
@@ -14268,10 +14269,6 @@ msgstr "ਪਹਿਲਾਂ ਡਿਜ਼ਾਈਨ ਚੁਣੋ।"
 msgid "Pick a design that renders without errors."
 msgstr "ਅਜਿਹਾ ਡਿਜ਼ਾਈਨ ਚੁਣੋ ਜੋ ਬਿਨਾਂ ਗਲਤੀਆਂ ਦੇ ਰੈਂਡਰ ਹੋਵੇ।"
 
-#: src/features/docs/DiscussionsTab.tsx
-msgid "Pick a discussion to read and answer it."
-msgstr "ਪੜ੍ਹਨ ਅਤੇ ਜਵਾਬ ਦੇਣ ਲਈ ਕੋਈ ਚਰਚਾ ਚੁਣੋ।"
-
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "Pick a field"
 msgstr "ਖੇਤਰ ਚੁਣੋ"
@@ -14299,17 +14296,9 @@ msgstr "Pick a list under Who gets it to save"
 msgid "Pick a member"
 msgstr "ਮੈਂਬਰ ਚੁਣੋ"
 
-#: src/features/status/MonitorsPage.tsx
-msgid "Pick a monitor to see what happened."
-msgstr "ਕੀ ਹੋਇਆ ਵੇਖਣ ਲਈ ਮਾਨੀਟਰ ਚੁਣੋ।"
-
 #: src/features/docs/PagesTab.tsx
 msgid "Pick a page to see its ratings, discussions and questions."
 msgstr "ਕਿਸੇ ਪੰਨੇ ਦੀਆਂ ਰੇਟਿੰਗਾਂ, ਚਰਚਾਵਾਂ ਅਤੇ ਸਵਾਲ ਵੇਖਣ ਲਈ ਪੰਨਾ ਚੁਣੋ।"
-
-#: src/features/feedback/FeedbackList.tsx
-msgid "Pick a piece of feedback"
-msgstr "Pick a piece of feedback"
 
 #: src/features/broadcasts/ListPage.tsx
 msgid "Pick a sender in the settings"
@@ -14359,10 +14348,6 @@ msgstr "ਐਂਡਪੁਆਇੰਟ ਚੁਣੋ"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Pick an inbox"
 msgstr "ਇਨਬਾਕਸ ਚੁਣੋ"
-
-#: src/features/status/IncidentsPage.tsx
-msgid "Pick an incident to read it."
-msgstr "ਪੜ੍ਹਨ ਲਈ ਘਟਨਾ ਚੁਣੋ।"
 
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "Pick an open incident or maintenance"
@@ -14503,7 +14488,7 @@ msgstr "ਪਿੰਨ ਕੀਤਾ"
 msgid "Pinned to the top of your list"
 msgstr "ਤੁਹਾਡੀ ਸੂਚੀ ਦੇ ਉੱਪਰ ਪਿੰਨ ਕੀਤਾ"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "ਲਿੰਕਾਂ ਅਤੇ ਲਾਈਨ ਬ੍ਰੇਕਾਂ ਵਾਲਾ ਸਾਦਾ ਲਿਖਤ, ਵੱਧ ਤੋਂ ਵੱਧ 5,000 ਅੱਖਰ।"
 
@@ -14515,8 +14500,12 @@ msgstr "ਸਾਦਾ ਲਿਖਤ, ਅੱਗੇ ਭੇਜੀ ਮੇਲ ਦੇ �
 msgid "Plan"
 msgstr "ਪਲਾਨ"
 
+#: src/features/status/IncidentsPage.tsx
+msgid "plan maintenance"
+msgstr "ਰੱਖ-ਰਖਾਅ ਦੀ ਯੋਜਨਾ ਬਣਾਓ"
+
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Plan maintenance"
 msgstr "ਰੱਖ-ਰਖਾਅ ਦੀ ਯੋਜਨਾ ਬਣਾਓ"
@@ -14558,7 +14547,7 @@ msgstr "ਇਸ ਵੱਲ ਇਸ਼ਾਰਾ ਕਰਦਾ ਹੈ"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Port"
 msgstr "ਪੋਰਟ"
 
@@ -14597,6 +14586,10 @@ msgstr "ਡਾਕ ਦਾ ਪਤਾ"
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Posted by you and marked as the accepted answer."
 msgstr "ਤੁਸੀਂ ਪੋਸਟ ਕੀਤਾ ਅਤੇ ਮਨਜ਼ੂਰ ਕੀਤੇ ਉੱਤਰ ਵਜੋਂ ਚਿੰਨ੍ਹਿਤ ਕੀਤਾ।"
+
+#: src/features/docs/DocsPage.tsx
+msgid "Posts from new readers wait here until a member approves them"
+msgstr "ਨਵੇਂ ਪਾਠਕਾਂ ਦੀਆਂ ਪੋਸਟਾਂ ਉਦੋਂ ਤੱਕ ਇੱਥੇ ਉਡੀਕਦੀਆਂ ਹਨ ਜਦੋਂ ਤੱਕ ਕੋਈ ਮੈਂਬਰ ਮਨਜ਼ੂਰ ਨਾ ਕਰੇ"
 
 #: src/components/common/text.ts
 msgid "Preference page"
@@ -14656,8 +14649,20 @@ msgid "Previous or next discussion"
 msgstr "ਪਿਛਲੀ ਜਾਂ ਅਗਲੀ ਚਰਚਾ"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Previous or next incident"
+msgstr "ਪਿਛਲੀ ਜਾਂ ਅਗਲੀ ਘਟਨਾ"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Previous or next language"
 msgstr "ਪਿਛਲੀ ਜਾਂ ਅਗਲੀ ਭਾਸ਼ਾ"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Previous or next monitor"
+msgstr "ਪਿਛਲਾ ਜਾਂ ਅਗਲਾ ਮਾਨੀਟਰ"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Previous or next status page"
+msgstr "ਪਿਛਲਾ ਜਾਂ ਅਗਲਾ ਸਥਿਤੀ ਪੰਨਾ"
 
 #: src/features/feedback/Lightbox.tsx
 msgid "Previous screenshot"
@@ -14709,8 +14714,8 @@ msgstr "pro, team"
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/sections.tsx
-#: src/features/status/CreatePageDialog.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/CreatePageForm.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Product"
 msgstr "ਉਤਪਾਦ"
 
@@ -14864,7 +14869,7 @@ msgstr "ਘਟਨਾ ਪ੍ਰਕਾਸ਼ਿਤ ਕਰੋ"
 msgid "Publish and unpublish help center articles"
 msgstr "ਮਦਦ ਕੇਂਦਰ ਦੇ ਲੇਖ ਪ੍ਰਕਾਸ਼ਿਤ ਅਤੇ ਅਪ੍ਰਕਾਸ਼ਿਤ ਕਰੋ"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Publish now"
 msgstr "ਹੁਣੇ ਪ੍ਰਕਾਸ਼ਿਤ ਕਰੋ"
 
@@ -14970,6 +14975,10 @@ msgstr "ਇਹ ਤੱਤ ਆਪਣੇ ਦਸਤਾਵੇਜ਼ ਦੇ ਹਰ ਪ
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Question"
 msgstr "ਸਵਾਲ"
+
+#: src/features/docs/DocsPage.tsx
+msgid "Questions readers ask under your documentation pages"
+msgstr "ਪਾਠਕ ਤੁਹਾਡੇ ਦਸਤਾਵੇਜ਼ ਪੰਨਿਆਂ ਹੇਠ ਜੋ ਸਵਾਲ ਪੁੱਛਦੇ ਹਨ"
 
 #: src/components/common/text.ts
 msgid "Queued"
@@ -15633,7 +15642,7 @@ msgstr "ਇੰਪੋਰਟ ਕੀਤਾ ਇਤਿਹਾਸ ਹਟਾਇਆ ਜ�
 msgid "Rename"
 msgstr "ਨਾਮ ਬਦਲੋ"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Rename group"
 msgstr "ਸਮੂਹ ਦਾ ਨਾਮ ਬਦਲੋ"
 
@@ -15642,9 +15651,14 @@ msgid "Rename the mailbox"
 msgstr "ਮੇਲਬਾਕਸ ਦਾ ਨਾਂ ਬਦਲੋ"
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Reopen"
 msgstr "ਦੁਬਾਰਾ ਖੋਲ੍ਹੋ"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Reopen ({closeKey})"
+msgstr "ਦੁਬਾਰਾ ਖੋਲ੍ਹੋ ({closeKey})"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reorder the selected view in the sidebar"
@@ -15977,10 +15991,15 @@ msgid "Resolution {resolution}"
 msgstr "ਹੱਲ {resolution}"
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "Resolve"
 msgstr "Resolve"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Resolve ({closeKey})"
+msgstr "ਹੱਲ ਕਰੋ ({closeKey})"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -15995,10 +16014,13 @@ msgstr "ਘਟਨਾ ਹੱਲ ਕਰੋ"
 msgid "Resolve or complete"
 msgstr "ਹੱਲ ਕਰੋ ਜਾਂ ਪੂਰਾ ਕਰੋ"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Resolve or reopen the selected feedback"
+msgstr "ਚੁਣੀ ਫੀਡਬੈਕ ਹੱਲ ਕਰੋ ਜਾਂ ਦੁਬਾਰਾ ਖੋਲ੍ਹੋ"
+
 #: src/components/common/text.ts
 #: src/features/conversation/ConversationStatus.tsx
-#: src/features/feedback/FeedbackList.tsx
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/status/text.tsx
 msgid "Resolved"
 msgstr "Resolved"
@@ -16011,11 +16033,6 @@ msgstr "{endedAt} ਵਜੇ ਹੱਲ ਹੋਇਆ"
 #: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "ਹੱਲ ਹੋਣ ਵਿੱਚ ਲੱਗਿਆ ਸਮਾਂ"
-
-#. placeholder {0}: took(last)
-#: src/features/status/StatusPages.tsx
-msgid "resolved in {0}"
-msgstr "{0} ਵਿੱਚ ਹੱਲ ਹੋਇਆ"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Resolved. It moved to the Resolved tab."
@@ -16182,7 +16199,6 @@ msgstr "ਸਬਸਕ੍ਰਾਈਬ ਕਰਨ ਤੋਂ ਤੁਰੰਤ ਬਾ�
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/feedback/RoadmapCard.tsx
 msgid "Roadmap"
 msgstr "ਰੋਡਮੈਪ"
@@ -16363,10 +16379,10 @@ msgstr "ਸ਼ਨੀਵਾਰ"
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/parts.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/IncidentForm.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Save"
 msgstr "ਸੇਵ ਕਰੋ"
 
@@ -16387,7 +16403,7 @@ msgstr "ਸੰਭਾਲੋ ਅਤੇ ਦੁਬਾਰਾ ਸ਼ਡਿਊਲ ਕ�
 msgid "Save and test"
 msgstr "Save and test"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Save as draft"
 msgstr "ਡਰਾਫ਼ਟ ਵਜੋਂ ਸੰਭਾਲੋ"
 
@@ -16526,7 +16542,6 @@ msgstr "ਐਂਟਰੀ ਸ਼ਡਿਊਲ ਕਰੋ"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/text.ts
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/text.tsx
 msgid "Scheduled"
 msgstr "ਸ਼ਡਿਊਲ ਕੀਤਾ ਗਿਆ"
@@ -16551,7 +16566,6 @@ msgid "Scheduled by"
 msgstr "ਸ਼ਡਿਊਲ ਕਰਨ ਵਾਲਾ"
 
 #: src/features/status/Notices.tsx
-#: src/features/status/StatusPages.tsx
 msgid "Scheduled for {due}"
 msgstr "{due} ਲਈ ਨਿਰਧਾਰਤ"
 
@@ -16604,7 +16618,7 @@ msgstr "ਸਕ੍ਰੀਨ ਆਕਾਰ"
 msgid "Screenshot"
 msgstr "ਸਕ੍ਰੀਨਸ਼ਾਟ"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Screenshots attached"
 msgstr "Screenshots attached"
 
@@ -16616,12 +16630,12 @@ msgstr "SDK"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "search"
 msgstr "ਖੋਜੋ"
 
 #: src/app/Palette.tsx
-#: src/features/feedback/FeedbackList.tsx
 msgid "Search"
 msgstr "ਖੋਜੋ"
 
@@ -16671,9 +16685,14 @@ msgstr "ਇਮੋਜੀ ਖੋਜੋ"
 msgid "Search emoji (in English)"
 msgstr "ਇਮੋਜੀ ਖੋਜੋ (ਅੰਗਰੇਜ਼ੀ ਵਿੱਚ)"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Search feedback"
 msgstr "Search feedback"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Search feedback…"
+msgstr "ਫੀਡਬੈਕ ਖੋਜੋ…"
 
 #: src/app/places.tsx
 msgid "Search gaps"
@@ -16775,7 +16794,7 @@ msgstr "ਆਪਣੇ ਟਰਮੀਨਲ ਤੋਂ ਖੋਜੋ, ਛਾਂਟੋ 
 msgid "Second secret"
 msgstr "ਦੂਜਾ ਸੀਕ੍ਰੇਟ"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Seconds, 1 to 30."
 msgstr "ਸਕਿੰਟ, 1 ਤੋਂ 30।"
 
@@ -16805,6 +16824,7 @@ msgstr "ਮਾਨੀਟਰ ਨੇ ਦੇਖਿਆ"
 
 #: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "select"
@@ -16826,6 +16846,10 @@ msgid "Select all"
 msgstr "ਸਭ ਚੁਣੋ"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Select the article"
+msgstr "ਲੇਖ ਚੁਣੋ"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Select the broadcast under the cursor"
 msgstr "ਕਰਸਰ ਹੇਠਲਾ ਬ੍ਰੌਡਕਾਸਟ ਚੁਣੋ"
 
@@ -16836,6 +16860,14 @@ msgstr "ਕਰਸਰ ਹੇਠਲਾ ਸੰਪਰਕ ਚੁਣੋ"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "ਕਰਸਰ ਹੇਠਲੀ ਗੱਲਬਾਤ ਚੁਣੋ"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the entry"
+msgstr "ਐਂਟਰੀ ਚੁਣੋ"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the feedback"
+msgstr "ਫੀਡਬੈਕ ਚੁਣੋ"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the mail under the cursor"
@@ -17506,7 +17538,6 @@ msgstr "ਸੈੱਟ ਅੱਪ ਹੋ ਰਿਹਾ ਹੈ…"
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "ਸੈਟਿੰਗਾਂ"
@@ -17568,6 +17599,7 @@ msgstr "ਸ਼ਾਰਟਕੱਟ"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Show"
 msgstr "ਵਿਖਾਓ"
@@ -17600,7 +17632,7 @@ msgstr "ਫੀਡ, ਬੈਜ ਅਤੇ ਐਂਬੈੱਡ ਦਿਖਾਓ"
 msgid "Show full draft"
 msgstr "ਪੂਰਾ ਡਰਾਫਟ ਵਿਖਾਓ"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Show HTTP details"
 msgstr "HTTP ਵੇਰਵੇ ਦਿਖਾਓ"
 
@@ -18513,7 +18545,7 @@ msgid "Starting"
 msgstr "ਸ਼ੁਰੂ ਹੋ ਰਿਹਾ ਹੈ"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Starts"
 msgstr "ਸ਼ੁਰੂਆਤ"
 
@@ -18540,9 +18572,9 @@ msgstr "STARTTLS (ਪੋਰਟ 587)"
 
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "State"
 msgstr "ਸਥਿਤੀ"
@@ -18553,7 +18585,7 @@ msgid "State of {0}"
 msgstr "{0} ਦੀ ਸਥਿਤੀ"
 
 #. placeholder {0}: c.name
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "State of {0} while it is open"
 msgstr "{0} ਦੇ ਖੁੱਲ੍ਹੇ ਰਹਿਣ ਤੱਕ ਦੀ ਸਥਿਤੀ"
 
@@ -18561,7 +18593,7 @@ msgstr "{0} ਦੇ ਖੁੱਲ੍ਹੇ ਰਹਿਣ ਤੱਕ ਦੀ ਸਥਿ
 msgid "state of the conversation"
 msgstr "ਗੱਲਬਾਤ ਦੀ ਸਥਿਤੀ"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "State while down"
 msgstr "ਬੰਦ ਹੋਣ 'ਤੇ ਹਾਲਤ"
@@ -18573,7 +18605,6 @@ msgstr "ਬੰਦ ਹੋਣ 'ਤੇ ਹਾਲਤ"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
-#: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -18584,7 +18615,6 @@ msgstr "ਬੰਦ ਹੋਣ 'ਤੇ ਹਾਲਤ"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Status"
 msgstr "ਸਥਿਤੀ"
@@ -18601,7 +18631,6 @@ msgstr "ਸਥਿਤੀ ਪੰਨਾ ਹਟਾਇਆ ਗਿਆ"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "ਸਥਿਤੀ ਪੰਨੇ"
@@ -18737,7 +18766,6 @@ msgstr "ਹੁਣੇ ਸੂਚੀ ਦੀ ਗਾਹਕੀ ਲਈ"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Subscribers"
 msgstr "ਗਾਹਕ"
@@ -18763,7 +18791,7 @@ msgstr "ਗਾਹਕੀ ਮਿਟਾਈ ਗਈ"
 msgid "Succeeded"
 msgstr "ਸਫਲ"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Successes to recover"
 msgstr "ਬਹਾਲੀ ਤੱਕ ਲਗਾਤਾਰ ਸਫਲਤਾਵਾਂ"
@@ -19208,7 +19236,7 @@ msgstr "ਕੋਡ ਗਲਤ ਹੈ ਜਾਂ ਮਿਆਦ ਪੁੱਗ ਚੁੱ
 msgid "The columns are guessed from the header row. One must be the e-mail address; name the others as contact fields or attributes, or skip them. Attributes only fill keys a contact does not have yet."
 msgstr "ਕਾਲਮ ਹੈਡਰ ਕਤਾਰ ਤੋਂ ਅੰਦਾਜ਼ੇ ਨਾਲ ਲਏ ਗਏ ਹਨ। ਇੱਕ ਈ-ਮੇਲ ਪਤਾ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ; ਬਾਕੀਆਂ ਨੂੰ ਸੰਪਰਕ ਫੀਲਡ ਜਾਂ ਐਟਰੀਬਿਊਟ ਨਾਮ ਦਿਓ, ਜਾਂ ਛੱਡ ਦਿਓ। ਐਟਰੀਬਿਊਟ ਸਿਰਫ਼ ਉਹ ਕੁੰਜੀਆਂ ਭਰਦੇ ਹਨ ਜੋ ਸੰਪਰਕ ਕੋਲ ਅਜੇ ਨਹੀਂ ਹਨ।"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "The component whose state this monitor sets."
 msgstr "ਉਹ ਹਿੱਸਾ ਜਿਸ ਦੀ ਹਾਲਤ ਇਹ ਮਾਨੀਟਰ ਸੈੱਟ ਕਰਦਾ ਹੈ।"
 
@@ -19333,7 +19361,7 @@ msgstr "ਈਮੇਲ ਡੋਮੇਨ ਇਸ ਵਰਕਸਪੇਸ ਲਈ ਤਸ�
 msgid "The elements work on these addresses; add your dev server in the inbox settings:"
 msgstr "ਐਲੀਮੈਂਟ ਇਹਨਾਂ ਪਤਿਆਂ ਉੱਤੇ ਕੰਮ ਕਰਦੇ ਹਨ; ਇਨਬਾਕਸ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਆਪਣਾ ਡੈਵ ਸਰਵਰ ਜੋੜੋ:"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "The end must be after the start."
 msgstr "ਅੰਤ ਸ਼ੁਰੂਆਤ ਤੋਂ ਬਾਅਦ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ।"
 
@@ -19428,10 +19456,6 @@ msgstr "ਉਸ ਇਨਬਾਕਸ ਦੀ ਗੱਲਬਾਤ ਦਾ ਪਹਿਲ�
 #: src/features/settings/notifications/events.ts
 msgid "The first message of a conversation in an inbox that shows who is available."
 msgstr "ਉਸ ਇਨਬਾਕਸ ਦੀ ਗੱਲਬਾਤ ਦਾ ਪਹਿਲਾ ਸੁਨੇਹਾ ਜੋ ਦਿਖਾਉਂਦਾ ਹੈ ਕਿ ਕੌਣ ਉਪਲਬਧ ਹੈ।"
-
-#: src/features/status/StatusPages.tsx
-msgid "the first one"
-msgstr "ਪਹਿਲਾ"
 
 #: src/features/docs/PagesTab.tsx
 msgid "The first rating makes the page appear here."
@@ -20292,6 +20316,10 @@ msgstr "ਇਹ ਲੇਖਕਾਂ ਦੀਆਂ ਮਨਜ਼ੂਰੀ ਉਡੀ�
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "ਇਹ ਤੁਹਾਡੀ ਟੀਮ ਅਤੇ ਗਾਹਕਾਂ ਲਈ ਗਾਇਬ ਹੋ ਜਾਂਦੀਆਂ ਹਨ। ਤੁਸੀਂ 30 ਦਿਨਾਂ ਤੱਕ ਇਹਨਾਂ ਨੂੰ ਟ੍ਰੈਸ਼ ਵਿੱਚੋਂ ਬਹਾਲ ਕਰ ਸਕਦੇ ਹੋ, ਉਸ ਤੋਂ ਬਾਅਦ ਇਹ ਸੁਨੇਹਿਆਂ ਅਤੇ ਫ਼ਾਈਲਾਂ ਸਮੇਤ ਹਮੇਸ਼ਾ ਲਈ ਮਿਟਾ ਦਿੱਤੀਆਂ ਜਾਂਦੀਆਂ ਹਨ।"
 
+#: src/features/feedback/FeedbackHome.tsx
+msgid "They disappear for your team. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
+msgstr "ਇਹ ਤੁਹਾਡੀ ਟੀਮ ਲਈ ਗਾਇਬ ਹੋ ਜਾਂਦੇ ਹਨ। 30 ਦਿਨਾਂ ਤੱਕ ਤੁਸੀਂ ਇਨ੍ਹਾਂ ਨੂੰ ਟ੍ਰੈਸ਼ ਤੋਂ ਵਾਪਸ ਲਿਆ ਸਕਦੇ ਹੋ, ਫਿਰ ਇਹ ਸੁਨੇਹਿਆਂ ਅਤੇ ਫ਼ਾਈਲਾਂ ਸਮੇਤ ਸਦਾ ਲਈ ਮਿਟ ਜਾਂਦੇ ਹਨ।"
+
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They get a mail with a link and are subscribed only after they click it."
 msgstr "ਉਹਨਾਂ ਨੂੰ ਲਿੰਕ ਵਾਲੀ ਮੇਲ ਮਿਲਦੀ ਹੈ ਅਤੇ ਉਹ ਕਲਿੱਕ ਕਰਨ ਤੋਂ ਬਾਅਦ ਹੀ ਸਬਸਕ੍ਰਾਈਬ ਹੁੰਦੇ ਹਨ।"
@@ -20691,7 +20719,7 @@ msgstr "ਇਹ ਮਾਨੀਟਰ ਹੁਣ ਮੌਜੂਦ ਨਹੀਂ ਜਾ�
 msgid "This month"
 msgstr "ਇਸ ਮਹੀਨੇ"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "This page is not public yet, so visitors see nothing until you publish the page."
 msgstr "ਇਹ ਪੰਨਾ ਅਜੇ ਜਨਤਕ ਨਹੀਂ ਹੈ, ਇਸ ਲਈ ਜਦੋਂ ਤੱਕ ਤੁਸੀਂ ਪੰਨਾ ਪ੍ਰਕਾਸ਼ਿਤ ਨਹੀਂ ਕਰਦੇ, ਵਿਜ਼ਟਰਾਂ ਨੂੰ ਕੁਝ ਨਹੀਂ ਦਿਸਦਾ।"
 
@@ -20808,6 +20836,10 @@ msgstr "ਇਹ ਸਾਈਟ ਕਨੈਕਟ ਨਹੀਂ ਹੋ ਸਕਦੀ"
 #: src/components/common/text.ts
 msgid "This site is not allowed to use this documentation channel."
 msgstr "ਇਸ ਸਾਈਟ ਨੂੰ ਇਹ ਡਾਕੂਮੈਂਟੇਸ਼ਨ ਚੈਨਲ ਵਰਤਣ ਦੀ ਇਜਾਜ਼ਤ ਨਹੀਂ ਹੈ।"
+
+#: src/features/status/StatusPages.tsx
+msgid "This status page no longer exists or you cannot see it."
+msgstr "ਇਹ ਸਥਿਤੀ ਪੰਨਾ ਹੁਣ ਮੌਜੂਦ ਨਹੀਂ ਜਾਂ ਤੁਸੀਂ ਇਸਨੂੰ ਨਹੀਂ ਦੇਖ ਸਕਦੇ।"
 
 #: src/components/common/text.ts
 msgid "This subscription is no longer waiting for confirmation."
@@ -20926,7 +20958,7 @@ msgstr "ਸਮਾਂ"
 msgid "Time zone"
 msgstr "ਸਮਾਂ ਖੇਤਰ"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Timeout"
 msgstr "ਟਾਈਮਆਊਟ"
@@ -20935,7 +20967,7 @@ msgstr "ਟਾਈਮਆਊਟ"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/issues/IssueDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Title"
 msgstr "ਸਿਰਲੇਖ"
 
@@ -21093,6 +21125,7 @@ msgstr "ਇਸ ਸਰਵਰ ਲਈ ਇਸ ਸਰਟੀਫਿਕੇਟ ਉੱਤ�
 #: src/features/account/AccountLayout.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/migrations/UploadStep.tsx
@@ -21187,7 +21220,6 @@ msgstr "Yuva ਵੱਲੋਂ ਬੰਦ ਕੀਤਾ ਗਿਆ"
 msgid "TXT record"
 msgstr "TXT ਰਿਕਾਰਡ"
 
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/fields/FieldDialog.tsx
@@ -21423,7 +21455,7 @@ msgstr "ਅਨੁਵਾਦ ਦਾ ਪ੍ਰਕਾਸ਼ਨ ਰੱਦ ਕਰੋ"
 msgid "Unpublished"
 msgstr "ਅਣ-ਪ੍ਰਕਾਸ਼ਿਤ"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/mail/MailList.tsx
@@ -22032,7 +22064,6 @@ msgstr "ਮਨਜ਼ੂਰੀ ਦੀ ਉਡੀਕ ਵਿੱਚ"
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
-#: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "Waiting for approval"
@@ -22426,7 +22457,7 @@ msgstr "ਜਦੋਂ ਕੋਈ ਸਾਥੀ ਨੋਟ ਵਿੱਚ @ ਅਤੇ �
 msgid "When did they agree?"
 msgstr "ਉਹ ਕਦੋਂ ਸਹਿਮਤ ਹੋਏ?"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "When it goes down"
 msgstr "ਜਦੋਂ ਬੰਦ ਹੋਵੇ"
@@ -22464,10 +22495,6 @@ msgstr "ਜਦੋਂ ਕੋਈ ਹੋਰ ਇਸਨੂੰ ਤੁਹਾਨੂੰ �
 #: src/features/broadcasts/Trigger.tsx
 msgid "when someone first signs in to {inbox}"
 msgstr "when someone first signs in to {inbox}"
-
-#: src/features/feedback/FeedbackList.tsx
-msgid "When someone sends feedback, it will be in the list."
-msgstr "When someone sends feedback, it will be in the list."
 
 #: src/features/broadcasts/Trigger.tsx
 msgid "when someone starts to match {match}"
@@ -22952,11 +22979,11 @@ msgstr "You get a new secret once. Webhooks from GitHub are refused until you pa
 msgid "You get a notification when someone replies in these"
 msgstr "ਇਹਨਾਂ ਵਿੱਚ ਕੋਈ ਜਵਾਬ ਦਿੰਦਾ ਹੈ ਤਾਂ ਤੁਹਾਨੂੰ ਨੋਟੀਫਿਕੇਸ਼ਨ ਮਿਲਦਾ ਹੈ"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "You get the address to call when you save. It is shown only once."
 msgstr "ਸੇਵ ਕਰਨ ਤੇ ਕਾਲ ਕਰਨ ਵਾਲਾ ਪਤਾ ਮਿਲੇਗਾ। ਇਹ ਸਿਰਫ਼ ਇੱਕ ਵਾਰ ਦਿਖਾਇਆ ਜਾਂਦਾ ਹੈ।"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "You get the address your alerting calls when you save, for Alertmanager, Grafana or your own script. It is shown only once."
 msgstr "ਸੇਵ ਕਰਨ ਤੇ ਤੁਹਾਡਾ ਅਲਰਟਿੰਗ ਸਿਸਟਮ ਜਿਸ ਪਤੇ ਨੂੰ ਕਾਲ ਕਰਦਾ ਹੈ ਉਹ ਮਿਲੇਗਾ, Alertmanager, Grafana ਜਾਂ ਤੁਹਾਡੀ ਆਪਣੀ ਸਕ੍ਰਿਪਟ ਲਈ। ਇਹ ਸਿਰਫ਼ ਇੱਕ ਵਾਰ ਦਿਖਾਇਆ ਜਾਂਦਾ ਹੈ।"
 
@@ -23115,7 +23142,7 @@ msgstr "Your identity provider has not verified your e-mail address, so Yuva can
 msgid "Your inbox is empty."
 msgstr "ਤੁਹਾਡਾ ਇਨਬਾਕਸ ਖਾਲੀ ਹੈ।"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Your job calls Yuva on a schedule. A missing call fails the monitor."
 msgstr "ਤੁਹਾਡਾ ਕੰਮ ਨਿਯਮਿਤ ਅੰਤਰਾਲ 'ਤੇ Yuva ਨੂੰ ਕਾਲ ਕਰਦਾ ਹੈ। ਕਾਲ ਨਾ ਆਉਣ 'ਤੇ ਮਾਨੀਟਰ ਫੇਲ੍ਹ ਹੋ ਜਾਂਦਾ ਹੈ।"
 
@@ -23169,7 +23196,7 @@ msgstr "ਤੁਹਾਡੀ ਸੰਸਥਾ ਦੇ ਐਡਮਿਨ ਨੂੰ Yuva
 msgid "Your own"
 msgstr "Your own"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Your own monitoring sends its state, including Alertmanager and Grafana alerts."
 msgstr "ਤੁਹਾਡੀ ਆਪਣੀ ਨਿਗਰਾਨੀ ਆਪਣੀ ਹਾਲਤ ਭੇਜਦੀ ਹੈ, Alertmanager ਅਤੇ Grafana ਦੇ ਅਲਰਟਾਂ ਸਮੇਤ।"
 
@@ -23392,7 +23419,7 @@ msgstr "Yuva ਸਿਰਫ਼ ਪੜ੍ਹਦਾ ਹੈ। ਇਹ {provider} ਵ�
 msgid "Yuva only reads. Its connection sends {provider} nothing but read requests, and the token only to {provider}'s API, so no ticket, customer or setting changes."
 msgstr "Yuva ਸਿਰਫ਼ ਪੜ੍ਹਦਾ ਹੈ। ਇਸਦਾ ਕਨੈਕਸ਼ਨ {provider} ਨੂੰ ਪੜ੍ਹਨ ਦੀਆਂ ਬੇਨਤੀਆਂ ਤੋਂ ਸਿਵਾ ਕੁਝ ਨਹੀਂ ਭੇਜਦਾ, ਅਤੇ ਟੋਕਨ ਸਿਰਫ਼ {provider} ਦੇ API ਨੂੰ, ਇਸ ਲਈ ਕੋਈ ਟਿਕਟ, ਗਾਹਕ ਜਾਂ ਸੈਟਿੰਗ ਨਹੀਂ ਬਦਲਦੀ।"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Yuva opens a connection to a host and port on a schedule."
 msgstr "Yuva ਨਿਯਮਿਤ ਤੌਰ ਤੇ ਹੋਸਟ ਅਤੇ ਪੋਰਟ ਨਾਲ ਕਨੈਕਸ਼ਨ ਖੋਲ੍ਹਦਾ ਹੈ।"
 
@@ -23404,7 +23431,7 @@ msgstr "Yuva ਤੁਹਾਡੇ ਆਪਣੇ ਖਾਤੇ ਵਿੱਚ ਬਣਾ
 msgid "Yuva reads only the file you upload and deletes it when the migration ends. History arrives quietly: no notifications, no auto-replies."
 msgstr "Yuva ਸਿਰਫ਼ ਉਹੀ ਫ਼ਾਈਲ ਪੜ੍ਹਦਾ ਹੈ ਜੋ ਤੁਸੀਂ ਅੱਪਲੋਡ ਕਰਦੇ ਹੋ ਅਤੇ ਮਾਈਗ੍ਰੇਸ਼ਨ ਖ਼ਤਮ ਹੋਣ ਉੱਤੇ ਉਸਨੂੰ ਮਿਟਾ ਦਿੰਦਾ ਹੈ। ਇਤਿਹਾਸ ਚੁੱਪਚਾਪ ਆਉਂਦਾ ਹੈ: ਕੋਈ ਨੋਟੀਫਿਕੇਸ਼ਨ ਨਹੀਂ, ਕੋਈ ਆਟੋ-ਰਿਪਲਾਈ ਨਹੀਂ।"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Yuva requests an address on a schedule and checks the answer."
 msgstr "Yuva ਨਿਯਮਿਤ ਤੌਰ ਤੇ ਇੱਕ ਪਤੇ ਨੂੰ ਬੇਨਤੀ ਭੇਜਦਾ ਹੈ ਅਤੇ ਜਵਾਬ ਜਾਂਚਦਾ ਹੈ।"
 

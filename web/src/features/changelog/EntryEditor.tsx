@@ -32,7 +32,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Textarea } from "@/components/ui/textarea"
 import { broadcastLink, useBroadcasts } from "@/features/broadcasts/broadcastQueries"
 import { StateBadge } from "@/features/broadcasts/BroadcastParts"
-import { ChangelogLayout, ChangelogTrail } from "@/features/changelog/ChangelogFrame"
+import { ChangelogLayout } from "@/features/changelog/ChangelogFrame"
 import { MailDialog } from "@/features/changelog/MailDialog"
 import {
   changelogLink,
@@ -957,7 +957,6 @@ function Editor({
 }
 
 function EditorFrame({ changelog, children }: { changelog: Changelog; children: React.ReactNode }) {
-  const { t } = useLingui()
   const flat = !useIsPhone()
   if (!flat)
     return (
@@ -966,10 +965,8 @@ function EditorFrame({ changelog, children }: { changelog: Changelog; children: 
       </main>
     )
   return (
-    <ChangelogLayout place="entries" changelog={changelog} testId="entry-editor">
-      <FlatTop back={{ label: changelog.name, to: changelogLink(changelog.id) }}>
-        <ChangelogTrail place={t`Entries`} name={changelog.name} />
-      </FlatTop>
+    <ChangelogLayout testId="entry-editor">
+      <FlatTop back={{ label: changelog.name, to: changelogLink(changelog.id) }} />
       {children}
     </ChangelogLayout>
   )
@@ -986,8 +983,8 @@ export function EntryEditorPage() {
   const e = entry.data
   if (flat && (!c || !e))
     return (
-      <ChangelogLayout place="entries" testId="entry-editor">
-        <FlatTop back={{ label: t`What’s new`, to: changelogLink(changelogId) }} />
+      <ChangelogLayout testId="entry-editor">
+        <FlatTop back={{ label: t`Updates`, to: changelogLink(changelogId) }} />
         {changelog.isPending || entry.isPending ? (
           <div className="mt-3 flex max-w-[760px] flex-col gap-4" aria-busy="true">
             <Skeleton className="h-8 w-60" />

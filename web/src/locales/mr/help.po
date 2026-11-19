@@ -7,6 +7,11 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: mr\n"
 
+#. placeholder {0}: items.length
+#: src/features/help/ArticlesTab.tsx
+msgid "{0, plural, one {{shown} article} other {{shown} articles}}"
+msgstr "{0, plural, one {{shown} लेख} other {{shown} लेख}}"
+
 #. placeholder {0}: c.articles
 #: src/features/help/ImportCard.tsx
 msgid "{0, plural, one {# article read} other {# articles read}}"
@@ -62,21 +67,13 @@ msgstr "{0, plural, one {Add the language in the settings, then import again.} o
 msgid "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 msgstr "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "{drafts, plural, one {# draft} other {# drafts}}"
-msgstr "{drafts, plural, one {# मसुदा} other {# मसुदे}}"
-
-#: src/features/help/HelpColumn.tsx
-msgid "{published} of {total} articles published"
-msgstr "{total} पैकी {published} लेख प्रकाशित"
-
 #: src/features/help/ImportCard.tsx
 msgid "{saved, plural, one {# draft saved} other {# drafts saved}}"
 msgstr "{saved, plural, one {# draft saved} other {# drafts saved}}"
 
 #: src/features/help/ArticlesTab.tsx
-msgid "{searches} searches"
-msgstr "{searches} शोध"
+msgid "{views, plural, one {# view} other {# views}}"
+msgstr "{views, plural, one {# व्ह्यू} other {# व्ह्यू}}"
 
 #: src/features/help/CreateCenterDialog.tsx
 msgid "3 to 48 letters, numbers and hyphens. It is unique on this server."
@@ -124,10 +121,6 @@ msgstr "पत्त्याचा शेवट"
 msgid "Agents may publish"
 msgstr "एजंट प्रकाशित करू शकतात"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "All"
-msgstr "सर्व"
-
 #: src/features/help/Revisions.tsx
 msgid "An API key"
 msgstr "एक API की"
@@ -152,11 +145,6 @@ msgstr "दुसरे मदत केंद्र हा पत्ता आ�
 msgid "Answer common questions once, in writing. Each product gets its own help center with articles, collections and a report of what people search for. Pages are hosted by Yuva, so there is nothing to install on your site."
 msgstr "सामान्य प्रश्नांची उत्तरे एकदाच, लिखित स्वरूपात द्या. प्रत्येक उत्पादनाचे स्वतःचे मदत केंद्र असते, ज्यात लेख, संग्रह आणि लोक काय शोधतात याचा अहवाल असतो. पृष्ठे Yuva होस्ट करते, त्यामुळे तुमच्या साइटवर काहीही इन्स्टॉल करावे लागत नाही."
 
-#: src/features/help/pages.tsx
-msgid "Answer common questions once, in writing. Pick an inbox’s help center to write articles, group them in collections and see what customers search for."
-msgstr "सामान्य प्रश्नांना एकदाच, लेखी उत्तर द्या. लेख लिहिण्यासाठी, त्यांना संग्रहांमध्ये गटबद्ध करण्यासाठी आणि ग्राहक काय शोधतात हे पाहण्यासाठी एखाद्या इनबॉक्सचे मदत केंद्र निवडा."
-
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Article"
 msgstr "लेख"
@@ -179,7 +167,6 @@ msgstr "लेख पाहिले गेलेल्या वेळा"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Articles"
 msgstr "लेख"
@@ -192,7 +179,6 @@ msgstr "हे लेख या भाषांमध्ये लिहित�
 msgid "Articles in this collection"
 msgstr "या संग्रहातील लेख"
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Articles people read before they write to you"
 msgstr "लेख जे लोक तुम्हाला लिहिण्याआधी वाचतात"
@@ -237,8 +223,6 @@ msgstr "Brings the collections and articles of another help center in as drafts.
 msgid "Bulleted list"
 msgstr "बुलेट यादी"
 
-#: src/features/help/ArticlesTab.tsx
-#: src/features/help/CollectionsTab.tsx
 #: src/features/help/CreateCenterDialog.tsx
 #: src/features/help/ImportCard.tsx
 msgid "Cancel"
@@ -277,6 +261,11 @@ msgstr "सुरू झालेल्या चॅट"
 msgid "Checking the sign-in"
 msgstr "Checking the sign-in"
 
+#: src/features/help/ArticlesTab.tsx
+#: src/features/help/pages.tsx
+msgid "Clear filters"
+msgstr "फिल्टर साफ करा"
+
 #: src/features/help/ImportCard.tsx
 msgid "Close"
 msgstr "Close"
@@ -295,8 +284,6 @@ msgstr "कोड ब्लॉक"
 msgid "Collection"
 msgstr "संग्रह"
 
-#: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Collections"
 msgstr "संग्रह"
@@ -318,14 +305,9 @@ msgid "Create collection"
 msgstr "संग्रह तयार करा"
 
 #: src/features/help/CreateCenterDialog.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Create help center"
 msgstr "मदत केंद्र तयार करा"
-
-#: src/features/help/HelpColumn.tsx
-msgid "Create help center ({newKey})"
-msgstr "मदत केंद्र तयार करा ({newKey})"
 
 #: src/features/help/Bulk.tsx
 #: src/features/help/CollectionsTab.tsx
@@ -408,7 +390,6 @@ msgid "Draft submitted. An owner or admin can publish it."
 msgstr "मसुदा सादर केला. मालक किंवा अ‍ॅडमिन तो प्रकाशित करू शकतात."
 
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Drafts"
 msgstr "ड्राफ्ट"
@@ -429,9 +410,17 @@ msgstr "संग्रह संपादित करा"
 msgid "Empty"
 msgstr "रिकामे"
 
+#: src/features/help/pages.tsx
+msgid "Every collection"
+msgstr "प्रत्येक संग्रह"
+
 #: src/features/help/ReportTab.tsx
 msgid "Every search found something."
 msgstr "प्रत्येक शोधात काहीतरी सापडले."
+
+#: src/features/help/pages.tsx
+msgid "Every status"
+msgstr "प्रत्येक स्टेटस"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
@@ -445,6 +434,14 @@ msgstr "Everything imported is a draft."
 #: src/features/help/ImportCard.tsx
 msgid "Failed"
 msgstr "Failed"
+
+#: src/features/help/pages.tsx
+msgid "Filter by collection"
+msgstr "संग्रहानुसार फिल्टर करा"
+
+#: src/features/help/pages.tsx
+msgid "Filter by status"
+msgstr "स्थितीनुसार फिल्टर करा"
 
 #: src/features/help/EditorToolbar.tsx
 msgid "Formatting"
@@ -470,15 +467,12 @@ msgstr "लेख गटबद्ध करा म्हणजे अभ्य�
 msgid "Heading"
 msgstr "मथळा"
 
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Help center"
 msgstr "मदत केंद्र"
 
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help center created. Write the first article, then publish it."
 msgstr "मदत केंद्र तयार झाले. पहिला लेख लिहा आणि मग प्रकाशित करा."
@@ -486,12 +480,6 @@ msgstr "मदत केंद्र तयार झाले. पहिला 
 #: src/features/help/SettingsTab.tsx
 msgid "Help center deleted"
 msgstr "मदत केंद्र हटवले"
-
-#: src/features/help/HelpColumn.tsx
-#: src/features/help/HelpFrame.tsx
-#: src/features/help/pages.tsx
-msgid "Help centers"
-msgstr "मदत केंद्रे"
 
 #: src/features/help/text.tsx
 msgid "Help centers are turned off on this server."
@@ -565,7 +553,6 @@ msgstr "भाषा"
 msgid "Language of the articles"
 msgstr "Language of the articles"
 
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Languages"
 msgstr "भाषा"
@@ -573,10 +560,6 @@ msgstr "भाषा"
 #: src/features/help/ReportTab.tsx
 msgid "Last {d} days"
 msgstr "मागील {d} दिवस"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "last 7 days"
-msgstr "मागील 7 दिवस"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "Last 7 days"
@@ -626,6 +609,10 @@ msgstr "आणखी"
 msgid "More for {name}"
 msgstr "{name} साठी आणखी"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "move"
+msgstr "हलवा"
+
 #: src/features/help/CollectionsTab.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "{name} हलवा. ओढा, किंवा बाण कींसह Alt दाबा."
@@ -653,6 +640,10 @@ msgid "New address"
 msgstr "New address"
 
 #: src/features/help/ArticlesTab.tsx
+msgid "new article"
+msgstr "नवीन लेख"
+
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/pages.tsx
 msgid "New article"
 msgstr "नवीन लेख"
@@ -661,16 +652,16 @@ msgstr "नवीन लेख"
 msgid "New article ({newKey})"
 msgstr "नवीन लेख ({newKey})"
 
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CollectionsTab.tsx
+#: src/features/help/pages.tsx
 msgid "New collection"
 msgstr "नवीन संग्रह"
 
-#: src/features/help/CollectionsTab.tsx
-msgid "New collection ({newKey})"
-msgstr "नवीन संग्रह ({newKey})"
+#: src/features/help/pages.tsx
+msgid "New collection ({colKey})"
+msgstr "नवीन संग्रह ({colKey})"
 
-#: src/features/help/HelpFrame.tsx
+#: src/features/help/pages.tsx
 msgid "New help center for {product}"
 msgstr "{product} साठी नवीन मदत केंद्र"
 
@@ -713,12 +704,10 @@ msgstr "अजून आधीच्या आवृत्त्या नाह
 msgid "No help center for {0} yet"
 msgstr "{0} साठी अजून मदत केंद्र नाही"
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "No help center yet. Owners and admins create it."
 msgstr "अजून मदत केंद्र नाही. मालक आणि अ‍ॅडमिन ते तयार करतात."
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "No inbox to show a help center for."
 msgstr "मदत केंद्र दाखवण्यासाठी इनबॉक्स नाही."
@@ -743,10 +732,6 @@ msgstr "लिहिलेले नाही"
 #: src/features/help/EditorToolbar.tsx
 msgid "Numbered list"
 msgstr "क्रमांकित यादी"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "of {answers} answers"
-msgstr "{answers} उत्तरांपैकी"
 
 #: src/features/help/ImportCard.tsx
 msgid "Off: a draft you edited in Yuva since the last import is kept."
@@ -775,6 +760,11 @@ msgstr "हे फक्त मालक आणि अ‍ॅडमिन कर�
 #: src/features/help/ImportCard.tsx
 msgid "Only owners and admins can use a Zendesk migration."
 msgstr "Only owners and admins can use a Zendesk migration."
+
+#: src/features/help/ArticlesTab.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "उघडा"
 
 #: src/features/help/ImportCard.tsx
 msgid "Open the drafts"
@@ -857,21 +847,17 @@ msgstr "सार्वजनिक पत्ता"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Publish"
 msgstr "प्रकाशित करा"
 
 #: src/features/help/ArticleEditor.tsx
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Publish ({publishKey})"
 msgstr "प्रकाशित करा ({publishKey})"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/ImportCard.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/Revisions.tsx
@@ -900,11 +886,6 @@ msgstr "Redirects"
 #: src/features/help/SettingsTab.tsx
 msgid "Remove {0}"
 msgstr "{0} काढा"
-
-#: src/features/help/HelpFrame.tsx
-#: src/features/help/pages.tsx
-msgid "Report"
-msgstr "अहवाल"
 
 #: src/features/help/ReportTab.tsx
 msgid "Report period"
@@ -962,12 +943,20 @@ msgid "Saving…"
 msgstr "जतन होत आहे…"
 
 #: src/features/help/ArticlesTab.tsx
+msgid "search"
+msgstr "शोधा"
+
+#: src/features/help/pages.tsx
+msgid "Search articles…"
+msgstr "लेख शोधा…"
+
+#: src/features/help/pages.tsx
+msgid "Search gaps"
+msgstr "सर्चमधील उणिवा"
+
+#: src/features/help/pages.tsx
 msgid "Search titles"
 msgstr "शीर्षकांमध्ये शोधा"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Search titles ({findKey})"
-msgstr "शीर्षकांमध्ये शोधा ({findKey})"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Search words"
@@ -982,13 +971,13 @@ msgstr "शोधले, काहीच सापडले नाही"
 msgid "Searches"
 msgstr "शोध"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "searches this week"
-msgstr "या आठवड्यातील शोध"
-
 #: src/features/help/ReportTab.tsx
 msgid "Searches with no result"
 msgstr "निकाल नसलेले शोध"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "select"
+msgstr "निवडा"
 
 #: src/features/help/ReportTab.tsx
 msgid "Sent"
@@ -998,7 +987,6 @@ msgstr "पाठवलेले"
 msgid "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 msgstr "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/text.tsx
 msgid "Settings"
@@ -1067,10 +1055,6 @@ msgstr "शीर्षकाने सुरू करा. मजकूर त�
 #: src/features/help/ImportCard.tsx
 msgid "State"
 msgstr "State"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Status"
-msgstr "स्टेटस"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Submit draft"
@@ -1177,6 +1161,10 @@ msgstr "सर्वोच्च स्तर"
 msgid "Translation deleted"
 msgstr "भाषांतर हटवले"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "Try again"
+msgstr "पुन्हा प्रयत्न करा"
+
 #: src/features/help/text.tsx
 msgid "Type a word to search for."
 msgstr "शोधण्यासाठी एक शब्द टाइप करा."
@@ -1188,7 +1176,6 @@ msgstr "शोधण्यासाठी एक शब्द टाइप क�
 msgid "Unpublish"
 msgstr "प्रकाशन रद्द करा"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Unpublish ({publishKey})"
 msgstr "प्रकाशन रद्द करा ({publishKey})"
@@ -1207,8 +1194,6 @@ msgstr "या भाषांतराचे प्रकाशन रद्द
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Unpublished"
 msgstr "अप्रकाशित"
@@ -1220,10 +1205,6 @@ msgstr "अप्रकाशित बदल"
 #: src/features/help/ArticleEditor.tsx
 msgid "Unsaved changes"
 msgstr "जतन न केलेले बदल"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Updated"
-msgstr "अपडेट केले"
 
 #: src/features/help/SettingsTab.tsx
 msgid "Use 3 to 48 letters, numbers and inner hyphens."
@@ -1245,12 +1226,10 @@ msgstr "आवृत्ती मसुद्यात पुनर्संच�
 msgid "View"
 msgstr "पहा"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "View site"
 msgstr "साइट पहा"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "View site ({openKey})"
 msgstr "साइट पहा ({openKey})"
@@ -1259,10 +1238,6 @@ msgstr "साइट पहा ({openKey})"
 #: src/features/help/ReportTab.tsx
 msgid "Views"
 msgstr "व्ह्यू"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Views · 7 days"
-msgstr "व्ह्यू · 7 दिवस"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "Visibility"

@@ -544,7 +544,7 @@ function DocsEmpty({ onInstall }: { onInstall: () => void }) {
     },
   ]
   return (
-    <div className="min-h-0 flex-1 overflow-y-auto bg-surface px-6 py-8 phone:px-4" data-testid="docs-empty">
+    <div className="mt-4" data-testid="docs-empty">
       <div className="mx-auto flex max-w-[760px] flex-col gap-5">
         <div className="flex flex-col items-start gap-1.5">
           <span className="mb-1 grid size-12 place-items-center rounded-2xl bg-muted text-faint">
@@ -682,8 +682,8 @@ export function PagesTab({
 
   if (pages.isPending) {
     return (
-      <div className="min-h-0 flex-1 overflow-y-auto bg-surface" aria-busy="true">
-        <div className="mx-auto flex max-w-[1360px] flex-col gap-4 px-6 py-5 phone:px-4">
+      <div className="mt-4" aria-busy="true">
+        <div className="flex flex-col gap-4">
           <div className="grid grid-cols-4 gap-2.5 phone:grid-cols-2">
             {[0, 1, 2, 3].map((i) => (
               <Skeleton key={i} className="h-[92px] rounded-[14px]" />
@@ -696,7 +696,7 @@ export function PagesTab({
   }
   if (pages.error)
     return (
-      <div className="min-h-0 flex-1 overflow-y-auto bg-surface px-6 py-12 phone:px-4">
+      <div className="mt-4 py-12">
         <div className="mx-auto flex max-w-sm flex-col items-center gap-2.5 text-center">
           <span className="mb-1 grid size-10 place-items-center rounded-full bg-destructive/10 text-destructive">
             <AlertCircleIcon className="size-5" />
@@ -709,7 +709,7 @@ export function PagesTab({
 
   if (phone && selected) {
     return (
-      <div className="min-h-0 flex-1 overflow-y-auto bg-surface">
+      <div className="mt-4">
         <PageDetail
           inboxId={selected.inbox}
           page={selected.url}
@@ -722,8 +722,8 @@ export function PagesTab({
   }
   const currentKey = selected ? `${selected.inbox} ${selected.url}` : ""
   return (
-    <div className="@container min-h-0 flex-1 overflow-y-auto bg-surface">
-      <div className="mx-auto flex max-w-[1360px] flex-col gap-4 px-6 py-5 phone:px-4">
+    <div className="@container mt-4">
+      <div className="flex flex-col gap-4">
         <SummaryTiles inboxId={inboxId} site={site} days={days} />
         <div className="grid grid-cols-[minmax(0,1fr)_420px] items-start gap-4 @max-5xl:grid-cols-1">
           <section aria-label={t`Documentation pages`} className={cn(look.card, "rounded-[14px] bg-card")}>

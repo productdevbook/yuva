@@ -7,6 +7,11 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: sl\n"
 
+#. placeholder {0}: rows.length
+#: src/features/changelog/EntriesTab.tsx
+msgid "{0, plural, one {{shownCount} entry} other {{shownCount} entries}}"
+msgstr "{0, plural, one {{shownCount} vnos} two {{shownCount} vnosa} few {{shownCount} vnosi} other {{shownCount} vnosov}}"
+
 #: src/features/changelog/ChangelogsPage.tsx
 msgid "{published} of {total} entries published"
 msgstr "Objavljenih zapisov: {published} od {total}"
@@ -36,15 +41,6 @@ msgstr "Konec naslova"
 msgid "Agents may publish"
 msgstr "Agenti lahko objavljajo"
 
-#: src/features/changelog/ChangelogFrame.tsx
-#: src/features/changelog/pages.tsx
-msgid "All"
-msgstr "Vse"
-
-#: src/features/changelog/ChangelogFrame.tsx
-msgid "All changelogs"
-msgstr "Vsi dnevniki sprememb"
-
 #: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "All labels"
@@ -53,10 +49,6 @@ msgstr "Vse oznake"
 #: src/features/changelog/pages.tsx
 msgid "All languages"
 msgstr "Vsi jeziki"
-
-#: src/features/changelog/ChangelogFrame.tsx
-msgid "All products"
-msgstr "Vsi izdelki"
 
 #: src/features/changelog/SettingsTab.tsx
 msgid "Analytics property"
@@ -75,7 +67,6 @@ msgid "At least 3 characters."
 msgstr "Vsaj 3 znaki."
 
 #: src/features/changelog/CreateChangelogDialog.tsx
-#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/MailDialog.tsx
 #: src/features/changelog/ScheduleDialog.tsx
 msgid "Cancel"
@@ -89,21 +80,25 @@ msgstr "Spremeni"
 msgid "Change the time"
 msgstr "Spremeni čas"
 
-#: src/features/changelog/pages.tsx
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/SettingsTab.tsx
 msgid "Changelog"
 msgstr "Dnevnik sprememb"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/pages.tsx
 msgid "Changelogs"
 msgstr "Dnevniki sprememb"
 
+#: src/features/changelog/pages.tsx
+msgid "Changelogs ({manageKey})"
+msgstr "Dnevniki sprememb ({manageKey})"
+
 #: src/features/changelog/EntryEditor.tsx
 msgid "Choose a picture"
 msgstr "Izberi sliko"
 
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "Clear filters"
 msgstr "Počisti filtre"
@@ -184,7 +179,6 @@ msgstr "Osnutek"
 msgid "Draft submitted. An owner or admin can publish it."
 msgstr "Osnutek oddan. Objavi ga lahko lastnik ali skrbnik."
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/pages.tsx
 msgid "Drafts"
 msgstr "Osnutki"
@@ -193,12 +187,14 @@ msgstr "Osnutki"
 msgid "Each product has one changelog. Owners and admins create and publish them."
 msgstr "Vsak izdelek ima dnevnik sprememb. Lastniki in skrbniki ga ustvarijo in objavijo."
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
-#: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
 msgid "Entries"
 msgstr "Zapisi"
+
+#: src/features/changelog/pages.tsx
+msgid "Entries ({entriesKey})"
+msgstr "Zapisi ({entriesKey})"
 
 #: src/features/changelog/SettingsTab.tsx
 msgid "Entries and translations are deleted with it."
@@ -209,12 +205,8 @@ msgid "Entries can be written and published in these languages. Visitors see the
 msgstr "Zapise je mogoče pisati in objavljati v teh jezikih. Obiskovalci vidijo svoj jezik, če obstaja."
 
 #: src/features/changelog/pages.tsx
-msgid "Entries show on the public page once they are published."
-msgstr "Vnosi se na javni strani prikažejo, ko so objavljeni."
-
-#: src/features/changelog/pages.tsx
-msgid "Entries you have not published yet show up here."
-msgstr "Vnosi, ki jih še niste objavili, se prikažejo tukaj."
+msgid "Every state"
+msgstr "Vsako stanje"
 
 #: src/features/changelog/Bulk.tsx
 #: src/features/changelog/EntryEditor.tsx
@@ -301,6 +293,10 @@ msgstr "Označi kot posodobljeno"
 msgid "More"
 msgstr "Več"
 
+#: src/features/changelog/EntriesTab.tsx
+msgid "move"
+msgstr "premikanje"
+
 #: src/features/changelog/CreateChangelogDialog.tsx
 #: src/features/changelog/SettingsTab.tsx
 msgid "Name"
@@ -311,9 +307,10 @@ msgid "New"
 msgstr "Novo"
 
 #: src/features/changelog/EntriesTab.tsx
-msgid "New entry"
-msgstr "Nov zapis"
+msgid "new post"
+msgstr "nova objava"
 
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "New post"
 msgstr "Nova objava"
@@ -351,10 +348,6 @@ msgstr "ni objavljeno"
 msgid "not written"
 msgstr "ni napisano"
 
-#: src/features/changelog/pages.tsx
-msgid "Nothing here."
-msgstr "Tukaj ni ničesar."
-
 #: src/features/changelog/SettingsTab.tsx
 msgid "Off: agents write drafts and submit them, and owners and admins publish. On: agents with access to the inbox publish, schedule and unpublish too."
 msgstr "Izklopljeno: agenti pišejo osnutke in jih oddajo, lastniki in skrbniki objavljajo. Vklopljeno: objavljajo, načrtujejo in umikajo tudi agenti z dostopom do nabiralnika."
@@ -362,6 +355,11 @@ msgstr "Izklopljeno: agenti pišejo osnutke in jih oddajo, lastniki in skrbniki 
 #: src/features/changelog/text.tsx
 msgid "Only owners and admins can do this."
 msgstr "To lahko storijo samo lastniki in skrbniki."
+
+#: src/features/changelog/EntriesTab.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "odpri"
 
 #: src/features/changelog/EntryEditor.tsx
 msgid "Original"
@@ -386,10 +384,6 @@ msgstr "Del spletnega naslova tega prevoda. Če je prazen, nastane iz naslova."
 #: src/features/changelog/ScheduleDialog.tsx
 msgid "Pick a time in the next year, in your time zone, {zone}."
 msgstr "Izberite čas v naslednjem letu, v svojem časovnem pasu, {zone}."
-
-#: src/features/changelog/pages.tsx
-msgid "Pick a time when you write an entry and it goes public by itself."
-msgstr "Ob pisanju vnosa izberite čas in se bo objavil sam."
 
 #: src/features/changelog/MailDialog.tsx
 msgid "Pick up to 10 lists of this inbox."
@@ -446,7 +440,6 @@ msgstr "Objavi zdaj"
 msgid "Publish on"
 msgstr "Objavi"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
@@ -498,7 +491,6 @@ msgstr "Znova načrtuj"
 msgid "Schedule this entry"
 msgstr "Načrtuj ta zapis"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
 #: src/features/changelog/text.tsx
@@ -513,15 +505,26 @@ msgstr "Načrtovano: {scheduled}"
 msgid "Search entries"
 msgstr "Išči vnose"
 
+#: src/features/changelog/pages.tsx
+msgid "Search entries…"
+msgstr "Išči po vnosih…"
+
+#: src/features/changelog/EntriesTab.tsx
+msgid "select"
+msgstr "izberi"
+
 #: src/features/changelog/MailDialog.tsx
 msgid "Send through"
 msgstr "Pošlji prek"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/pages.tsx
 msgid "Settings"
 msgstr "Nastavitve"
+
+#: src/features/changelog/pages.tsx
+msgid "Settings ({settingsKey})"
+msgstr "Nastavitve ({settingsKey})"
 
 #: src/features/changelog/EntryEditor.tsx
 msgid "Show"
@@ -556,6 +559,7 @@ msgid "Start with a title. You write the text next, and it stays a draft until i
 msgstr "Začnite z naslovom. Besedilo napišete nato in ostane osnutek, dokler ni objavljeno."
 
 #: src/features/changelog/EntriesTab.tsx
+#: src/features/changelog/pages.tsx
 msgid "State"
 msgstr "Stanje"
 
@@ -666,13 +670,9 @@ msgstr "Naslov"
 msgid "Translation deleted"
 msgstr "Prevod izbrisan"
 
-#: src/features/changelog/pages.tsx
+#: src/features/changelog/EntriesTab.tsx
 msgid "Try again"
 msgstr "Poskusi znova"
-
-#: src/features/changelog/pages.tsx
-msgid "Try another word, label or language."
-msgstr "Poskusite z drugo besedo, oznako ali jezikom."
 
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntryEditor.tsx
@@ -709,6 +709,13 @@ msgstr "Neshranjene spremembe"
 msgid "Unschedule"
 msgstr "Prekliči načrtovanje"
 
+#: src/features/changelog/ChangelogFrame.tsx
+#: src/features/changelog/ChangelogsPage.tsx
+#: src/features/changelog/EntryEditor.tsx
+#: src/features/changelog/pages.tsx
+msgid "Updates"
+msgstr "Posodobitve"
+
 #: src/features/changelog/SettingsTab.tsx
 msgid "Use 3 to 48 letters, numbers and inner hyphens."
 msgstr "Uporabite od 3 do 48 črk, številk in notranjih vezajev."
@@ -726,11 +733,9 @@ msgstr "Poglej"
 msgid "View changelog"
 msgstr "Prikaži dnevnik sprememb"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/EntryEditor.tsx
-#: src/features/changelog/pages.tsx
 msgid "What’s new"
 msgstr "Novosti"
 

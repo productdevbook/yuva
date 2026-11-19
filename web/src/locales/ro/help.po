@@ -7,6 +7,11 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: ro\n"
 
+#. placeholder {0}: items.length
+#: src/features/help/ArticlesTab.tsx
+msgid "{0, plural, one {{shown} article} other {{shown} articles}}"
+msgstr "{0, plural, one {{shown} articol} few {{shown} articole} other {{shown} de articole}}"
+
 #. placeholder {0}: c.articles
 #: src/features/help/ImportCard.tsx
 msgid "{0, plural, one {# article read} other {# articles read}}"
@@ -62,21 +67,13 @@ msgstr "{0, plural, one {Add the language in the settings, then import again.} o
 msgid "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 msgstr "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "{drafts, plural, one {# draft} other {# drafts}}"
-msgstr "{drafts, plural, one {# ciornă} few {# ciorne} other {# de ciorne}}"
-
-#: src/features/help/HelpColumn.tsx
-msgid "{published} of {total} articles published"
-msgstr "{published} din {total} articole publicate"
-
 #: src/features/help/ImportCard.tsx
 msgid "{saved, plural, one {# draft saved} other {# drafts saved}}"
 msgstr "{saved, plural, one {# draft saved} other {# drafts saved}}"
 
 #: src/features/help/ArticlesTab.tsx
-msgid "{searches} searches"
-msgstr "{searches} căutări"
+msgid "{views, plural, one {# view} other {# views}}"
+msgstr "{views, plural, one {# vizualizare} few {# vizualizări} other {# de vizualizări}}"
 
 #: src/features/help/CreateCenterDialog.tsx
 msgid "3 to 48 letters, numbers and hyphens. It is unique on this server."
@@ -124,10 +121,6 @@ msgstr "Sfârșitul adresei"
 msgid "Agents may publish"
 msgstr "Agenții pot publica"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "All"
-msgstr "Toate"
-
 #: src/features/help/Revisions.tsx
 msgid "An API key"
 msgstr "O cheie API"
@@ -152,11 +145,6 @@ msgstr "Un alt centru de ajutor folosește această adresă, acum sau înainte."
 msgid "Answer common questions once, in writing. Each product gets its own help center with articles, collections and a report of what people search for. Pages are hosted by Yuva, so there is nothing to install on your site."
 msgstr "Răspundeți o singură dată, în scris, la întrebările frecvente. Fiecare produs are propriul centru de ajutor cu articole, colecții și un raport despre ce caută oamenii. Paginile sunt găzduite de Yuva, nu trebuie să instalați nimic pe site-ul dvs."
 
-#: src/features/help/pages.tsx
-msgid "Answer common questions once, in writing. Pick an inbox’s help center to write articles, group them in collections and see what customers search for."
-msgstr "Răspunde o dată la întrebările frecvente, în scris. Alege centrul de ajutor al unei căsuțe pentru a scrie articole, a le grupa în colecții și a vedea ce caută clienții."
-
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Article"
 msgstr "Articol"
@@ -179,7 +167,6 @@ msgstr "Vizualizări de articole"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Articles"
 msgstr "Articole"
@@ -192,7 +179,6 @@ msgstr "Articolele pot fi scrise și publicate în aceste limbi. Vizitatorii o v
 msgid "Articles in this collection"
 msgstr "Articole din această colecție"
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Articles people read before they write to you"
 msgstr "Articole pe care oamenii le citesc înainte să-ți scrie"
@@ -237,8 +223,6 @@ msgstr "Brings the collections and articles of another help center in as drafts.
 msgid "Bulleted list"
 msgstr "Listă cu buline"
 
-#: src/features/help/ArticlesTab.tsx
-#: src/features/help/CollectionsTab.tsx
 #: src/features/help/CreateCenterDialog.tsx
 #: src/features/help/ImportCard.tsx
 msgid "Cancel"
@@ -277,6 +261,11 @@ msgstr "Chaturi începute"
 msgid "Checking the sign-in"
 msgstr "Checking the sign-in"
 
+#: src/features/help/ArticlesTab.tsx
+#: src/features/help/pages.tsx
+msgid "Clear filters"
+msgstr "Șterge filtrele"
+
 #: src/features/help/ImportCard.tsx
 msgid "Close"
 msgstr "Close"
@@ -295,8 +284,6 @@ msgstr "Bloc de cod"
 msgid "Collection"
 msgstr "Colecție"
 
-#: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Collections"
 msgstr "Colecții"
@@ -318,14 +305,9 @@ msgid "Create collection"
 msgstr "Creează colecție"
 
 #: src/features/help/CreateCenterDialog.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Create help center"
 msgstr "Creează centru de ajutor"
-
-#: src/features/help/HelpColumn.tsx
-msgid "Create help center ({newKey})"
-msgstr "Creează centru de ajutor ({newKey})"
 
 #: src/features/help/Bulk.tsx
 #: src/features/help/CollectionsTab.tsx
@@ -408,7 +390,6 @@ msgid "Draft submitted. An owner or admin can publish it."
 msgstr "Ciornă trimisă. Un proprietar sau un administrator o poate publica."
 
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Drafts"
 msgstr "Ciorne"
@@ -429,9 +410,17 @@ msgstr "Editează colecția"
 msgid "Empty"
 msgstr "Gol"
 
+#: src/features/help/pages.tsx
+msgid "Every collection"
+msgstr "Orice colecție"
+
 #: src/features/help/ReportTab.tsx
 msgid "Every search found something."
 msgstr "Fiecare căutare a găsit ceva."
+
+#: src/features/help/pages.tsx
+msgid "Every status"
+msgstr "Orice status"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
@@ -445,6 +434,14 @@ msgstr "Everything imported is a draft."
 #: src/features/help/ImportCard.tsx
 msgid "Failed"
 msgstr "Failed"
+
+#: src/features/help/pages.tsx
+msgid "Filter by collection"
+msgstr "Filtrează după colecție"
+
+#: src/features/help/pages.tsx
+msgid "Filter by status"
+msgstr "Filtrează după stare"
 
 #: src/features/help/EditorToolbar.tsx
 msgid "Formatting"
@@ -470,15 +467,12 @@ msgstr "Grupează articolele ca vizitatorii să poată răsfoi. O colecție poat
 msgid "Heading"
 msgstr "Titlu"
 
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Help center"
 msgstr "Centru de ajutor"
 
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help center created. Write the first article, then publish it."
 msgstr "Centrul de ajutor a fost creat. Scrieți primul articol, apoi publicați-l."
@@ -486,12 +480,6 @@ msgstr "Centrul de ajutor a fost creat. Scrieți primul articol, apoi publicați
 #: src/features/help/SettingsTab.tsx
 msgid "Help center deleted"
 msgstr "Centru de ajutor șters"
-
-#: src/features/help/HelpColumn.tsx
-#: src/features/help/HelpFrame.tsx
-#: src/features/help/pages.tsx
-msgid "Help centers"
-msgstr "Centre de ajutor"
 
 #: src/features/help/text.tsx
 msgid "Help centers are turned off on this server."
@@ -565,7 +553,6 @@ msgstr "Limbă"
 msgid "Language of the articles"
 msgstr "Language of the articles"
 
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Languages"
 msgstr "Limbi"
@@ -573,10 +560,6 @@ msgstr "Limbi"
 #: src/features/help/ReportTab.tsx
 msgid "Last {d} days"
 msgstr "Ultimele {d} zile"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "last 7 days"
-msgstr "ultimele 7 zile"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "Last 7 days"
@@ -626,6 +609,10 @@ msgstr "Mai mult"
 msgid "More for {name}"
 msgstr "Mai mult pentru {name}"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "move"
+msgstr "deplasare"
+
 #: src/features/help/CollectionsTab.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "Mută {name}. Trage sau apasă Alt cu săgețile."
@@ -653,6 +640,10 @@ msgid "New address"
 msgstr "New address"
 
 #: src/features/help/ArticlesTab.tsx
+msgid "new article"
+msgstr "articol nou"
+
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/pages.tsx
 msgid "New article"
 msgstr "Articol nou"
@@ -661,16 +652,16 @@ msgstr "Articol nou"
 msgid "New article ({newKey})"
 msgstr "Articol nou ({newKey})"
 
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CollectionsTab.tsx
+#: src/features/help/pages.tsx
 msgid "New collection"
 msgstr "Colecție nouă"
 
-#: src/features/help/CollectionsTab.tsx
-msgid "New collection ({newKey})"
-msgstr "Colecție nouă ({newKey})"
+#: src/features/help/pages.tsx
+msgid "New collection ({colKey})"
+msgstr "Colecție nouă ({colKey})"
 
-#: src/features/help/HelpFrame.tsx
+#: src/features/help/pages.tsx
 msgid "New help center for {product}"
 msgstr "Centru de ajutor nou pentru {product}"
 
@@ -713,12 +704,10 @@ msgstr "Încă nu există versiuni anterioare."
 msgid "No help center for {0} yet"
 msgstr "Încă nu există un centru de ajutor pentru {0}"
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "No help center yet. Owners and admins create it."
 msgstr "Încă nu există centru de ajutor. Proprietarii și administratorii îl creează."
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "No inbox to show a help center for."
 msgstr "Nicio căsuță pentru care să se afișeze un centru de ajutor."
@@ -743,10 +732,6 @@ msgstr "Nescris"
 #: src/features/help/EditorToolbar.tsx
 msgid "Numbered list"
 msgstr "Listă numerotată"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "of {answers} answers"
-msgstr "din {answers} răspunsuri"
 
 #: src/features/help/ImportCard.tsx
 msgid "Off: a draft you edited in Yuva since the last import is kept."
@@ -775,6 +760,11 @@ msgstr "Doar proprietarii și administratorii pot face asta."
 #: src/features/help/ImportCard.tsx
 msgid "Only owners and admins can use a Zendesk migration."
 msgstr "Only owners and admins can use a Zendesk migration."
+
+#: src/features/help/ArticlesTab.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "deschide"
 
 #: src/features/help/ImportCard.tsx
 msgid "Open the drafts"
@@ -857,21 +847,17 @@ msgstr "Adresă publică"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Publish"
 msgstr "Publică"
 
 #: src/features/help/ArticleEditor.tsx
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Publish ({publishKey})"
 msgstr "Publică ({publishKey})"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/ImportCard.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/Revisions.tsx
@@ -900,11 +886,6 @@ msgstr "Redirects"
 #: src/features/help/SettingsTab.tsx
 msgid "Remove {0}"
 msgstr "Elimină {0}"
-
-#: src/features/help/HelpFrame.tsx
-#: src/features/help/pages.tsx
-msgid "Report"
-msgstr "Raport"
 
 #: src/features/help/ReportTab.tsx
 msgid "Report period"
@@ -962,12 +943,20 @@ msgid "Saving…"
 msgstr "Se salvează…"
 
 #: src/features/help/ArticlesTab.tsx
+msgid "search"
+msgstr "caută"
+
+#: src/features/help/pages.tsx
+msgid "Search articles…"
+msgstr "Caută în articole…"
+
+#: src/features/help/pages.tsx
+msgid "Search gaps"
+msgstr "Goluri în căutare"
+
+#: src/features/help/pages.tsx
 msgid "Search titles"
 msgstr "Caută în titluri"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Search titles ({findKey})"
-msgstr "Caută în titluri ({findKey})"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Search words"
@@ -982,13 +971,13 @@ msgstr "Căutat, nimic găsit"
 msgid "Searches"
 msgstr "Căutări"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "searches this week"
-msgstr "căutări săptămâna aceasta"
-
 #: src/features/help/ReportTab.tsx
 msgid "Searches with no result"
 msgstr "Căutări fără rezultat"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "select"
+msgstr "selectează"
 
 #: src/features/help/ReportTab.tsx
 msgid "Sent"
@@ -998,7 +987,6 @@ msgstr "Trimis"
 msgid "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 msgstr "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/text.tsx
 msgid "Settings"
@@ -1067,10 +1055,6 @@ msgstr "Începe cu un titlu. Textul îl scrii apoi și rămâne ciornă până s
 #: src/features/help/ImportCard.tsx
 msgid "State"
 msgstr "State"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Status"
-msgstr "Stare"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Submit draft"
@@ -1177,6 +1161,10 @@ msgstr "Nivel superior"
 msgid "Translation deleted"
 msgstr "Traducere ștearsă"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "Try again"
+msgstr "Încearcă din nou"
+
 #: src/features/help/text.tsx
 msgid "Type a word to search for."
 msgstr "Scrie un cuvânt de căutat."
@@ -1188,7 +1176,6 @@ msgstr "Scrie un cuvânt de căutat."
 msgid "Unpublish"
 msgstr "Retrage publicarea"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Unpublish ({publishKey})"
 msgstr "Retrage publicarea ({publishKey})"
@@ -1207,8 +1194,6 @@ msgstr "Retragi publicarea acestei traduceri?"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Unpublished"
 msgstr "Nepublicat"
@@ -1220,10 +1205,6 @@ msgstr "Modificări nepublicate"
 #: src/features/help/ArticleEditor.tsx
 msgid "Unsaved changes"
 msgstr "Modificări nesalvate"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Updated"
-msgstr "Actualizat"
 
 #: src/features/help/SettingsTab.tsx
 msgid "Use 3 to 48 letters, numbers and inner hyphens."
@@ -1245,12 +1226,10 @@ msgstr "Versiune restaurată în ciornă"
 msgid "View"
 msgstr "Vezi"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "View site"
 msgstr "Vezi site-ul"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "View site ({openKey})"
 msgstr "Vezi site-ul ({openKey})"
@@ -1259,10 +1238,6 @@ msgstr "Vezi site-ul ({openKey})"
 #: src/features/help/ReportTab.tsx
 msgid "Views"
 msgstr "Vizualizări"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Views · 7 days"
-msgstr "Vizualizări · 7 zile"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "Visibility"

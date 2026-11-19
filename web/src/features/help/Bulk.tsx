@@ -3,7 +3,7 @@ import { ChevronDownIcon } from "lucide-react"
 
 import { toast, useConfirm } from "@/components/common"
 import { useBulkReport } from "@/components/common/BulkReport"
-import { BulkButton, SelectionBar } from "@/components/common/Selection"
+import { BulkBar, bulkButton } from "@/components/common/ListBox"
 import { useErrorText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -11,7 +11,6 @@ import { useBulkArticles } from "@/features/help/queries"
 import { articleTitle, collectionName } from "@/features/help/text"
 import type { Selection } from "@/hooks/use-selection"
 import type { BulkResult, HelpArticleBulkChange, HelpArticleSummary, HelpCenter, HelpCollection } from "@/lib/api"
-import { look } from "@/features/inbox/PageFrame"
 
 export function ArticleBulkBar({
   center,
@@ -115,25 +114,33 @@ export function ArticleBulkBar({
 
   return (
     <>
-      <SelectionBar selection={selection} busy={bulk.isPending}>
+      <BulkBar
+        picked={selection.count}
+        total={items.length}
+        onToggleAll={selection.toggleAll}
+        onCancel={selection.stop}
+        busy={bulk.isPending}
+      >
         {center.can_publish && (
           <>
-            <BulkButton
-              selection={selection}
-              disabled={bulk.isPending}
+            <Button
+              variant="outline"
+              className={bulkButton()}
+              disabled={selection.count === 0 || bulk.isPending}
               onClick={publish}
               data-testid="publish-selected"
             >
               <Trans>Publish</Trans>
-            </BulkButton>
-            <BulkButton
-              selection={selection}
-              disabled={bulk.isPending}
+            </Button>
+            <Button
+              variant="outline"
+              className={bulkButton()}
+              disabled={selection.count === 0 || bulk.isPending}
               onClick={unpublish}
               data-testid="unpublish-selected"
             >
               <Trans>Unpublish</Trans>
-            </BulkButton>
+            </Button>
           </>
         )}
         <DropdownMenu>
@@ -141,7 +148,7 @@ export function ArticleBulkBar({
             render={
               <Button
                 variant="outline"
-                className={look.btnSm}
+                className={bulkButton()}
                 disabled={selection.count === 0 || bulk.isPending}
                 title={t`Move to collection`}
               />
@@ -162,16 +169,16 @@ export function ArticleBulkBar({
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
-        <BulkButton
-          selection={selection}
-          destructive
-          disabled={bulk.isPending}
+        <Button
+          variant="outline"
+          className={bulkButton(true)}
+          disabled={selection.count === 0 || bulk.isPending}
           onClick={remove}
           data-testid="delete-selected"
         >
           <Trans>Delete</Trans>
-        </BulkButton>
-      </SelectionBar>
+        </Button>
+      </BulkBar>
       {confirmDialog}
       {reportDialog}
     </>

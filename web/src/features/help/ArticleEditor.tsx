@@ -28,7 +28,7 @@ import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Textarea } from "@/components/ui/textarea"
 import { EditorToolbar } from "@/features/help/EditorToolbar"
-import { HelpLayout, HelpTrail } from "@/features/help/HelpFrame"
+import { HelpLayout } from "@/features/help/HelpFrame"
 import { format, insertBlock, type Format } from "@/features/help/markdown"
 import { OriginalText, ArticlePreview } from "@/features/help/Preview"
 import {
@@ -96,10 +96,8 @@ function EditorFrame({ center, back, children }: { center: HelpCenter; back: str
       </main>
     )
   return (
-    <HelpLayout place="articles" center={center} testId="help-editor">
-      <FlatTop back={{ label: back, to: centerLink(center.id) }}>
-        <HelpTrail place={back} center={center} />
-      </FlatTop>
+    <HelpLayout testId="help-editor">
+      <FlatTop back={{ label: back, to: centerLink(center.id) }} />
       {children}
     </HelpLayout>
   )
@@ -810,7 +808,7 @@ export function ArticleEditorPage() {
   const a = article.data
   if (flat && (!c || !a))
     return (
-      <HelpLayout place="articles" testId="help-editor">
+      <HelpLayout testId="help-editor">
         <FlatTop back={{ label: t`Articles`, to: centerLink(centerId) }} />
         {center.isPending || article.isPending ? (
           <div className="mt-3 flex max-w-[760px] flex-col gap-4" aria-busy="true">

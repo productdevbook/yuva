@@ -34,7 +34,7 @@ export function PageTitle({
         <h1 className="m-0 min-w-0 truncate text-[22px] leading-7 font-semibold tracking-[-0.01em]">{title}</h1>
         {sub && <p className="m-0 min-w-0 truncate text-body text-muted-foreground">{sub}</p>}
       </div>
-      {actions && <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div>}
+      {actions && <div className="flex max-w-full min-w-0 flex-wrap items-center gap-2">{actions}</div>}
     </header>
   )
 }

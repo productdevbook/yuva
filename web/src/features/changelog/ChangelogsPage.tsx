@@ -9,7 +9,7 @@ import { PaneBack } from "@/components/common/Column"
 import { CHANGELOG_KEYS, keyLabel } from "@/components/common/ShortcutSheet"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { ChangelogLayout, ChangelogTrail } from "@/features/changelog/ChangelogFrame"
+import { ChangelogLayout } from "@/features/changelog/ChangelogFrame"
 import { CreateChangelogDialog } from "@/features/changelog/CreateChangelogDialog"
 import { PreviewDialog } from "@/features/changelog/PreviewDialog"
 import { changelogLink, changelogOfInbox, useChangelogs, useUpdateChangelog } from "@/features/changelog/queries"
@@ -142,10 +142,8 @@ export function ChangelogsPage() {
   )
   if (!phone)
     return (
-      <ChangelogLayout place="changelogs" testId="changelogs-page">
-        <FlatTop back={{ label: t`What’s new`, to: "/updates" }}>
-          <ChangelogTrail place={t`Changelogs`} />
-        </FlatTop>
+      <ChangelogLayout testId="changelogs-page">
+        <FlatTop back={{ label: t`Updates`, to: "/updates" }} />
         <section className="flex max-w-[980px] flex-col">
           <PageHeading
             title={t`Changelogs`}

@@ -69,6 +69,11 @@ msgid "{0, plural, one {{shown} person} other {{shown} people}}"
 msgstr "{0, plural, one {{shown} henkilö} other {{shown} henkilöä}}"
 
 #. placeholder {0}: rows.length
+#: src/features/feedback/FeedbackHome.tsx
+msgid "{0, plural, one {{shown} report} other {{shown} reports}}"
+msgstr "{0, plural, one {{shown} palaute} other {{shown} palautetta}}"
+
+#. placeholder {0}: rows.length
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "{0, plural, one {{shown} triggered e-mail} other {{shown} triggered e-mails}}"
 msgstr "{0, plural, one {{shown} automaattinen sähköposti} other {{shown} automaattista sähköpostia}}"
@@ -208,6 +213,7 @@ msgid "{0} marked as spam · no reply needed"
 msgstr "{0} merkitty roskapostiksi · vastausta ei tarvita"
 
 #. placeholder {0}: done.length
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "{0} moved to the Trash"
@@ -223,6 +229,16 @@ msgstr "{0} / {1}"
 #: src/features/team/TeamPage.tsx
 msgid "{0} open, unassigned"
 msgstr "{0} avointa, määrittämättä"
+
+#. placeholder {0}: done.length
+#: src/features/feedback/FeedbackHome.tsx
+msgid "{0} reopened"
+msgstr "{0} avattu uudelleen"
+
+#. placeholder {0}: done.length
+#: src/features/feedback/FeedbackHome.tsx
+msgid "{0} resolved"
+msgstr "{0} ratkaistu"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
@@ -416,9 +432,9 @@ msgstr "{count, plural, one {# person} other {# people}} who confirmed before wo
 msgid "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 msgstr "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 
-#: src/features/feedback/FeedbackPage.tsx
-msgid "{count, plural, one {# report} other {# reports}}"
-msgstr "{count, plural, one {# raportti} other {# raporttia}}"
+#: src/features/docs/DocsPage.tsx
+msgid "{count, plural, one {# post waiting for approval} other {# posts waiting for approval}}"
+msgstr "{count, plural, one {# julkaisu odottaa hyväksyntää} other {# julkaisua odottaa hyväksyntää}}"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "{count, plural, one {# scope} other {# scopes}}"
@@ -511,10 +527,6 @@ msgstr "{doneText} / {total}"
 msgid "{doneText} of {total} done"
 msgstr "{doneText}/{total} valmiina"
 
-#: src/features/status/StatusPages.tsx
-msgid "{down, plural, one {# down} other {# down}}"
-msgstr "{down, plural, one {# alhaalla} other {# alhaalla}}"
-
 #: src/features/docs/PagesTab.tsx
 msgid "{down} not helpful"
 msgstr "{down} ei hyödyllinen"
@@ -546,6 +558,10 @@ msgstr "{first} arvioi keskustelun 👍"
 #: src/features/conversation/messages/Thread.tsx
 msgid "{first} rated the conversation 👎"
 msgstr "{first} arvioi keskustelun 👎"
+
+#: src/features/status/StatusPages.tsx
+msgid "{fmtCount, plural, one {# page} other {# pages}}"
+msgstr "{fmtCount, plural, one {# sivu} other {# sivua}}"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "{from} has an SPF record. Whether it passes is known once the test mail is read."
@@ -774,10 +790,6 @@ msgstr "{n} merkitty lukemattomiksi"
 #: src/features/mail/MailList.tsx
 msgid "{n} moved to the Inbox"
 msgstr "{n} siirretty Saapuneisiin"
-
-#: src/features/feedback/FeedbackPage.tsx
-msgid "{n} reports"
-msgstr "{n} raporttia"
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -1152,10 +1164,6 @@ msgstr "{unreadText} lukematta"
 msgid "{unseenText} unread of {totalText}"
 msgstr "{unseenText} lukematonta, yhteensä {totalText}"
 
-#: src/features/status/StatusPages.tsx
-msgid "{up, plural, one {# up} other {# up}}"
-msgstr "{up, plural, one {# ylhäällä} other {# ylhäällä}}"
-
 #: src/features/docs/PagesTab.tsx
 msgid "{up} helpful"
 msgstr "{up} hyödyllinen"
@@ -1332,7 +1340,7 @@ msgstr "24 kuukautta"
 msgid "3 months"
 msgstr "3 kuukautta"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "3 to 48 letters, numbers and hyphens. It is unique on this server."
 msgstr "3–48 kirjainta, numeroa ja yhdysmerkkiä. Yksilöllinen tällä palvelimella."
 
@@ -1536,11 +1544,11 @@ msgstr "Keskustelu sai hyväksytyn vastauksen"
 msgid "A discussion started"
 msgstr "Keskustelu alkoi"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "A draft incident opens for your team to review. Customers see nothing until a member publishes it."
 msgstr "Tiimillesi avataan häiriöluonnos tarkistettavaksi. Asiakkaat eivät näe mitään, ennen kuin jäsen julkaisee sen."
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "A draft is seen only by your team and changes no component until you publish it."
 msgstr "Luonnoksen näkee vain tiimisi, eikä se muuta mitään komponenttia ennen kuin julkaiset sen."
 
@@ -1751,7 +1759,7 @@ msgstr "Ominaisuudella voi olla enintään 100 segmenttiä. Poista yksi ensin."
 msgid "A property can have at most 20 funnels. Delete one first."
 msgstr "Ominaisuudella voi olla enintään 20 suppiloa. Poista yksi ensin."
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "A public page that tells your customers whether {inboxName} works. It stays unpublished until you publish it."
 msgstr "Julkinen sivu, joka kertoo asiakkaillesi, toimiiko {inboxName}. Se pysyy julkaisematta, kunnes julkaiset sen."
 
@@ -1759,7 +1767,7 @@ msgstr "Julkinen sivu, joka kertoo asiakkaillesi, toimiiko {inboxName}. Se pysyy
 msgid "A published What's new entry was deleted"
 msgstr "Julkaistu Uutta-merkintä poistettiin"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "A pushed state that names its own state keeps it."
 msgstr "Lähetetty tila, joka ilmoittaa oman tilansa, säilyttää sen."
 
@@ -1982,7 +1990,7 @@ msgstr "Tilinumero"
 msgid "Acme docs"
 msgstr "Acme docs"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "Acme status"
 msgstr "Acmen tila"
 
@@ -2011,7 +2019,6 @@ msgstr "Vain toiminnot"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "Active"
 msgstr "Aktiivinen"
 
@@ -2182,7 +2189,7 @@ msgstr "Lisää vähintään yksi origin."
 msgid "Add channel"
 msgstr "Lisää kanava"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Add component"
 msgstr "Lisää komponentti"
@@ -2204,7 +2211,7 @@ msgstr "Lisää verkkotunnus"
 msgid "Add endpoint"
 msgstr "Lisää päätepiste"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Add group"
 msgstr "Lisää ryhmä"
@@ -2230,7 +2237,7 @@ msgstr "Lisää tunniste {labelName}"
 msgid "Add labels"
 msgstr "Lisää tunnisteita"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Add monitor"
 msgstr "Lisää valvonta"
 
@@ -2344,7 +2351,7 @@ msgstr "Lisäsi verkkotunnuksen {domain} kertakirjautumiseen"
 #: src/features/mail/MailSide.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 #: src/features/status/MonitorHttpFields.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/MonitorToken.tsx
@@ -2404,7 +2411,6 @@ msgid "Admins see every inbox and manage products, channels and members."
 msgstr "Ylläpitäjät näkevät kaikki postilaatikot ja hallitsevat tuotteita, kanavia ja jäseniä."
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/StatusPages.tsx
 msgid "Affects"
 msgstr "Koskee"
 
@@ -2525,7 +2531,6 @@ msgid "All mentions"
 msgstr "Kaikki maininnat"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/StatusPages.tsx
 msgid "All monitors"
 msgstr "Kaikki valvonnat"
 
@@ -2546,7 +2551,6 @@ msgid "all products"
 msgstr "kaikki tuotteet"
 
 #: src/components/common/WorkspaceSelector.tsx
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/SidePanels.tsx
@@ -2554,7 +2558,6 @@ msgstr "kaikki tuotteet"
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "All products"
 msgstr "Kaikki tuotteet"
 
@@ -2575,10 +2578,6 @@ msgstr "Kaikki vaiheet"
 #: src/features/status/StatusPages.tsx
 msgid "All systems operational"
 msgstr "Kaikki järjestelmät toimivat"
-
-#: src/features/status/StatusPages.tsx
-msgid "all up"
-msgstr "kaikki ylhäällä"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "All, drafts, scheduled or sent"
@@ -2850,7 +2849,7 @@ msgstr "An idea only shows its issues and their state. Its stage stays your deci
 msgid "An inbox collects the conversations of one product or brand. Name it after the product your customers know."
 msgstr "Postilaatikko kerää yhden tuotteen tai brändin keskustelut. Nimeä se asiakkaidesi tuntemaa tuotetta mukaan."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "An incident is published at once, so customers see it on the page."
 msgstr "Häiriö julkaistaan heti, joten asiakkaat näkevät sen sivulla."
 
@@ -3056,7 +3055,7 @@ msgstr "Vastaus tyhjennetty"
 msgid "Answer to a forward from {author}"
 msgstr "Vastaus henkilön {author} välitykseen"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "answered"
 msgstr "vastattu"
 
@@ -3134,7 +3133,7 @@ msgstr "Kaikki, mikä käyttää tätä avainta, lakkaa toimimasta heti."
 
 #: src/components/common/Source.tsx
 #: src/components/common/text.ts
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "API"
 msgstr "API"
 
@@ -3333,7 +3332,7 @@ msgstr "Kuten yllä ({current})"
 msgid "As fast as allowed"
 msgstr "Niin nopeasti kuin sallittu"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "As often as allowed"
 msgstr "Niin usein kuin sallittu"
 
@@ -3746,12 +3745,6 @@ msgstr "Lähettää signaalin vain, kun työ onnistui."
 msgid "Before"
 msgstr "Aiemmin"
 
-#. placeholder {0}: date(before)
-#. placeholder {1}: took(before)
-#: src/features/status/StatusPages.tsx
-msgid "before that: {0}, {1}"
-msgstr "sitä ennen: {0}, {1}"
-
 #: src/features/migrations/ConnectStep.tsx
 msgid "Before you connect"
 msgstr "Ennen yhdistämistä"
@@ -3985,8 +3978,7 @@ msgstr "Tämän kanavan joukkolähetykset lähtevät vastausten SMTP-tilin kautt
 msgid "Browser"
 msgstr "Selain"
 
-#: src/features/feedback/FeedbackList.tsx
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Bugs, ideas and praise sent from your apps and pages"
 msgstr "Bugit, ideat ja kehut sovelluksistasi ja sivuiltasi"
 
@@ -3999,10 +3991,6 @@ msgstr "Bundle ID"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
 msgstr "Aukioloajat"
-
-#: src/features/status/StatusPages.tsx
-msgid "by e-mail"
-msgstr "sähköpostilla"
 
 #: src/features/conversation/Feedback.tsx
 msgid "By e-mail"
@@ -4071,11 +4059,9 @@ msgstr "Kampanjan nimi"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/NewsletterStep.tsx
 #: src/features/status/AddSubscriberDialog.tsx
-#: src/features/status/ComponentDialogs.tsx
-#: src/features/status/CreatePageDialog.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/IncidentForm.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Cancel"
@@ -4169,7 +4155,6 @@ msgid "Catch-all without a From address"
 msgstr "Kaikki vastaanottava osoite ilman Lähettäjä-osoitetta"
 
 #: src/features/conversation/Feedback.tsx
-#: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Category"
 msgstr "Luokka"
@@ -4416,7 +4401,7 @@ msgstr "Tarkista DNS"
 msgid "Check DNS and start signing"
 msgstr "Tarkista DNS ja aloita allekirjoitus"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Check every"
 msgstr "Tarkista joka"
@@ -4503,10 +4488,6 @@ msgstr "Tarkistetaan …"
 msgid "Checks"
 msgstr "Tarkistukset"
 
-#: src/features/status/MonitorsPage.tsx
-msgid "Checks that watch your products and set component states"
-msgstr "Tarkistukset, jotka valvovat tuotteitasi ja asettavat osien tilat"
-
 #: src/features/migrations/Wizard.tsx
 msgid "Choose"
 msgstr "Valitse"
@@ -4542,10 +4523,6 @@ msgstr "Valitse arvo"
 #: src/app/Gate.tsx
 msgid "Choose a workspace"
 msgstr "Valitse työtila"
-
-#: src/features/feedback/FeedbackList.tsx
-msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
-msgstr "Valitse luettelosta tai liiku painikkeilla ↑ ↓ ja avaa Enterillä."
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose the account that sends your answers. You can change it later in the channel settings."
@@ -4589,6 +4566,7 @@ msgstr "Tyhjennä"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Clear filters"
 msgstr "Tyhjennä suodattimet"
 
@@ -4604,7 +4582,6 @@ msgstr "Tyhjennä vastaus"
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the search"
@@ -4868,7 +4845,7 @@ msgstr "Valmistunut"
 msgid "Completed at {endedAt}"
 msgstr "Päätetty {endedAt}"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Component"
 msgstr "Komponentti"
@@ -4880,12 +4857,11 @@ msgstr "Komponentti poistettu"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Components"
 msgstr "Komponentit"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Components it touches"
 msgstr "Koskettavat komponentit"
 
@@ -5586,17 +5562,13 @@ msgstr "Luo käytäntö"
 msgid "Create rule"
 msgstr "Luo sääntö"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "Create status page"
 msgstr "Luo tilasivu"
 
 #: src/features/status/StatusPages.tsx
 msgid "Create status page ({newKey})"
 msgstr "Luo tilasivu ({newKey})"
-
-#: src/features/status/StatusPages.tsx
-msgid "Create status page for {product}"
-msgstr "Luo tilasivu tuotteelle {product}"
 
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Create team"
@@ -5787,7 +5759,7 @@ msgstr "Tummenna värit teeman mukaan"
 msgid "Data up to {builtText}"
 msgstr "Tiedot {builtText} asti"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Database upgrade"
 msgstr "Tietokannan päivitys"
 
@@ -6271,7 +6243,7 @@ msgstr "Kiellä"
 
 #: src/features/issues/IssueDialog.tsx
 #: src/features/settings/teams/TeamEditor.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
 msgstr "Kuvaus"
@@ -6331,6 +6303,9 @@ msgstr "Työpöytäilmoitukset on estetty tälle sivustolle selaimen asetuksissa
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
+#: src/features/status/IncidentsPage.tsx
+#: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusPages.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Details"
 msgstr "Tiedot"
@@ -6434,7 +6409,6 @@ msgstr "Keskustelu aloitettu"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
@@ -6826,10 +6800,6 @@ msgstr "Sähköpostitilaajat eivät ole käytössä"
 msgid "E-mail subscribers are off. Nobody can subscribe and no notices go out, but the list is kept."
 msgstr "Sähköpostitilaajat eivät ole käytössä. Kukaan ei voi tilata eikä ilmoituksia lähde, mutta luettelo säilyy."
 
-#: src/features/status/StatusPages.tsx
-msgid "E-mail subscriptions are off"
-msgstr "Sähköpostitilaukset ovat pois päältä"
-
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "E-mail view"
 msgstr "Sähköpostinäkymä"
@@ -6850,11 +6820,11 @@ msgstr "Sähköpostit liittyneille henkilöille"
 msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
 msgstr "Jokainen toiminto kerran, enintään 10. Toiminnot suoritetaan yhtenä muutoksena; jos yksi epäonnistuu, mitään ei toteuteta."
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Each component gets this state while the incident is open."
 msgstr "Jokainen komponentti saa tämän tilan niin kauan kuin häiriö on avoinna."
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Each component gets this state while the maintenance is open."
 msgstr "Jokainen komponentti saa tämän tilan niin kauan kuin huolto on käynnissä."
 
@@ -6953,7 +6923,7 @@ msgstr "Muokkaa API-avainta"
 msgid "Edit canned reply"
 msgstr "Muokkaa valmista vastausta"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Edit component"
 msgstr "Muokkaa komponenttia"
 
@@ -6962,7 +6932,7 @@ msgid "Edit design"
 msgstr "Muokkaa ulkoasua"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Edit details"
 msgstr "Muokkaa tietoja"
 
@@ -6990,7 +6960,7 @@ msgstr "Muokkaa tunnistetta"
 msgid "Edit macro"
 msgstr "Muokkaa makroa"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Edit monitor"
 msgstr "Muokkaa valvontaa"
 
@@ -7062,7 +7032,7 @@ msgstr "Muokataan luonnosta, jota ei voitu lähettää"
 msgid "Editing the message scheduled for {editingWhen}"
 msgstr "Muokataan viestiä, joka on ajastettu ajalle {editingWhen}"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Elevated API errors"
 msgstr "Kohonnut API-virheiden määrä"
 
@@ -7137,7 +7107,7 @@ msgstr "Päätepiste"
 msgid "Endpoints"
 msgstr "Päätepisteet"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Ends"
 msgstr "Päättyy"
 
@@ -7297,7 +7267,7 @@ msgstr "jokainen sähköposti"
 msgid "Every open conversation has someone."
 msgstr "Jokaisella avoimella keskustelulla on vastuuhenkilö."
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "Every open discussion has an answer."
 msgstr "Jokaisella avoimella keskustelulla on vastaus."
 
@@ -7305,12 +7275,11 @@ msgstr "Jokaisella avoimella keskustelulla on vastaus."
 msgid "Every other browser and device is signed out. This one stays signed in."
 msgstr "Kaikki muut selaimet ja laitteet kirjataan ulos. Tämä pysyy kirjautuneena."
 
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
 msgstr "kaikki tuotteet"
 
-#: src/features/broadcasts/BroadcastsFrame.tsx
+#: src/components/common/ProductFilter.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
 msgstr "Jokainen tuote"
@@ -7339,7 +7308,7 @@ msgstr "Jokainen vaihe läpäisi."
 msgid "Every subscriber keeps a consent record you can export."
 msgstr "Jokaisella tilaajalla on kirjattu suostumus, jonka voit viedä."
 
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every type"
 msgstr "Jokainen tyyppi"
@@ -7421,7 +7390,7 @@ msgstr "Esimerkki Oy"
 msgid "Expand or collapse every message"
 msgstr "Laajenna tai pienennä kaikki viestit"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Expected every"
 msgstr "Odotetaan joka"
@@ -7530,7 +7499,7 @@ msgstr "Epäonnistuu"
 msgid "Fails the monitor at once, without waiting for the grace."
 msgstr "Kaataa valvonnan heti odottamatta toleranssia."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Failures to go down"
 msgstr "Virheitä peräkkäin ennen kaatumista"
@@ -7550,7 +7519,7 @@ msgstr "palaute"
 #: src/features/contact/ContactCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/PagesTab.tsx
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/webhooks/events.tsx
@@ -7578,10 +7547,15 @@ msgstr "Palauteluokat"
 msgid "Feedback category"
 msgstr "Palauteluokka"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Feedback form"
 msgstr "Palautelomake"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Feedback form ({formKey})"
+msgstr "Palautelomake ({formKey})"
 
 #: src/features/conversation/actions.ts
 msgid "Feedback resolved"
@@ -7669,7 +7643,7 @@ msgstr "Suodata tunnisteen mukaan"
 msgid "Filter by plan"
 msgstr "Suodata paketin mukaan"
 
-#: src/features/broadcasts/BroadcastsFrame.tsx
+#: src/components/common/ProductFilter.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "Suodata tuotteen mukaan"
@@ -7681,12 +7655,17 @@ msgstr "Suodata tilan mukaan"
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Filter by status"
 msgstr "Suodata tilan mukaan"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Filter by team"
 msgstr "Suodata tiimin mukaan"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Filter by type"
+msgstr "Suodata tyypin mukaan"
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
@@ -7812,7 +7791,7 @@ msgstr "Ensimmäinen vastaus, mediaani"
 msgid "First rows of the file"
 msgstr "Tiedoston ensimmäiset rivit"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "First update"
 msgstr "Ensimmäinen päivitys"
 
@@ -8300,7 +8279,7 @@ msgstr "Google lähetti vahvistuskoodin"
 msgid "Google Takeout"
 msgstr "Google Takeout"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Grace"
 msgstr "Toleranssi"
@@ -8318,7 +8297,7 @@ msgstr "Tervehdys"
 msgid "Greets new conversations by e-mail, once per contact within the interval. Never sent to automatic mail or spam."
 msgstr "Tervehtii uusia keskusteluja sähköpostitse, kerran kontaktia kohden aikavälin sisällä. Ei koskaan lähetetä automaattiselle postille tai roskapostille."
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Group"
 msgstr "Ryhmä"
 
@@ -8500,7 +8479,7 @@ msgstr "Hei! Miten voimme auttaa?"
 
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Hidden"
 msgstr "Piilotettu"
@@ -8521,7 +8500,7 @@ msgstr "Piilota"
 msgid "Hide from the page"
 msgstr "Piilota sivulta"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Hide HTTP details"
 msgstr "Piilota HTTP-tiedot"
 
@@ -8583,7 +8562,7 @@ msgstr "Historia poistettu"
 msgid "Home"
 msgstr "Etusivu"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Host"
 msgstr "Isäntä"
@@ -8642,7 +8621,7 @@ msgstr "Kuinka nopeasti ja kuinka hyvin tiimisi vastaa"
 msgid "How HTML e-mails open. You can still switch each message."
 msgstr "Miten HTML-sähköpostit avautuvat. Voit silti vaihtaa jokaisen viestin erikseen."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "How late a beat may be."
 msgstr "Kuinka myöhässä signaali saa olla."
 
@@ -8791,7 +8770,7 @@ msgstr "Jos DNS-palveluntarjoajasi rajoittaa TXT-merkkijonon 255 merkkiin, jaa a
 msgid "If your mail provider mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "Jos sähköpostipalveluntarjoajasi lähettää vahvistuksen kyseiseen osoitteeseen, se saapuu tähän postilaatikkoon keskusteluna; avaa se siellä."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Ignores results and lets the component go back."
 msgstr "Ohittaa tulokset ja antaa komponentin palata."
 
@@ -8808,7 +8787,7 @@ msgid "IMAP server"
 msgstr "IMAP-palvelin"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Impact"
 msgstr "Vaikutus"
 
@@ -8901,7 +8880,7 @@ msgstr "– {contact} · {subject}"
 msgid "In 1 hour"
 msgstr "1 tunnin kuluttua"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "In a row, 1 to 10."
 msgstr "Peräkkäin, 1–10."
 
@@ -9098,7 +9077,6 @@ msgstr "Häiriö: {title} · {state}"
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "Incidents"
 msgstr "Häiriöt"
 
@@ -9550,7 +9528,7 @@ msgid "Keyword"
 msgstr "Avainsana"
 
 #: src/features/settings/automation/text.ts
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "Tyyppi"
@@ -9827,7 +9805,7 @@ msgstr "Leave your signature off this reply ({signatureKey})"
 msgid "Leave your signature off this reply, or put it back"
 msgstr "Leave your signature off this reply, or put it back"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Left off the public page and its overall state."
 msgstr "Jätetään pois julkiselta sivulta ja sen kokonaistilasta."
 
@@ -10119,6 +10097,7 @@ msgstr "Lataa kuvat"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/mail/MailDrafts.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
@@ -10391,7 +10370,6 @@ msgstr "Mails go out {sentence}, once to each person. Pausing stops sending but 
 msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
 msgstr "Viestit lähtevät klo {start}–{end} {city}n aikaa ({utcStart}–{utcEnd} UTC) ja jatkuvat seuraavana päivänä."
 
-#: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
 msgid "Maintenance"
 msgstr "Huolto"
@@ -10913,7 +10891,6 @@ msgstr "Seurannassa"
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/MonitorsPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Monitors"
 msgstr "Valvonnat"
@@ -10974,10 +10951,6 @@ msgstr "Eniten ”ei hyödyllinen” -arvioita ensin"
 msgid "Most active"
 msgstr "Aktiivisimmat"
 
-#: src/features/feedback/FeedbackPage.tsx
-msgid "Most asked for"
-msgstr "Eniten toivotut"
-
 #: src/features/docs/Toolbar.tsx
 msgid "Most disliked"
 msgstr "Eniten ei-pidetyt"
@@ -11010,8 +10983,11 @@ msgstr "Eniten ääniä"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/status/IncidentsPage.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "move"
 msgstr "liiku"
@@ -11020,6 +10996,10 @@ msgstr "liiku"
 #: src/features/inbox/ChatList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "Siirretäänkö {0} roskakoriin?"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Move {n} to the Trash?"
+msgstr "Siirretäänkö {n} roskakoriin?"
 
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -11058,6 +11038,10 @@ msgstr "Siirrä valittua kokoelmaa"
 msgid "Move the selected conversations to the Trash"
 msgstr "Siirrä valitut keskustelut roskakoriin"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move the selected feedback to the Trash"
+msgstr "Siirrä valittu palaute roskakoriin"
+
 #: src/features/conversation/ChatView.tsx
 msgid "Move this conversation to the Trash?"
 msgstr "Siirretäänkö tämä keskustelu roskakoriin?"
@@ -11085,6 +11069,10 @@ msgstr "Selaa ulkoasuja"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the entries"
 msgstr "Siirry merkintöjen välillä"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move through the feedback"
+msgstr "Liiku palautteissa"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the ideas"
@@ -11152,6 +11140,7 @@ msgstr "Siirrä edelliseen tai seuraavaan vaiheeseen"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
@@ -11163,6 +11152,7 @@ msgstr "Siirrä roskakoriin"
 msgid "Move to the Trash ({0})"
 msgstr "Siirrä roskakoriin ({0})"
 
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Move to the Trash (#)"
@@ -11276,9 +11266,9 @@ msgstr "Omat näkymäni"
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
-#: src/features/status/ComponentDialogs.tsx
-#: src/features/status/CreatePageDialog.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/ComponentForms.tsx
+#: src/features/status/CreatePageForm.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Name"
 msgstr "Nimi"
@@ -11504,6 +11494,7 @@ msgstr "Uusi kenttä"
 msgid "New filter"
 msgstr "Uusi suodatin"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "Uusi idea"
@@ -11527,6 +11518,10 @@ msgstr "uusia viimeisen {days} päivän aikana"
 #: src/features/migrations/MapStep.tsx
 msgid "New inbox…"
 msgstr "Uusi postilaatikko …"
+
+#: src/features/status/IncidentsPage.tsx
+msgid "new incident"
+msgstr "uusi häiriö"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -11587,6 +11582,10 @@ msgid "New migration"
 msgstr "Uusi siirto"
 
 #: src/features/status/MonitorsPage.tsx
+msgid "new monitor"
+msgstr "uusi valvonta"
+
+#: src/features/status/MonitorsPage.tsx
 msgid "New monitor"
 msgstr "Uusi valvonta"
 
@@ -11597,10 +11596,6 @@ msgstr "Uusi omistaja"
 #: src/features/team/RemoveMemberDialog.tsx
 msgid "New owner of {boxName}"
 msgstr "Postilaatikon {boxName} uusi omistaja"
-
-#: src/features/status/StatusPages.tsx
-msgid "New page"
-msgstr "Uusi sivu"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "New password"
@@ -11625,6 +11620,7 @@ msgid "New signing secret"
 msgstr "Uusi allekirjoitussalaisuus"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/status/StatusPages.tsx
 msgid "New status page"
 msgstr "Uusi tilasivu"
 
@@ -11748,7 +11744,7 @@ msgstr "Valitse seuraavaksi, mitä tuodaan. Skannaus lukee tiedoston kerran."
 msgid "Next, choose where they go."
 msgstr "Valitse seuraavaksi, minne ne menevät."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Nightly backup"
 msgstr "Yöllinen varmuuskopio"
 
@@ -11871,7 +11867,7 @@ msgstr "Komponenttia ei ole nimetty."
 msgid "No components in this group."
 msgstr "Tässä ryhmässä ei ole komponentteja."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "No components yet. Add one to a status page first."
 msgstr "Ei vielä komponentteja. Lisää ensin yksi tilasivulle."
 
@@ -11968,7 +11964,7 @@ msgstr "Ei vielä keskusteluja tällä sivulla."
 msgid "No discussions under the pages of these sites."
 msgstr "Ei keskusteluja näiden sivustojen sivujen alla."
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "No discussions yet. Readers start them under your documentation pages."
 msgstr "Ei vielä keskusteluja. Lukijat aloittavat ne dokumentaatiosivujesi alla."
 
@@ -12048,12 +12044,12 @@ msgstr "Tiedostoja ei hyväksytä."
 msgid "No filters yet."
 msgstr "Ei vielä suodattimia."
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
 msgstr "Ei ryhmää"
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "No hidden discussions."
 msgstr "Ei piilotettuja keskusteluja."
 
@@ -12111,7 +12107,7 @@ msgstr "Ei rajaa"
 msgid "No list matches “{q}”."
 msgstr "Mikään lista ei vastaa hakua ”{q}”."
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "No locked discussions."
 msgstr "Ei lukittuja keskusteluja."
 
@@ -12176,7 +12172,7 @@ msgstr "Ei muistiinpanoa"
 msgid "No notifications in the last 90 days."
 msgstr "Ei ilmoituksia viimeisen 90 päivän aikana."
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "No open feedback."
 msgstr "Ei avointa palautetta."
 
@@ -12472,7 +12468,7 @@ msgstr "Kukaan ei saisi tätä viestiä. Valitse listat, joilla on tilaajia, tai
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/setup/email/EmailTestStep.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "None"
 msgstr "Ei mitään"
@@ -12809,7 +12805,7 @@ msgstr "Mitään ei katoa: kun kirjaudut Microsoftilla uudelleen, kopiointi jatk
 msgid "Nothing is lost: when it continues, copying picks up where it stopped."
 msgstr "Mitään ei katoa: kun se jatkuu, kopiointi jatkuu siitä, mihin se jäi."
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Nothing is resolved yet."
 msgstr "Mitään ei ole vielä ratkaistu."
 
@@ -12823,7 +12819,7 @@ msgid "Nothing is snoozed."
 msgstr "Mitään ei ole torkulla."
 
 #: src/features/docs/discussions/QueuePane.tsx
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "Nothing is waiting for approval."
 msgstr "Mikään ei odota hyväksyntää."
 
@@ -12835,7 +12831,7 @@ msgstr "Mikään ei ole nyt pielessä. Avaa häiriö, kun jokin menee rikki."
 msgid "Nothing matches these filters."
 msgstr "Mikään ei vastaa näitä suodattimia."
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing matches your search here."
 msgstr "Mikään ei vastaa hakuasi täällä."
@@ -12844,7 +12840,7 @@ msgstr "Mikään ei vastaa hakuasi täällä."
 msgid "Nothing needs attention right now."
 msgstr "Mikään ei tarvitse huomiota juuri nyt."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Nothing opens by itself. Open an incident from the monitor when you want one."
 msgstr "Mitään ei avata itsestään. Avaa häiriö valvonnasta, kun haluat."
 
@@ -13301,10 +13297,6 @@ msgstr "Vain käynnit, jotka tehtiin sen jälkeen, kun he suostuivat pysyvään 
 msgid "Only while the panel is open in this browser. Away, you are alerted only about conversations assigned to you."
 msgstr "Vain kun paneeli on auki tässä selaimessa. Poissa ollessasi saat hälytyksen vain sinulle osoitetuista keskusteluista."
 
-#: src/features/status/StatusPages.tsx
-msgid "only your team can preview it"
-msgstr "vain tiimisi voi esikatsella sitä"
-
 #: src/features/broadcasts/NewBroadcastForm.tsx
 msgid "Only your team sees it."
 msgstr "Vain tiimisi näkee sen."
@@ -13317,8 +13309,11 @@ msgstr "avoin"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/status/IncidentsPage.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgctxt "keyboard hint"
 msgid "open"
@@ -13328,7 +13323,7 @@ msgstr "avaa"
 #: src/features/account/AccountPage.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -13338,7 +13333,9 @@ msgid "Open"
 msgstr "Avoin"
 
 #. placeholder {0}: a.filename
+#. placeholder {0}: p.name
 #: src/features/conversation/messages/Attachments.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Open {0}"
 msgstr "Avaa {0}"
 
@@ -13372,7 +13369,7 @@ msgid "Open Account security in your Yahoo account."
 msgstr "Avaa Tilin suojaus Yahoo-tililläsi."
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Open an incident"
 msgstr "Avaa häiriö"
@@ -13550,6 +13547,10 @@ msgstr "Avaa päätepiste"
 msgid "Open the entry"
 msgstr "Avaa merkintä"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Open the feedback"
+msgstr "Avaa palaute"
+
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Open the guide"
 msgstr "Open the guide"
@@ -13623,6 +13624,10 @@ msgid "Open the site, goal or funnel"
 msgstr "Avaa sivusto, tavoite tai suppilo"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Open the status page"
+msgstr "Avaa tilasivu"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Open the triggered e-mail"
 msgstr "Open the triggered e-mail"
 
@@ -13688,7 +13693,7 @@ msgstr "operational palauttaa; degraded, partial_outage ja major_outage kaatavat
 msgid "Operator"
 msgstr "Operaattori"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Optional. Shown on the public page."
 msgstr "Valinnainen. Näytetään julkisella sivulla."
 
@@ -13821,7 +13826,6 @@ msgstr "Ajan mittaan"
 
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
 msgstr "Yleiskatsaus"
@@ -13884,9 +13888,7 @@ msgstr "Sivu: {name}"
 
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
-#: src/features/status/StatusPages.tsx
 msgid "Pages"
 msgstr "Sivut"
 
@@ -13957,7 +13959,6 @@ msgstr "Salasana asetettu"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "Past"
 msgstr "Menneet"
 
@@ -14023,7 +14024,7 @@ msgstr "Keskeytä tai jatka valvontaa"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/setup/email/EmailTestStep.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Paused"
@@ -14268,10 +14269,6 @@ msgstr "Valitse ensin ulkoasu."
 msgid "Pick a design that renders without errors."
 msgstr "Valitse ulkoasu, joka renderöityy ilman virheitä."
 
-#: src/features/docs/DiscussionsTab.tsx
-msgid "Pick a discussion to read and answer it."
-msgstr "Valitse keskustelu, jonka haluat lukea ja johon haluat vastata."
-
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "Pick a field"
 msgstr "Valitse kenttä"
@@ -14299,17 +14296,9 @@ msgstr "Pick a list under Who gets it to save"
 msgid "Pick a member"
 msgstr "Valitse jäsen"
 
-#: src/features/status/MonitorsPage.tsx
-msgid "Pick a monitor to see what happened."
-msgstr "Valitse valvonta nähdäksesi, mitä tapahtui."
-
 #: src/features/docs/PagesTab.tsx
 msgid "Pick a page to see its ratings, discussions and questions."
 msgstr "Valitse sivu nähdäksesi sen arvioinnit, keskustelut ja kysymykset."
-
-#: src/features/feedback/FeedbackList.tsx
-msgid "Pick a piece of feedback"
-msgstr "Valitse palaute"
 
 #: src/features/broadcasts/ListPage.tsx
 msgid "Pick a sender in the settings"
@@ -14359,10 +14348,6 @@ msgstr "Valitse päätepiste"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Pick an inbox"
 msgstr "Valitse postilaatikko"
-
-#: src/features/status/IncidentsPage.tsx
-msgid "Pick an incident to read it."
-msgstr "Valitse häiriö lukeaksesi sen."
 
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "Pick an open incident or maintenance"
@@ -14503,7 +14488,7 @@ msgstr "Kiinnitetty"
 msgid "Pinned to the top of your list"
 msgstr "Kiinnitetty listasi ylälaitaan"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "Pelkkää tekstiä linkeillä ja rivinvaihdoilla, enintään 5 000 merkkiä."
 
@@ -14515,8 +14500,12 @@ msgstr "Pelkkää tekstiä, näkyy välitetyn viestin yläpuolella."
 msgid "Plan"
 msgstr "Paketti"
 
+#: src/features/status/IncidentsPage.tsx
+msgid "plan maintenance"
+msgstr "suunnittele huolto"
+
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Plan maintenance"
 msgstr "Suunnittele huolto"
@@ -14558,7 +14547,7 @@ msgstr "Osoittaa kohteeseen"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Port"
 msgstr "Portti"
 
@@ -14597,6 +14586,10 @@ msgstr "Postiosoite"
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Posted by you and marked as the accepted answer."
 msgstr "Julkaisit sen ja se on merkitty hyväksytyksi vastaukseksi."
+
+#: src/features/docs/DocsPage.tsx
+msgid "Posts from new readers wait here until a member approves them"
+msgstr "Uusien lukijoiden julkaisut odottavat täällä, kunnes jäsen hyväksyy ne"
 
 #: src/components/common/text.ts
 msgid "Preference page"
@@ -14656,8 +14649,20 @@ msgid "Previous or next discussion"
 msgstr "Edellinen tai seuraava keskustelu"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Previous or next incident"
+msgstr "Edellinen tai seuraava häiriö"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Previous or next language"
 msgstr "Edellinen tai seuraava kieli"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Previous or next monitor"
+msgstr "Edellinen tai seuraava valvonta"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Previous or next status page"
+msgstr "Edellinen tai seuraava tilasivu"
 
 #: src/features/feedback/Lightbox.tsx
 msgid "Previous screenshot"
@@ -14709,8 +14714,8 @@ msgstr "pro, tiimi"
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/sections.tsx
-#: src/features/status/CreatePageDialog.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/CreatePageForm.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Product"
 msgstr "Tuote"
 
@@ -14864,7 +14869,7 @@ msgstr "Julkaise vika"
 msgid "Publish and unpublish help center articles"
 msgstr "Julkaise ja peruuta ohjekeskuksen artikkelien julkaisu"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Publish now"
 msgstr "Julkaise nyt"
 
@@ -14970,6 +14975,10 @@ msgstr "Aseta nämä elementit dokumentaatiosi jokaisen sivun alle. Ne käyttäv
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Question"
 msgstr "Kysymys"
+
+#: src/features/docs/DocsPage.tsx
+msgid "Questions readers ask under your documentation pages"
+msgstr "Kysymykset, joita lukijat esittävät dokumentaatiosivujesi alla"
 
 #: src/components/common/text.ts
 msgid "Queued"
@@ -15633,7 +15642,7 @@ msgstr "Poistetaan tuotua historiaa …"
 msgid "Rename"
 msgstr "Nimeä uudelleen"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Rename group"
 msgstr "Nimeä ryhmä uudelleen"
 
@@ -15642,9 +15651,14 @@ msgid "Rename the mailbox"
 msgstr "Nimeä postilaatikko uudelleen"
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Reopen"
 msgstr "Avaa uudelleen"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Reopen ({closeKey})"
+msgstr "Avaa uudelleen ({closeKey})"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reorder the selected view in the sidebar"
@@ -15977,10 +15991,15 @@ msgid "Resolution {resolution}"
 msgstr "Ratkaisu {resolution}"
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "Resolve"
 msgstr "Ratkaise"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Resolve ({closeKey})"
+msgstr "Ratkaise ({closeKey})"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -15995,10 +16014,13 @@ msgstr "Ratkaise häiriö"
 msgid "Resolve or complete"
 msgstr "Ratkaise tai viimeistele"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Resolve or reopen the selected feedback"
+msgstr "Ratkaise tai avaa valittu palaute uudelleen"
+
 #: src/components/common/text.ts
 #: src/features/conversation/ConversationStatus.tsx
-#: src/features/feedback/FeedbackList.tsx
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/status/text.tsx
 msgid "Resolved"
 msgstr "Ratkaistu"
@@ -16011,11 +16033,6 @@ msgstr "Ratkaistu {endedAt}"
 #: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "Ratkaistu ajassa"
-
-#. placeholder {0}: took(last)
-#: src/features/status/StatusPages.tsx
-msgid "resolved in {0}"
-msgstr "ratkaistu: {0}"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Resolved. It moved to the Resolved tab."
@@ -16182,7 +16199,6 @@ msgstr "Heti tilauksen jälkeen ihmiset saavat lyhyen viestin, joka vahvistaa se
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/feedback/RoadmapCard.tsx
 msgid "Roadmap"
 msgstr "Tiekartta"
@@ -16363,10 +16379,10 @@ msgstr "Lauantai"
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/parts.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/IncidentForm.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Save"
 msgstr "Tallenna"
 
@@ -16387,7 +16403,7 @@ msgstr "Tallenna ja ajasta uudelleen"
 msgid "Save and test"
 msgstr "Save and test"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Save as draft"
 msgstr "Tallenna luonnoksena"
 
@@ -16526,7 +16542,6 @@ msgstr "Ajasta merkintä"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/text.ts
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/text.tsx
 msgid "Scheduled"
 msgstr "Ajastettu"
@@ -16551,7 +16566,6 @@ msgid "Scheduled by"
 msgstr "Ajastaja"
 
 #: src/features/status/Notices.tsx
-#: src/features/status/StatusPages.tsx
 msgid "Scheduled for {due}"
 msgstr "Ajastettu: {due}"
 
@@ -16604,7 +16618,7 @@ msgstr "Näytön koko"
 msgid "Screenshot"
 msgstr "Kuvakaappaus"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Screenshots attached"
 msgstr "Kuvakaappauksia liitetty"
 
@@ -16616,12 +16630,12 @@ msgstr "SDK"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "search"
 msgstr "hae"
 
 #: src/app/Palette.tsx
-#: src/features/feedback/FeedbackList.tsx
 msgid "Search"
 msgstr "Haku"
 
@@ -16671,9 +16685,14 @@ msgstr "Hae emojia"
 msgid "Search emoji (in English)"
 msgstr "Hae emojia (englanniksi)"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Search feedback"
 msgstr "Hae palautteesta"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Search feedback…"
+msgstr "Hae palautteista…"
 
 #: src/app/places.tsx
 msgid "Search gaps"
@@ -16775,7 +16794,7 @@ msgstr "Hae, lajittele ja luonnostele vastauksia päätteestäsi. Se toimii sinu
 msgid "Second secret"
 msgstr "Toinen salaisuus"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Seconds, 1 to 30."
 msgstr "Sekuntia, 1–30."
 
@@ -16805,6 +16824,7 @@ msgstr "Valvonnan näkemä"
 
 #: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "select"
@@ -16826,6 +16846,10 @@ msgid "Select all"
 msgstr "Valitse kaikki"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Select the article"
+msgstr "Valitse artikkeli"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Select the broadcast under the cursor"
 msgstr "Valitse kohdistimen kohdalla oleva joukkoviesti"
 
@@ -16836,6 +16860,14 @@ msgstr "Valitse kohdistimen alla oleva yhteystieto"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "Valitse osoittimen kohdalla oleva keskustelu"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the entry"
+msgstr "Valitse merkintä"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the feedback"
+msgstr "Valitse palaute"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the mail under the cursor"
@@ -17506,7 +17538,6 @@ msgstr "Määritetään …"
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "Asetukset"
@@ -17568,6 +17599,7 @@ msgstr "Pikanäppäin"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Show"
 msgstr "Näytä"
@@ -17600,7 +17632,7 @@ msgstr "Näytä syöte, merkki ja upotus"
 msgid "Show full draft"
 msgstr "Näytä koko luonnos"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Show HTTP details"
 msgstr "Näytä HTTP-tiedot"
 
@@ -18513,7 +18545,7 @@ msgid "Starting"
 msgstr "Käynnistyy"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Starts"
 msgstr "Alkaa"
 
@@ -18540,9 +18572,9 @@ msgstr "STARTTLS (portti 587)"
 
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "State"
 msgstr "Tila"
@@ -18553,7 +18585,7 @@ msgid "State of {0}"
 msgstr "Komponentin {0} tila"
 
 #. placeholder {0}: c.name
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "State of {0} while it is open"
 msgstr "Komponentin {0} tila, kun se on avoinna"
 
@@ -18561,7 +18593,7 @@ msgstr "Komponentin {0} tila, kun se on avoinna"
 msgid "state of the conversation"
 msgstr "keskustelun tila"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "State while down"
 msgstr "Tila kaatuessa"
@@ -18573,7 +18605,6 @@ msgstr "Tila kaatuessa"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
-#: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -18584,7 +18615,6 @@ msgstr "Tila kaatuessa"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Status"
 msgstr "Tila"
@@ -18601,7 +18631,6 @@ msgstr "Tilasivu poistettu"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "Tilasivut"
@@ -18737,7 +18766,6 @@ msgstr "Liittyi listalle juuri nyt"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Subscribers"
 msgstr "Tilaajat"
@@ -18763,7 +18791,7 @@ msgstr "Tilaus poistettu"
 msgid "Succeeded"
 msgstr "Onnistui"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Successes to recover"
 msgstr "Onnistumisia peräkkäin ennen palautumista"
@@ -19208,7 +19236,7 @@ msgstr "Koodi on väärä tai vanhentunut."
 msgid "The columns are guessed from the header row. One must be the e-mail address; name the others as contact fields or attributes, or skip them. Attributes only fill keys a contact does not have yet."
 msgstr "Sarakkeet arvataan otsikkorivistä. Yhden on oltava sähköpostiosoite; nimeä muut kontaktikentiksi tai attribuuteiksi tai ohita ne. Attribuutit täyttävät vain avaimet, joita kontaktilla ei vielä ole."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "The component whose state this monitor sets."
 msgstr "Komponentti, jonka tilan tämä valvonta asettaa."
 
@@ -19333,7 +19361,7 @@ msgstr "sähköpostin verkkotunnusta ei ole vahvistettu tälle työtilalle"
 msgid "The elements work on these addresses; add your dev server in the inbox settings:"
 msgstr "Elementit toimivat näissä osoitteissa; lisää kehityspalvelimesi postilaatikon asetuksissa:"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "The end must be after the start."
 msgstr "Lopun on oltava alun jälkeen."
 
@@ -19428,10 +19456,6 @@ msgstr "Keskustelun ensimmäinen viesti postilaatikossa, joka näyttää vastaus
 #: src/features/settings/notifications/events.ts
 msgid "The first message of a conversation in an inbox that shows who is available."
 msgstr "Keskustelun ensimmäinen viesti postilaatikossa, joka näyttää, kuka on paikalla."
-
-#: src/features/status/StatusPages.tsx
-msgid "the first one"
-msgstr "ensimmäinen"
 
 #: src/features/docs/PagesTab.tsx
 msgid "The first rating makes the page appear here."
@@ -20292,6 +20316,10 @@ msgstr "Ne piilotetaan yhdessä kirjoittajiensa kaikkien muiden hyväksyntää o
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "Ne katoavat tiimiltäsi ja asiakkailta. Voit palauttaa ne roskakorista 30 päivän ajan, minkä jälkeen ne poistetaan pysyvästi viesteineen ja tiedostoineen."
 
+#: src/features/feedback/FeedbackHome.tsx
+msgid "They disappear for your team. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
+msgstr "Ne katoavat tiimiltäsi. Voit palauttaa ne roskakorista 30 päivän ajan, minkä jälkeen ne poistetaan pysyvästi viesteineen ja tiedostoineen."
+
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They get a mail with a link and are subscribed only after they click it."
 msgstr "He saavat viestin, jossa on linkki, ja ovat tilaajia vasta napsautettuaan sitä."
@@ -20691,7 +20719,7 @@ msgstr "Valvontaa ei enää ole tai et näe sitä."
 msgid "This month"
 msgstr "Tässä kuussa"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "This page is not public yet, so visitors see nothing until you publish the page."
 msgstr "Tämä sivu ei ole vielä julkinen, joten kävijät eivät näe mitään ennen kuin julkaiset sivun."
 
@@ -20808,6 +20836,10 @@ msgstr "Tämä sivusto ei voi yhdistää"
 #: src/components/common/text.ts
 msgid "This site is not allowed to use this documentation channel."
 msgstr "Tämä sivusto ei saa käyttää tätä dokumentaatiokanavaa."
+
+#: src/features/status/StatusPages.tsx
+msgid "This status page no longer exists or you cannot see it."
+msgstr "Tätä tilasivua ei enää ole tai et voi nähdä sitä."
 
 #: src/components/common/text.ts
 msgid "This subscription is no longer waiting for confirmation."
@@ -20926,7 +20958,7 @@ msgstr "Aika"
 msgid "Time zone"
 msgstr "Aikavyöhyke"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Timeout"
 msgstr "Aikakatkaisu"
@@ -20935,7 +20967,7 @@ msgstr "Aikakatkaisu"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/issues/IssueDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Title"
 msgstr "Otsikko"
 
@@ -21093,6 +21125,7 @@ msgstr "Luota tähän varmenteeseen tälle palvelimelle. Tee tämä vain, jos se
 #: src/features/account/AccountLayout.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/migrations/UploadStep.tsx
@@ -21187,7 +21220,6 @@ msgstr "Yuvan poistama käytöstä"
 msgid "TXT record"
 msgstr "TXT-tietue"
 
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/fields/FieldDialog.tsx
@@ -21423,7 +21455,7 @@ msgstr "Poista käännöksen julkaisu"
 msgid "Unpublished"
 msgstr "Julkaisematon"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/mail/MailList.tsx
@@ -22032,7 +22064,6 @@ msgstr "odottaa hyväksyntää"
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
-#: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "Waiting for approval"
@@ -22426,7 +22457,7 @@ msgstr "Kun tiimikaveri kirjoittaa muistiinpanoon @ ja nimesi, muistiinpano näk
 msgid "When did they agree?"
 msgstr "Milloin he suostuivat?"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "When it goes down"
 msgstr "Kun se kaatuu"
@@ -22464,10 +22495,6 @@ msgstr "Kun joku muu osoittaa sen sinulle."
 #: src/features/broadcasts/Trigger.tsx
 msgid "when someone first signs in to {inbox}"
 msgstr "when someone first signs in to {inbox}"
-
-#: src/features/feedback/FeedbackList.tsx
-msgid "When someone sends feedback, it will be in the list."
-msgstr "Kun joku lähettää palautetta, se näkyy luettelossa."
 
 #: src/features/broadcasts/Trigger.tsx
 msgid "when someone starts to match {match}"
@@ -22952,11 +22979,11 @@ msgstr "You get a new secret once. Webhooks from GitHub are refused until you pa
 msgid "You get a notification when someone replies in these"
 msgstr "Saat ilmoituksen, kun joku vastaa näihin"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "You get the address to call when you save. It is shown only once."
 msgstr "Saat kutsuttavan osoitteen tallennettaessa. Se näytetään vain kerran."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "You get the address your alerting calls when you save, for Alertmanager, Grafana or your own script. It is shown only once."
 msgstr "Tallennettaessa saat osoitteen, jota hälytysjärjestelmäsi kutsuu, Alertmanagerille, Grafanalle tai omalle skriptillesi. Se näytetään vain kerran."
 
@@ -23115,7 +23142,7 @@ msgstr "Your identity provider has not verified your e-mail address, so Yuva can
 msgid "Your inbox is empty."
 msgstr "Saapuneet-kansiosi on tyhjä."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Your job calls Yuva on a schedule. A missing call fails the monitor."
 msgstr "Työsi kutsuu Yuvaa säännöllisin väliajoin. Puuttuva kutsu kaataa valvonnan."
 
@@ -23169,7 +23196,7 @@ msgstr "Organisaatiosi ylläpitäjän on sallittava Yuva"
 msgid "Your own"
 msgstr "Your own"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Your own monitoring sends its state, including Alertmanager and Grafana alerts."
 msgstr "Oma valvontasi lähettää tilansa, myös Alertmanagerin ja Grafanan hälytykset."
 
@@ -23392,7 +23419,7 @@ msgstr "Yuva vain lukee. Se ei koskaan poista, siirrä, arkistoi tai merkitse mi
 msgid "Yuva only reads. Its connection sends {provider} nothing but read requests, and the token only to {provider}'s API, so no ticket, customer or setting changes."
 msgstr "Yuva vain lukee. Sen yhteys lähettää palveluun {provider} pelkkiä lukupyyntöjä ja tokenin vain palvelun {provider} API:in, joten mikään tiketti, asiakas tai asetus ei muutu."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Yuva opens a connection to a host and port on a schedule."
 msgstr "Yuva avaa säännöllisesti yhteyden isäntään ja porttiin."
 
@@ -23404,7 +23431,7 @@ msgstr "Yuva lukee palvelua {provider} API-tokenilla, jonka luot omalla tilillä
 msgid "Yuva reads only the file you upload and deletes it when the migration ends. History arrives quietly: no notifications, no auto-replies."
 msgstr "Yuva lukee vain lataamasi tiedoston ja poistaa sen siirron päättyessä. Historia saapuu hiljaa: ei ilmoituksia, ei automaattivastauksia."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Yuva requests an address on a schedule and checks the answer."
 msgstr "Yuva hakee säännöllisesti osoitteen ja tarkistaa vastauksen."
 

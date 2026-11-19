@@ -69,6 +69,11 @@ msgid "{0, plural, one {{shown} person} other {{shown} people}}"
 msgstr "{0, plural, other {{shown} പേർ}}"
 
 #. placeholder {0}: rows.length
+#: src/features/feedback/FeedbackHome.tsx
+msgid "{0, plural, one {{shown} report} other {{shown} reports}}"
+msgstr "{0, plural, one {{shown} ഫീഡ്ബാക്ക്} other {{shown} ഫീഡ്ബാക്കുകൾ}}"
+
+#. placeholder {0}: rows.length
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "{0, plural, one {{shown} triggered e-mail} other {{shown} triggered e-mails}}"
 msgstr "{0, plural, other {{shown} ഓട്ടോമാറ്റിക് ഇ-മെയിലുകൾ}}"
@@ -208,6 +213,7 @@ msgid "{0} marked as spam · no reply needed"
 msgstr "{0} സ്പാം എന്ന് അടയാളപ്പെടുത്തി · മറുപടി ആവശ്യമില്ല"
 
 #. placeholder {0}: done.length
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "{0} moved to the Trash"
@@ -223,6 +229,16 @@ msgstr "{1}-ൽ {0}"
 #: src/features/team/TeamPage.tsx
 msgid "{0} open, unassigned"
 msgstr "{0} തുറന്നവ, ആർക്കും നൽകിയിട്ടില്ല"
+
+#. placeholder {0}: done.length
+#: src/features/feedback/FeedbackHome.tsx
+msgid "{0} reopened"
+msgstr "{0} വീണ്ടും തുറന്നു"
+
+#. placeholder {0}: done.length
+#: src/features/feedback/FeedbackHome.tsx
+msgid "{0} resolved"
+msgstr "{0} പരിഹരിച്ചു"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
@@ -416,9 +432,9 @@ msgstr "{count, plural, one {# person} other {# people}} who confirmed before wo
 msgid "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 msgstr "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 
-#: src/features/feedback/FeedbackPage.tsx
-msgid "{count, plural, one {# report} other {# reports}}"
-msgstr "{count, plural, one {# റിപ്പോർട്ട്} other {# റിപ്പോർട്ടുകൾ}}"
+#: src/features/docs/DocsPage.tsx
+msgid "{count, plural, one {# post waiting for approval} other {# posts waiting for approval}}"
+msgstr "{count, plural, one {# പോസ്റ്റ് അംഗീകാരത്തിനായി കാത്തിരിക്കുന്നു} other {# പോസ്റ്റുകൾ അംഗീകാരത്തിനായി കാത്തിരിക്കുന്നു}}"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "{count, plural, one {# scope} other {# scopes}}"
@@ -511,10 +527,6 @@ msgstr "{total}-ൽ {doneText}"
 msgid "{doneText} of {total} done"
 msgstr "{total} ൽ {doneText} പൂർത്തിയായി"
 
-#: src/features/status/StatusPages.tsx
-msgid "{down, plural, one {# down} other {# down}}"
-msgstr "{down, plural, one {# ഡൗൺ} other {# ഡൗൺ}}"
-
 #: src/features/docs/PagesTab.tsx
 msgid "{down} not helpful"
 msgstr "{down} സഹായകമല്ല"
@@ -546,6 +558,10 @@ msgstr "{first} സംഭാഷണത്തിന് 👍 റേറ്റ് ച
 #: src/features/conversation/messages/Thread.tsx
 msgid "{first} rated the conversation 👎"
 msgstr "{first} സംഭാഷണത്തിന് 👎 റേറ്റ് ചെയ്തു"
+
+#: src/features/status/StatusPages.tsx
+msgid "{fmtCount, plural, one {# page} other {# pages}}"
+msgstr "{fmtCount, plural, one {# പേജ്} other {# പേജുകൾ}}"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "{from} has an SPF record. Whether it passes is known once the test mail is read."
@@ -774,10 +790,6 @@ msgstr "{n} എണ്ണം വായിക്കാത്തതായി അട
 #: src/features/mail/MailList.tsx
 msgid "{n} moved to the Inbox"
 msgstr "{n} ഇൻബോക്സിലേക്ക് തിരികെ മാറ്റി"
-
-#: src/features/feedback/FeedbackPage.tsx
-msgid "{n} reports"
-msgstr "{n} റിപ്പോർട്ടുകൾ"
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -1152,10 +1164,6 @@ msgstr "{unreadText} വായിക്കാത്തത്"
 msgid "{unseenText} unread of {totalText}"
 msgstr "{totalText} ൽ {unseenText} വായിക്കാത്തവ"
 
-#: src/features/status/StatusPages.tsx
-msgid "{up, plural, one {# up} other {# up}}"
-msgstr "{up, plural, one {# ലഭ്യം} other {# ലഭ്യം}}"
-
 #: src/features/docs/PagesTab.tsx
 msgid "{up} helpful"
 msgstr "{up} സഹായകം"
@@ -1332,7 +1340,7 @@ msgstr "24 മാസം"
 msgid "3 months"
 msgstr "3 മാസം"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "3 to 48 letters, numbers and hyphens. It is unique on this server."
 msgstr "3 മുതൽ 48 വരെ അക്ഷരങ്ങൾ, അക്കങ്ങൾ, ഹൈഫനുകൾ. ഈ സെർവറിൽ അദ്വിതീയം."
 
@@ -1536,11 +1544,11 @@ msgstr "ഒരു ചർച്ചയ്ക്ക് അംഗീകരിച്�
 msgid "A discussion started"
 msgstr "ഒരു ചർച്ച ആരംഭിച്ചു"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "A draft incident opens for your team to review. Customers see nothing until a member publishes it."
 msgstr "നിങ്ങളുടെ ടീമിന് പരിശോധിക്കാൻ ഒരു ഡ്രാഫ്റ്റ് സംഭവം തുറക്കുന്നു. ഒരു അംഗം പ്രസിദ്ധീകരിക്കുന്നതുവരെ ഉപഭോക്താക്കൾക്ക് ഒന്നും കാണാനാകില്ല."
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "A draft is seen only by your team and changes no component until you publish it."
 msgstr "ഡ്രാഫ്റ്റ് നിങ്ങളുടെ ടീം മാത്രമേ കാണൂ; നിങ്ങൾ പ്രസിദ്ധീകരിക്കുന്നതുവരെ അത് ഒരു ഘടകത്തെയും മാറ്റില്ല."
 
@@ -1751,7 +1759,7 @@ msgstr "ഒരു പ്രോപ്പർട്ടിക്ക് പരമാ�
 msgid "A property can have at most 20 funnels. Delete one first."
 msgstr "ഒരു പ്രോപ്പർട്ടിക്ക് പരമാവധി 20 ഫണലുകൾ ഉണ്ടാകാം. ആദ്യം ഒന്ന് ഇല്ലാതാക്കുക."
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "A public page that tells your customers whether {inboxName} works. It stays unpublished until you publish it."
 msgstr "{inboxName} പ്രവർത്തിക്കുന്നുണ്ടോ എന്ന് ഉപഭോക്താക്കളോട് പറയുന്ന പൊതു പേജ്. നിങ്ങൾ പ്രസിദ്ധീകരിക്കുന്നതുവരെ അത് പ്രസിദ്ധീകരിക്കാതെ തുടരും."
 
@@ -1759,7 +1767,7 @@ msgstr "{inboxName} പ്രവർത്തിക്കുന്നുണ്ട
 msgid "A published What's new entry was deleted"
 msgstr "പ്രസിദ്ധീകരിച്ച \"പുതിയതെന്താണ്\" എൻട്രി ഇല്ലാതാക്കി"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "A pushed state that names its own state keeps it."
 msgstr "സ്വന്തം അവസ്ഥ പറഞ്ഞ് അയച്ച അവസ്ഥ അത് നിലനിർത്തുന്നു."
 
@@ -1982,7 +1990,7 @@ msgstr "അക്കൗണ്ട് നമ്പർ"
 msgid "Acme docs"
 msgstr "Acme ഡോക്സ്"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "Acme status"
 msgstr "Acme-യുടെ അവസ്ഥ"
 
@@ -2011,7 +2019,6 @@ msgstr "പ്രവർത്തനങ്ങൾ മാത്രം"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "Active"
 msgstr "സജീവം"
 
@@ -2182,7 +2189,7 @@ msgstr "കുറഞ്ഞത് ഒരു ഒറിജിൻ ചേർക്ക
 msgid "Add channel"
 msgstr "ചാനൽ ചേർക്കുക"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Add component"
 msgstr "ഘടകം ചേർക്കുക"
@@ -2204,7 +2211,7 @@ msgstr "ഡൊമെയ്ൻ ചേർക്കുക"
 msgid "Add endpoint"
 msgstr "എൻഡ്‌പോയിന്റ് ചേർക്കുക"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Add group"
 msgstr "ഗ്രൂപ്പ് ചേർക്കുക"
@@ -2230,7 +2237,7 @@ msgstr "ലേബൽ {labelName} ചേർക്കുക"
 msgid "Add labels"
 msgstr "ലേബലുകൾ ചേർക്കുക"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Add monitor"
 msgstr "മോണിറ്റർ ചേർക്കുക"
 
@@ -2344,7 +2351,7 @@ msgstr "സിംഗിൾ സൈൻ-ഓണിനായി ഡൊമെയ്ൻ
 #: src/features/mail/MailSide.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 #: src/features/status/MonitorHttpFields.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/MonitorToken.tsx
@@ -2404,7 +2411,6 @@ msgid "Admins see every inbox and manage products, channels and members."
 msgstr "അഡ്മിനുകൾ എല്ലാ ഇൻബോക്സും കാണുകയും ഉൽപ്പന്നങ്ങളും ചാനലുകളും അംഗങ്ങളെയും നിയന്ത്രിക്കുകയും ചെയ്യുന്നു."
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/StatusPages.tsx
 msgid "Affects"
 msgstr "ബാധിക്കുന്നത്"
 
@@ -2525,7 +2531,6 @@ msgid "All mentions"
 msgstr "എല്ലാ പരാമർശങ്ങളും"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/StatusPages.tsx
 msgid "All monitors"
 msgstr "എല്ലാ മോണിറ്ററുകളും"
 
@@ -2546,7 +2551,6 @@ msgid "all products"
 msgstr "എല്ലാ ഉൽപ്പന്നങ്ങളും"
 
 #: src/components/common/WorkspaceSelector.tsx
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/SidePanels.tsx
@@ -2554,7 +2558,6 @@ msgstr "എല്ലാ ഉൽപ്പന്നങ്ങളും"
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "All products"
 msgstr "എല്ലാ ഉൽപ്പന്നങ്ങളും"
 
@@ -2575,10 +2578,6 @@ msgstr "എല്ലാ ഘട്ടങ്ങളും"
 #: src/features/status/StatusPages.tsx
 msgid "All systems operational"
 msgstr "എല്ലാ സിസ്റ്റങ്ങളും പ്രവർത്തിക്കുന്നു"
-
-#: src/features/status/StatusPages.tsx
-msgid "all up"
-msgstr "എല്ലാം ലഭ്യം"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "All, drafts, scheduled or sent"
@@ -2850,7 +2849,7 @@ msgstr "An idea only shows its issues and their state. Its stage stays your deci
 msgid "An inbox collects the conversations of one product or brand. Name it after the product your customers know."
 msgstr "ഒരു ഇൻബോക്സ് ഒരു ഉൽപ്പന്നത്തിന്റെയോ ബ്രാൻഡിന്റെയോ സംഭാഷണങ്ങൾ ശേഖരിക്കുന്നു. നിങ്ങളുടെ ഉപഭോക്താക്കൾക്ക് അറിയാവുന്ന ഉൽപ്പന്നത്തിന്റെ പേര് നൽകുക."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "An incident is published at once, so customers see it on the page."
 msgstr "സംഭവം ഉടൻ പ്രസിദ്ധീകരിക്കുന്നു, അതിനാൽ ഉപഭോക്താക്കൾക്ക് പേജിൽ കാണാം."
 
@@ -3056,7 +3055,7 @@ msgstr "ഉത്തരം മായ്ച്ചു"
 msgid "Answer to a forward from {author}"
 msgstr "{author} ചെയ്ത ഫോർവേഡിനുള്ള മറുപടി"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "answered"
 msgstr "മറുപടി നൽകി"
 
@@ -3134,7 +3133,7 @@ msgstr "ഈ കീ ഉപയോഗിക്കുന്ന എല്ലാം �
 
 #: src/components/common/Source.tsx
 #: src/components/common/text.ts
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "API"
 msgstr "API"
 
@@ -3333,7 +3332,7 @@ msgstr "മുകളിലേതുപോലെ ({current})"
 msgid "As fast as allowed"
 msgstr "അനുവദിക്കുന്നത്ര വേഗത്തിൽ"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "As often as allowed"
 msgstr "അനുവദിക്കുന്നത്ര ഇടവിട്ട്"
 
@@ -3746,12 +3745,6 @@ msgstr "ജോലി വിജയിക്കുമ്പോൾ മാത്ര�
 msgid "Before"
 msgstr "മുമ്പ്"
 
-#. placeholder {0}: date(before)
-#. placeholder {1}: took(before)
-#: src/features/status/StatusPages.tsx
-msgid "before that: {0}, {1}"
-msgstr "അതിനു മുമ്പ്: {0}, {1}"
-
 #: src/features/migrations/ConnectStep.tsx
 msgid "Before you connect"
 msgstr "നിങ്ങൾ കണക്റ്റ് ചെയ്യുന്നതിന് മുമ്പ്"
@@ -3985,8 +3978,7 @@ msgstr "ഈ ചാനലിൽ നിന്നുള്ള ബ്രോഡ്ക
 msgid "Browser"
 msgstr "ബ്രൗസർ"
 
-#: src/features/feedback/FeedbackList.tsx
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Bugs, ideas and praise sent from your apps and pages"
 msgstr "നിങ്ങളുടെ ആപ്പുകളിൽ നിന്നും പേജുകളിൽ നിന്നും അയച്ച ബഗുകൾ, ആശയങ്ങൾ, അഭിനന്ദനങ്ങൾ"
 
@@ -3999,10 +3991,6 @@ msgstr "Bundle ID"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
 msgstr "ബിസിനസ് സമയം"
-
-#: src/features/status/StatusPages.tsx
-msgid "by e-mail"
-msgstr "ഇമെയിൽ വഴി"
 
 #: src/features/conversation/Feedback.tsx
 msgid "By e-mail"
@@ -4071,11 +4059,9 @@ msgstr "ക്യാമ്പെയ്ൻ പേര്"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/NewsletterStep.tsx
 #: src/features/status/AddSubscriberDialog.tsx
-#: src/features/status/ComponentDialogs.tsx
-#: src/features/status/CreatePageDialog.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/IncidentForm.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Cancel"
@@ -4169,7 +4155,6 @@ msgid "Catch-all without a From address"
 msgstr "From വിലാസമില്ലാത്ത ക്യാച്ച്-ഓൾ"
 
 #: src/features/conversation/Feedback.tsx
-#: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Category"
 msgstr "വിഭാഗം"
@@ -4416,7 +4401,7 @@ msgstr "DNS പരിശോധിക്കുക"
 msgid "Check DNS and start signing"
 msgstr "DNS പരിശോധിച്ച് സൈനിംഗ് ആരംഭിക്കുക"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Check every"
 msgstr "പരിശോധന ഓരോ"
@@ -4503,10 +4488,6 @@ msgstr "പരിശോധിക്കുന്നു…"
 msgid "Checks"
 msgstr "പരിശോധനകൾ"
 
-#: src/features/status/MonitorsPage.tsx
-msgid "Checks that watch your products and set component states"
-msgstr "നിങ്ങളുടെ ഉൽപ്പന്നങ്ങൾ നിരീക്ഷിച്ച് ഘടകങ്ങളുടെ നില സജ്ജമാക്കുന്ന പരിശോധനകൾ"
-
 #: src/features/migrations/Wizard.tsx
 msgid "Choose"
 msgstr "തിരഞ്ഞെടുക്കുക"
@@ -4542,10 +4523,6 @@ msgstr "ഒരു മൂല്യം തിരഞ്ഞെടുക്കുക"
 #: src/app/Gate.tsx
 msgid "Choose a workspace"
 msgstr "ഒരു വർക്ക്സ്പേസ് തിരഞ്ഞെടുക്കുക"
-
-#: src/features/feedback/FeedbackList.tsx
-msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
-msgstr "ലിസ്റ്റിൽ നിന്ന് ഒന്ന് തിരഞ്ഞെടുക്കുക, അല്ലെങ്കിൽ ↑ ↓ ഉപയോഗിച്ച് നീങ്ങി Enter ഉപയോഗിച്ച് തുറക്കുക."
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose the account that sends your answers. You can change it later in the channel settings."
@@ -4589,6 +4566,7 @@ msgstr "മായ്ക്കുക"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Clear filters"
 msgstr "ഫിൽട്ടറുകൾ മായ്ക്കുക"
 
@@ -4604,7 +4582,6 @@ msgstr "ഉത്തരം മായ്ക്കുക"
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the search"
@@ -4868,7 +4845,7 @@ msgstr "പൂർത്തിയായി"
 msgid "Completed at {endedAt}"
 msgstr "{endedAt}-ന് പൂർത്തിയായി"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Component"
 msgstr "ഘടകം"
@@ -4880,12 +4857,11 @@ msgstr "ഘടകം ഇല്ലാതാക്കി"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Components"
 msgstr "ഘടകങ്ങൾ"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Components it touches"
 msgstr "ബാധിക്കുന്ന ഘടകങ്ങൾ"
 
@@ -5586,17 +5562,13 @@ msgstr "നയം സൃഷ്ടിക്കുക"
 msgid "Create rule"
 msgstr "നിയമം സൃഷ്ടിക്കുക"
 
-#: src/features/status/CreatePageDialog.tsx
+#: src/features/status/CreatePageForm.tsx
 msgid "Create status page"
 msgstr "സ്റ്റാറ്റസ് പേജ് സൃഷ്ടിക്കുക"
 
 #: src/features/status/StatusPages.tsx
 msgid "Create status page ({newKey})"
 msgstr "സ്റ്റാറ്റസ് പേജ് സൃഷ്ടിക്കുക ({newKey})"
-
-#: src/features/status/StatusPages.tsx
-msgid "Create status page for {product}"
-msgstr "{product}-നായി സ്റ്റാറ്റസ് പേജ് സൃഷ്ടിക്കുക"
 
 #: src/features/settings/teams/TeamEditor.tsx
 msgid "Create team"
@@ -5787,7 +5759,7 @@ msgstr "തീമിനോട് ചേരുംവിധം നിറങ്ങ�
 msgid "Data up to {builtText}"
 msgstr "{builtText} വരെയുള്ള ഡാറ്റ"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Database upgrade"
 msgstr "ഡാറ്റാബേസ് അപ്ഗ്രേഡ്"
 
@@ -6271,7 +6243,7 @@ msgstr "നിരസിക്കുക"
 
 #: src/features/issues/IssueDialog.tsx
 #: src/features/settings/teams/TeamEditor.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
 msgstr "വിവരണം"
@@ -6331,6 +6303,9 @@ msgstr "ബ്രൗസറിന്റെ ക്രമീകരണങ്ങള�
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
+#: src/features/status/IncidentsPage.tsx
+#: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusPages.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Details"
 msgstr "വിശദാംശങ്ങൾ"
@@ -6434,7 +6409,6 @@ msgstr "ചർച്ച ആരംഭിച്ചു"
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
@@ -6826,10 +6800,6 @@ msgstr "ഇ-മെയിൽ സബ്സ്ക്രൈബർമാർ ഓഫാ
 msgid "E-mail subscribers are off. Nobody can subscribe and no notices go out, but the list is kept."
 msgstr "ഇ-മെയിൽ സബ്സ്ക്രൈബർമാർ ഓഫാണ്. ആർക്കും സബ്സ്ക്രൈബ് ചെയ്യാനാകില്ല, അറിയിപ്പുകളും പോകില്ല, പക്ഷേ പട്ടിക സൂക്ഷിക്കും."
 
-#: src/features/status/StatusPages.tsx
-msgid "E-mail subscriptions are off"
-msgstr "ഇമെയിൽ സബ്സ്ക്രിപ്ഷനുകൾ ഓഫാണ്"
-
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "E-mail view"
 msgstr "ഇമെയിൽ കാഴ്ച"
@@ -6850,11 +6820,11 @@ msgstr "സൈൻ അപ്പ് ചെയ്തവർക്കുള്ള ഇ
 msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
 msgstr "ഓരോ പ്രവർത്തനവും ഒരിക്കൽ, പരമാവധി 10. പ്രവർത്തനങ്ങൾ ഒറ്റ മാറ്റമായി പ്രവർത്തിക്കും; ഒന്ന് പരാജയപ്പെട്ടാൽ ഒന്നും പ്രയോഗിക്കില്ല."
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Each component gets this state while the incident is open."
 msgstr "സംഭവം തുറന്നിരിക്കുന്നിടത്തോളം ഓരോ ഘടകവും ഈ അവസ്ഥയിലായിരിക്കും."
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Each component gets this state while the maintenance is open."
 msgstr "അറ്റകുറ്റപ്പണി നടക്കുന്നിടത്തോളം ഓരോ ഘടകവും ഈ അവസ്ഥയിലായിരിക്കും."
 
@@ -6953,7 +6923,7 @@ msgstr "API കീ എഡിറ്റ് ചെയ്യുക"
 msgid "Edit canned reply"
 msgstr "തയ്യാറാക്കിയ മറുപടി എഡിറ്റ് ചെയ്യുക"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Edit component"
 msgstr "ഘടകം എഡിറ്റ് ചെയ്യുക"
 
@@ -6962,7 +6932,7 @@ msgid "Edit design"
 msgstr "ഡിസൈൻ എഡിറ്റ് ചെയ്യുക"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Edit details"
 msgstr "വിശദാംശങ്ങൾ എഡിറ്റ് ചെയ്യുക"
 
@@ -6990,7 +6960,7 @@ msgstr "ലേബൽ എഡിറ്റ് ചെയ്യുക"
 msgid "Edit macro"
 msgstr "മാക്രോ എഡിറ്റ് ചെയ്യുക"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Edit monitor"
 msgstr "മോണിറ്റർ എഡിറ്റ് ചെയ്യുക"
 
@@ -7062,7 +7032,7 @@ msgstr "അയയ്ക്കാനാകാതിരുന്ന ഒരു ഡ�
 msgid "Editing the message scheduled for {editingWhen}"
 msgstr "{editingWhen}-ലേക്ക് ഷെഡ്യൂൾ ചെയ്ത സന്ദേശം എഡിറ്റ് ചെയ്യുന്നു"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Elevated API errors"
 msgstr "API പിശകുകൾ വർധിച്ചു"
 
@@ -7137,7 +7107,7 @@ msgstr "എൻഡ്‌പോയിന്റ്"
 msgid "Endpoints"
 msgstr "എൻഡ്‌പോയിന്റുകൾ"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Ends"
 msgstr "അവസാനം"
 
@@ -7297,7 +7267,7 @@ msgstr "ഓരോ മെയിലും"
 msgid "Every open conversation has someone."
 msgstr "തുറന്ന എല്ലാ സംഭാഷണത്തിനും ആളുണ്ട്."
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "Every open discussion has an answer."
 msgstr "തുറന്ന എല്ലാ ചർച്ചയ്ക്കും ഉത്തരമുണ്ട്."
 
@@ -7305,12 +7275,11 @@ msgstr "തുറന്ന എല്ലാ ചർച്ചയ്ക്കും 
 msgid "Every other browser and device is signed out. This one stays signed in."
 msgstr "മറ്റെല്ലാ ബ്രൗസറുകളിൽ നിന്നും ഉപകരണങ്ങളിൽ നിന്നും സൈൻ ഔട്ട് ആകും. ഈ ഉപകരണം സൈൻ ഇൻ ആയിരിക്കും."
 
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
 msgstr "എല്ലാ പ്രോഡക്റ്റുകളും"
 
-#: src/features/broadcasts/BroadcastsFrame.tsx
+#: src/components/common/ProductFilter.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
 msgstr "ഓരോ ഉൽപ്പന്നവും"
@@ -7339,7 +7308,7 @@ msgstr "എല്ലാ ഘട്ടവും വിജയിച്ചു."
 msgid "Every subscriber keeps a consent record you can export."
 msgstr "ഓരോ സബ്‌സ്‌ക്രൈബർക്കും നിങ്ങൾക്ക് എക്‌സ്‌പോർട്ട് ചെയ്യാവുന്ന സമ്മത രേഖയുണ്ട്."
 
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every type"
 msgstr "എല്ലാ തരവും"
@@ -7421,7 +7390,7 @@ msgstr "Example Ltd."
 msgid "Expand or collapse every message"
 msgstr "എല്ലാ സന്ദേശങ്ങളും വികസിപ്പിക്കുക അല്ലെങ്കിൽ ചുരുക്കുക"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Expected every"
 msgstr "പ്രതീക്ഷിക്കുന്നത് ഓരോ"
@@ -7530,7 +7499,7 @@ msgstr "പരാജയപ്പെടുന്നു"
 msgid "Fails the monitor at once, without waiting for the grace."
 msgstr "ഇളവ് സമയത്തിനായി കാത്തിരിക്കാതെ മോണിറ്ററിനെ ഉടൻ പരാജയപ്പെടുത്തുന്നു."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Failures to go down"
 msgstr "നിലയ്ക്കുന്നതിന് മുമ്പുള്ള തുടർച്ചയായ പരാജയങ്ങൾ"
@@ -7550,7 +7519,7 @@ msgstr "ഫീഡ്ബാക്ക്"
 #: src/features/contact/ContactCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/PagesTab.tsx
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/webhooks/events.tsx
@@ -7578,10 +7547,15 @@ msgstr "ഫീഡ്‌ബാക്ക് വിഭാഗങ്ങൾ"
 msgid "Feedback category"
 msgstr "ഫീഡ്ബാക്ക് വിഭാഗം"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Feedback form"
 msgstr "ഫീഡ്ബാക്ക് ഫോം"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Feedback form ({formKey})"
+msgstr "ഫീഡ്ബാക്ക് ഫോം ({formKey})"
 
 #: src/features/conversation/actions.ts
 msgid "Feedback resolved"
@@ -7669,7 +7643,7 @@ msgstr "ലേബൽ അനുസരിച്ച് ഫിൽട്ടർ ചെ
 msgid "Filter by plan"
 msgstr "പ്ലാൻ അനുസരിച്ച് ഫിൽട്ടർ ചെയ്യുക"
 
-#: src/features/broadcasts/BroadcastsFrame.tsx
+#: src/components/common/ProductFilter.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "ഉൽപ്പന്നം അനുസരിച്ച് ഫിൽട്ടർ ചെയ്യുക"
@@ -7681,12 +7655,17 @@ msgstr "നില അനുസരിച്ച് ഫിൽട്ടർ ചെയ
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Filter by status"
 msgstr "നില അനുസരിച്ച് ഫിൽട്ടർ ചെയ്യുക"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Filter by team"
 msgstr "ടീം അനുസരിച്ച് ഫിൽട്ടർ ചെയ്യുക"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Filter by type"
+msgstr "തരം അനുസരിച്ച് ഫിൽട്ടർ ചെയ്യുക"
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
@@ -7812,7 +7791,7 @@ msgstr "ആദ്യ മറുപടി, മീഡിയൻ"
 msgid "First rows of the file"
 msgstr "ഫയലിന്റെ ആദ്യ വരികൾ"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "First update"
 msgstr "ആദ്യ അപ്ഡേറ്റ്"
 
@@ -8300,7 +8279,7 @@ msgstr "Google ഒരു സ്ഥിരീകരണ കോഡ് അയച്�
 msgid "Google Takeout"
 msgstr "Google Takeout"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Grace"
 msgstr "ഇളവ്"
@@ -8318,7 +8297,7 @@ msgstr "അഭിവാദ്യം"
 msgid "Greets new conversations by e-mail, once per contact within the interval. Never sent to automatic mail or spam."
 msgstr "പുതിയ സംഭാഷണങ്ങളെ ഇമെയിൽ വഴി അഭിവാദ്യം ചെയ്യുന്നു, ഇടവേളയ്ക്കുള്ളിൽ ഓരോ കോൺടാക്റ്റിനും ഒരിക്കൽ. ഓട്ടോമാറ്റിക് മെയിലിനോ സ്പാമിനോ ഒരിക്കലും അയയ്ക്കില്ല."
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Group"
 msgstr "ഗ്രൂപ്പ്"
 
@@ -8500,7 +8479,7 @@ msgstr "ഹായ്! ഞങ്ങൾക്ക് എങ്ങനെ സഹാ�
 
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Hidden"
 msgstr "മറച്ചിരിക്കുന്നു"
@@ -8521,7 +8500,7 @@ msgstr "മറയ്ക്കുക"
 msgid "Hide from the page"
 msgstr "പേജിൽ നിന്ന് മറയ്ക്കുക"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Hide HTTP details"
 msgstr "HTTP വിശദാംശങ്ങൾ മറയ്ക്കുക"
 
@@ -8583,7 +8562,7 @@ msgstr "ചരിത്രം നീക്കം ചെയ്തു"
 msgid "Home"
 msgstr "ഹോം"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Host"
 msgstr "ഹോസ്റ്റ്"
@@ -8642,7 +8621,7 @@ msgstr "നിങ്ങളുടെ ടീം എത്ര വേഗത്തി
 msgid "How HTML e-mails open. You can still switch each message."
 msgstr "HTML ഇമെയിലുകൾ എങ്ങനെ തുറക്കുന്നു. ഓരോ സന്ദേശത്തിനും നിങ്ങൾക്ക് ഇപ്പോഴും മാറ്റാം."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "How late a beat may be."
 msgstr "ഒരു സിഗ്നൽ എത്ര വൈകാം."
 
@@ -8791,7 +8770,7 @@ msgstr "നിങ്ങളുടെ DNS ദാതാവ് ഒരു TXT സ്�
 msgid "If your mail provider mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "നിങ്ങളുടെ മെയിൽ ദാതാവ് ആ വിലാസത്തിലേക്ക് ഒരു സ്ഥിരീകരണം മെയിൽ ചെയ്താൽ, അത് ഈ ഇൻബോക്സിൽ ഒരു സംഭാഷണമായി എത്തും; അവിടെ തുറക്കുക."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Ignores results and lets the component go back."
 msgstr "ഫലങ്ങൾ അവഗണിച്ച് ഘടകത്തെ തിരിച്ചുപോകാൻ അനുവദിക്കുന്നു."
 
@@ -8808,7 +8787,7 @@ msgid "IMAP server"
 msgstr "IMAP സെർവർ"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Impact"
 msgstr "സ്വാധീനം"
 
@@ -8901,7 +8880,7 @@ msgstr "{contact} നൊപ്പം · {subject}"
 msgid "In 1 hour"
 msgstr "1 മണിക്കൂറിൽ"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "In a row, 1 to 10."
 msgstr "തുടർച്ചയായി, 1 മുതൽ 10 വരെ."
 
@@ -9098,7 +9077,6 @@ msgstr "സംഭവം: {title} · {state}"
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "Incidents"
 msgstr "സംഭവങ്ങൾ"
 
@@ -9550,7 +9528,7 @@ msgid "Keyword"
 msgstr "കീവേഡ്"
 
 #: src/features/settings/automation/text.ts
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "തരം"
@@ -9827,7 +9805,7 @@ msgstr "Leave your signature off this reply ({signatureKey})"
 msgid "Leave your signature off this reply, or put it back"
 msgstr "Leave your signature off this reply, or put it back"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Left off the public page and its overall state."
 msgstr "പൊതു പേജിൽ നിന്നും അതിന്റെ മൊത്തത്തിലുള്ള അവസ്ഥയിൽ നിന്നും ഒഴിവാക്കുന്നു."
 
@@ -10119,6 +10097,7 @@ msgstr "ചിത്രങ്ങൾ ലോഡ് ചെയ്യുക"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/mail/MailDrafts.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
@@ -10391,7 +10370,6 @@ msgstr "Mails go out {sentence}, once to each person. Pausing stops sending but 
 msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
 msgstr "മെയിലുകൾ {city} സമയത്തിൽ {start}-നും {end}-നും ഇടയിൽ പോകുന്നു ({utcStart}–{utcEnd} UTC), അടുത്ത ദിവസം തുടരുന്നു."
 
-#: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
 msgid "Maintenance"
 msgstr "അറ്റകുറ്റപ്പണി"
@@ -10913,7 +10891,6 @@ msgstr "നിരീക്ഷണത്തിൽ"
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/MonitorsPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Monitors"
 msgstr "മോണിറ്ററുകൾ"
@@ -10974,10 +10951,6 @@ msgstr "ഏറ്റവും കൂടുതൽ “സഹായകമല്ല�
 msgid "Most active"
 msgstr "ഏറ്റവും സജീവം"
 
-#: src/features/feedback/FeedbackPage.tsx
-msgid "Most asked for"
-msgstr "ഏറ്റവും കൂടുതൽ ആവശ്യപ്പെട്ടവ"
-
 #: src/features/docs/Toolbar.tsx
 msgid "Most disliked"
 msgstr "ഏറ്റവും കൂടുതൽ ഇഷ്ടപ്പെടാത്തത്"
@@ -11010,8 +10983,11 @@ msgstr "ഏറ്റവും കൂടുതൽ വോട്ടുകൾ"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/status/IncidentsPage.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "move"
 msgstr "നീങ്ങുക"
@@ -11020,6 +10996,10 @@ msgstr "നീങ്ങുക"
 #: src/features/inbox/ChatList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "{0} ട്രാഷിലേക്ക് മാറ്റണോ?"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Move {n} to the Trash?"
+msgstr "{n} ട്രാഷിലേക്ക് മാറ്റണോ?"
 
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -11058,6 +11038,10 @@ msgstr "തിരഞ്ഞെടുത്ത ശേഖരം നീക്കു�
 msgid "Move the selected conversations to the Trash"
 msgstr "തിരഞ്ഞെടുത്ത സംഭാഷണങ്ങൾ ട്രാഷിലേക്ക് മാറ്റുക"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move the selected feedback to the Trash"
+msgstr "തിരഞ്ഞെടുത്ത ഫീഡ്ബാക്ക് ട്രാഷിലേക്ക് മാറ്റുക"
+
 #: src/features/conversation/ChatView.tsx
 msgid "Move this conversation to the Trash?"
 msgstr "ഈ സംഭാഷണം ട്രാഷിലേക്ക് മാറ്റണോ?"
@@ -11085,6 +11069,10 @@ msgstr "ഡിസൈനുകളിലൂടെ നീങ്ങുക"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the entries"
 msgstr "എൻട്രികളിലൂടെ നീങ്ങുക"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move through the feedback"
+msgstr "ഫീഡ്ബാക്കുകളിലൂടെ നീങ്ങുക"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the ideas"
@@ -11152,6 +11140,7 @@ msgstr "മുമ്പത്തെ അല്ലെങ്കിൽ അടുത�
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
@@ -11163,6 +11152,7 @@ msgstr "ട്രാഷിലേക്ക് മാറ്റുക"
 msgid "Move to the Trash ({0})"
 msgstr "ട്രാഷിലേക്ക് മാറ്റുക ({0})"
 
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Move to the Trash (#)"
@@ -11276,9 +11266,9 @@ msgstr "എന്റെ കാഴ്ചകൾ"
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
-#: src/features/status/ComponentDialogs.tsx
-#: src/features/status/CreatePageDialog.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/ComponentForms.tsx
+#: src/features/status/CreatePageForm.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Name"
 msgstr "പേര്"
@@ -11504,6 +11494,7 @@ msgstr "പുതിയ ഫീൽഡ്"
 msgid "New filter"
 msgstr "പുതിയ ഫിൽട്ടർ"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "പുതിയ ആശയം"
@@ -11527,6 +11518,10 @@ msgstr "കഴിഞ്ഞ {days} ദിവസത്തിൽ പുതിയത
 #: src/features/migrations/MapStep.tsx
 msgid "New inbox…"
 msgstr "പുതിയ ഇൻബോക്സ്…"
+
+#: src/features/status/IncidentsPage.tsx
+msgid "new incident"
+msgstr "പുതിയ സംഭവം"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -11587,6 +11582,10 @@ msgid "New migration"
 msgstr "പുതിയ മൈഗ്രേഷൻ"
 
 #: src/features/status/MonitorsPage.tsx
+msgid "new monitor"
+msgstr "പുതിയ മോണിറ്റർ"
+
+#: src/features/status/MonitorsPage.tsx
 msgid "New monitor"
 msgstr "പുതിയ മോണിറ്റർ"
 
@@ -11597,10 +11596,6 @@ msgstr "പുതിയ ഉടമ"
 #: src/features/team/RemoveMemberDialog.tsx
 msgid "New owner of {boxName}"
 msgstr "{boxName}-ന്റെ പുതിയ ഉടമ"
-
-#: src/features/status/StatusPages.tsx
-msgid "New page"
-msgstr "പുതിയ പേജ്"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "New password"
@@ -11625,6 +11620,7 @@ msgid "New signing secret"
 msgstr "പുതിയ സൈനിംഗ് സീക്രട്ട്"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/status/StatusPages.tsx
 msgid "New status page"
 msgstr "പുതിയ സ്റ്റാറ്റസ് പേജ്"
 
@@ -11748,7 +11744,7 @@ msgstr "അടുത്തതായി, എന്ത് കൊണ്ടുവര
 msgid "Next, choose where they go."
 msgstr "അടുത്തതായി, അവർ എവിടേക്ക് പോകണമെന്ന് തിരഞ്ഞെടുക്കുക."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Nightly backup"
 msgstr "രാത്രി ബാക്കപ്പ്"
 
@@ -11871,7 +11867,7 @@ msgstr "ഒരു ഘടകവും പേരെടുത്തിട്ടി�
 msgid "No components in this group."
 msgstr "ഈ ഗ്രൂപ്പിൽ ഘടകങ്ങളില്ല."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "No components yet. Add one to a status page first."
 msgstr "ഇതുവരെ ഘടകങ്ങളൊന്നുമില്ല. ആദ്യം ഒരു സ്റ്റാറ്റസ് പേജിൽ ഒന്ന് ചേർക്കുക."
 
@@ -11968,7 +11964,7 @@ msgstr "ഈ പേജിൽ ഇതുവരെ ചർച്ചകളില്ല
 msgid "No discussions under the pages of these sites."
 msgstr "ഈ സൈറ്റുകളുടെ പേജുകൾക്ക് കീഴിൽ ചർച്ചകളില്ല."
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "No discussions yet. Readers start them under your documentation pages."
 msgstr "ഇതുവരെ ചർച്ചകളില്ല. വായനക്കാർ നിങ്ങളുടെ ഡോക്യുമെന്റേഷൻ പേജുകൾക്ക് കീഴിൽ അവ ആരംഭിക്കുന്നു."
 
@@ -12048,12 +12044,12 @@ msgstr "ഒരു ഫയലും സ്വീകരിക്കില്ല."
 msgid "No filters yet."
 msgstr "ഇതുവരെ ഫിൽട്ടറുകളില്ല."
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
 msgstr "ഗ്രൂപ്പില്ല"
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "No hidden discussions."
 msgstr "മറച്ച ചർച്ചകളില്ല."
 
@@ -12111,7 +12107,7 @@ msgstr "പരിധിയില്ല"
 msgid "No list matches “{q}”."
 msgstr "“{q}” എന്നതുമായി യോജിക്കുന്ന ലിസ്റ്റില്ല."
 
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "No locked discussions."
 msgstr "ലോക്ക് ചെയ്ത ചർച്ചകളില്ല."
 
@@ -12176,7 +12172,7 @@ msgstr "കുറിപ്പില്ല"
 msgid "No notifications in the last 90 days."
 msgstr "കഴിഞ്ഞ 90 ദിവസത്തിൽ അറിയിപ്പുകളില്ല."
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "No open feedback."
 msgstr "No open feedback."
 
@@ -12472,7 +12468,7 @@ msgstr "ആർക്കും ഈ മെയിൽ ലഭിക്കില്ല
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/setup/email/EmailTestStep.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "None"
 msgstr "ഒന്നുമില്ല"
@@ -12809,7 +12805,7 @@ msgstr "ഒന്നും നഷ്ടപ്പെടുന്നില്ല: 
 msgid "Nothing is lost: when it continues, copying picks up where it stopped."
 msgstr "ഒന്നും നഷ്ടപ്പെടുന്നില്ല: അത് തുടരുമ്പോൾ, നിർത്തിയിടത്തുനിന്ന് പകർത്തൽ തുടരും."
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Nothing is resolved yet."
 msgstr "Nothing is resolved yet."
 
@@ -12823,7 +12819,7 @@ msgid "Nothing is snoozed."
 msgstr "ഒന്നും സ്നൂസ് ചെയ്തിട്ടില്ല."
 
 #: src/features/docs/discussions/QueuePane.tsx
-#: src/features/docs/DiscussionsTab.tsx
+#: src/features/docs/DocsPage.tsx
 msgid "Nothing is waiting for approval."
 msgstr "ഒന്നും അംഗീകാരത്തിനായി കാത്തിരിക്കുന്നില്ല."
 
@@ -12835,7 +12831,7 @@ msgstr "ഇപ്പോൾ പ്രശ്നമൊന്നുമില്ല. 
 msgid "Nothing matches these filters."
 msgstr "ഈ ഫിൽട്ടറുകളുമായി ഒന്നും പൊരുത്തപ്പെടുന്നില്ല."
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing matches your search here."
 msgstr "നിങ്ങളുടെ തിരയലുമായി ഇവിടെ ഒന്നും പൊരുത്തപ്പെടുന്നില്ല."
@@ -12844,7 +12840,7 @@ msgstr "നിങ്ങളുടെ തിരയലുമായി ഇവിട�
 msgid "Nothing needs attention right now."
 msgstr "ഇപ്പോൾ ഒന്നിനും ശ്രദ്ധ ആവശ്യമില്ല."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Nothing opens by itself. Open an incident from the monitor when you want one."
 msgstr "ഒന്നും സ്വയം തുറക്കില്ല. ആവശ്യമുള്ളപ്പോൾ മോണിറ്ററിൽ നിന്ന് സംഭവം തുറക്കുക."
 
@@ -13301,10 +13297,6 @@ msgstr "അവർ സ്ഥിരം ഐഡിക്ക് സമ്മതിച
 msgid "Only while the panel is open in this browser. Away, you are alerted only about conversations assigned to you."
 msgstr "ഈ ബ്രൗസറിൽ പാനൽ തുറന്നിരിക്കുമ്പോൾ മാത്രം. അകലെയായിരിക്കുമ്പോൾ, നിങ്ങൾക്ക് നിയോഗിച്ച സംഭാഷണങ്ങളെക്കുറിച്ച് മാത്രം അലേർട്ട് ലഭിക്കും."
 
-#: src/features/status/StatusPages.tsx
-msgid "only your team can preview it"
-msgstr "നിങ്ങളുടെ ടീമിന് മാത്രമേ പ്രിവ്യൂ ചെയ്യാനാകൂ"
-
 #: src/features/broadcasts/NewBroadcastForm.tsx
 msgid "Only your team sees it."
 msgstr "നിങ്ങളുടെ ടീമിന് മാത്രം കാണാം."
@@ -13317,8 +13309,11 @@ msgstr "തുറന്നത്"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/status/IncidentsPage.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgctxt "keyboard hint"
 msgid "open"
@@ -13328,7 +13323,7 @@ msgstr "തുറക്കുക"
 #: src/features/account/AccountPage.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -13338,7 +13333,9 @@ msgid "Open"
 msgstr "തുറക്കുക"
 
 #. placeholder {0}: a.filename
+#. placeholder {0}: p.name
 #: src/features/conversation/messages/Attachments.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Open {0}"
 msgstr "{0} തുറക്കുക"
 
@@ -13372,7 +13369,7 @@ msgid "Open Account security in your Yahoo account."
 msgstr "നിങ്ങളുടെ Yahoo അക്കൗണ്ടിൽ Account security തുറക്കുക."
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Open an incident"
 msgstr "സംഭവം തുറക്കുക"
@@ -13550,6 +13547,10 @@ msgstr "എൻഡ്‌പോയിന്റ് തുറക്കുക"
 msgid "Open the entry"
 msgstr "എൻട്രി തുറക്കുക"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Open the feedback"
+msgstr "ഫീഡ്ബാക്ക് തുറക്കുക"
+
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Open the guide"
 msgstr "Open the guide"
@@ -13623,6 +13624,10 @@ msgid "Open the site, goal or funnel"
 msgstr "സൈറ്റ്, ലക്ഷ്യം അല്ലെങ്കിൽ ഫണൽ തുറക്കുക"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Open the status page"
+msgstr "സ്റ്റാറ്റസ് പേജ് തുറക്കുക"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Open the triggered e-mail"
 msgstr "Open the triggered e-mail"
 
@@ -13688,7 +13693,7 @@ msgstr "operational വീണ്ടെടുക്കുന്നു; degraded, 
 msgid "Operator"
 msgstr "ഓപ്പറേറ്റർ"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Optional. Shown on the public page."
 msgstr "ഓപ്ഷണൽ. പൊതു പേജിൽ കാണിക്കുന്നു."
 
@@ -13821,7 +13826,6 @@ msgstr "കാലക്രമേണ"
 
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
 msgstr "അവലോകനം"
@@ -13884,9 +13888,7 @@ msgstr "പേജ്: {name}"
 
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
-#: src/features/status/StatusPages.tsx
 msgid "Pages"
 msgstr "പേജുകൾ"
 
@@ -13957,7 +13959,6 @@ msgstr "പാസ്‌വേഡ് സജ്ജമാക്കി"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "Past"
 msgstr "കഴിഞ്ഞവ"
 
@@ -14023,7 +14024,7 @@ msgstr "മോണിറ്റർ താൽക്കാലികമായി ന�
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/setup/email/EmailTestStep.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Paused"
@@ -14268,10 +14269,6 @@ msgstr "ആദ്യം ഒരു ഡിസൈൻ തിരഞ്ഞെടുക
 msgid "Pick a design that renders without errors."
 msgstr "പിശകുകളില്ലാതെ റെൻഡർ ആകുന്ന ഒരു ഡിസൈൻ തിരഞ്ഞെടുക്കുക."
 
-#: src/features/docs/DiscussionsTab.tsx
-msgid "Pick a discussion to read and answer it."
-msgstr "വായിക്കാനും മറുപടി നൽകാനും ഒരു ചർച്ച തിരഞ്ഞെടുക്കുക."
-
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "Pick a field"
 msgstr "ഒരു ഫീൽഡ് തിരഞ്ഞെടുക്കുക"
@@ -14299,17 +14296,9 @@ msgstr "Pick a list under Who gets it to save"
 msgid "Pick a member"
 msgstr "ഒരു അംഗത്തെ തിരഞ്ഞെടുക്കുക"
 
-#: src/features/status/MonitorsPage.tsx
-msgid "Pick a monitor to see what happened."
-msgstr "എന്താണ് സംഭവിച്ചതെന്ന് കാണാൻ ഒരു മോണിറ്റർ തിരഞ്ഞെടുക്കുക."
-
 #: src/features/docs/PagesTab.tsx
 msgid "Pick a page to see its ratings, discussions and questions."
 msgstr "ഒരു പേജിന്റെ റേറ്റിംഗുകളും ചർച്ചകളും ചോദ്യങ്ങളും കാണാൻ അത് തിരഞ്ഞെടുക്കുക."
-
-#: src/features/feedback/FeedbackList.tsx
-msgid "Pick a piece of feedback"
-msgstr "Pick a piece of feedback"
 
 #: src/features/broadcasts/ListPage.tsx
 msgid "Pick a sender in the settings"
@@ -14359,10 +14348,6 @@ msgstr "ഒരു എൻഡ്‌പോയിന്റ് തിരഞ്ഞെ�
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Pick an inbox"
 msgstr "ഒരു ഇൻബോക്സ് തിരഞ്ഞെടുക്കുക"
-
-#: src/features/status/IncidentsPage.tsx
-msgid "Pick an incident to read it."
-msgstr "വായിക്കാൻ ഒരു സംഭവം തിരഞ്ഞെടുക്കുക."
 
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "Pick an open incident or maintenance"
@@ -14503,7 +14488,7 @@ msgstr "പിൻ ചെയ്തു"
 msgid "Pinned to the top of your list"
 msgstr "നിങ്ങളുടെ ലിസ്റ്റിന്റെ മുകളിൽ പിൻ ചെയ്തിരിക്കുന്നു"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "ലിങ്കുകളും വരി മുറിവുകളുമുള്ള ലളിതമായ വാചകം, പരമാവധി 5,000 അക്ഷരങ്ങൾ."
 
@@ -14515,8 +14500,12 @@ msgstr "സാധാരണ ടെക്സ്റ്റ്, ഫോർവേഡ്
 msgid "Plan"
 msgstr "പ്ലാൻ"
 
+#: src/features/status/IncidentsPage.tsx
+msgid "plan maintenance"
+msgstr "അറ്റകുറ്റപ്പണി ആസൂത്രണം ചെയ്യുക"
+
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Plan maintenance"
 msgstr "അറ്റകുറ്റപ്പണി ആസൂത്രണം ചെയ്യുക"
@@ -14558,7 +14547,7 @@ msgstr "ചൂണ്ടുന്നത്"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Port"
 msgstr "പോർട്ട്"
 
@@ -14597,6 +14586,10 @@ msgstr "തപാൽ വിലാസം"
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Posted by you and marked as the accepted answer."
 msgstr "നിങ്ങൾ പോസ്റ്റ് ചെയ്തതും അംഗീകരിച്ച ഉത്തരമായി അടയാളപ്പെടുത്തിയതും."
+
+#: src/features/docs/DocsPage.tsx
+msgid "Posts from new readers wait here until a member approves them"
+msgstr "പുതിയ വായനക്കാരുടെ പോസ്റ്റുകൾ ഒരു അംഗം അംഗീകരിക്കുന്നതുവരെ ഇവിടെ കാത്തിരിക്കും"
 
 #: src/components/common/text.ts
 msgid "Preference page"
@@ -14656,8 +14649,20 @@ msgid "Previous or next discussion"
 msgstr "മുമ്പത്തെ അല്ലെങ്കിൽ അടുത്ത ചർച്ച"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Previous or next incident"
+msgstr "മുമ്പത്തെ അല്ലെങ്കിൽ അടുത്ത സംഭവം"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Previous or next language"
 msgstr "മുമ്പത്തെ അല്ലെങ്കിൽ അടുത്ത ഭാഷ"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Previous or next monitor"
+msgstr "മുമ്പത്തെ അല്ലെങ്കിൽ അടുത്ത മോണിറ്റർ"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Previous or next status page"
+msgstr "മുമ്പത്തെ അല്ലെങ്കിൽ അടുത്ത സ്റ്റാറ്റസ് പേജ്"
 
 #: src/features/feedback/Lightbox.tsx
 msgid "Previous screenshot"
@@ -14709,8 +14714,8 @@ msgstr "pro, team"
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/sections.tsx
-#: src/features/status/CreatePageDialog.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/CreatePageForm.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Product"
 msgstr "ഉൽപ്പന്നം"
 
@@ -14864,7 +14869,7 @@ msgstr "സംഭവം പ്രസിദ്ധീകരിക്കുക"
 msgid "Publish and unpublish help center articles"
 msgstr "സഹായ കേന്ദ്രത്തിലെ ലേഖനങ്ങൾ പ്രസിദ്ധീകരിക്കുകയും പിൻവലിക്കുകയും ചെയ്യുക"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Publish now"
 msgstr "ഇപ്പോൾ പ്രസിദ്ധീകരിക്കുക"
 
@@ -14970,6 +14975,10 @@ msgstr "ഈ ഘടകങ്ങൾ നിങ്ങളുടെ ഡോക്യു
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Question"
 msgstr "ചോദ്യം"
+
+#: src/features/docs/DocsPage.tsx
+msgid "Questions readers ask under your documentation pages"
+msgstr "നിങ്ങളുടെ ഡോക്യുമെന്റേഷൻ പേജുകൾക്ക് താഴെ വായനക്കാർ ചോദിക്കുന്ന ചോദ്യങ്ങൾ"
 
 #: src/components/common/text.ts
 msgid "Queued"
@@ -15633,7 +15642,7 @@ msgstr "ഇറക്കുമതി ചെയ്ത ചരിത്രം നീ
 msgid "Rename"
 msgstr "പേര് മാറ്റുക"
 
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 msgid "Rename group"
 msgstr "ഗ്രൂപ്പിന്റെ പേര് മാറ്റുക"
 
@@ -15642,9 +15651,14 @@ msgid "Rename the mailbox"
 msgstr "മെയിൽബോക്സിന്റെ പേര് മാറ്റുക"
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Reopen"
 msgstr "വീണ്ടും തുറക്കുക"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Reopen ({closeKey})"
+msgstr "വീണ്ടും തുറക്കുക ({closeKey})"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reorder the selected view in the sidebar"
@@ -15977,10 +15991,15 @@ msgid "Resolution {resolution}"
 msgstr "പരിഹാരം {resolution}"
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "Resolve"
 msgstr "Resolve"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Resolve ({closeKey})"
+msgstr "പരിഹരിക്കുക ({closeKey})"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -15995,10 +16014,13 @@ msgstr "സംഭവം പരിഹരിക്കുക"
 msgid "Resolve or complete"
 msgstr "പരിഹരിക്കുക അല്ലെങ്കിൽ പൂർത്തിയാക്കുക"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Resolve or reopen the selected feedback"
+msgstr "തിരഞ്ഞെടുത്ത ഫീഡ്ബാക്ക് പരിഹരിക്കുക അല്ലെങ്കിൽ വീണ്ടും തുറക്കുക"
+
 #: src/components/common/text.ts
 #: src/features/conversation/ConversationStatus.tsx
-#: src/features/feedback/FeedbackList.tsx
-#: src/features/feedback/FeedbackPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/status/text.tsx
 msgid "Resolved"
 msgstr "Resolved"
@@ -16011,11 +16033,6 @@ msgstr "{endedAt}-ന് പരിഹരിച്ചു"
 #: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "പരിഹരിക്കാൻ എടുത്ത സമയം"
-
-#. placeholder {0}: took(last)
-#: src/features/status/StatusPages.tsx
-msgid "resolved in {0}"
-msgstr "{0}-ൽ പരിഹരിച്ചു"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Resolved. It moved to the Resolved tab."
@@ -16182,7 +16199,6 @@ msgstr "സബ്സ്ക്രൈബ് ചെയ്ത ഉടനെ, ആള�
 #: src/app/Palette.tsx
 #: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/feedback/RoadmapCard.tsx
 msgid "Roadmap"
 msgstr "റോഡ്മാപ്പ്"
@@ -16363,10 +16379,10 @@ msgstr "ശനിയാഴ്ച"
 #: src/features/settings/teams/TeamEditor.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/parts.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/IncidentForm.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Save"
 msgstr "സേവ് ചെയ്യുക"
 
@@ -16387,7 +16403,7 @@ msgstr "സംരക്ഷിച്ച് വീണ്ടും ഷെഡ്യ�
 msgid "Save and test"
 msgstr "Save and test"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Save as draft"
 msgstr "ഡ്രാഫ്റ്റായി സംരക്ഷിക്കുക"
 
@@ -16526,7 +16542,6 @@ msgstr "എൻട്രി ഷെഡ്യൂൾ ചെയ്യുക"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/text.ts
 #: src/features/status/IncidentsPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/text.tsx
 msgid "Scheduled"
 msgstr "ഷെഡ്യൂൾ ചെയ്തു"
@@ -16551,7 +16566,6 @@ msgid "Scheduled by"
 msgstr "ഷെഡ്യൂൾ ചെയ്തത്"
 
 #: src/features/status/Notices.tsx
-#: src/features/status/StatusPages.tsx
 msgid "Scheduled for {due}"
 msgstr "{due}-ന് ഷെഡ്യൂൾ ചെയ്തു"
 
@@ -16604,7 +16618,7 @@ msgstr "സ്ക്രീൻ വലുപ്പം"
 msgid "Screenshot"
 msgstr "സ്ക്രീൻഷോട്ട്"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Screenshots attached"
 msgstr "Screenshots attached"
 
@@ -16616,12 +16630,12 @@ msgstr "SDK"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "search"
 msgstr "തിരയുക"
 
 #: src/app/Palette.tsx
-#: src/features/feedback/FeedbackList.tsx
 msgid "Search"
 msgstr "തിരയുക"
 
@@ -16671,9 +16685,14 @@ msgstr "ഇമോജി തിരയുക"
 msgid "Search emoji (in English)"
 msgstr "ഇമോജി തിരയുക (ഇംഗ്ലീഷിൽ)"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/feedback/FeedbackHome.tsx
 msgid "Search feedback"
 msgstr "Search feedback"
+
+#: src/features/feedback/FeedbackHome.tsx
+msgid "Search feedback…"
+msgstr "ഫീഡ്ബാക്ക് തിരയുക…"
 
 #: src/app/places.tsx
 msgid "Search gaps"
@@ -16775,7 +16794,7 @@ msgstr "നിങ്ങളുടെ ടെർമിനലിൽ നിന്ന�
 msgid "Second secret"
 msgstr "രണ്ടാമത്തെ സീക്രട്ട്"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Seconds, 1 to 30."
 msgstr "സെക്കൻഡ്, 1 മുതൽ 30 വരെ."
 
@@ -16805,6 +16824,7 @@ msgstr "മോണിറ്റർ കണ്ടു"
 
 #: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "select"
@@ -16826,6 +16846,10 @@ msgid "Select all"
 msgstr "എല്ലാം തിരഞ്ഞെടുക്കുക"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Select the article"
+msgstr "ലേഖനം തിരഞ്ഞെടുക്കുക"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Select the broadcast under the cursor"
 msgstr "കഴ്‌സറിന് താഴെയുള്ള ബ്രോഡ്‌കാസ്റ്റ് തിരഞ്ഞെടുക്കുക"
 
@@ -16836,6 +16860,14 @@ msgstr "കഴ്സറിന് താഴെയുള്ള കോൺടാക�
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "കഴ്സറിന് താഴെയുള്ള സംഭാഷണം തിരഞ്ഞെടുക്കുക"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the entry"
+msgstr "എൻട്രി തിരഞ്ഞെടുക്കുക"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the feedback"
+msgstr "ഫീഡ്ബാക്ക് തിരഞ്ഞെടുക്കുക"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the mail under the cursor"
@@ -17506,7 +17538,6 @@ msgstr "സജ്ജീകരിക്കുന്നു…"
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "ക്രമീകരണങ്ങൾ"
@@ -17568,6 +17599,7 @@ msgstr "കുറുക്കുവഴി"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Show"
 msgstr "കാണിക്കുക"
@@ -17600,7 +17632,7 @@ msgstr "ഫീഡ്, ബാഡ്ജ്, എംബെഡ് എന്നിവ 
 msgid "Show full draft"
 msgstr "പൂർണ്ണ ഡ്രാഫ്റ്റ് കാണിക്കുക"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Show HTTP details"
 msgstr "HTTP വിശദാംശങ്ങൾ കാണിക്കുക"
 
@@ -18513,7 +18545,7 @@ msgid "Starting"
 msgstr "ആരംഭിക്കുന്നു"
 
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Starts"
 msgstr "ആരംഭം"
 
@@ -18540,9 +18572,9 @@ msgstr "STARTTLS (പോർട്ട് 587)"
 
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
-#: src/features/status/ComponentDialogs.tsx
+#: src/features/status/ComponentForms.tsx
 #: src/features/status/IncidentDetail.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "State"
 msgstr "അവസ്ഥ"
@@ -18553,7 +18585,7 @@ msgid "State of {0}"
 msgstr "{0}-ന്റെ അവസ്ഥ"
 
 #. placeholder {0}: c.name
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "State of {0} while it is open"
 msgstr "{0} തുറന്നിരിക്കുമ്പോഴുള്ള അവസ്ഥ"
 
@@ -18561,7 +18593,7 @@ msgstr "{0} തുറന്നിരിക്കുമ്പോഴുള്ള �
 msgid "state of the conversation"
 msgstr "സംഭാഷണത്തിന്റെ അവസ്ഥ"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "State while down"
 msgstr "നിലച്ചാലുള്ള അവസ്ഥ"
@@ -18573,7 +18605,6 @@ msgstr "നിലച്ചാലുള്ള അവസ്ഥ"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
-#: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -18584,7 +18615,6 @@ msgstr "നിലച്ചാലുള്ള അവസ്ഥ"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Status"
 msgstr "സ്റ്റാറ്റസ്"
@@ -18601,7 +18631,6 @@ msgstr "സ്റ്റാറ്റസ് പേജ് ഇല്ലാതാക�
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "സ്റ്റാറ്റസ് പേജുകൾ"
@@ -18737,7 +18766,6 @@ msgstr "ഇപ്പോൾ ലിസ്റ്റിൽ സബ്സ്ക്ര�
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
-#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Subscribers"
 msgstr "സബ്സ്ക്രൈബർമാർ"
@@ -18763,7 +18791,7 @@ msgstr "സബ്സ്ക്രിപ്ഷൻ ഇല്ലാതാക്ക�
 msgid "Succeeded"
 msgstr "വിജയിച്ചു"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Successes to recover"
 msgstr "വീണ്ടെടുക്കുന്നതിന് മുമ്പുള്ള തുടർച്ചയായ വിജയങ്ങൾ"
@@ -19208,7 +19236,7 @@ msgstr "കോഡ് തെറ്റാണ് അല്ലെങ്കിൽ ക
 msgid "The columns are guessed from the header row. One must be the e-mail address; name the others as contact fields or attributes, or skip them. Attributes only fill keys a contact does not have yet."
 msgstr "കോളങ്ങൾ ഹെഡർ വരിയിൽ നിന്ന് ഊഹിച്ചതാണ്. ഒന്ന് ഇമെയിൽ വിലാസമായിരിക്കണം; മറ്റുള്ളവയ്ക്ക് കോൺടാക്റ്റ് ഫീൽഡുകൾ അല്ലെങ്കിൽ ആട്രിബ്യൂട്ടുകൾ എന്ന് പേരിടുക, അല്ലെങ്കിൽ ഒഴിവാക്കുക. ആട്രിബ്യൂട്ടുകൾ ഒരു കോൺടാക്റ്റിന് ഇതുവരെ ഇല്ലാത്ത കീകൾ മാത്രം നിറയ്ക്കുന്നു."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "The component whose state this monitor sets."
 msgstr "ഈ മോണിറ്റർ അവസ്ഥ സജ്ജമാക്കുന്ന ഘടകം."
 
@@ -19333,7 +19361,7 @@ msgstr "ഇമെയിൽ ഡൊമെയ്ൻ ഈ വർക്ക്‌സ്
 msgid "The elements work on these addresses; add your dev server in the inbox settings:"
 msgstr "ഘടകങ്ങൾ ഈ വിലാസങ്ങളിൽ പ്രവർത്തിക്കുന്നു; ഇൻബോക്സ് ക്രമീകരണങ്ങളിൽ നിങ്ങളുടെ ഡെവ് സെർവർ ചേർക്കുക:"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "The end must be after the start."
 msgstr "അവസാനം ആരംഭത്തിന് ശേഷമായിരിക്കണം."
 
@@ -19428,10 +19456,6 @@ msgstr "മറുപടി സമയം കാണിക്കുന്ന ഇൻ
 #: src/features/settings/notifications/events.ts
 msgid "The first message of a conversation in an inbox that shows who is available."
 msgstr "ആരൊക്കെ ലഭ്യമാണെന്ന് കാണിക്കുന്ന ഇൻബോക്സിലെ ഒരു സംഭാഷണത്തിന്റെ ആദ്യ സന്ദേശം."
-
-#: src/features/status/StatusPages.tsx
-msgid "the first one"
-msgstr "ആദ്യത്തേത്"
 
 #: src/features/docs/PagesTab.tsx
 msgid "The first rating makes the page appear here."
@@ -20292,6 +20316,10 @@ msgstr "എഴുത്തുകാരുടെ അംഗീകാരത്ത�
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "ഇവ നിങ്ങളുടെ ടീമിനും ഉപഭോക്താക്കൾക്കും കാണാനാകില്ല. 30 ദിവസം വരെ ട്രാഷിൽ നിന്ന് പുനഃസ്ഥാപിക്കാം, അതിനുശേഷം സന്ദേശങ്ങളും ഫയലുകളും സഹിതം ശാശ്വതമായി ഇല്ലാതാക്കും."
 
+#: src/features/feedback/FeedbackHome.tsx
+msgid "They disappear for your team. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
+msgstr "അവ നിങ്ങളുടെ ടീമിന് കാണാതാകും. 30 ദിവസം വരെ ട്രാഷിൽ നിന്ന് പുനഃസ്ഥാപിക്കാം, അതിനുശേഷം സന്ദേശങ്ങളും ഫയലുകളും സഹിതം ശാശ്വതമായി ഇല്ലാതാക്കും."
+
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They get a mail with a link and are subscribed only after they click it."
 msgstr "അവർക്ക് ഒരു ലിങ്കുള്ള മെയിൽ ലഭിക്കും, അവർ ക്ലിക്ക് ചെയ്ത ശേഷം മാത്രം സബ്സ്ക്രൈബ് ആകും."
@@ -20691,7 +20719,7 @@ msgstr "ഈ മോണിറ്റർ ഇപ്പോൾ നിലവിലില
 msgid "This month"
 msgstr "ഈ മാസം"
 
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "This page is not public yet, so visitors see nothing until you publish the page."
 msgstr "ഈ പേജ് ഇതുവരെ പൊതുവായിട്ടില്ല, അതിനാൽ നിങ്ങൾ പേജ് പ്രസിദ്ധീകരിക്കുന്നതുവരെ സന്ദർശകർക്ക് ഒന്നും കാണാനാകില്ല."
 
@@ -20808,6 +20836,10 @@ msgstr "ഈ സൈറ്റിന് കണക്റ്റ് ചെയ്യാ
 #: src/components/common/text.ts
 msgid "This site is not allowed to use this documentation channel."
 msgstr "ഈ ഡോക്യുമെന്റേഷൻ ചാനൽ ഉപയോഗിക്കാൻ ഈ സൈറ്റിന് അനുവാദമില്ല."
+
+#: src/features/status/StatusPages.tsx
+msgid "This status page no longer exists or you cannot see it."
+msgstr "ഈ സ്റ്റാറ്റസ് പേജ് ഇപ്പോൾ നിലവിലില്ല, അല്ലെങ്കിൽ നിങ്ങൾക്ക് അത് കാണാനാകില്ല."
 
 #: src/components/common/text.ts
 msgid "This subscription is no longer waiting for confirmation."
@@ -20926,7 +20958,7 @@ msgstr "സമയം"
 msgid "Time zone"
 msgstr "സമയമേഖല"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Timeout"
 msgstr "ടൈംഔട്ട്"
@@ -20935,7 +20967,7 @@ msgstr "ടൈംഔട്ട്"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/issues/IssueDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
-#: src/features/status/IncidentDialog.tsx
+#: src/features/status/IncidentForm.tsx
 msgid "Title"
 msgstr "ശീർഷകം"
 
@@ -21093,6 +21125,7 @@ msgstr "ഈ സെർവറിന് ഈ സർട്ടിഫിക്കറ്
 #: src/features/account/AccountLayout.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/migrations/UploadStep.tsx
@@ -21187,7 +21220,6 @@ msgstr "Yuva ഓഫാക്കി"
 msgid "TXT record"
 msgstr "TXT റെക്കോർഡ്"
 
-#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/fields/FieldDialog.tsx
@@ -21423,7 +21455,7 @@ msgstr "വിവർത്തനത്തിന്റെ പ്രസിദ്�
 msgid "Unpublished"
 msgstr "പ്രസിദ്ധീകരിച്ചിട്ടില്ല"
 
-#: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackHome.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/mail/MailList.tsx
@@ -22032,7 +22064,6 @@ msgstr "അംഗീകാരത്തിനായി കാത്തിരി�
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
-#: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "Waiting for approval"
@@ -22426,7 +22457,7 @@ msgstr "സഹപ്രവർത്തകൻ കുറിപ്പിൽ @ ഉ�
 msgid "When did they agree?"
 msgstr "അവർ എപ്പോൾ സമ്മതിച്ചു?"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "When it goes down"
 msgstr "നിലച്ചാൽ"
@@ -22464,10 +22495,6 @@ msgstr "മറ്റാരെങ്കിലും അത് നിങ്ങൾ�
 #: src/features/broadcasts/Trigger.tsx
 msgid "when someone first signs in to {inbox}"
 msgstr "when someone first signs in to {inbox}"
-
-#: src/features/feedback/FeedbackList.tsx
-msgid "When someone sends feedback, it will be in the list."
-msgstr "When someone sends feedback, it will be in the list."
 
 #: src/features/broadcasts/Trigger.tsx
 msgid "when someone starts to match {match}"
@@ -22952,11 +22979,11 @@ msgstr "You get a new secret once. Webhooks from GitHub are refused until you pa
 msgid "You get a notification when someone replies in these"
 msgstr "ഇവയിൽ ആരെങ്കിലും മറുപടി നൽകുമ്പോൾ നിങ്ങൾക്ക് അറിയിപ്പ് ലഭിക്കും"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "You get the address to call when you save. It is shown only once."
 msgstr "സേവ് ചെയ്യുമ്പോൾ വിളിക്കേണ്ട വിലാസം ലഭിക്കും. ഇത് ഒരു തവണ മാത്രം കാണിക്കും."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "You get the address your alerting calls when you save, for Alertmanager, Grafana or your own script. It is shown only once."
 msgstr "സേവ് ചെയ്യുമ്പോൾ നിങ്ങളുടെ അലേർട്ടിംഗ് വിളിക്കുന്ന വിലാസം ലഭിക്കും, Alertmanager, Grafana അല്ലെങ്കിൽ നിങ്ങളുടെ സ്വന്തം സ്ക്രിപ്റ്റിനായി. ഇത് ഒരു തവണ മാത്രം കാണിക്കും."
 
@@ -23115,7 +23142,7 @@ msgstr "Your identity provider has not verified your e-mail address, so Yuva can
 msgid "Your inbox is empty."
 msgstr "നിങ്ങളുടെ ഇൻബോക്സ് ശൂന്യമാണ്."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Your job calls Yuva on a schedule. A missing call fails the monitor."
 msgstr "നിങ്ങളുടെ ജോലി കൃത്യമായ ഇടവേളകളിൽ Yuva-യെ വിളിക്കുന്നു. വിളി ഇല്ലാതായാൽ മോണിറ്റർ പരാജയപ്പെടും."
 
@@ -23169,7 +23196,7 @@ msgstr "നിങ്ങളുടെ ഓർഗനൈസേഷന്റെ അഡ�
 msgid "Your own"
 msgstr "Your own"
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Your own monitoring sends its state, including Alertmanager and Grafana alerts."
 msgstr "നിങ്ങളുടെ സ്വന്തം നിരീക്ഷണം അതിന്റെ അവസ്ഥ അയയ്ക്കുന്നു, Alertmanager, Grafana അലേർട്ടുകൾ ഉൾപ്പെടെ."
 
@@ -23392,7 +23419,7 @@ msgstr "Yuva വായിക്കുക മാത്രം ചെയ്യു�
 msgid "Yuva only reads. Its connection sends {provider} nothing but read requests, and the token only to {provider}'s API, so no ticket, customer or setting changes."
 msgstr "Yuva വായിക്കുക മാത്രം ചെയ്യുന്നു. അതിന്റെ കണക്ഷൻ {provider}-ലേക്ക് വായനാ അഭ്യർത്ഥനകളല്ലാതെ മറ്റൊന്നും അയയ്ക്കുന്നില്ല, ടോക്കൺ {provider}-ന്റെ API-ലേക്ക് മാത്രം അയയ്ക്കുന്നു, അതിനാൽ ഒരു ടിക്കറ്റും ഉപഭോക്താവും ക്രമീകരണവും മാറുന്നില്ല."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Yuva opens a connection to a host and port on a schedule."
 msgstr "Yuva കൃത്യമായ ഇടവേളകളിൽ ഒരു ഹോസ്റ്റിലേക്കും പോർട്ടിലേക്കും കണക്ഷൻ തുറക്കുന്നു."
 
@@ -23404,7 +23431,7 @@ msgstr "നിങ്ങളുടെ സ്വന്തം അക്കൗണ്�
 msgid "Yuva reads only the file you upload and deletes it when the migration ends. History arrives quietly: no notifications, no auto-replies."
 msgstr "Yuva നിങ്ങൾ അപ്‌ലോഡ് ചെയ്യുന്ന ഫയൽ മാത്രം വായിക്കുകയും മൈഗ്രേഷൻ അവസാനിക്കുമ്പോൾ അത് ഇല്ലാതാക്കുകയും ചെയ്യുന്നു. ചരിത്രം നിശ്ശബ്ദമായി വരുന്നു: അറിയിപ്പുകളില്ല, ഓട്ടോ-മറുപടികളില്ല."
 
-#: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorForm.tsx
 msgid "Yuva requests an address on a schedule and checks the answer."
 msgstr "Yuva കൃത്യമായ ഇടവേളകളിൽ ഒരു വിലാസം അഭ്യർഥിച്ച് ഉത്തരം പരിശോധിക്കുന്നു."
 

@@ -7,6 +7,11 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: pt-BR\n"
 
+#. placeholder {0}: rows.length
+#: src/features/changelog/EntriesTab.tsx
+msgid "{0, plural, one {{shownCount} entry} other {{shownCount} entries}}"
+msgstr "{0, plural, one {{shownCount} entrada} other {{shownCount} entradas}}"
+
 #: src/features/changelog/ChangelogsPage.tsx
 msgid "{published} of {total} entries published"
 msgstr "{published} de {total} entradas publicadas"
@@ -36,15 +41,6 @@ msgstr "Final do endereço"
 msgid "Agents may publish"
 msgstr "Agentes podem publicar"
 
-#: src/features/changelog/ChangelogFrame.tsx
-#: src/features/changelog/pages.tsx
-msgid "All"
-msgstr "Todos"
-
-#: src/features/changelog/ChangelogFrame.tsx
-msgid "All changelogs"
-msgstr "Todos os registros de mudanças"
-
 #: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "All labels"
@@ -53,10 +49,6 @@ msgstr "Todos os rótulos"
 #: src/features/changelog/pages.tsx
 msgid "All languages"
 msgstr "Todos os idiomas"
-
-#: src/features/changelog/ChangelogFrame.tsx
-msgid "All products"
-msgstr "Todos os produtos"
 
 #: src/features/changelog/SettingsTab.tsx
 msgid "Analytics property"
@@ -75,7 +67,6 @@ msgid "At least 3 characters."
 msgstr "Pelo menos 3 caracteres."
 
 #: src/features/changelog/CreateChangelogDialog.tsx
-#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/MailDialog.tsx
 #: src/features/changelog/ScheduleDialog.tsx
 msgid "Cancel"
@@ -89,21 +80,25 @@ msgstr "Alterar"
 msgid "Change the time"
 msgstr "Alterar o horário"
 
-#: src/features/changelog/pages.tsx
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/SettingsTab.tsx
 msgid "Changelog"
 msgstr "Changelog"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/pages.tsx
 msgid "Changelogs"
 msgstr "Changelogs"
 
+#: src/features/changelog/pages.tsx
+msgid "Changelogs ({manageKey})"
+msgstr "Changelogs ({manageKey})"
+
 #: src/features/changelog/EntryEditor.tsx
 msgid "Choose a picture"
 msgstr "Escolher uma imagem"
 
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "Clear filters"
 msgstr "Limpar filtros"
@@ -184,7 +179,6 @@ msgstr "Rascunho"
 msgid "Draft submitted. An owner or admin can publish it."
 msgstr "Rascunho enviado. Um proprietário ou administrador pode publicá-lo."
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/pages.tsx
 msgid "Drafts"
 msgstr "Rascunhos"
@@ -193,12 +187,14 @@ msgstr "Rascunhos"
 msgid "Each product has one changelog. Owners and admins create and publish them."
 msgstr "Cada produto tem um registro de novidades. Proprietários e administradores o criam e publicam."
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
-#: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
 msgid "Entries"
 msgstr "Entradas"
+
+#: src/features/changelog/pages.tsx
+msgid "Entries ({entriesKey})"
+msgstr "Entradas ({entriesKey})"
 
 #: src/features/changelog/SettingsTab.tsx
 msgid "Entries and translations are deleted with it."
@@ -209,12 +205,8 @@ msgid "Entries can be written and published in these languages. Visitors see the
 msgstr "As entradas podem ser escritas e publicadas nestes idiomas. Os visitantes veem o próprio idioma quando existe."
 
 #: src/features/changelog/pages.tsx
-msgid "Entries show on the public page once they are published."
-msgstr "As entradas aparecem na página pública assim que são publicadas."
-
-#: src/features/changelog/pages.tsx
-msgid "Entries you have not published yet show up here."
-msgstr "As entradas que você ainda não publicou aparecem aqui."
+msgid "Every state"
+msgstr "Todos os estados"
 
 #: src/features/changelog/Bulk.tsx
 #: src/features/changelog/EntryEditor.tsx
@@ -301,6 +293,10 @@ msgstr "Marcar como atualizada"
 msgid "More"
 msgstr "Mais"
 
+#: src/features/changelog/EntriesTab.tsx
+msgid "move"
+msgstr "mover"
+
 #: src/features/changelog/CreateChangelogDialog.tsx
 #: src/features/changelog/SettingsTab.tsx
 msgid "Name"
@@ -311,9 +307,10 @@ msgid "New"
 msgstr "Novo"
 
 #: src/features/changelog/EntriesTab.tsx
-msgid "New entry"
-msgstr "Nova entrada"
+msgid "new post"
+msgstr "novo post"
 
+#: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/pages.tsx
 msgid "New post"
 msgstr "Novo post"
@@ -351,10 +348,6 @@ msgstr "não publicado"
 msgid "not written"
 msgstr "não escrito"
 
-#: src/features/changelog/pages.tsx
-msgid "Nothing here."
-msgstr "Não há nada aqui."
-
 #: src/features/changelog/SettingsTab.tsx
 msgid "Off: agents write drafts and submit them, and owners and admins publish. On: agents with access to the inbox publish, schedule and unpublish too."
 msgstr "Desativado: os agentes escrevem rascunhos e os enviam, e proprietários e administradores publicam. Ativado: agentes com acesso à caixa de entrada também publicam, agendam e despublicam."
@@ -362,6 +355,11 @@ msgstr "Desativado: os agentes escrevem rascunhos e os enviam, e proprietários 
 #: src/features/changelog/text.tsx
 msgid "Only owners and admins can do this."
 msgstr "Somente proprietários e administradores podem fazer isso."
+
+#: src/features/changelog/EntriesTab.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "abrir"
 
 #: src/features/changelog/EntryEditor.tsx
 msgid "Original"
@@ -386,10 +384,6 @@ msgstr "Parte do endereço web desta tradução. Criada a partir do título quan
 #: src/features/changelog/ScheduleDialog.tsx
 msgid "Pick a time in the next year, in your time zone, {zone}."
 msgstr "Escolha um horário no próximo ano, no seu fuso horário, {zone}."
-
-#: src/features/changelog/pages.tsx
-msgid "Pick a time when you write an entry and it goes public by itself."
-msgstr "Escolha um horário ao escrever uma entrada e ela vai ao ar sozinha."
 
 #: src/features/changelog/MailDialog.tsx
 msgid "Pick up to 10 lists of this inbox."
@@ -446,7 +440,6 @@ msgstr "Publicar agora"
 msgid "Publish on"
 msgstr "Publicar em"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
@@ -498,7 +491,6 @@ msgstr "Agendar de novo"
 msgid "Schedule this entry"
 msgstr "Agendar esta entrada"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/EntryEditor.tsx
 #: src/features/changelog/pages.tsx
 #: src/features/changelog/text.tsx
@@ -513,15 +505,26 @@ msgstr "Agendadas: {scheduled}"
 msgid "Search entries"
 msgstr "Buscar entradas"
 
+#: src/features/changelog/pages.tsx
+msgid "Search entries…"
+msgstr "Buscar entradas…"
+
+#: src/features/changelog/EntriesTab.tsx
+msgid "select"
+msgstr "selecionar"
+
 #: src/features/changelog/MailDialog.tsx
 msgid "Send through"
 msgstr "Enviar por"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/pages.tsx
 msgid "Settings"
 msgstr "Configurações"
+
+#: src/features/changelog/pages.tsx
+msgid "Settings ({settingsKey})"
+msgstr "Configurações ({settingsKey})"
 
 #: src/features/changelog/EntryEditor.tsx
 msgid "Show"
@@ -556,6 +559,7 @@ msgid "Start with a title. You write the text next, and it stays a draft until i
 msgstr "Comece com um título. Você escreve o texto depois, e ele continua rascunho até ser publicado."
 
 #: src/features/changelog/EntriesTab.tsx
+#: src/features/changelog/pages.tsx
 msgid "State"
 msgstr "Estado"
 
@@ -666,13 +670,9 @@ msgstr "Título"
 msgid "Translation deleted"
 msgstr "Tradução excluída"
 
-#: src/features/changelog/pages.tsx
+#: src/features/changelog/EntriesTab.tsx
 msgid "Try again"
 msgstr "Tentar de novo"
-
-#: src/features/changelog/pages.tsx
-msgid "Try another word, label or language."
-msgstr "Tente outra palavra, etiqueta ou idioma."
 
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntryEditor.tsx
@@ -709,6 +709,13 @@ msgstr "Alterações não salvas"
 msgid "Unschedule"
 msgstr "Desagendar"
 
+#: src/features/changelog/ChangelogFrame.tsx
+#: src/features/changelog/ChangelogsPage.tsx
+#: src/features/changelog/EntryEditor.tsx
+#: src/features/changelog/pages.tsx
+msgid "Updates"
+msgstr "Atualizações"
+
 #: src/features/changelog/SettingsTab.tsx
 msgid "Use 3 to 48 letters, numbers and inner hyphens."
 msgstr "Use de 3 a 48 letras, números e hifens internos."
@@ -726,11 +733,9 @@ msgstr "Ver"
 msgid "View changelog"
 msgstr "Ver o changelog"
 
-#: src/features/changelog/ChangelogFrame.tsx
 #: src/features/changelog/ChangelogsPage.tsx
 #: src/features/changelog/EntriesTab.tsx
 #: src/features/changelog/EntryEditor.tsx
-#: src/features/changelog/pages.tsx
 msgid "What’s new"
 msgstr "Novidades"
 

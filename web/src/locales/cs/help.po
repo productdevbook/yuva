@@ -7,6 +7,11 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: cs\n"
 
+#. placeholder {0}: items.length
+#: src/features/help/ArticlesTab.tsx
+msgid "{0, plural, one {{shown} article} other {{shown} articles}}"
+msgstr "{0, plural, one {{shown} článek} few {{shown} články} many {{shown} článku} other {{shown} článků}}"
+
 #. placeholder {0}: c.articles
 #: src/features/help/ImportCard.tsx
 msgid "{0, plural, one {# article read} other {# articles read}}"
@@ -62,21 +67,13 @@ msgstr "{0, plural, one {Add the language in the settings, then import again.} o
 msgid "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 msgstr "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "{drafts, plural, one {# draft} other {# drafts}}"
-msgstr "{drafts, plural, one {# koncept} few {# koncepty} many {# konceptu} other {# konceptů}}"
-
-#: src/features/help/HelpColumn.tsx
-msgid "{published} of {total} articles published"
-msgstr "Publikováno {published} z {total} článků"
-
 #: src/features/help/ImportCard.tsx
 msgid "{saved, plural, one {# draft saved} other {# drafts saved}}"
 msgstr "{saved, plural, one {# draft saved} other {# drafts saved}}"
 
 #: src/features/help/ArticlesTab.tsx
-msgid "{searches} searches"
-msgstr "Vyhledávání: {searches}"
+msgid "{views, plural, one {# view} other {# views}}"
+msgstr "{views, plural, one {# zobrazení} few {# zobrazení} many {# zobrazení} other {# zobrazení}}"
 
 #: src/features/help/CreateCenterDialog.tsx
 msgid "3 to 48 letters, numbers and hyphens. It is unique on this server."
@@ -124,10 +121,6 @@ msgstr "Konec adresy"
 msgid "Agents may publish"
 msgstr "Agenti smějí publikovat"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "All"
-msgstr "Vše"
-
 #: src/features/help/Revisions.tsx
 msgid "An API key"
 msgstr "Klíč API"
@@ -152,11 +145,6 @@ msgstr "Tuto adresu už používá jiné centrum nápovědy, nyní nebo dříve.
 msgid "Answer common questions once, in writing. Each product gets its own help center with articles, collections and a report of what people search for. Pages are hosted by Yuva, so there is nothing to install on your site."
 msgstr "Na časté otázky odpovězte jednou, písemně. Každý produkt má vlastní centrum nápovědy s články, kolekcemi a přehledem toho, co lidé hledají. Stránky hostuje Yuva, na váš web není nic třeba instalovat."
 
-#: src/features/help/pages.tsx
-msgid "Answer common questions once, in writing. Pick an inbox’s help center to write articles, group them in collections and see what customers search for."
-msgstr "Odpovězte na časté dotazy jednou, písemně. Vyberte centrum nápovědy schránky, napište články, seskupte je do kolekcí a podívejte se, co zákazníci hledají."
-
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Article"
 msgstr "Článek"
@@ -179,7 +167,6 @@ msgstr "Zobrazení článků"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Articles"
 msgstr "Články"
@@ -192,7 +179,6 @@ msgstr "Články lze psát a publikovat v těchto jazycích. Návštěvníci uvi
 msgid "Articles in this collection"
 msgstr "Články v této kolekci"
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Articles people read before they write to you"
 msgstr "Články, které lidé čtou, než vám napíšou"
@@ -237,8 +223,6 @@ msgstr "Brings the collections and articles of another help center in as drafts.
 msgid "Bulleted list"
 msgstr "Odrážkový seznam"
 
-#: src/features/help/ArticlesTab.tsx
-#: src/features/help/CollectionsTab.tsx
 #: src/features/help/CreateCenterDialog.tsx
 #: src/features/help/ImportCard.tsx
 msgid "Cancel"
@@ -277,6 +261,11 @@ msgstr "Zahájené chaty"
 msgid "Checking the sign-in"
 msgstr "Checking the sign-in"
 
+#: src/features/help/ArticlesTab.tsx
+#: src/features/help/pages.tsx
+msgid "Clear filters"
+msgstr "Zrušit filtry"
+
 #: src/features/help/ImportCard.tsx
 msgid "Close"
 msgstr "Close"
@@ -295,8 +284,6 @@ msgstr "Blok kódu"
 msgid "Collection"
 msgstr "Kolekce"
 
-#: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Collections"
 msgstr "Kolekce"
@@ -318,14 +305,9 @@ msgid "Create collection"
 msgstr "Vytvořit kolekci"
 
 #: src/features/help/CreateCenterDialog.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Create help center"
 msgstr "Vytvořit centrum nápovědy"
-
-#: src/features/help/HelpColumn.tsx
-msgid "Create help center ({newKey})"
-msgstr "Vytvořit centrum nápovědy ({newKey})"
 
 #: src/features/help/Bulk.tsx
 #: src/features/help/CollectionsTab.tsx
@@ -408,7 +390,6 @@ msgid "Draft submitted. An owner or admin can publish it."
 msgstr "Koncept odeslán. Publikovat ho může vlastník nebo správce."
 
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Drafts"
 msgstr "Koncepty"
@@ -429,9 +410,17 @@ msgstr "Upravit kolekci"
 msgid "Empty"
 msgstr "Prázdné"
 
+#: src/features/help/pages.tsx
+msgid "Every collection"
+msgstr "Každá kolekce"
+
 #: src/features/help/ReportTab.tsx
 msgid "Every search found something."
 msgstr "Každé hledání něco našlo."
+
+#: src/features/help/pages.tsx
+msgid "Every status"
+msgstr "Každý stav"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
@@ -445,6 +434,14 @@ msgstr "Everything imported is a draft."
 #: src/features/help/ImportCard.tsx
 msgid "Failed"
 msgstr "Failed"
+
+#: src/features/help/pages.tsx
+msgid "Filter by collection"
+msgstr "Filtrovat podle kolekce"
+
+#: src/features/help/pages.tsx
+msgid "Filter by status"
+msgstr "Filtrovat podle stavu"
 
 #: src/features/help/EditorToolbar.tsx
 msgid "Formatting"
@@ -470,15 +467,12 @@ msgstr "Seskupte články, aby je návštěvníci mohli procházet. Kolekce mů�
 msgid "Heading"
 msgstr "Nadpis"
 
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Help center"
 msgstr "Centrum nápovědy"
 
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help center created. Write the first article, then publish it."
 msgstr "Centrum nápovědy bylo vytvořeno. Napište první článek a poté jej zveřejněte."
@@ -486,12 +480,6 @@ msgstr "Centrum nápovědy bylo vytvořeno. Napište první článek a poté jej
 #: src/features/help/SettingsTab.tsx
 msgid "Help center deleted"
 msgstr "Centrum nápovědy smazáno"
-
-#: src/features/help/HelpColumn.tsx
-#: src/features/help/HelpFrame.tsx
-#: src/features/help/pages.tsx
-msgid "Help centers"
-msgstr "Centra nápovědy"
 
 #: src/features/help/text.tsx
 msgid "Help centers are turned off on this server."
@@ -565,7 +553,6 @@ msgstr "Jazyk"
 msgid "Language of the articles"
 msgstr "Language of the articles"
 
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Languages"
 msgstr "Jazyky"
@@ -573,10 +560,6 @@ msgstr "Jazyky"
 #: src/features/help/ReportTab.tsx
 msgid "Last {d} days"
 msgstr "Posledních {d} dní"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "last 7 days"
-msgstr "posledních 7 dní"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "Last 7 days"
@@ -626,6 +609,10 @@ msgstr "Více"
 msgid "More for {name}"
 msgstr "Více pro {name}"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "move"
+msgstr "pohyb"
+
 #: src/features/help/CollectionsTab.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "Přesunout {name}. Přetáhněte, nebo stiskněte Alt se šipkami."
@@ -653,6 +640,10 @@ msgid "New address"
 msgstr "New address"
 
 #: src/features/help/ArticlesTab.tsx
+msgid "new article"
+msgstr "nový článek"
+
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/pages.tsx
 msgid "New article"
 msgstr "Nový článek"
@@ -661,16 +652,16 @@ msgstr "Nový článek"
 msgid "New article ({newKey})"
 msgstr "Nový článek ({newKey})"
 
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CollectionsTab.tsx
+#: src/features/help/pages.tsx
 msgid "New collection"
 msgstr "Nová kolekce"
 
-#: src/features/help/CollectionsTab.tsx
-msgid "New collection ({newKey})"
-msgstr "Nová kolekce ({newKey})"
+#: src/features/help/pages.tsx
+msgid "New collection ({colKey})"
+msgstr "Nová kolekce ({colKey})"
 
-#: src/features/help/HelpFrame.tsx
+#: src/features/help/pages.tsx
 msgid "New help center for {product}"
 msgstr "Nové centrum nápovědy pro {product}"
 
@@ -713,12 +704,10 @@ msgstr "Zatím žádné dřívější verze."
 msgid "No help center for {0} yet"
 msgstr "Pro {0} zatím neexistuje centrum nápovědy"
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "No help center yet. Owners and admins create it."
 msgstr "Zatím žádné centrum nápovědy. Vytvářejí ho vlastníci a správci."
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "No inbox to show a help center for."
 msgstr "Žádná schránka, pro kterou by se zobrazilo centrum nápovědy."
@@ -743,10 +732,6 @@ msgstr "Nenapsáno"
 #: src/features/help/EditorToolbar.tsx
 msgid "Numbered list"
 msgstr "Číslovaný seznam"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "of {answers} answers"
-msgstr "z {answers} odpovědí"
 
 #: src/features/help/ImportCard.tsx
 msgid "Off: a draft you edited in Yuva since the last import is kept."
@@ -775,6 +760,11 @@ msgstr "To mohou udělat jen vlastníci a správci."
 #: src/features/help/ImportCard.tsx
 msgid "Only owners and admins can use a Zendesk migration."
 msgstr "Only owners and admins can use a Zendesk migration."
+
+#: src/features/help/ArticlesTab.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "otevřít"
 
 #: src/features/help/ImportCard.tsx
 msgid "Open the drafts"
@@ -857,21 +847,17 @@ msgstr "Veřejná adresa"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Publish"
 msgstr "Publikovat"
 
 #: src/features/help/ArticleEditor.tsx
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Publish ({publishKey})"
 msgstr "Publikovat ({publishKey})"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/ImportCard.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/Revisions.tsx
@@ -900,11 +886,6 @@ msgstr "Redirects"
 #: src/features/help/SettingsTab.tsx
 msgid "Remove {0}"
 msgstr "Odebrat {0}"
-
-#: src/features/help/HelpFrame.tsx
-#: src/features/help/pages.tsx
-msgid "Report"
-msgstr "Report"
 
 #: src/features/help/ReportTab.tsx
 msgid "Report period"
@@ -962,12 +943,20 @@ msgid "Saving…"
 msgstr "Ukládání…"
 
 #: src/features/help/ArticlesTab.tsx
+msgid "search"
+msgstr "hledat"
+
+#: src/features/help/pages.tsx
+msgid "Search articles…"
+msgstr "Hledat v článcích…"
+
+#: src/features/help/pages.tsx
+msgid "Search gaps"
+msgstr "Mezery ve vyhledávání"
+
+#: src/features/help/pages.tsx
 msgid "Search titles"
 msgstr "Hledat v názvech"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Search titles ({findKey})"
-msgstr "Hledat v názvech ({findKey})"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Search words"
@@ -982,13 +971,13 @@ msgstr "Hledáno, nic nenalezeno"
 msgid "Searches"
 msgstr "Hledání"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "searches this week"
-msgstr "vyhledávání tento týden"
-
 #: src/features/help/ReportTab.tsx
 msgid "Searches with no result"
 msgstr "Hledání bez výsledku"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "select"
+msgstr "vybrat"
 
 #: src/features/help/ReportTab.tsx
 msgid "Sent"
@@ -998,7 +987,6 @@ msgstr "Odesláno"
 msgid "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 msgstr "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/text.tsx
 msgid "Settings"
@@ -1067,10 +1055,6 @@ msgstr "Začněte názvem. Text napíšete potom a zůstane konceptem, dokud neb
 #: src/features/help/ImportCard.tsx
 msgid "State"
 msgstr "State"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Status"
-msgstr "Stav"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Submit draft"
@@ -1177,6 +1161,10 @@ msgstr "Nejvyšší úroveň"
 msgid "Translation deleted"
 msgstr "Překlad smazán"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "Try again"
+msgstr "Zkusit znovu"
+
 #: src/features/help/text.tsx
 msgid "Type a word to search for."
 msgstr "Zadejte slovo k vyhledání."
@@ -1188,7 +1176,6 @@ msgstr "Zadejte slovo k vyhledání."
 msgid "Unpublish"
 msgstr "Zrušit publikaci"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Unpublish ({publishKey})"
 msgstr "Zrušit publikaci ({publishKey})"
@@ -1207,8 +1194,6 @@ msgstr "Zrušit publikaci tohoto překladu?"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Unpublished"
 msgstr "Nepublikováno"
@@ -1220,10 +1205,6 @@ msgstr "Nepublikované změny"
 #: src/features/help/ArticleEditor.tsx
 msgid "Unsaved changes"
 msgstr "Neuložené změny"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Updated"
-msgstr "Aktualizováno"
 
 #: src/features/help/SettingsTab.tsx
 msgid "Use 3 to 48 letters, numbers and inner hyphens."
@@ -1245,12 +1226,10 @@ msgstr "Verze obnovena do konceptu"
 msgid "View"
 msgstr "Zobrazit"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "View site"
 msgstr "Zobrazit web"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "View site ({openKey})"
 msgstr "Zobrazit web ({openKey})"
@@ -1259,10 +1238,6 @@ msgstr "Zobrazit web ({openKey})"
 #: src/features/help/ReportTab.tsx
 msgid "Views"
 msgstr "Zobrazení"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Views · 7 days"
-msgstr "Zobrazení · 7 dní"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "Visibility"

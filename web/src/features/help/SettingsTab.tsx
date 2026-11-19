@@ -16,7 +16,7 @@ import { ImportCard } from "@/features/help/ImportCard"
 import { useDeleteHelpCenter, useUpdateHelpCenter } from "@/features/help/queries"
 import { ErrorLine, useLocaleName } from "@/features/help/text"
 import { Card, ChoiceSelect, Field, FormActions, FormCard, Section, ToggleRow } from "@/features/settings/ui"
-import { validSlug } from "@/features/status/CreatePageDialog"
+import { validSlug } from "@/features/status/CreatePageForm"
 import { locales as panelLocales } from "@/i18n"
 import type { HelpCenter, HelpCenterUpdate } from "@/lib/api"
 

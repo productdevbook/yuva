@@ -7,6 +7,11 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: tr\n"
 
+#. placeholder {0}: items.length
+#: src/features/help/ArticlesTab.tsx
+msgid "{0, plural, one {{shown} article} other {{shown} articles}}"
+msgstr "{0, plural, one {{shown} makale} other {{shown} makale}}"
+
 #. placeholder {0}: c.articles
 #: src/features/help/ImportCard.tsx
 msgid "{0, plural, one {# article read} other {# articles read}}"
@@ -62,21 +67,13 @@ msgstr "{0, plural, one {Dili ayarlardan ekleyin, sonra yeniden içe aktarın.} 
 msgid "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 msgstr "{0, plural, one {Yardım merkezi bu dili sunmuyor, bu yüzden bu dildeki çeviriler içe aktarılmadı.} other {Yardım merkezi bu dilleri sunmuyor, bu yüzden bu dillerdeki çeviriler içe aktarılmadı.}}"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "{drafts, plural, one {# draft} other {# drafts}}"
-msgstr "{drafts, plural, one {# taslak} other {# taslak}}"
-
-#: src/features/help/HelpColumn.tsx
-msgid "{published} of {total} articles published"
-msgstr "{total} makalenin {published} tanesi yayında"
-
 #: src/features/help/ImportCard.tsx
 msgid "{saved, plural, one {# draft saved} other {# drafts saved}}"
 msgstr "{saved, plural, one {# taslak kaydedildi} other {# taslak kaydedildi}}"
 
 #: src/features/help/ArticlesTab.tsx
-msgid "{searches} searches"
-msgstr "{searches} arama"
+msgid "{views, plural, one {# view} other {# views}}"
+msgstr "{views, plural, one {# görüntüleme} other {# görüntüleme}}"
 
 #: src/features/help/CreateCenterDialog.tsx
 msgid "3 to 48 letters, numbers and hyphens. It is unique on this server."
@@ -124,10 +121,6 @@ msgstr "Adres sonu"
 msgid "Agents may publish"
 msgstr "Temsilciler yayımlayabilir"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "All"
-msgstr "Tümü"
-
 #: src/features/help/Revisions.tsx
 msgid "An API key"
 msgstr "Bir API anahtarı"
@@ -152,11 +145,6 @@ msgstr "Başka bir yardım merkezi bu adresi şimdi veya daha önce kullanıyor.
 msgid "Answer common questions once, in writing. Each product gets its own help center with articles, collections and a report of what people search for. Pages are hosted by Yuva, so there is nothing to install on your site."
 msgstr "Sık sorulan soruları bir kez, yazılı olarak yanıtlayın. Her ürünün makaleleri, koleksiyonları ve insanların ne aradığını gösteren bir raporu olan kendi yardım merkezi vardır. Sayfaları Yuva barındırır, sitenize kurulacak bir şey yoktur."
 
-#: src/features/help/pages.tsx
-msgid "Answer common questions once, in writing. Pick an inbox’s help center to write articles, group them in collections and see what customers search for."
-msgstr "Sık sorulan soruları bir kez, yazılı olarak yanıtlayın. Makale yazmak, koleksiyonlarda gruplamak ve müşterilerin ne aradığını görmek için bir gelen kutusunun yardım merkezini seçin."
-
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Article"
 msgstr "Makale"
@@ -179,7 +167,6 @@ msgstr "Makale görüntüleme"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Articles"
 msgstr "Makaleler"
@@ -192,7 +179,6 @@ msgstr "Makaleler bu dillerde yazılıp yayımlanabilir. Ziyaretçiler, varsa ke
 msgid "Articles in this collection"
 msgstr "Bu koleksiyondaki makaleler"
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Articles people read before they write to you"
 msgstr "İnsanların size yazmadan önce okuduğu makaleler"
@@ -237,8 +223,6 @@ msgstr "Başka bir yardım merkezinin koleksiyonlarını ve makalelerini taslak 
 msgid "Bulleted list"
 msgstr "Madde işaretli liste"
 
-#: src/features/help/ArticlesTab.tsx
-#: src/features/help/CollectionsTab.tsx
 #: src/features/help/CreateCenterDialog.tsx
 #: src/features/help/ImportCard.tsx
 msgid "Cancel"
@@ -277,6 +261,11 @@ msgstr "Başlayan sohbetler"
 msgid "Checking the sign-in"
 msgstr "Oturum denetleniyor"
 
+#: src/features/help/ArticlesTab.tsx
+#: src/features/help/pages.tsx
+msgid "Clear filters"
+msgstr "Filtreleri temizle"
+
 #: src/features/help/ImportCard.tsx
 msgid "Close"
 msgstr "Kapat"
@@ -295,8 +284,6 @@ msgstr "Kod bloğu"
 msgid "Collection"
 msgstr "Koleksiyon"
 
-#: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Collections"
 msgstr "Koleksiyonlar"
@@ -318,14 +305,9 @@ msgid "Create collection"
 msgstr "Koleksiyon oluştur"
 
 #: src/features/help/CreateCenterDialog.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Create help center"
 msgstr "Yardım merkezi oluştur"
-
-#: src/features/help/HelpColumn.tsx
-msgid "Create help center ({newKey})"
-msgstr "Yardım merkezi oluştur ({newKey})"
 
 #: src/features/help/Bulk.tsx
 #: src/features/help/CollectionsTab.tsx
@@ -408,7 +390,6 @@ msgid "Draft submitted. An owner or admin can publish it."
 msgstr "Taslak gönderildi. Bir sahip veya yönetici yayımlayabilir."
 
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Drafts"
 msgstr "Taslaklar"
@@ -429,9 +410,17 @@ msgstr "Koleksiyonu düzenle"
 msgid "Empty"
 msgstr "Boş"
 
+#: src/features/help/pages.tsx
+msgid "Every collection"
+msgstr "Tüm koleksiyonlar"
+
 #: src/features/help/ReportTab.tsx
 msgid "Every search found something."
 msgstr "Her arama bir sonuç buldu."
+
+#: src/features/help/pages.tsx
+msgid "Every status"
+msgstr "Tüm durumlar"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
@@ -445,6 +434,14 @@ msgstr "İçe aktarılan her şey taslaktır."
 #: src/features/help/ImportCard.tsx
 msgid "Failed"
 msgstr "Başarısız"
+
+#: src/features/help/pages.tsx
+msgid "Filter by collection"
+msgstr "Koleksiyona göre süz"
+
+#: src/features/help/pages.tsx
+msgid "Filter by status"
+msgstr "Duruma göre süz"
 
 #: src/features/help/EditorToolbar.tsx
 msgid "Formatting"
@@ -470,15 +467,12 @@ msgstr "Ziyaretçilerin gezinebilmesi için makaleleri gruplayın. Bir koleksiyo
 msgid "Heading"
 msgstr "Başlık"
 
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Help center"
 msgstr "Yardım merkezi"
 
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help center created. Write the first article, then publish it."
 msgstr "Yardım merkezi oluşturuldu. İlk makaleyi yazın, sonra yayınlayın."
@@ -486,12 +480,6 @@ msgstr "Yardım merkezi oluşturuldu. İlk makaleyi yazın, sonra yayınlayın."
 #: src/features/help/SettingsTab.tsx
 msgid "Help center deleted"
 msgstr "Yardım merkezi silindi"
-
-#: src/features/help/HelpColumn.tsx
-#: src/features/help/HelpFrame.tsx
-#: src/features/help/pages.tsx
-msgid "Help centers"
-msgstr "Yardım merkezleri"
 
 #: src/features/help/text.tsx
 msgid "Help centers are turned off on this server."
@@ -565,7 +553,6 @@ msgstr "Dil"
 msgid "Language of the articles"
 msgstr "Makalelerin dili"
 
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Languages"
 msgstr "Diller"
@@ -573,10 +560,6 @@ msgstr "Diller"
 #: src/features/help/ReportTab.tsx
 msgid "Last {d} days"
 msgstr "Son {d} gün"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "last 7 days"
-msgstr "son 7 gün"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "Last 7 days"
@@ -626,6 +609,10 @@ msgstr "Daha fazla"
 msgid "More for {name}"
 msgstr "{name} için daha fazlası"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "move"
+msgstr "gezin"
+
 #: src/features/help/CollectionsTab.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "{name} öğesini taşıyın. Sürükleyin veya ok tuşlarıyla Alt’a basın."
@@ -653,6 +640,10 @@ msgid "New address"
 msgstr "Yeni adres"
 
 #: src/features/help/ArticlesTab.tsx
+msgid "new article"
+msgstr "yeni makale"
+
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/pages.tsx
 msgid "New article"
 msgstr "Yeni makale"
@@ -661,16 +652,16 @@ msgstr "Yeni makale"
 msgid "New article ({newKey})"
 msgstr "Yeni makale ({newKey})"
 
-#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CollectionsTab.tsx
+#: src/features/help/pages.tsx
 msgid "New collection"
 msgstr "Yeni koleksiyon"
 
-#: src/features/help/CollectionsTab.tsx
-msgid "New collection ({newKey})"
-msgstr "Yeni koleksiyon ({newKey})"
+#: src/features/help/pages.tsx
+msgid "New collection ({colKey})"
+msgstr "Yeni koleksiyon ({colKey})"
 
-#: src/features/help/HelpFrame.tsx
+#: src/features/help/pages.tsx
 msgid "New help center for {product}"
 msgstr "{product} için yeni yardım merkezi"
 
@@ -713,12 +704,10 @@ msgstr "Henüz önceki sürüm yok."
 msgid "No help center for {0} yet"
 msgstr "{0} için henüz yardım merkezi yok"
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "No help center yet. Owners and admins create it."
 msgstr "Henüz yardım merkezi yok. Sahipler ve yöneticiler oluşturur."
 
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "No inbox to show a help center for."
 msgstr "Yardım merkezi gösterilecek gelen kutusu yok."
@@ -743,10 +732,6 @@ msgstr "Yazılmadı"
 #: src/features/help/EditorToolbar.tsx
 msgid "Numbered list"
 msgstr "Numaralı liste"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "of {answers} answers"
-msgstr "{answers} yanıttan"
 
 #: src/features/help/ImportCard.tsx
 msgid "Off: a draft you edited in Yuva since the last import is kept."
@@ -775,6 +760,11 @@ msgstr "Bunu yalnızca sahipler ve yöneticiler yapabilir."
 #: src/features/help/ImportCard.tsx
 msgid "Only owners and admins can use a Zendesk migration."
 msgstr "Zendesk taşımasını yalnızca sahipler ve yöneticiler kullanabilir."
+
+#: src/features/help/ArticlesTab.tsx
+msgctxt "keyboard hint"
+msgid "open"
+msgstr "aç"
 
 #: src/features/help/ImportCard.tsx
 msgid "Open the drafts"
@@ -857,21 +847,17 @@ msgstr "Herkese açık adres"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Publish"
 msgstr "Yayımla"
 
 #: src/features/help/ArticleEditor.tsx
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Publish ({publishKey})"
 msgstr "Yayımla ({publishKey})"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/ImportCard.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/Revisions.tsx
@@ -900,11 +886,6 @@ msgstr "Yönlendirmeler"
 #: src/features/help/SettingsTab.tsx
 msgid "Remove {0}"
 msgstr "{0} öğesini kaldır"
-
-#: src/features/help/HelpFrame.tsx
-#: src/features/help/pages.tsx
-msgid "Report"
-msgstr "Rapor"
 
 #: src/features/help/ReportTab.tsx
 msgid "Report period"
@@ -962,12 +943,20 @@ msgid "Saving…"
 msgstr "Kaydediliyor…"
 
 #: src/features/help/ArticlesTab.tsx
+msgid "search"
+msgstr "ara"
+
+#: src/features/help/pages.tsx
+msgid "Search articles…"
+msgstr "Makalelerde ara…"
+
+#: src/features/help/pages.tsx
+msgid "Search gaps"
+msgstr "Arama boşlukları"
+
+#: src/features/help/pages.tsx
 msgid "Search titles"
 msgstr "Başlıklarda ara"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Search titles ({findKey})"
-msgstr "Başlıklarda ara ({findKey})"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Search words"
@@ -982,13 +971,13 @@ msgstr "Arandı, bir şey bulunamadı"
 msgid "Searches"
 msgstr "Aramalar"
 
-#: src/features/help/ArticlesTab.tsx
-msgid "searches this week"
-msgstr "bu hafta arama"
-
 #: src/features/help/ReportTab.tsx
 msgid "Searches with no result"
 msgstr "Sonuçsuz aramalar"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "select"
+msgstr "seç"
 
 #: src/features/help/ReportTab.tsx
 msgid "Sent"
@@ -998,7 +987,6 @@ msgstr "Gönderilen"
 msgid "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 msgstr "Bunları eski adreste kendiniz kurmalısınız. Yeni adres, makaleyi yayımlayana kadar “bulunamadı” yanıtı verir."
 
-#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/text.tsx
 msgid "Settings"
@@ -1066,10 +1054,6 @@ msgstr "Bir başlıkla başlayın. Metni sonra yazarsınız; yayımlanana kadar 
 
 #: src/features/help/ImportCard.tsx
 msgid "State"
-msgstr "Durum"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Status"
 msgstr "Durum"
 
 #: src/features/help/ArticleEditor.tsx
@@ -1177,6 +1161,10 @@ msgstr "Üst düzey"
 msgid "Translation deleted"
 msgstr "Çeviri silindi"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "Try again"
+msgstr "Yeniden dene"
+
 #: src/features/help/text.tsx
 msgid "Type a word to search for."
 msgstr "Aramak için bir sözcük yazın."
@@ -1188,7 +1176,6 @@ msgstr "Aramak için bir sözcük yazın."
 msgid "Unpublish"
 msgstr "Yayından kaldır"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "Unpublish ({publishKey})"
 msgstr "Yayından kaldır ({publishKey})"
@@ -1207,8 +1194,6 @@ msgstr "Bu çeviri yayından kaldırılsın mı?"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
-#: src/features/help/CenterBar.tsx
-#: src/features/help/HelpColumn.tsx
 #: src/features/help/pages.tsx
 msgid "Unpublished"
 msgstr "Yayında değil"
@@ -1220,10 +1205,6 @@ msgstr "Yayımlanmamış değişiklikler"
 #: src/features/help/ArticleEditor.tsx
 msgid "Unsaved changes"
 msgstr "Kaydedilmemiş değişiklikler"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Updated"
-msgstr "Güncellendi"
 
 #: src/features/help/SettingsTab.tsx
 msgid "Use 3 to 48 letters, numbers and inner hyphens."
@@ -1245,12 +1226,10 @@ msgstr "Sürüm taslağa geri yüklendi"
 msgid "View"
 msgstr "Görüntüle"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "View site"
 msgstr "Siteyi görüntüle"
 
-#: src/features/help/CenterBar.tsx
 #: src/features/help/pages.tsx
 msgid "View site ({openKey})"
 msgstr "Siteyi görüntüle ({openKey})"
@@ -1259,10 +1238,6 @@ msgstr "Siteyi görüntüle ({openKey})"
 #: src/features/help/ReportTab.tsx
 msgid "Views"
 msgstr "Görüntüleme"
-
-#: src/features/help/ArticlesTab.tsx
-msgid "Views · 7 days"
-msgstr "Görüntüleme · 7 gün"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "Visibility"

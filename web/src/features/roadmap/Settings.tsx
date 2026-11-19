@@ -12,7 +12,7 @@ import { useAnalyticsProperties } from "@/features/analytics/properties"
 import { useInboxChannels } from "@/features/broadcasts/queries"
 import { useDeleteBoard, useUpdateBoard } from "@/features/roadmap/queries"
 import { Card, ChoiceSelect, Field, FormCard, Section, ToggleRow } from "@/features/settings/ui"
-import { validSlug } from "@/features/status/CreatePageDialog"
+import { validSlug } from "@/features/status/CreatePageForm"
 import type { RoadmapBoard, RoadmapBoardUpdate, RoadmapSuggestions } from "@/lib/api"
 
 function Visibility({ board }: { board: RoadmapBoard }) {

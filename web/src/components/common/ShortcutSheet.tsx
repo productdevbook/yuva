@@ -89,6 +89,10 @@ export const MAIL_KEYS = {
   filter: "F",
 } as const
 
+export const FEEDBACK_KEYS = {
+  form: "f",
+} as const
+
 export const DISCUSSION_KEYS = {
   next: "j",
   previous: "k",
@@ -178,9 +182,13 @@ export const STATUS_KEYS = {
   preview: "v",
   openPage: "o",
   publishPage: "P",
+  previousPage: "[",
+  nextPage: "]",
 } as const
 
 export const INCIDENT_KEYS = {
+  previous: "[",
+  next: "]",
   active: "1",
   scheduled: "2",
   past: "3",
@@ -197,6 +205,8 @@ export const INCIDENT_KEYS = {
 } as const
 
 export const MONITOR_KEYS = {
+  previous: "[",
+  next: "]",
   all: "1",
   down: "2",
   up: "3",
@@ -228,6 +238,7 @@ export const HELP_KEYS = {
 } as const
 
 export const ROADMAP_KEYS = {
+  newIdea: "i",
   board: "1",
   settings: "2",
   newBoard: "c",
@@ -530,6 +541,8 @@ export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenCha
       title: t`Status pages`,
       items: [
         [["↑", "↓"], t`Move through the status pages`],
+        [["↵"], t`Open the status page`],
+        [[STATUS_KEYS.previousPage, STATUS_KEYS.nextPage], t`Previous or next status page`],
         [k(STATUS_KEYS.overview), t`Overview`],
         [k(STATUS_KEYS.components), t`Components`],
         [k(STATUS_KEYS.subscribers), t`Subscribers`],
@@ -546,6 +559,7 @@ export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenCha
       title: t`Incidents`,
       items: [
         [["↑", "↓"], t`Move through the incidents`],
+        [[INCIDENT_KEYS.previous, INCIDENT_KEYS.next], t`Previous or next incident`],
         [k(INCIDENT_KEYS.active), t`Active`],
         [k(INCIDENT_KEYS.scheduled), t`Scheduled`],
         [k(INCIDENT_KEYS.past), t`Past`],
@@ -565,6 +579,7 @@ export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenCha
       title: t`Monitors`,
       items: [
         [["↑", "↓"], t`Move through the monitors`],
+        [[MONITOR_KEYS.previous, MONITOR_KEYS.next], t`Previous or next monitor`],
         [k(MONITOR_KEYS.all), t`All monitors`],
         [k(MONITOR_KEYS.down), t`Down`],
         [k(MONITOR_KEYS.up), t`Up`],
@@ -581,6 +596,7 @@ export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenCha
       items: [
         [["↑", "↓"], t`Move through the articles or collections`],
         [["↵"], t`Open the article or collection`],
+        [k(SHORTCUTS.select), t`Select the article`],
         [k(HELP_KEYS.articles), t`Articles`],
         [k(HELP_KEYS.collections), t`Collections`],
         [k(HELP_KEYS.report), t`Help report`],
@@ -612,12 +628,25 @@ export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenCha
       ],
     },
     {
+      title: t`Feedback`,
+      items: [
+        [["↑", "↓"], t`Move through the feedback`],
+        [["↵"], t`Open the feedback`],
+        [k(SHORTCUTS.search), t`Search feedback`],
+        [k(SHORTCUTS.select), t`Select the feedback`],
+        [k(SHORTCUTS.close), t`Resolve or reopen the selected feedback`],
+        [k(SHORTCUTS.trash), t`Move the selected feedback to the Trash`],
+        [k(FEEDBACK_KEYS.form), t`Feedback form`],
+      ],
+    },
+    {
       title: t`Roadmap`,
       items: [
         [["↑", "↓", "←", "→"], t`Move through the ideas`],
         [["↵"], t`Open the idea`],
         [k(ROADMAP_KEYS.board), t`Board`],
         [k(ROADMAP_KEYS.settings), t`Board settings`],
+        [k(ROADMAP_KEYS.newIdea), t`New idea`],
         [k(ROADMAP_KEYS.newBoard), t`Create the board`],
         [k(ROADMAP_KEYS.move), t`Move to a stage`],
         [[ROADMAP_KEYS.moveBack, ROADMAP_KEYS.moveForward], t`Move to the previous or next stage`],
@@ -634,6 +663,7 @@ export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenCha
       items: [
         [["↑", "↓"], t`Move through the entries`],
         [["↵"], t`Open the entry`],
+        [k(SHORTCUTS.select), t`Select the entry`],
         [k(CHANGELOG_KEYS.entries), t`Entries`],
         [k(CHANGELOG_KEYS.settings), t`Changelog settings`],
         [k(CHANGELOG_KEYS.create), t`Create the changelog`],

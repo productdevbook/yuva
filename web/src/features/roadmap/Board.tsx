@@ -441,14 +441,16 @@ export function Board({
 
   return (
     <>
-      <div className={flat ? "@container mt-6 min-w-0" : "@container min-h-0 min-w-0 flex-1 overflow-y-auto"}>
+      <div className={flat ? "@container mt-4 min-w-0" : "@container min-h-0 min-w-0 flex-1 overflow-y-auto"}>
         <div className={cn("flex flex-col gap-4", !flat && "min-h-full p-6 @max-3xl:px-4 @max-3xl:pt-4")}>
           <Pending scope={scope} inScope={inScope} inboxOf={inboxOf} all={all} />
           <DndContext sensors={sensors} onDragEnd={onDragEnd}>
             <div
               className={cn(
                 "min-h-0 flex-1 items-stretch gap-3 overflow-x-auto",
-                flat ? "grid auto-cols-[minmax(10rem,1fr)] grid-flow-col pb-2" : "flex snap-x"
+                flat
+                  ? "grid auto-cols-[minmax(10rem,1fr)] grid-flow-col pb-2 max-md:snap-x max-md:auto-cols-[80%]"
+                  : "flex snap-x"
               )}
               data-testid="board-columns"
             >

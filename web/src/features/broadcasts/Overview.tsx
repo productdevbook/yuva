@@ -37,16 +37,15 @@ import {
 import {
   BroadcastsLayout,
   inView,
-  ProductFilter,
   rememberedList,
   rememberList,
   SenderLine,
-  useProductScope,
   useViewNames,
   VIEWS,
   viewLink,
   type BroadcastView,
 } from "@/features/broadcasts/BroadcastsFrame"
+import { ProductFilter, useProductScope } from "@/components/common/ProductFilter"
 import { NewBroadcastForm } from "@/features/broadcasts/NewBroadcastForm"
 import { useLists } from "@/features/broadcasts/queries"
 import { useListCursor } from "@/features/inbox/listCursor"

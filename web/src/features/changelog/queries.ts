@@ -4,6 +4,7 @@ import {
   api,
   ApiError,
   unwrap,
+  type BulkResult,
   type Changelog,
   type ChangelogBroadcast,
   type ChangelogCreate,
@@ -131,12 +132,30 @@ export function useCreateEntry(changelogId: string) {
   })
 }
 
-export function useBulkEntries(changelogId: string) {
+export function useBulkEntries() {
   const refresh = useRefresh()
   return useMutation({
-    mutationFn: (body: ChangelogEntryBulkChange) =>
-      unwrap(api.POST("/v1/changelogs/{changelogId}/entries/bulk", { params: { path: { changelogId } }, body })),
-    onSuccess: () => refresh(),
+    mutationFn: async ({
+      groups,
+      action,
+    }: {
+      groups: Map<string, string[]>
+      action: ChangelogEntryBulkChange["action"]
+    }) => {
+      const merged: BulkResult = { succeeded: [], failed: [] }
+      for (const [changelogId, ids] of groups) {
+        const r = await unwrap(
+          api.POST("/v1/changelogs/{changelogId}/entries/bulk", {
+            params: { path: { changelogId } },
+            body: { ids, action },
+          })
+        )
+        merged.succeeded.push(...r.succeeded)
+        merged.failed.push(...r.failed)
+      }
+      return merged
+    },
+    onSettled: () => refresh(),
   })
 }
 
