@@ -175,29 +175,40 @@ Then, top to bottom, two columns on a desktop and one on a phone:
 3. **Waiting for you** (left): one row per thing that needs someone, each linking to its page.
    - Late conversations.
    - Unassigned conversations (one row with the count per inbox).
-   - Broadcasts waiting for this member's approval.
    - Open incidents.
    - Discussions needing a reply.
    - Imports needing attention.
 
-   Agents do not see approvals or imports.
+   Agents do not see imports.
 4. **Today** (left): open conversations, opened · closed, median first reply, visitors now,
-   rating, the last broadcast's opens. Each figure links to its report. Agents see their own open
+   rating, the last broadcast's clicks and replies. Each figure links to its report. Agents see their own open
    conversations, first reply and rating.
-5. **Later today** (right): snoozed conversations coming back, scheduled broadcasts, imports
+5. **Later today** (right): the member's snoozed conversations coming back, scheduled broadcasts, imports
    expected to finish, in time order. Agents see only conversations.
 6. **Products** (right, owners and admins): each product with its open conversations and its
    status page state.
 7. **Recent** (right): the team's last actions (closed, rated, posted an update, published, sent).
 
-Data comes from existing endpoints:
-- `/v1/conversations/counts` and `/v1/conversations` (assignee, status, snooze).
-- `/v1/stats`, `/v1/broadcasts`, `/v1/status-pages/{pageId}/incidents`, `/v1/discussions`,
-  `/v1/migrations`, `/v1/members`.
-
-Before M41.2 starts, yuva-api checks each block against `openapi/openapi.yaml`. A block with no
-source (likely Recent, and Later today's import estimate) gets one small read endpoint in M41.2,
-contract first. Otherwise the block is left out and named in the step's report.
+Data, checked against the contract before M41.2:
+- `GET /v1/home` already carries inbox, activity, products, team, status pages, upcoming,
+  analytics, broadcasts and setup in one request; Home is built on it.
+- My conversations: `GET /v1/conversations?assignee=me&status=open,pending,snoozed&sort=sla_due`
+  (`sla.due_at`, `pending` is waiting on the customer, `snooze_until`).
+- Late: `sla_state=breached`. Discussions: `unanswered_threads` from `/v1/docs/pages`. Imports:
+  `/v1/migrations?state=needs_attention`; their finish time from `seconds_left` or `sync_until`.
+  Incidents and scheduled broadcasts: `home.upcoming`.
+- Broadcast approval is workspace-level (the operator's), not per member, so Waiting for you has no
+  approval row.
+- Yuva has no open tracking (a closed decision): the last broadcast shows clicks and replies, not
+  opens.
+- Later today shows the member's own snoozed conversations, not the team's.
+- New in M41.2, contract first:
+  - `unassigned_inboxes` (`CountByID[]`) on `/v1/conversations/counts`, like `outbound_inboxes`.
+  - `GET /v1/activity?inbox_id&limit&cursor` → `{items: [{id, kind, at, inbox_id, actor:
+    {member_id, name}, target: {type, id, title}, detail?}], next_cursor}`, `kind` one of
+    `conversation.closed`, `conversation.rated`, `incident.updated`, `article.published`,
+    `broadcast.sent`. It is a read-only union over existing rows, limited to the inboxes the caller
+    can see, with no new table. It feeds Recent.
 
 ## 4. Steps
 
@@ -226,5 +237,5 @@ help, roadmap sites), the widget and the SDKs.
 
 Accept: every route that worked before M41 still opens. Each section shows its sidebar with
 exactly one highlighted item. On a 390px phone no page scrolls sideways. Light and dark both pass.
-An agent's Home shows their own conversations and no approvals. An owner finishes mail setup from
+An agent's Home shows their own conversations and no imports. An owner finishes mail setup from
 the Home card and lands back on Home with the card at 1 of 4.

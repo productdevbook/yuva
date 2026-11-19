@@ -758,7 +758,7 @@ only (`web/`), on shadcn; every route, endpoint and shortcut stays.
 
 Accept: every route that worked before M41 still opens; each section shows its sidebar with exactly
 one highlighted item; no page scrolls sideways on a 390px phone; light and dark both pass; an
-agent's Home shows their own conversations and no approvals; an owner finishes mail setup from the
+agent's Home shows their own conversations and no imports; an owner finishes mail setup from the
 Home card and lands back on Home at 1 of 4.
 
 ## Later
